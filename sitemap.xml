@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://ashstu.media/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Profile-3.webp</image:loc>
+      <image:title>Ash Stu — Official Artist Photo</image:title>
+      <image:caption>Ash Stu, indie folk singer-songwriter from Guthrie, Oklahoma</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Profile-6.webp</image:loc>
+      <image:title>Ash Stu at the Piano</image:title>
+      <image:caption>Ash Stu playing piano — singer-songwriter from Guthrie, Oklahoma</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Profile-4.webp</image:loc>
+      <image:title>Ash Stu — Press Photo</image:title>
+      <image:caption>Ash Stu press photo — indie folk artist from Oklahoma</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Guitar.webp</image:loc>
+      <image:title>Ash Stu with Guitar</image:title>
+      <image:caption>Ash Stu performing with guitar</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Releases/Only%20a%20Baby%2C%20Vol.%202.webp</image:loc>
+      <image:title>Only a Baby, Vol. 2 — Album Art</image:title>
+      <image:caption>Album cover for Only a Baby, Vol. 2 by Ash Stu</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Releases/Only%20a%20Baby%2C%20Vol.%201.webp</image:loc>
+      <image:title>Only a Baby, Vol. 1 — Album Art</image:title>
+      <image:caption>Album cover for Only a Baby, Vol. 1 by Ash Stu</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Releases/Drive%20Me%20Home.webp</image:loc>
+      <image:title>Drive Me Home — Single Art</image:title>
+      <image:caption>Single cover for Drive Me Home by Ash Stu</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ashstu.media/Images/Releases/Waste%20My%20Time%20(feat.%20Trent%20Runyon).webp</image:loc>
+      <image:title>Waste My Time (feat. Trent Runyon) — Single Art</image:title>
+      <image:caption>Single cover for Waste My Time feat. Trent Runyon by Ash Stu</image:caption>
+    </image:image>
+  </url>
+</urlset>
