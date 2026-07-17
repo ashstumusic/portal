@@ -1,0 +1,2524 @@
+
+
+/* New local-file fonts - Playfair Display + two on-brand display faces that
+   were already sitting unused in /Fonts (see design notes). Loaded as plain
+   files, not base64: they're used sparingly (headlines + two accent spots),
+   so there's no reason to inline them and bloat this stylesheet the way the
+   old wordmark font did. font-style:italic maps automatically to the italic
+   file - no separate family name needed to reach for the italic cut. */
+@font-face {
+  font-family: 'Display';
+  src: url('Fonts/Header.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Display';
+  src: url('Fonts/Header-Italic.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  /* "j.d." handwriting - reserved for the bio's "figment" line only
+     (build-fast.py subsets it to exactly that sentence's characters). */
+  font-family: 'Figment';
+  src: url('Fonts/j.d.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  /* "On The Fritz" - gritty overline labels (ALBUM / SINGLE / etc). */
+  font-family: 'Grit';
+  src: url('Fonts/Handmade.otf') format('opentype');
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Logo';
+  src: url('Fonts/xperimental/Boiled-Pasta.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Body';
+  src: url('Fonts/Body.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+/* ── DESIGN TOKENS ──────────────────────────────────────────────────
+   "Songwriter's notebook," not "music app." Every hardcoded color/radius
+   in this file used to be typed out by hand in 60+ places - that's why a
+   full rebrand used to mean a find-and-replace minefield. Now it's these
+   ~20 lines. Alpha-tinted variants use CSS relative-color syntax
+   (rgb(from var(...) r g b / a)) so a tint always tracks its source token
+   instead of drifting out of sync with it.
+   ───────────────────────────────────────────────────────────────────── */
+:root {
+  /* Original brand palette: cool-white / deep teal / sunny yellow. Three
+     colors carry the whole site; the same token names keep every derived
+     alpha-tint working. */
+  --paper:      #F0F5F6;  /* body bg: cool near-white */
+  --paper-deep: #E2EBEE;  /* recessed surfaces: wells, hero spotlight panel */
+  --cream:      #FAFCFC;  /* raised surface: card fill, popovers */
+  --ink:        #084C61;  /* primary: deep teal - text, panels, CTAs */
+  --ink-soft:   #4A6E7C;  /* secondary/muted text */
+  --ink-hover:  rgb(from var(--ink) calc(r + 18) calc(g + 18) calc(b + 18));
+  --hairline:   rgb(from var(--ink) r g b / .08);
+  --rust:       #084C61;  /* accent roles collapse into primary teal */
+  --rust-hover: rgb(from var(--rust) calc(r - 18) calc(g - 18) calc(b - 18));
+  --gold:       #F7C549;  /* accent: sunny yellow - lamplight, hovers, marks */
+  --red:        #DF2B2C;  /* pop accent: Latest Release badge, confetti */
+  --gold-hover: rgb(from var(--gold) calc(r * .86) calc(g * .86) calc(b * .86));
+  --sage:       #F7C549;  /* now-playing - 3-color palette, accent doubles
+                             as the "live" signal */
+  --radius:     8px;      /* was a 16px "squircle" - a shade sharper reads as
+                             a printed object (card, ticket) rather than an
+                             app tile; still soft enough to touch comfortably */
+  --sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --body:    'Body', var(--sans);         /* body copy, section headers, release-type labels */
+  --display: 'Display', Georgia, serif;   /* Playfair Display: editorial headlines */
+  --grit:    'Grit', var(--sans);         /* gritty overline labels */
+  --focus:  0 0 0 2px var(--paper), 0 0 0 4px var(--ink);
+  --ease:   cubic-bezier(.4,0,.2,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: clip; }
+/* Anchor jumps land below the fixed nav instead of under it. */
+[id] { scroll-margin-top: 64px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration:.01ms!important; animation-duration:.01ms!important; }
+  html { scroll-behavior: auto; }
+}
+body {
+  /* Ruled notebook lines across the whole page - one shade above
+     invisible, felt as paper rather than read as a grid. Sections with
+     their own opaque backgrounds (hero panel, nav, player) sit on top. */
+  /* Ruled lines are 2px, not 1px: on fractionally-scaled displays
+     (125% OS zoom etc.) a 1px line lands on half device pixels and
+     antialiases down to invisible at this opacity - alternate lines
+     vanished entirely, making the spacing look uneven. A 2px line
+     always covers at least two device pixels, so every rule renders,
+     at every zoom, at the same weight. Whole-pixel 34px period keeps
+     the spacing exact; opacity low enough to stay texture. */
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 32px, rgb(from var(--ink) r g b / .025) 32px 34px),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--sans); line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+/* Controls, not content - buttons/links styled as buttons/draggable
+   bars shouldn't ever show the browser's native text-selection
+   highlight on tap-and-hold or drag. Real content (essays, bio copy,
+   etc.) is untouched and stays selectable as normal. */
+button, [role="button"], .f-btn, .rel-btn, .vid-yt, nav a {
+  user-select: none; -webkit-user-select: none;
+}
+img { display: block; max-width: 100%; }
+a, button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+#hero-brand, .nav-logo { will-change: opacity; }
+.featured-badge { will-change: opacity; }
+.rel-track-title.marquee > span { will-change: transform; }
+.vid-card-wrap { contain: layout style; }
+/* Same isolation as .vid-card-wrap: style/layout changes inside one card or
+   journal entry (tracklist opens, marquees, accordion) never force the
+   browser to reconsider the rest of the tree. */
+.rel-card, .journal-entry { contain: layout style; }
+/* Permanently animating (bob) / transform-transitioned fixed chrome gets a
+   compositor layer up front - all small, cheap-to-hold surfaces. */
+.hero-scroll { will-change: transform; }
+#player-bar { will-change: transform; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+img[loading="lazy"] { animation: fadeIn .4s var(--ease) both; }
+a { color: inherit; }
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(from var(--ink) r g b / .12) transparent;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgb(from var(--ink) r g b / .12); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(from var(--ink) r g b / .25); }
+.skip {
+  position: absolute; top: -999px; left: 1rem;
+  background: var(--cream); color: var(--ink);
+  font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .5rem 1rem; text-decoration: none; z-index: 9999;
+}
+.skip:focus { top: 1rem; }
+::selection { background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
+:focus-visible { outline: none; box-shadow: var(--focus); border-radius: 8px; }
+
+/* ════════════════════════════════════════════
+   NAV - glass bar
+   ════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  min-height: 56px;
+  /* Safety net, not the primary responsive mechanism (that's still the
+     ≤900px hamburger-menu breakpoint below) - text-only browser zoom
+     (WCAG 1.4.4, distinct from full-page zoom) grows this row's content
+     without changing the reported viewport width, so the width-based
+     breakpoint alone can't catch it. Wrapping keeps every link/icon
+     reachable instead of silently clipping past the edge (this site
+     sets overflow-x:clip on <html>, which hides overflow rather than
+     making it scrollable). The nav is a semi-transparent fixed overlay
+     on top of the hero photo, not in normal flow pushing content down,
+     so it growing taller here doesn't shift anything beneath it. */
+  flex-wrap: wrap;
+  display: flex; align-items: center;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+  background: rgb(from var(--ink) r g b / .82);
+  /* blur(20px), was 40px: behind an .82-opaque fill the two are visually
+     identical, but the backdrop blur re-runs every scroll frame on a fixed
+     bar and its cost scales with the radius. */
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgb(from var(--ink) r g b / .3);
+}
+/* Compositor-only scrolled state: the darker fill + shadow live on an
+   overlay that fades via opacity (same technique as .f-btn::after) instead
+   of transitioning background/box-shadow on a backdrop-filtered bar.
+   An .556-alpha ink layer over the base .82 composites to exactly the old
+   .92 fill (.556 + .82 x .444 = .92). */
+.nav::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: rgb(from var(--ink) r g b / .556);
+  box-shadow: 0 2px 20px rgba(8,76,97,.2);
+  opacity: 0; transition: opacity .4s var(--ease);
+  pointer-events: none;
+}
+.nav.scrolled::before { opacity: 1; }
+.nav-logo {
+  display: flex; align-items: center; text-decoration: none; flex-shrink: 0;
+  opacity: 0; min-width: 44px; min-height: 44px; padding: 4px 8px 4px 0;
+}
+.nav-logo .hero-brand { gap: .4rem; align-items: center; }
+.nav-logo .hero-icon { width: 28px; border-radius: 6px; filter: none; }
+.nav-logo .hero-name { font-size: 1.805rem; padding-top: 0; line-height: 1; position: relative; top: 0.13em; }
+.nav-links {
+  display: flex; gap: clamp(1.5rem, 3vw, 2.5rem);
+  list-style: none; margin: 0 auto;
+}
+.nav-links a {
+  /* Was set in the handwritten script, uppercase, heavily tracked-out.
+     That combination fights itself: all-caps + wide tracking is a technique
+     for geometric type, and it strips a script font of the one thing that
+     read as "handmade" (its natural, un-tracked rhythm). Functional nav
+     labels need to scan fast, too - a plain sans does both jobs better and
+     leaves the handwriting for places where it can actually read as a hand. */
+  font-family: var(--sans); font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: rgb(from var(--paper) r g b / .92); text-decoration: none;
+  transition: color .3s var(--ease); white-space: nowrap;
+  padding: .25rem 0; min-height: 44px; display: flex; align-items: center;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: 12px; left: 0; right: 0;
+  height: 1.5px; background: var(--gold);
+  transform: scaleX(0); transform-origin: center;
+  transition: transform .3s var(--ease);
+}
+.nav-links a:hover { color: var(--gold); letter-spacing: .32em; }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-links a[aria-current] { color: #fff; }
+.nav-links a[aria-current]::after { transform: scaleX(1); background: #fff; opacity: .4; }
+.nav-platforms { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
+.nav-platform {
+  display: flex; align-items: center; opacity: .55;
+  transition: opacity .3s var(--ease), transform .3s var(--ease); text-decoration: none;
+}
+.nav-platform:hover { opacity: .9; transform: scale(1.15); }
+.nav-platform img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; }
+.nav-toggle {
+  display: none; background: rgba(255,255,255,.06);
+  border: 1px solid rgb(from var(--paper) r g b / .2); cursor: pointer;
+  position: relative;
+  width: 36px; height: 36px; padding: 0; margin-left: auto;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
+  border-radius: 10px;
+}
+.nav-toggle:hover { background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); }
+.nav-toggle[aria-expanded=true] { border-color: var(--gold); background: rgb(from var(--gold) r g b / .08); }
+/* Hamburger that morphs into an X - three bars rotate/fade into place
+   instead of swapping a text label, so the icon itself communicates
+   open/close state at a glance. */
+.nav-toggle-bar {
+  position: absolute; left: 50%; top: 50%;
+  width: 16px; height: 2px;
+  background: rgb(from var(--paper) r g b / .85);
+  border-radius: 2px;
+  transition: transform .3s var(--ease), opacity .2s var(--ease), background .3s var(--ease);
+}
+.nav-toggle-bar:nth-child(1) { transform: translate(-50%, -50%) translateY(-5px); }
+.nav-toggle-bar:nth-child(2) { transform: translate(-50%, -50%); }
+.nav-toggle-bar:nth-child(3) { transform: translate(-50%, -50%) translateY(5px); }
+.nav-toggle[aria-expanded=true] .nav-toggle-bar:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); background: var(--gold); }
+.nav-toggle[aria-expanded=true] .nav-toggle-bar:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded=true] .nav-toggle-bar:nth-child(3) { transform: translate(-50%, -50%) rotate(-45deg); background: var(--gold); }
+/* Mobile drawer */
+.nav-drawer {
+  position: fixed;
+  top: 56px; left: 0; right: 0; z-index: 199;
+  background: rgb(from var(--paper) r g b / .92);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--hairline);
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  padding: .5rem clamp(1.25rem,5vw,3rem) .75rem;
+  opacity: 0; transform: translateY(-8px);
+  transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.nav-drawer.open {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+  visibility: visible;
+}
+.nav-drawer a {
+  display: block; font-family: var(--sans); font-style: normal; font-size: 1.1rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: rgb(from var(--ink) r g b / .8); text-decoration: none;
+  padding: .85rem 0; border-bottom: 1px solid var(--hairline);
+  transition: color .25s var(--ease);
+}
+.nav-drawer a:last-child { border-bottom: none; }
+/* Drawer is mobile-only: if it was left open and the viewport grows past the
+   breakpoint, kill it entirely so a stale .open can't show it on desktop. */
+@media (min-width: 901px) {
+  .nav-drawer, .nav-drawer.open { display: none; }
+}
+.nav-drawer a:hover { color: var(--rust); padding-left: .5rem; letter-spacing: .1em; }
+.drawer-platforms {
+  display: none; justify-content: center; gap: 1.25rem;
+  padding: .85rem 0; border-bottom: 1px solid var(--hairline);
+}
+.drawer-platforms a {
+  display: flex; align-items: center; border-bottom: none !important;
+  padding: 0 !important; opacity: .45;
+  transition: opacity .3s var(--ease), transform .3s var(--ease-spring);
+}
+.drawer-platforms a:hover { opacity: 1; padding-left: 0 !important; transform: scale(1.15); }
+.drawer-platforms img { width: 30px; height: 30px; object-fit: contain; border-radius: 50%; }
+
+/* ════════════════════════════════════════════
+   HERO SPLIT - photo left, release right
+   ════════════════════════════════════════════ */
+.hero-brand {
+  display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
+  gap: 1.25rem;
+  transition: opacity .3s var(--ease);
+}
+.hero-icon {
+  width: clamp(90px,15vw,165px); height: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+  align-self: center;
+}
+
+.hero-split {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  /* grows instead of clipping on short viewports. Pinned to the photo's
+     native ratio (1260/855) on wide-aspect monitors, so cover always crops
+     the sides and never flips to cropping top/bottom. */
+  min-height: max(100dvh, calc(100vw * .4847));
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  background: var(--ink); /* backdrop for the stacked layouts' narrower band */
+}
+.hero-split-left {
+  position: relative;
+  background: var(--ink);
+  max-height: max(calc(100dvh - var(--nav-pad, 0px)), calc(100vw * .4847 - var(--nav-pad, 0px)));
+  overflow: hidden;
+  container-type: inline-size;
+}
+.hero-split-photo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 8% 18%; /* keeps the face in frame - see min-width:901px rule below */
+}
+.hero-split-left::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.2) 100%);
+  pointer-events: none;
+}
+.hero-split-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: 0 clamp(1.5rem,4vw,3rem) clamp(2rem,5vw,3.5rem);
+  overflow: hidden;
+}
+.hero-name {
+  position: relative;
+  font-family: 'Logo', var(--display);
+  font-size: clamp(4rem, 9vw, 9rem);
+  line-height: 1; color: var(--gold);
+  font-weight: normal;
+  letter-spacing: -.02em;
+  margin: 0; padding-top: .15em;
+  text-shadow: 0 2px 20px rgba(0,0,0,.3), 0 0 60px rgb(from var(--gold) r g b / .15);
+}
+.hero-split-right {
+  container-type: inline-size;
+  position: relative;
+  display: flex; flex-direction: column;
+  /* 'safe' - if content can't fit even fully shrunk, overflow downward
+     (scrollable) instead of bleeding up over the photo */
+  justify-content: safe center; align-items: center;
+  text-align: center;
+  padding: clamp(3rem,7vw,6rem) clamp(2rem,5vw,4rem) 132px;
+  gap: 1.25rem;
+  /* A single warm spotlight falling on the record - the one lit object on
+     a dark stage pulls the eye harder than any color-block panel could. */
+  /* same deep teal as the nav bar, with the warm spotlight on the record */
+  background:
+    radial-gradient(ellipse 95% 60% at 50% 36%, rgb(from var(--gold) r g b / .28), transparent 70%),
+    var(--ink);
+  border-left: 1px solid rgb(from var(--ink) r g b / .06);
+  overflow: hidden;
+  min-height: 0;
+  /* Definite height budget so the art's flex-shrink engages: viewport minus
+     nav pad and photo band (vars published per layout). The 320px floor is
+     the honest minimum for the text stack - below it the section scrolls. */
+  max-height: max(var(--panel-floor, 470px), calc(100dvh - var(--nav-pad, 0px) - var(--band, 0px)));
+}
+.hero-split-right > * { position: relative; z-index: 1; }
+/* On the gold panel the translucent-teal buttons went olive; cream chips
+   read as printed tickets and keep the icons crisp. */
+.hero-split-right .f-btn {
+  background: rgb(from var(--cream) r g b / .8);
+  border-color: rgb(from var(--ink) r g b / .18);
+}
+/* Hover fill comes from .f-btn's shared ::after overlay (see above) -
+   no per-context override needed, it works over any base background. */
+/* Scroll cue - fixed to the viewport so it rides along every section; JS
+   retargets it to the next section and hides it on the last one. Glass disc
+   keeps the gold chevron readable on any background it passes over. */
+.hero-scroll {
+  position: fixed; bottom: .9rem; left: 50%;
+  transform: translateX(-50%);
+  z-index: 240;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  /* gold disc + ink chevron, same as every play disc on the site */
+  color: var(--ink); opacity: .5;
+  background: var(--gold);
+  border: 1px solid rgb(from var(--gold) r g b / .5);
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4), 0 1px 4px rgba(0,0,0,.15);
+  transition: opacity .3s var(--ease), background .3s var(--ease);
+  animation: heroScrollBob 2.4s var(--ease) infinite;
+}
+.hero-scroll:hover { opacity: 1; background: var(--gold-hover); }
+.hero-scroll.hidden { opacity: 0; pointer-events: none; }
+/* While passing over featured content (only art/photo can happen now - the
+   button zone is permanently reserved): stay present as a quiet ghost,
+   never fully gone; hovering it brings it back to full strength. */
+.hero-scroll.soft {
+  opacity: .3;
+  animation: none;
+  transform: translateX(-50%) scale(.85);
+}
+.hero-scroll.soft:hover { opacity: 1; }
+/* keep clear of the player bar when it's docked */
+body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
+@media (max-width: 900px) {
+  body.player-active .hero-scroll { bottom: calc(.9rem + 78px); }
+}
+@keyframes heroScrollBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+@media (prefers-reduced-motion: reduce) { .hero-scroll { animation: none; } }
+/* Panel's bottom clearance only reserves room for the cue at rest, not its
+   docked-player-lifted position - the JS dodge system (.soft class) handles
+   that overlap instead, so stacked layouts aren't stuck with a dead gap. */
+.confetti-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+  will-change: transform; transform: translateZ(0);
+}
+
+/* ════════════════════════════════════════════
+   BUTTONS - glass
+   ════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--sans); font-size: .58rem;
+  letter-spacing: .22em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer;
+  height: 44px; padding: 0 1.6rem;
+  border-radius: 12px;
+  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
+}
+.btn:active { transform: scale(.97); }
+.btn-fill {
+  background: var(--ink);
+  color: var(--paper); border: 1px solid var(--ink);
+  box-shadow: 0 2px 8px rgb(from var(--ink) r g b / .15);
+}
+.btn-fill:hover {
+  background: var(--ink-hover);
+  border-color: var(--ink-hover);
+  box-shadow: 0 4px 16px rgb(from var(--ink) r g b / .25);
+  transform: translateY(-2px) scale(1.01);
+}
+.btn-epk {
+  font-size: .65rem; letter-spacing: .26em;
+  height: 50px; padding: 0 2.4rem;
+  font-weight: 600;
+}
+
+/* ════════════════════════════════════════════
+   SECTION SHARED
+   ════════════════════════════════════════════ */
+.section { padding: clamp(5rem,10vw,8rem) clamp(3rem,7vw,6rem); }
+.section-inner { max-width: 1060px; margin: 0 auto; }
+.section-h {
+  /* Matches the nav's toolbar-button font (.nav-links a) rather than the
+     old italic-serif "playbill" voice, for one consistent typeface across
+     nav chrome and section headlines. */
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: clamp(1.9rem,4.5vw,3.2rem); color: var(--ink);
+  font-weight: 700; line-height: 1.1;
+  margin-bottom: clamp(2rem,4vw,3rem);
+  letter-spacing: -.01em;
+  text-wrap: balance;
+  position: relative; display: inline-block; padding-bottom: .4rem;
+}
+.section-h::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 2rem; height: 2.5px; border-radius: 4px;
+  background: var(--gold);
+}
+.section-h--tight { margin-bottom: 0; }
+.btn--start { align-self: flex-start; }
+.featured-art-rounded { border-radius: var(--radius); box-shadow: 0 10px 36px rgba(8,76,97,.22), 0 0 60px rgb(from var(--gold) r g b / .3); transition: box-shadow .4s var(--ease), transform .4s var(--ease); }
+.featured-art-rounded:hover { box-shadow: 0 14px 48px rgba(8,76,97,.3), 0 0 90px rgb(from var(--gold) r g b / .45); }
+
+.featured-art-wrap { position: relative; flex-shrink: 0; }
+.featured-art-wrap:not(.featured-art-hero) { width: clamp(200px,28vw,360px); }
+/* The hero art is the flexible piece of the panel: preferred size below,
+   but shrinkable all the way down, so badge/title/buttons always fit inside
+   one viewport at any aspect ratio - the art absorbs the deficit. */
+.featured-art-hero {
+  /* grows to fill slack panel height instead of leaving dead space below
+     the buttons, but never past a sensible cap; shrinks below that only
+     when the panel is genuinely tight */
+  flex: 1 1 min(360px, 45dvh, 80cqw);
+  max-height: min(400px, 45dvh, 80cqw);
+  /* the cover is the hero of the panel - never smaller than this;
+     tight viewports scroll instead */
+  min-height: 140px;
+  aspect-ratio: 1;
+  width: auto; max-width: 100%;
+  align-self: center;
+}
+.featured-art {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.featured-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .58rem; letter-spacing: .22em; text-transform: uppercase;
+  font-weight: 700;
+  color: #fff; background: var(--red);
+  border: 1px solid var(--red);
+  padding: .4rem 1.1rem;
+  border-radius: 20px;
+  margin-bottom: -.75rem;
+  box-shadow: 0 2px 12px rgb(from var(--red) r g b / .4);
+}
+.featured-badge { animation: flashBadge 2s ease-in-out 5; }
+/* Distributing Soon state: gold announcement voice (same as the card
+   labels), instead of the red "Latest Release" pop. */
+.featured-badge.soon {
+  color: var(--ink);
+  background: var(--gold); border-color: var(--gold);
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
+}
+@media (prefers-reduced-motion: reduce) { .featured-badge { animation: none; } }
+/* Overline labels get the gritty display face instead of tracked-out sans -
+   a small, cheap signal of "handmade object" every time the eye passes over
+   one, without spending a script font (which needs room to breathe) on a
+   two-word label. */
+.featured-kicker { font-family: var(--sans); font-size: 1rem; letter-spacing: .16em; text-transform: uppercase; color: rgb(from var(--gold) r g b / .9); margin-bottom: -.75rem; margin-top: .25rem; }
+/* The -.75rem pull-ups assume the desktop panel's 1.25rem gap. In any
+   condensed layout (narrow or short) the gap shrinks below that, so negative
+   margins would stack content into an overlap - zero them out there. */
+@media (max-width: 900px), (max-height: 500px) {
+  .featured-badge, .featured-kicker { margin-bottom: 0; }
+  .featured-kicker { margin-top: 0; }
+}
+.featured-title {
+  font-family: var(--grit);
+  font-style: normal;
+  font-size: min(8cqi, 2.5rem); color: #fff;
+  font-weight: 600; line-height: 1.1;
+  letter-spacing: -.01em; white-space: nowrap;
+  text-shadow: 0 1px 8px rgba(0,0,0,.25);
+}
+.featured-btns {
+  display: flex; gap: .5rem;
+  align-self: center;
+  margin-top: .25rem;
+}
+.f-btn {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--sans); font-size: .52rem; letter-spacing: .14em; text-transform: uppercase;
+  text-decoration: none; color: var(--ink);
+  padding: 0 1.1rem; height: 40px; white-space: nowrap;
+  border: 1px solid rgb(from var(--ink) r g b / .15);
+  border-radius: 12px;
+  background: rgb(from var(--ink) r g b / .1);
+  transition: transform .3s var(--ease), opacity .3s var(--ease);
+}
+/* Ink-bleed: a blot of ink spreads from center on hover instead of a flat
+   color swap - reads as "wet ink soaking into paper" rather than a UI
+   state change, reinforcing the handmade-notebook material metaphor. */
+.f-btn::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
+  opacity: 0; transform: scale(.3);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
+}
+.f-btn:hover::before { opacity: 1; transform: scale(1.6); }
+/* Compositor-only hover fill: the gold background+shadow live on a
+   second pseudo-element that only ever animates opacity (GPU-composited,
+   no per-frame repaint) instead of transitioning background-color/
+   border-color/box-shadow directly. z-index:-1 sandwiches it between
+   the button's own (now-static) background and its label/icon, which
+   are normal-flow content and always paint above negative-z-index
+   siblings within a positioned ancestor. */
+.f-btn::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background: var(--gold);
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+  pointer-events: none;
+}
+.f-btn:hover::after { opacity: 1; }
+/* Static label pill (e.g. "Distributing Soon") - same shape as the streaming
+   buttons but inert: pointer-events off so no hover state can fire.
+   Gold fill so it reads as an announcement, not a dead button. */
+.f-btn.f-btn--label, .rel-btn.rel-btn--label {
+  pointer-events: none; cursor: default;
+  background: var(--gold); border-color: var(--gold);
+  color: var(--ink); font-weight: 700; letter-spacing: .16em;
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .35);
+}
+.f-btn.f-btn--label::before, .rel-btn.rel-btn--label::before { display: none; }
+/* Card-row "Distributing Soon" reads as the card's one announcement, not
+   a button among buttons: bigger type, and the row's padding pulls in so
+   the gold pill runs nearly edge-to-edge. */
+.rel-btn.rel-btn--label { font-size: .66rem; height: 44px; }
+.rel-btns:has(.rel-btn--label) { padding: .35rem; }
+.f-btn:active { transform: scale(.96); }
+.f-btn img { width: 17px; height: 17px; object-fit: contain; border-radius: 50%; transition: transform .2s var(--ease); }
+.f-btn:hover img { transform: scale(1.1); }
+.f-btn:hover { transform: translateY(-1px); }
+.f-btn.dl { color: var(--ink); background: var(--gold); border-color: var(--gold); font-weight: 600; box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .3); }
+/* Already gold at rest, so the shared ::after overlay (also gold)
+   would be invisible here - the lift (inherited from .f-btn:hover)
+   plus the ink-bleed glow (::before, inherited too) still give real
+   hover feedback without animating background/box-shadow directly. */
+
+/* ════════════════════════════════════════════
+   RELEASES - glass grid
+   ════════════════════════════════════════════ */
+.releases-section { background: transparent; overflow: hidden; }
+.releases-section .section-inner { container-type: inline-size; }
+.releases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%,280px),1fr));
+  gap: clamp(1rem,2.5vw,1.75rem);
+  align-items: start;
+}
+.rel-card {
+  container-type: inline-size;
+  /* Raised a half-step above stage black, like gear cases at the lip of the
+     stage; hover brings the lamplight over rather than lifting a shadow. */
+  background: var(--cream);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  display: flex; flex-direction: column;
+  transition: background .35s var(--ease), border-color .35s var(--ease), transform .4s var(--ease-spring), box-shadow .35s var(--ease); cursor: default;
+  box-shadow: 0 1px 4px rgba(8,76,97,.08);
+}
+.rel-card:hover {
+  background: var(--cream);
+  border-color: rgb(from var(--gold) r g b / .6);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgb(from var(--gold) r g b / .2);
+}
+.rel-card.now-playing {
+  position: relative;
+  border-color: var(--sage);
+  box-shadow: 0 0 0 2px rgb(from var(--sage) r g b / .3), 0 0 20px rgb(from var(--sage) r g b / .15), 0 4px 16px rgb(from var(--ink) r g b / .08);
+}
+.rel-card.now-playing::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  box-shadow: 0 0 0 1px rgb(from var(--sage) r g b / .35), 0 0 30px rgb(from var(--sage) r g b / .25);
+  opacity: 0; animation: cardGlowFade 2.5s ease-in-out infinite;
+  will-change: opacity; pointer-events: none;
+}
+@keyframes cardGlowFade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .rel-card.now-playing::after { animation: none; } }
+.rel-art-wrap { position: relative; width: 100%; padding-top: 100%; cursor: pointer; overflow: hidden; border-radius: var(--radius) var(--radius) 0 0; }
+@keyframes flashBadge {
+  0%,100% { opacity: 1; }
+  /* .55 dipped contrast below 4.5:1 against a dark backdrop mid-flash -
+     shallower dip keeps the pulse visible without ever failing WCAG
+     AA during the animation. */
+  50%     { opacity: .85; }
+}
+.rel-art {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: grayscale(12%) contrast(1.08);
+  transition: filter .5s var(--ease), transform .6s var(--ease);
+}
+.rel-card:hover .rel-art { filter: grayscale(0%) contrast(1.04); transform: scale(1.04); }
+.rel-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; align-items: flex-end;
+  padding: 1.25rem;
+  background: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.4) 35%, transparent 65%);
+  pointer-events: none;
+}
+.rel-overlay-inner { width: 100%; min-width: 0; overflow: hidden; }
+.rel-cat { font-family: var(--sans); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: rgb(from var(--gold) calc(r + 30) calc(g + 30) calc(b + 20)); margin-bottom: .3rem; font-weight: 600; }
+.rel-name { font-family: var(--grit); font-style: normal; font-size: min(6.3cqi, 1.55rem); color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; letter-spacing: -.01em; }
+.rel-btns {
+  display: flex; gap: .5rem;
+  padding: .75rem .85rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  overflow: hidden;
+}
+.rel-btn {
+  position: relative; overflow: hidden;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: .35rem;
+  font-family: var(--sans); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase;
+  text-decoration: none;
+  height: 38px;
+  white-space: nowrap;
+  font-weight: 500;
+  border: none; border-radius: 10px;
+  color: rgb(from var(--ink) r g b / .7);
+  background: rgb(from var(--ink) r g b / .03);
+  padding: 0 .5rem;
+  transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease);
+}
+.rel-btn::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
+  opacity: 0; transform: scale(.3);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
+}
+.rel-btn:hover::before { opacity: 1; transform: scale(1.6); }
+/* Same compositor-only hover-fill technique as .f-btn - see its
+   comment above for why (opacity-only instead of animating
+   background/box-shadow directly). */
+.rel-btn::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background: var(--gold);
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
+  opacity: 0;
+  transition: opacity .25s var(--ease);
+  pointer-events: none;
+}
+.rel-btn:hover::after { opacity: 1; }
+.rel-btn:active { transform: scale(.96); }
+.rel-btn img { width: 17px; height: 17px; object-fit: contain; border-radius: 50%; transition: transform .2s var(--ease); }
+.rel-btn:hover img { transform: scale(1.1); }
+.rel-btn:hover { color: var(--ink); transform: translateY(-1px); }
+.rel-btn.dl {
+  color: var(--ink); font-weight: 600;
+  background: var(--gold);
+  border-radius: 8px;
+  border: 1px solid var(--gold);
+  box-shadow: 0 1px 6px rgb(from var(--gold) r g b / .2);
+}
+/* Already gold at rest - see .f-btn.dl's comment above for why there's
+   no hover override here (relies on inherited lift + ink-bleed glow
+   instead of animating background/box-shadow directly). */
+
+
+.disc-quote {
+  margin-top: clamp(2.5rem,5vw,4rem);
+  /* No hairline rule here - a bare horizontal line on the ruled page
+     reads as one more (misaligned) notebook line. */
+  padding: 1.5rem 0 0;
+  font-family: var(--body);
+  /* Sized off the container's inline width (not the viewport) so it fills
+     whatever room the section actually has, and pinned to nowrap so each
+     hand-set line break is a real line break, never a reflow point. */
+  font-size: clamp(.57rem, 3.28cqi, 4.15rem);
+  font-style: italic; color: rgb(from var(--ink) r g b / .78);
+  line-height: 1.85;
+  white-space: nowrap;
+  text-align: center;
+  margin-left: auto; margin-right: auto;
+}
+/* Below any real device width, even the font-size floor above can't
+   guarantee each hand-set line fits - let those lines soft-wrap instead
+   of overflowing (the <br>s still force their intended breaks). */
+@media (max-width: 300px) { .disc-quote { white-space: normal; } }
+.disc-quote cite {
+  display: block; margin-top: .75rem;
+  font-family: var(--sans);
+  font-style: normal; font-size: clamp(.65rem, 1.2vw, .76rem);
+  color: rgb(from var(--ink) r g b / .78); letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* ════════════════════════════════════════════
+   VIDEOS - glass cards
+   ════════════════════════════════════════════ */
+.videos-section {
+  /* One continuous ruled page. */
+  background: transparent;
+}
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));
+  gap: clamp(1rem,2.5vw,1.75rem);
+}
+/* The card's visible shape/chrome lives on the outer wrap now, not on
+   the button itself - .vid-card (role=button) only wraps the
+   thumbnail; .vid-yt (a real link) sits beside it as a sibling so no
+   interactive control is nested inside another one. */
+.vid-card-wrap {
+  background: var(--cream);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius); overflow: hidden;
+  transition: background .35s var(--ease), border-color .35s var(--ease), transform .4s var(--ease-spring), box-shadow .35s var(--ease);
+  box-shadow: 0 1px 4px rgba(8,76,97,.08);
+}
+.vid-card-wrap:hover {
+  background: var(--cream);
+  border-color: rgb(from var(--gold) r g b / .6);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgb(from var(--ink) r g b / .1), 0 2px 8px rgb(from var(--ink) r g b / .06);
+}
+.vid-card { cursor: pointer; }
+.vid-card:focus-visible { box-shadow: var(--focus); outline: none; }
+.vid-thumb {
+  position: relative; width: 100%; padding-top: 56.25%;
+  background: var(--ink); overflow: hidden;
+}
+.vid-thumb img, .vid-thumb video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; pointer-events: none;
+  display: block; filter: contrast(1.08);
+  transition: transform .6s var(--ease);
+}
+
+.vid-play-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.35); transition: background .25s var(--ease);
+}
+.vid-card-wrap:hover .vid-play-overlay { background: rgba(0,0,0,.15); }
+.vid-card-wrap:hover .vid-thumb img, .vid-card-wrap:hover .vid-thumb video { transform: scale(1.05); }
+.vid-play-circle {
+  width: 50px; height: 50px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.7);
+  background: rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease), opacity .35s var(--ease), box-shadow .35s var(--ease);
+}
+.vid-card-wrap:hover:not(:has(.vid-yt:hover)) .vid-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.vid-play-circle svg { color: #fff; margin-left: 3px; transition: color .35s var(--ease); }
+.vid-card-wrap:hover:not(:has(.vid-yt:hover)) .vid-play-circle svg { color: var(--ink); }
+.vid-info {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; padding: .75rem 1rem;
+  border-top: 1px solid var(--hairline);
+}
+.vid-title { font-family: var(--grit); font-style: normal; font-size: 1.15rem; font-weight: 600; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.01em; }
+.vid-yt {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-family: var(--sans); font-size: .44rem; letter-spacing: .12em; text-transform: uppercase;
+  text-decoration: none; color: rgb(from var(--ink) r g b / .65);
+  border: 1px solid rgb(from var(--ink) r g b / .08); padding: .25rem .65rem;
+  border-radius: 8px;
+  background: rgb(from var(--ink) r g b / .02);
+  transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease); flex-shrink: 0;
+}
+/* Same ink-bleed hover as .f-btn/.rel-btn, for one consistent "button"
+   highlight language across every platform/link chip on the site. */
+.vid-yt::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
+  opacity: 0; transform: scale(.3);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
+}
+.vid-yt:hover::before { opacity: 1; transform: scale(1.6); }
+/* Same compositor-only hover-fill technique as .f-btn/.rel-btn. */
+.vid-yt::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background: var(--gold);
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
+  opacity: 0;
+  transition: opacity .25s var(--ease);
+  pointer-events: none;
+}
+.vid-yt:hover::after { opacity: 1; }
+.vid-yt:active { transform: scale(.96); }
+.vid-yt img { width: 16px; height: 16px; object-fit: contain; border-radius: 50%; transition: transform .2s var(--ease); }
+.vid-yt:hover img { transform: scale(1.1); }
+.vid-yt:hover { color: var(--ink); transform: translateY(-1px); }
+
+/* Lightbox - glass overlay */
+.vid-lightbox {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.92);
+  /* behind a .92 black fill a 16px blur is indistinguishable from 30px,
+     at roughly half the per-frame filter cost while open */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; align-items: center;
+  /* 'safe' - a 16:9 video sized off width can be taller than a short
+     viewport; unsafe centering would clip the top bar (incl. close
+     button) off-screen instead of scrolling to it. */
+  justify-content: safe center;
+  overflow-y: auto;
+  padding: 1rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s var(--ease);
+}
+.vid-lightbox.open { opacity: 1; pointer-events: auto; }
+.lb-inner { width: 100%; max-width: 880px; display: flex; flex-direction: column; gap: .75rem; }
+.lb-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.lb-title { font-size: .88rem; color: #fff; min-width: 0; flex: 1; }
+.lb-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+.lb-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.8); cursor: pointer;
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 0; transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
+  opacity: .7;
+}
+.lb-arrow:hover { background: rgba(0,0,0,.65); color: #fff; opacity: 1; border-color: rgba(255,255,255,.15); transform: translateY(-50%) scale(1.08); }
+.lb-arrow:disabled { opacity: 0; cursor: not-allowed; pointer-events: none; }
+.lb-arrow-prev { left: 12px; }
+.lb-arrow-next { right: 12px; }
+.lb-dots {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-top: .6rem;
+}
+.lb-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.2); border: none; cursor: pointer;
+  padding: 0; transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
+}
+.lb-dot.active { background: #fff; transform: scale(1.5); box-shadow: 0 0 6px rgba(255,255,255,.3); }
+.lb-dot:hover { background: rgba(255,255,255,.5); }
+/* On the lightbox's near-black backdrop the chip's default ink text is
+   unreadable - flip it white (hover still goes ink over the gold fill). */
+.vid-lightbox .vid-yt { color: rgba(255,255,255,.9); border-color: rgba(255,255,255,.25); }
+/* ...and back to black over the gold hover fill (this rule ties the white
+   one above on specificity, so hover must be restated after it to win). */
+.vid-lightbox .vid-yt:hover { color: #000; }
+.lb-close {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.5);
+  cursor: pointer; width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
+}
+.lb-close:hover { color: #fff; border-color: var(--gold); background: rgb(from var(--gold) r g b / .12); transform: scale(1.08) rotate(90deg); }
+.lb-video-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.4); }
+.lb-video-wrap video:fullscreen, .lb-video-wrap video:-webkit-full-screen { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999; border-radius: 0; }
+.lb-video-wrap video { position: absolute; inset: 0; width: 100%; height: 100%; outline: none; }
+
+/* ════════════════════════════════════════════
+   CONTACT - glass panel
+   ════════════════════════════════════════════ */
+.contact-section {
+  /* One continuous ruled page. */
+  background: transparent;
+  position: relative;
+}
+.contact-section .section-inner { margin: 0; }
+/* Note-card treatment: the plain block left a huge empty right half and read
+   as an afterthought. A cream card matches the release/video cards, so the
+   contact moment feels like part of the same set of printed objects. */
+.contact-inner {
+  max-width: 560px;
+  /* Fully opaque - translucent cream let the page's ruled lines ghost
+     through the card surface. */
+  background: var(--cream);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  box-shadow: 0 1px 4px rgba(8,76,97,.08);
+}
+.contact-intro { font-size: .84rem; color: var(--ink); line-height: 1.75; margin-bottom: 1.25rem; max-width: 52ch; }
+/* Idle: same dark glass as the release cards' play circle; hover: gold -
+   the site-wide "this is the action" flip. */
+.contact-email-link {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-size: .72rem; letter-spacing: .08em; font-weight: 600;
+  color: #fff; text-decoration: none;
+  padding: .7rem 1.2rem;
+  border-radius: 10px;
+  background: rgba(0,0,0,.65);
+  border: 1.5px solid rgba(255,255,255,.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 12px rgba(0,0,0,.2);
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
+}
+.contact-email-link:hover, .contact-email-link:focus-visible {
+  background: var(--gold); border-color: var(--gold); color: var(--ink);
+  box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45);
+  transform: translateY(-1px);
+}
+.form { display: flex; flex-direction: column; gap: 1.25rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.form-group { display: flex; flex-direction: column; gap: .4rem; }
+.form-label { font-size: .52rem; letter-spacing: .24em; text-transform: uppercase; color: rgb(from var(--ink) r g b / .65); font-weight: 600; transition: color .25s var(--ease); }
+.form-group:focus-within .form-label { color: var(--ink); }
+.form-input, .form-textarea {
+  background: rgb(from var(--paper) r g b / .55); border: 1px solid rgb(from var(--ink) r g b / .08);
+  color: var(--ink); font-family: var(--sans); font-size: .88rem;
+  padding: .8rem 1rem; width: 100%; outline: none;
+  min-height: 48px; resize: vertical;
+  border-radius: 12px;
+  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease), transform .2s var(--ease);
+}
+.form-input:focus, .form-textarea:focus {
+  border-color: rgb(from var(--ink) r g b / .35);
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 0 0 4px rgb(from var(--ink) r g b / .06), 0 2px 12px rgb(from var(--ink) r g b / .06);
+  transform: translateY(-1px);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: rgb(from var(--ink) r g b / .4); }
+.form-hint { font-weight: 400; color: rgb(from var(--ink) r g b / .65); }
+.form-note { font-size: .7rem; color: rgb(from var(--ink) r g b / .55); font-weight: 400; font-style: italic; margin-top: -.25rem; }
+.form-error { font-size: .5rem; letter-spacing: .06em; color: var(--rust); display: none; }
+.form-group.err .form-input, .form-group.err .form-textarea { border-color: var(--rust); }
+.form-group.err .form-error { display: block; }
+#form-ok { font-size: .72rem; color: var(--sage); display: none; margin-top: .25rem; font-weight: 500; animation: fadeSlideIn .4s var(--ease); }
+#form-err { font-size: .72rem; color: var(--rust); display: none; margin-top: .25rem; font-weight: 500; animation: fadeSlideIn .4s var(--ease); }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.form-subscribe { display: flex; align-items: center; gap: .6rem; margin-top: .25rem; }
+.form-subscribe input[type="checkbox"] { accent-color: var(--ink); width: 16px; height: 16px; cursor: pointer; }
+.form-subscribe label { font-size: .7rem; color: rgb(from var(--ink) r g b / .8); cursor: pointer; }
+
+/* ════════════════════════════════════════════
+   BIO
+   ════════════════════════════════════════════ */
+.bio-section {
+  padding: 0;
+  overflow: hidden;
+  /* Faint echo of the hero's warm spotlight. The ruled notebook lines
+     come from the body background, shared by the whole page. */
+  background: radial-gradient(ellipse 70% 55% at 50% 42%, rgb(from var(--gold) r g b / .14), transparent 70%);
+}
+.bio-section-header {
+  position: relative; z-index: 1;
+  padding: clamp(2rem, 4vw, 3rem) clamp(3rem, 7vw, 6rem) 0;
+}
+.bio-section-header .section-h { margin-bottom: 0; }
+.bio-body {
+  position: relative; z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 4rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5.5rem);
+  text-align: left;
+}
+/* Split card in the site's shared object language (contact card, journal
+   sheet, release cards): cream sheet, hairline, one shadow. Text panel
+   left, portrait bleeding to the card's right edge. */
+.bio-card {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  align-items: center;
+  background: var(--cream);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(8,76,97,.08);
+}
+/* Text panel: name + copy as one identity block, vertically centered
+   against the mosaic. */
+.bio-card-text {
+  padding: clamp(2rem, 4.5vw, 3.5rem);
+  align-self: stretch;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  /* faint lamplight falling across the sheet from the upper left - same
+     warm-spotlight language as the hero panel, one shade above invisible */
+  background: radial-gradient(ellipse 85% 70% at 18% 15%, rgb(from var(--gold) r g b / .08), transparent 70%);
+}
+/* Photo mosaic fills the media panel edge-to-edge: the portrait full
+   width on top (natural square, never cropped), the two childhood shots
+   at half-panel width beneath - big enough to actually read. The 2px
+   joints are the same treatment as the press-kit photo strip. */
+.bio-card-media {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  align-content: start;
+  /* Hairline seam where the two panels meet - same line the video cards
+     draw between thumbnail and title row. */
+  border-left: 1px solid var(--hairline);
+}
+.bio-card-media img {
+  width: 100%; height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+.bio-media-main {
+  grid-column: 1 / -1;
+  /* cover, not fill - fill distorts whenever the panel isn't a perfect
+     square (stretched face at most card widths) */
+  object-fit: cover;
+  object-position: center 25%;
+}
+/* Childhood shots in the press-kit strip's archive treatment: grayscale
+   at rest (reads as memory, and keeps their snapshot colors from fighting
+   the palette), full color on hover. Hover-only paint, same as .epk-photos. */
+.bio-card-media img:not(.bio-media-main) {
+  filter: grayscale(100%);
+  transition: filter .5s var(--ease);
+}
+.bio-card-media img:not(.bio-media-main):hover { filter: grayscale(0%) brightness(1.05); }
+/* the piano shot is underexposed - lift it (was an inline style, moved
+   here so the grayscale treatment above can compose with it) */
+.bio-card-media img:last-child { filter: grayscale(100%) brightness(1.4); }
+.bio-card-media img:last-child:hover { filter: grayscale(0%) brightness(1.45); }
+.bio-name {
+  font-family: 'Logo', var(--display);
+  font-size: clamp(2.6rem, 4.8vw, 4rem);
+  color: var(--ink);
+  line-height: 1.1;
+  font-weight: normal;
+  letter-spacing: .01em;
+  margin-bottom: 1.25rem;
+}
+.bio-text {
+  font-size: clamp(.84rem, 1.1vw, .94rem);
+  color: rgb(from var(--ink) r g b / .55);
+  line-height: 1.3;
+  max-width: 52ch;
+  text-wrap: pretty;
+}
+.bio-desc {
+  /* Same voice as .epk-text (press-kit body copy), scaled up to a real
+     reading size - at .88rem the paragraph disappeared into its column. */
+  font-family: var(--sans);
+  font-size: clamp(.95rem, 1.15vw, 1.05rem);
+  line-height: 1.85;
+  color: #000;
+  max-width: 46ch;
+}
+/* Gold tick under the name - same mark the section headers carry, so the
+   card reads as part of the same editorial system. */
+.bio-name::after {
+  content: ''; display: block;
+  width: 2rem; height: 2.5px; border-radius: 4px;
+  background: var(--gold);
+  margin-top: .6rem;
+}
+/* The "figment" line is an aside, not more bio copy - set it as an
+   epigraph in the journal's pull-quote language (gold rule, italic serif)
+   instead of letting it run on as a second plain paragraph. */
+.bio-tagline {
+  margin-top: 1.75rem;
+  /* handwriting face, so the aside literally reads as a hand's note -
+     the slight tilt sells it as something jotted in the margin, not set */
+  font-family: 'Figment', var(--display), cursive; font-style: normal;
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  color: rgb(from var(--ink) r g b / .72);
+  line-height: 1.4;
+  transform: rotate(-1.4deg);
+  transform-origin: 0 50%;
+}
+
+/* ════════════════════════════════════════════
+   JOURNAL - essays / journal entries, accordion list
+   Editorial newspaper treatment: upright serif headline, kicker,
+   dek, byline rule, drop cap, pull-quote epigraphs.
+   ════════════════════════════════════════════ */
+.journal-section .section-inner { max-width: 720px; }
+/* Entries sit on a solid cream sheet, matching the release/video/contact
+   cards - lifts the text off the ruled page, and keeps the entry
+   dividers from reading as stray notebook lines. */
+.journal-list {
+  display: flex; flex-direction: column;
+  background: var(--cream);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 0 clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 1px 4px rgba(8,76,97,.08);
+}
+.journal-entry { border-bottom: 1px solid var(--hairline); }
+.journal-entry:last-child { border-bottom: none; }
+.journal-entry-head {
+  display: block; width: 100%; text-align: left;
+  background: none; border: none; cursor: pointer;
+  padding: clamp(1.75rem,3.5vw,2.5rem) 0;
+  font: inherit; color: inherit;
+}
+.journal-kicker {
+  display: block;
+  font-family: var(--sans); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--rust); font-weight: 700; margin-bottom: .6rem;
+}
+.journal-title {
+  font-family: var(--display); font-style: normal; font-weight: 700;
+  font-size: clamp(1.5rem,3.4vw,2.15rem); color: var(--ink);
+  line-height: 1.18; letter-spacing: -.01em; margin-bottom: .5rem;
+  transition: color .25s var(--ease);
+}
+.journal-entry-head:hover .journal-title { color: var(--rust); }
+.journal-listen-btn { margin: 0 0 .85rem; }
+.journal-listen-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+.journal-dek {
+  font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.05rem,1.8vw,1.25rem); color: rgb(from var(--ink) r g b / .78);
+  line-height: 1.45; margin-bottom: .85rem; max-width: 56ch;
+}
+.journal-byline {
+  font-family: var(--sans); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+  color: rgb(from var(--ink) r g b / .78); font-weight: 600;
+}
+.journal-byline .journal-dot { margin: 0 .45em; opacity: .6; }
+.journal-readmore {
+  display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.1rem;
+  font-family: var(--sans); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  font-weight: 600; color: var(--rust);
+}
+.journal-chevron { transition: transform .3s var(--ease); flex-shrink: 0; }
+.journal-entry.open .journal-chevron { transform: rotate(180deg); }
+.journal-body { max-height: 0; overflow: hidden; }
+.journal-body-inner {
+  padding: .25rem 0 clamp(2rem,4vw,3rem);
+  font-family: var(--body); font-size: 1.02rem; line-height: 1.85;
+  color: #181818;
+  max-width: 64ch;
+}
+.journal-body-inner p { margin-top: 1.15rem; }
+/* '>' scopes both rules to direct children only, so an epigraph's own
+   <p> (nested inside its <blockquote>) never counts as "first" here,
+   even when the article opens with an epigraph. */
+.journal-body-inner > p:first-of-type { margin-top: 0; }
+/* Drop cap on the article's opening line - classic editorial signal
+   that a piece has begun, not just more list chrome. */
+.journal-body-inner > p:first-of-type::first-letter {
+  font-family: var(--display); font-weight: 700; font-style: normal;
+  font-size: 3.6em; line-height: .78; float: left;
+  padding: .04em .08em 0 0; color: #181818;
+}
+.journal-epigraph {
+  margin: 1.75rem 0; padding-left: 1.25rem;
+  border-left: 3px solid var(--gold);
+}
+.journal-epigraph p {
+  font-family: var(--body); font-style: normal; font-weight: 700;
+  font-size: 1.02rem; line-height: 1.65;
+  color: #181818;
+  margin-top: .5rem;
+}
+.journal-epigraph p:first-child { margin-top: 0; }
+.journal-epigraph cite {
+  font-style: normal; font-weight: 400;
+}
+.journal-source {
+  margin-top: 1.75rem !important; padding-top: 1.25rem;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ════════════════════════════════════════════
+   FOOTER - minimal
+   ════════════════════════════════════════════ */
+/* One compact row: icon · wordmark · copyright. */
+footer {
+  background: var(--ink);
+  padding: 1.1rem clamp(1.5rem,5vw,4rem);
+  display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .9rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.footer-copy {
+  font-family: var(--sans);
+  font-size: .56rem; letter-spacing: .1em;
+  color: rgba(255,255,255,.65);
+  border-left: 1px solid rgba(255,255,255,.15);
+  padding-left: .9rem;
+}
+.footer-logo img {
+  height: 32px; width: auto; opacity: .45;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
+  transition: background .4s var(--ease), color .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease), opacity .4s var(--ease), box-shadow .4s var(--ease);
+}
+.footer-logo:hover img { opacity: .9; box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 40px rgb(from var(--gold) r g b / .1); }
+
+/* ════════════════════════════════════════════
+   AUDIO PLAYER BAR
+   ════════════════════════════════════════════ */
+#player-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 300;
+  background: rgb(from var(--ink) r g b / .97);
+  /* fill is .97 opaque - the blur barely shows through; 16px reads the
+     same as 30px and halves the fixed bar's backdrop cost */
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: 0 -2px 20px rgba(8,76,97,.25);
+  display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+  align-items: center; gap: .5rem;
+  padding: 0 .75rem;
+  height: 64px;
+  user-select: none; -webkit-user-select: none;
+  transform: translateY(calc(100% + 16px));
+  transition: transform .4s var(--ease-spring);
+  font-family: var(--sans);
+  /* Whole bar expands to the fullscreen player on click (controls and
+     seek/volume still win - their handlers stop the expand in JS). */
+  cursor: pointer;
+}
+#player-bar.show { transform: translateY(0); }
+body.player-active { padding-bottom: 68px; }
+@media (max-width: 900px) {
+  #player-bar {
+    bottom: 8px; left: 8px; right: 8px;
+    border-radius: 14px; height: 60px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.06);
+  }
+  body.player-active { padding-bottom: 76px; }
+}
+#np-bar-progress {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  display: flex; align-items: center;
+}
+/* Hidden by default (desktop's thin overlay bar has no room for text) -
+   shown and given real space on mobile below, where the strip becomes
+   a proper row instead of an absolute-positioned overlay. */
+.np-time { display: none; font-size: .58rem; color: rgba(255,255,255,.65); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.np-bar-track {
+  flex: 1; height: 100%; background: rgba(255,255,255,.1);
+  position: relative; cursor: pointer; touch-action: none;
+}
+#np-fill { height: 100%; background: var(--gold); width: 100%; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s linear; will-change: transform; pointer-events: none; }
+/* Seek thumb: a visible grab dot riding the playhead. The element is a
+   full-track-width rail, so translateX(n%) of its own width lands the dot
+   at n% of the track - same transform-only write that drives the fill,
+   no layout/paint. pointer-events:none keeps drags on the track itself
+   (which pointer-captures), the dot is just the visual handle. */
+.seek-thumb {
+  position: absolute; inset: 0;
+  transform: translateX(0);
+  will-change: transform;
+  pointer-events: none;
+}
+.seek-thumb::before {
+  content: ''; position: absolute; top: 50%; left: 0;
+  width: 10px; height: 10px; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+/* match each bar's fill transition so dot and fill move as one */
+#np-bar-track .seek-thumb { transition: transform .3s linear; }
+.fs-bar .seek-thumb { transition: transform .15s linear; }
+.fs-bar .seek-thumb::before { width: 16px; height: 16px; }
+/* While scrubbing (.seeking set on pointerdown, cleared on release):
+   fill + thumb stick to the finger with zero transition lag, and the
+   dot swells like the volume slider's thumb does on hover. */
+.np-bar-track.seeking #np-fill, .fs-bar.seeking .fs-fill,
+.np-bar-track.seeking .seek-thumb, .fs-bar.seeking .seek-thumb { transition: none; }
+.seeking .seek-thumb::before { transform: translate(-50%, -50%) scale(1.3); }
+.np-left {
+  display: flex; align-items: center; gap: .65rem;
+  min-width: 0; cursor: pointer;
+  padding: .5rem 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.np-art {
+  width: 44px; height: 44px; border-radius: 8px;
+  object-fit: cover; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.np-art[src=""] { display: none; }
+.np-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+#np-track {
+  font-size: .8rem; color: #fff; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;
+}
+/* Too long to fit? Slow marquee instead of ellipsis (same as tracklists). */
+#np-track.marquee { text-overflow: clip; }
+#np-track.marquee > span {
+  display: inline-block; padding-right: 3rem;
+  animation: marquee var(--marquee-duration, 8s) linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) { #np-track.marquee > span { animation: none; } }
+#np-album {
+  font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
+  /* gold, matching .fs-album in the fullscreen player */
+  color: rgb(from var(--gold) r g b / .88); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.np-right { display: flex; align-items: center; gap: .25rem; justify-self: end; }
+/* Same look as the fullscreen player's .fs-play, scaled down */
+#np-play {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: none; background: var(--gold);
+  color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgb(from var(--gold) r g b / .35);
+  transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+#np-play:hover { box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
+#np-play:active { transform: scale(.9); }
+#np-play[aria-label="Play"] svg { margin-left: 2px; }
+.np-ctrl {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: transparent;
+  color: rgba(255,255,255,.6); cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.np-ctrl:active { color: #fff; }
+.np-ctrl.active { color: var(--gold); }
+/* Volume - same idea as the video player's native control: icon + slider.
+   Shared by the docked bar and the fullscreen player. */
+.np-vol { display: flex; align-items: center; gap: .15rem; }
+.vol-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 72px; height: 4px; border-radius: 4px;
+  background: linear-gradient(to right, var(--gold) var(--vol, 100%), rgba(255,255,255,.18) var(--vol, 100%));
+  outline: none; cursor: pointer;
+}
+.vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+  transition: transform .15s var(--ease);
+}
+.vol-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.vol-slider::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+.vol-slider:focus-visible { box-shadow: var(--focus); }
+.fs-vol {
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+  width: 100%; max-width: 340px;
+  margin: 1.5rem auto 0;
+}
+/* iPhone-style volume: a wide, thick rounded bar rather than the thin
+   4px line the mini-bar uses - easier to see and to grab. Fullscreen
+   player only; the docked bar stays compact. */
+.fs-vol .vol-slider { height: 10px; border-radius: 10px; }
+.fs-vol .vol-slider::-webkit-slider-thumb { width: 18px; height: 18px; }
+.fs-vol .vol-slider::-moz-range-thumb { width: 18px; height: 18px; }
+.fs-vol .fs-ctrl { min-width: 38px; min-height: 38px; flex-shrink: 0; }
+/* The icon+slider pair reads visually off-center even when the row
+   itself is centered - the icon's own width isn't mirrored by
+   anything on the right, so the slider (the eye-catching gold part)
+   ends up left of true center. A matching right-side spacer balances
+   that out without needing a second icon. */
+.fs-vol .vol-slider { flex: 1; width: auto; }
+.fs-vol::after { content: ''; width: 38px; flex-shrink: 0; }
+/* Phones: stretch toward the edges like iOS's lock-screen volume - a
+   thumb-width bar in the middle of a phone screen reads undersized. */
+@media (max-width: 700px) {
+  .fs-vol { max-width: min(400px, 90%); }
+  .fs-vol .vol-slider { height: 12px; border-radius: 12px; }
+  .fs-vol .vol-slider::-webkit-slider-thumb { width: 22px; height: 22px; }
+  .fs-vol .vol-slider::-moz-range-thumb { width: 22px; height: 22px; }
+}
+.fs-platforms {
+  display: flex; justify-content: center; gap: .6rem;
+  width: 100%;
+  margin: 1.25rem auto 0;
+}
+/* Fixed, equal width for both - "Apple Music" and "Spotify" are
+   different lengths, so content-sized (flex:none with no explicit
+   width) pills came out visibly different sizes. Sized to comfortably
+   fit the longer label, with the shorter one centered inside via
+   justify-content instead of stretching to fill the whole row. */
+.fs-platforms .f-btn { flex: none; width: 148px; justify-content: center; padding: 0 .65rem; }
+/* Same fix as .hero-split-right .f-btn: on a dark photo backdrop, the
+   button's own translucent-teal fill goes muddy - a light cream chip
+   keeps the icon and text legible regardless of what's blurred behind it. */
+.fs-platforms .f-btn { background: rgb(from var(--cream) r g b / .9); border-color: rgb(from var(--ink) r g b / .18); }
+/* Hover fill comes from .f-btn's shared ::after overlay - see its
+   definition above, works over any base background. */
+/* Phones: a single row can't fit track info + play + prev/next/shuffle/
+   volume/close at real touch-target sizes without either shrinking them
+   down or hiding some - instead give the secondary controls their own
+   full-width second row, so every button stays a proper size, spaced
+   out, and nothing needs to be hidden (volume included). */
+@media (max-width: 600px) {
+  #player-bar {
+    height: auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1.4fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "left left left left close"
+      "time time time time time"
+      "prev play next shuf vol";
+    row-gap: .4rem;
+    padding: .65rem .75rem;
+    overflow: hidden;
+  }
+  /* The thin absolute-positioned desktop overlay becomes a real row
+     here, with the time labels it never had room to show. */
+  #player-bar #np-bar-progress {
+    position: static; grid-area: time;
+    height: auto; gap: .4rem;
+  }
+  .np-time { display: block; }
+  #player-bar .np-bar-track { height: 4px; border-radius: 4px; position: relative; }
+  /* A 4px line is precise to grab with a finger - this invisible
+     pseudo-element extends the actual draggable hit area to ~18px
+     tall without changing how thin the visible track looks. */
+  #player-bar .np-bar-track::before { content: ''; position: absolute; inset: -7px 0; }
+  #np-fill { border-radius: 4px; }
+  /* finger-sized dot on the phone layout's real progress row */
+  #player-bar .seek-thumb::before { width: 14px; height: 14px; }
+  /* Two-tone bar: a second background band placed on the grid's own
+     controls row, sized to that row's real rendered height (not a
+     guessed pixel split) so it stays correct however tall the row
+     ends up. Negative margins bleed it through the bar's own padding
+     out to the left/right/bottom edges; overflow:hidden above clips
+     it back to the bar's rounded corners. */
+  #player-bar::before {
+    content: '';
+    grid-row: 3; grid-column: 1 / -1;
+    margin: 0 -.75rem -.65rem;
+    background: rgb(from var(--ink-hover) r g b / .97);
+  }
+  .np-left { grid-area: left; }
+  /* align-self:start (not center) puts it near the top edge instead of
+     mid-height of the whole title row - combined with the grid area's
+     own edge (which sits at the bar's padding, same as the right edge)
+     that keeps it evenly inset from both the top and the right, not
+     just the right. A visible idle box (not just on hover/press) makes
+     it read as a real button at rest, since touch devices never see
+     :hover - and :active gets a real highlight for the same reason. */
+  #player-bar #np-close {
+    grid-area: close; justify-self: end; align-self: start;
+    /* Bar padding is 10.4px top / 12px right - this closes that 1.6px
+       gap so the button reads as truly equidistant from both edges. */
+    margin-top: .1rem;
+    background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22);
+  }
+  #player-bar #np-close:active {
+    background: rgb(from var(--gold) r g b / .3); border-color: var(--gold); color: var(--gold);
+    transform: scale(.92);
+  }
+  /* .np-right's own box drops out of layout (its children become direct
+     grid items instead, each placed in the template above) - the only
+     way to put prev/play/next/shuffle/volume in one evenly-spaced row
+     while play stays a separate element from them in the DOM. */
+  .np-right { display: contents; }
+  #np-prev { grid-area: prev; justify-self: center; }
+  #np-play { grid-area: play; justify-self: center; }
+  #np-next { grid-area: next; justify-self: center; }
+  #np-shuffle { grid-area: shuf; justify-self: center; }
+  .np-vol { grid-area: vol; justify-self: center; }
+  #player-bar .np-ctrl { width: 40px; height: 40px; }
+  #player-bar #np-play { width: 42px; height: 42px; }
+  #player-bar .np-close { min-width: 40px; min-height: 40px; }
+  .np-vol { display: flex; align-items: center; justify-content: center; gap: .4rem; }
+  .np-vol .np-ctrl { width: 36px; height: 36px; min-width: 36px; }
+  /* Scoped to the docked bar only - unscoped this also capped the
+     fullscreen player's volume at 100px on phones. */
+  .np-vol .vol-slider { width: 100%; max-width: 100px; }
+  body.player-active { padding-bottom: 138px; }
+  /* Bigger tap targets without growing the bar or the visible buttons:
+     an invisible pseudo-element extends the actual clickable area past
+     each button's own box (up to a 54px target on the smallest ones),
+     while the bar's height still only reflects the real button sizes
+     above, since absolutely-positioned pseudo-elements don't add to
+     their parent's layout size. */
+  #player-bar .np-ctrl, #player-bar #np-play, #player-bar .np-close { position: relative; }
+  #player-bar .np-ctrl::before, #player-bar #np-play::before, #player-bar .np-close::before {
+    content: ''; position: absolute; inset: -7px;
+  }
+}
+@media (max-width: 360px) {
+  .np-art { display: none; }
+}
+.np-close {
+  background: none; border: 1px solid transparent; color: rgba(255,255,255,.4); cursor: pointer;
+  font-size: .9rem; line-height: 1;
+  min-width: 40px; min-height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
+}
+.np-close:hover { color: var(--gold); background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); transform: scale(1.08); }
+.np-close:active { color: #fff; }
+
+/* ════════════════════════════════════════════
+   RELEASE PLAY OVERLAY + TRACKLIST
+   ════════════════════════════════════════════ */
+.rel-play-overlay {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  /* idle-visible, same as .vid-play-overlay - one affordance site-wide */
+  background: rgba(0,0,0,.35); cursor: pointer;
+  transition: background .25s var(--ease);
+  pointer-events: none;
+}
+.rel-card:hover .rel-play-overlay { background: rgba(0,0,0,.15); }
+.rel-play-circle {
+  pointer-events: auto;
+  width: 50px; height: 50px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.6);
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease), opacity .35s var(--ease), box-shadow .35s var(--ease);
+  box-shadow: 0 2px 12px rgba(0,0,0,.2);
+}
+/* Play circles go gold on hover - one "press play" language site-wide,
+   matching the gold play discs in the player bar and fullscreen player.
+   Exactly one highlight per card: when a streaming button is hovered, the
+   play circle stands down (the :has guard). */
+.rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.rel-play-circle svg { color: #fff; transition: color .35s var(--ease); }
+.rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle svg { color: var(--ink); }
+.rel-tracklist {
+  max-height: 0; overflow: hidden;
+}
+.rel-card.tracks-open .rel-tracklist {
+  border-top: 1px solid var(--hairline);
+}
+.rel-track {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .55rem .75rem;
+  font-size: .76rem; color: rgb(from var(--ink) r g b / .82);
+  cursor: pointer; transition: background .2s var(--ease), color .2s var(--ease);
+  border-bottom: 1px solid var(--hairline);
+}
+.rel-track:last-child { border-bottom: none; }
+.rel-track:hover { background: rgb(from var(--ink) r g b / .04); color: var(--ink); }
+.rel-track.active { color: var(--ink); font-weight: 600; background: rgb(from var(--ink) r g b / .06); border-left: 2px solid var(--sage); }
+.rel-track-num {
+  font-size: .62rem; color: rgb(from var(--ink) r g b / .5); min-width: 1.4rem;
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.rel-track.active .rel-track-num { display: none; }
+.rel-track-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
+.rel-track-title.marquee { text-overflow: clip; }
+.rel-track-title.marquee > span {
+  display: inline-block;
+  animation: marquee var(--marquee-duration, 8s) linear infinite;
+  padding-right: 3rem;
+}
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) { .rel-track-title.marquee > span { animation: none; } }
+.rel-track-wrap { border-bottom: 1px solid var(--hairline); }
+.rel-track-wrap:last-child { border-bottom: none; }
+.rel-track-wrap .rel-track { border-bottom: none; }
+.rel-lyrics-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; flex-shrink: 0;
+  color: rgb(from var(--ink) r g b / .55); background: none; border: none;
+  border-radius: 6px; cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
+  font-size: .6rem;
+}
+.rel-lyrics-toggle:hover { color: var(--ink); background: rgb(from var(--ink) r g b / .05); }
+.rel-lyrics-toggle.open { color: var(--ink); transform: rotate(180deg); }
+.rel-lyrics {
+  max-height: 0; overflow: hidden;
+}
+.rel-lyrics-inner {
+  padding: .5rem .75rem .75rem 2.4rem;
+  font-size: .72rem; line-height: 1.8;
+  color: rgb(from var(--ink) r g b / .75);
+  white-space: pre-line;
+}
+.rel-track-eq {
+  width: 14px; height: 14px; flex-shrink: 0;
+  display: none; color: var(--ink);
+}
+.rel-track.active .rel-track-eq { display: block; }
+.rel-track-eq rect { transform-origin: bottom; }
+.rel-track-eq rect:nth-child(1) { animation: eqBar .8s ease-in-out -.4s infinite alternate; }
+.rel-track-eq rect:nth-child(2) { animation: eqBar .6s ease-in-out -.2s infinite alternate; }
+.rel-track-eq rect:nth-child(3) { animation: eqBar .7s ease-in-out -.1s infinite alternate; }
+@keyframes eqBar { 0% { transform: scaleY(.3); } 100% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .rel-track-eq rect { animation: none; } }
+
+.featured-play-overlay {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.2); cursor: pointer;
+  opacity: 0; transition: opacity .35s var(--ease);
+  border-radius: var(--radius);
+}
+.featured-play-overlay:hover .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.featured-play-overlay:hover .rel-play-circle svg { color: var(--ink); }
+
+/* ════════════════════════════════════════════
+   PLAYER CONTROLS - prev/next/shuffle
+   ════════════════════════════════════════════ */
+.np-ctrl {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: none; background: transparent;
+  /* matches .fs-ctrl in the fullscreen player */
+  color: rgba(255,255,255,.65); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease); flex-shrink: 0;
+}
+.np-ctrl:hover { color: #fff; background: rgba(255,255,255,.08); transform: scale(1.08); }
+.np-ctrl:active { color: #fff; transform: scale(.92); }
+.np-ctrl.active { color: var(--gold); }
+
+/* ════════════════════════════════════════════
+   FLOATING MUSIC BUTTON
+   ════════════════════════════════════════════ */
+.fab-music {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 250;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--gold);
+  border: 1px solid rgb(from var(--gold) r g b / .5);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .4), 0 1px 4px rgba(0,0,0,.15);
+  transition: background .35s var(--ease-spring), color .35s var(--ease-spring), border-color .35s var(--ease-spring), transform .35s var(--ease-spring), opacity .35s var(--ease-spring), box-shadow .35s var(--ease-spring);
+}
+.fab-music:hover { transform: scale(1.12); box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5), 0 0 40px rgb(from var(--gold) r g b / .2); }
+.fab-music:active { transform: scale(.93); }
+.fab-music.hidden { opacity: 0; pointer-events: none; transform: scale(.7); }
+
+/* ════════════════════════════════════════════
+   EPK - photos + download
+   ════════════════════════════════════════════ */
+.epk-section {
+  background: transparent;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-rows: auto;
+  align-items: center;
+  column-gap: 2px;
+}
+.epk-photos-top { grid-column: 2; grid-row: 1; }
+.epk-photos-bottom { grid-column: 3; grid-row: 1; }
+.epk-body {
+  grid-column: 1; grid-row: 1;
+  display: flex; flex-direction: column; gap: 1.25rem;
+  padding: clamp(4rem,8vw,6rem) clamp(3rem,7vw,6rem);
+}
+.epk-body .section-h { color: var(--ink); }
+.epk-text {
+  font-size: .88rem; color: var(--ink);
+  line-height: 1.75; max-width: 46ch;
+}
+.epk-photos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  overflow: hidden;
+}
+.epk-photos img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+  transition: filter .5s var(--ease), transform .5s var(--ease);
+}
+.epk-photos img:hover { filter: grayscale(0%) brightness(1.05); }
+/* The one download CTA on the page - red pop accent so it can't be confused
+   with the gold utility buttons (email, streaming chips). */
+.btn-epk-dl {
+  background: var(--red); color: #fff;
+  border: 1px solid var(--red);
+  gap: .5rem; font-weight: 700;
+  box-shadow: 0 4px 18px rgb(from var(--red) r g b / .35);
+}
+.btn-epk-dl:hover {
+  background: rgb(from var(--red) calc(r - 24) calc(g - 12) calc(b - 12)) ;
+  border-color: rgb(from var(--red) calc(r - 24) calc(g - 12) calc(b - 12));
+  box-shadow: 0 8px 28px rgb(from var(--red) r g b / .45);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════
+   MOBILE - reimagined, not scaled down
+   ════════════════════════════════════════════ */
+@media (min-width: 901px) {
+  /* face sits ~19%,16% in the source photo - keeps it in frame on any box */
+  .hero-split-photo { object-position: 8% 18%; }
+}
+
+/* ════════════════════════════════════════════
+   ULTRA-WIDE (>1600px) - contain content
+   ════════════════════════════════════════════ */
+@media (min-width: 1600px) {
+  .section-inner { max-width: 1200px; }
+  .epk-section { max-width: 2200px; margin: 0 auto; } /* hero stays full-bleed, unlike this */
+  .hero-name { font-size: 9rem; }
+  .section-h { font-size: 1.65rem; }
+  .releases-grid { grid-template-columns: repeat(4, 1fr); }
+  .video-grid { grid-template-columns: repeat(3, 1fr); }
+  .epk-body { padding: clamp(3rem,5vw,5rem) clamp(3rem,6vw,6rem); }
+}
+
+/* ════════════════════════════════════════════
+   WIDE DESKTOP (1200–1600px) - 3-col grids
+   ════════════════════════════════════════════ */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .releases-grid { grid-template-columns: repeat(4, 1fr); }
+  .video-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ════════════════════════════════════════════
+   TABLET LANDSCAPE (900–1200px) - 2-col grids
+   ════════════════════════════════════════════ */
+@media (min-width: 901px) and (max-width: 1199px) {
+  .hero-split { grid-template-columns: 3fr 1.5fr; min-height: 100dvh; }
+  .releases-grid { grid-template-columns: repeat(2, 1fr); }
+  .video-grid { grid-template-columns: repeat(2, 1fr); }
+  .section { padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
+}
+
+/* ════════════════════════════════════════════
+   TABLET PORTRAIT (601–900px) - transitional
+   ════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .nav { height: 48px; padding: 0 1rem; }
+  .nav-logo .hero-icon { width: 24px; }
+  .nav-logo .hero-name { font-size: 1.038rem; top: 0.17em; }
+  .nav-links, .nav-platforms { display: none; }
+  .nav-toggle { display: block; width: 36px; height: 36px; }
+  .nav-drawer { top: 48px; }
+  .nav-drawer a { padding: 1rem 0; font-size: 1.1rem; min-height: 48px; display: flex; align-items: center; }
+  .drawer-platforms { display: flex; }
+
+  .hero-split {
+    grid-template-columns: 1fr;
+    /* everything fits one screen; min-content floor lets it grow if it must */
+    grid-template-rows: auto minmax(min-content, 1fr);
+    height: auto; min-height: 100dvh; padding-top: 48px;
+    --nav-pad: 48px;
+    --panel-floor: 340px;
+    /* photo band is full-width; height shrinks with the panel but never
+       below width/2.5, or the crop is too thin a sliver to read as a photo */
+    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad) - var(--panel-floor) - 140px)));
+  }
+  .hero-split-left {
+    height: var(--band);
+    width: 100%;
+    min-height: unset; overflow: hidden;
+  }
+  .hero-split-left::after { background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 40%); }
+  .hero-split-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 8% 18%;
+  }
+  .hero-split-overlay { padding-bottom: 1.5rem; }
+  /* clamped against --band too, so it still shrinks when the band is squeezed */
+  .hero-icon { width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
+  .hero-brand { gap: .5rem; }
+  .hero-name { font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); margin-bottom: 0; -webkit-text-stroke: none; }
+
+  .hero-split-right { border-left: none; padding: 1.5rem 1.25rem 80px; gap: .75rem; }
+  .featured-title { font-size: min(7cqi, 1.7rem); }
+  .featured-badge { font-size: .54rem; padding: .3rem .85rem; margin-bottom: 0; }
+  .featured-kicker { font-size: .88rem; }
+  .featured-btns { flex-direction: row; flex-wrap: wrap; gap: .5rem; width: 100%; justify-content: center; }
+  .f-btn { flex: 1 1 auto; justify-content: center; height: 44px; font-size: .52rem; border-radius: 10px; }
+
+  .section { padding: 3rem 1.25rem; }
+  .section-h { font-size: 1.6rem; margin-bottom: 1.75rem; }
+  .contact-inner { max-width: 100%; }
+  .contact-intro { font-size: .82rem; max-width: 100%; }
+  .form-row { grid-template-columns: 1fr; gap: 1rem; }
+  .form-input, .form-textarea { font-size: .88rem; padding: .85rem 1rem; min-height: 52px; border-radius: 10px; }
+  .form-label { font-size: .5rem; }
+  .btn { width: 100%; justify-content: center; height: 52px; font-size: .58rem; border-radius: 10px; }
+  .form-subscribe label { font-size: .72rem; }
+  .form-subscribe input[type="checkbox"] { width: 20px; height: 20px; }
+
+  /* Stack the card: portrait on top, text panel below it. */
+  .bio-body { padding: 1.5rem 1.25rem 2.5rem; }
+  .bio-card { grid-template-columns: 1fr; }
+  .bio-card-media { order: -1; border-left: none; border-bottom: 1px solid var(--hairline); }
+  /* Fully symmetric text panel under the centered photos. */
+  .bio-card-text { padding: 1.75rem 1.5rem 2.25rem; text-align: center; }
+  .bio-name { text-align: center; margin-bottom: .9rem; }
+  .bio-desc { margin-inline: auto; }
+  /* centered panel: center the gold tick, drop the left-rule epigraph
+     treatment (a side rule on centered text reads lopsided) */
+  .bio-name::after { margin-inline: auto; }
+  .bio-tagline { margin-top: 1.1rem; }
+  .bio-name { font-size: 2.2rem; }
+  .bio-text { max-width: 100%; }
+  .contact-email-link { max-width: 100%; word-break: break-all; }
+
+  .epk-section { grid-template-columns: 1fr; }
+  .epk-photos-top { grid-column: 1; grid-row: 1; }
+  .epk-body { grid-column: 1; grid-row: 2; padding: 1rem 1.25rem; text-align: left; display: grid; grid-template-columns: 1fr 1.5fr; grid-template-rows: auto auto; gap: .25rem 1rem; align-items: start; }
+  .epk-body .section-h { padding-bottom: .4rem; margin-bottom: 0; grid-column: 1; grid-row: 1; }
+  .epk-body .epk-text { grid-column: 1; grid-row: 2; }
+  .epk-body .btn-epk-dl { grid-column: 2; grid-row: 1 / 3; align-self: stretch; height: auto; flex-direction: row; padding: 0 1.2rem; }
+  .epk-body .btn-epk-dl svg { width: auto; height: 100%; max-height: 2.5rem; flex-shrink: 0; }
+  .epk-body .section-h::after { left: 0; transform: none; }
+  .epk-photos-bottom { grid-column: 1; grid-row: 3; }
+  .epk-photos { grid-template-columns: repeat(2, 1fr); }
+  .epk-text { font-size: .82rem; max-width: 100%; }
+  .btn-epk-dl { width: auto; font-size: .8rem; }
+  .btn--start { align-self: center; }
+
+  footer { padding: 1rem 1.25rem; }
+  .footer-logo img { height: 27px; }
+
+  .rel-track { padding: .65rem .75rem; font-size: .78rem; min-height: 44px; }
+  .fab-music { bottom: 1.25rem; right: 1.25rem; width: 44px; height: 44px; }
+
+  .np-ctrl { width: 32px; height: 32px; }
+  #np-play { width: 40px; height: 40px; }
+  .np-art { width: 40px; height: 40px; border-radius: 6px; }
+  .np-close { min-width: 38px; min-height: 38px; }
+
+  .vid-lightbox { padding: .5rem; }
+  .lb-inner { max-width: 100%; }
+  .lb-bar { flex-wrap: wrap; gap: .5rem; }
+  .lb-title { font-size: .82rem; width: 100%; }
+  .lb-arrow { width: 40px; height: 40px; }
+  .lb-arrow-prev { left: 6px; }
+  .lb-arrow-next { right: 6px; }
+
+  .rel-card { border-radius: 10px; }
+  .rel-btns { padding: .5rem; gap: .4rem; }
+  .rel-btn { height: 44px; font-size: .5rem; border-radius: 8px; min-height: 44px; }
+  .rel-overlay { padding: 1rem; }
+  .rel-cat { font-size: .88rem; }
+  .rel-name { font-size: 1.45rem; }
+  .vid-card { border-radius: 10px; }
+  .vid-info { padding: .85rem 1rem; }
+  .vid-title { font-size: 1.25rem; }
+  .vid-yt { font-size: .46rem; padding: .3rem .7rem; min-height: 36px; display: flex; align-items: center; }
+}
+
+/* ════════════════════════════════════════════
+   TABLET (601–900px) - 2-col where it fits
+   ════════════════════════════════════════════ */
+@media (min-width: 601px) and (max-width: 900px) {
+  .releases-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .video-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .form-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* ════════════════════════════════════════════
+   PHONE (≤600px) - single column
+   ════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .releases-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .video-grid { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+/* ════════════════════════════════════════════
+   SMALL PHONE (≤520px)
+   ════════════════════════════════════════════ */
+@media (max-width: 520px) {
+  .hero-split { padding-top: 44px; --nav-pad: 44px; }
+  .hero-name { font-size: clamp(3rem,17cqi,4.6rem); }
+  .section-h { font-size: 2rem; }
+  .nav { height: 44px; }
+  .nav-logo .hero-icon { width: 22px; }
+  .nav-logo .hero-name { font-size: .83rem; top: 0.17em; }
+  .nav-drawer { top: 44px; }
+}
+
+/* ════════════════════════════════════════════
+   TINY PHONE (≤360px) - absolute minimum
+   ════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  .hero-name { font-size: 2.7rem; }
+  .hero-icon { width: 56px; }
+  .hero-split-right { padding: .75rem .75rem 80px; gap: .4rem; }
+  .featured-badge { font-size: .4rem; padding: .2rem .5rem; }
+  .f-btn { height: 40px; font-size: .48rem; }
+  .section { padding: 2rem .75rem; }
+  .section-h { font-size: 1.8rem; margin-bottom: 1.25rem; }
+  .rel-overlay { padding: .75rem; }
+  .rel-btn { font-size: .44rem; height: 38px; }
+  .rel-track { padding: .5rem .5rem; font-size: .72rem; }
+  .rel-lyrics-toggle { width: 28px; height: 28px; }
+  /* Two-column press-kit row can't fit - stack it. */
+  .epk-body { grid-template-columns: 1fr; }
+  .epk-body .section-h { grid-column: 1; grid-row: auto; }
+  .epk-body .epk-text { grid-column: 1; grid-row: auto; }
+  .epk-body .btn-epk-dl { grid-column: 1; grid-row: auto; justify-content: center; padding: .9rem 1rem; }
+  .epk-body { padding: 1.25rem .75rem; }
+  .epk-text { font-size: .76rem; }
+  .contact-intro { font-size: .76rem; }
+  .vid-play-circle { width: 36px; height: 36px; }
+  #np-track { font-size: .72rem; }
+  .np-art { width: 36px; height: 36px; }
+  .fab-music { bottom: 1rem; right: 1rem; width: 40px; height: 40px; }
+  footer { padding: .75rem; }
+}
+
+/* ════════════════════════════════════════════
+   PORTRAIT PHONE (≤520px, portrait)
+   ════════════════════════════════════════════ */
+@media (max-width: 520px) and (orientation: portrait) {
+  .hero-split-right { padding: 1.5rem 1.5rem 80px; gap: .75rem; }
+  .featured-kicker { font-size: .6rem; margin-bottom: -.4rem; margin-top: 0; }
+  .featured-title { font-size: 1.15rem !important; }
+  .featured-btns { gap: .35rem; }
+  .f-btn { height: 36px; font-size: .44rem; padding: 0 .8rem; }
+  .section { padding: 2.5rem 1rem; }
+  .rel-btns { padding: .4rem; }
+  .rel-btn { height: 40px; font-size: .46rem; }
+  .vid-play-circle { width: 40px; height: 40px; }
+  .epk-body { padding: 1.5rem 1rem; }
+  .epk-photos img { aspect-ratio: 1; }
+}
+
+/* ════════════════════════════════════════════
+   LANDSCAPE PHONE (short + landscape)
+   ════════════════════════════════════════════ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-split { grid-template-columns: 1fr 1fr; min-height: 100dvh; padding-top: 40px; --nav-pad: 40px; --band: 0px; }
+  /* real 2-col grid here - undo the stacked width:calc(band...) formula or
+     the column collapses to zero width (band is 0 in this breakpoint) */
+  .hero-split-left { width: auto; height: auto; min-height: unset; justify-self: stretch; overflow: hidden; }
+  .hero-split-right { padding: 1rem 1.25rem 132px; gap: .5rem; }
+  .hero-name { font-size: clamp(2.2rem,10cqi,3.4rem); }
+  .hero-icon { width: clamp(44px,10cqi,68px); }
+  .featured-badge { font-size: .42rem; }
+  .featured-btns { flex-direction: row; flex-wrap: wrap; }
+  .f-btn { width: auto; height: 36px; font-size: .48rem; }
+
+  .nav { height: 40px; }
+  .nav-drawer { top: 40px; }
+  .nav-toggle { width: 30px; height: 30px; }
+  .nav-toggle-bar { width: 13px; }
+  .nav-toggle-bar:nth-child(1) { transform: translate(-50%, -50%) translateY(-4px); }
+  .nav-toggle-bar:nth-child(3) { transform: translate(-50%, -50%) translateY(4px); }
+
+  .section { padding: 2rem 1.25rem; }
+  .section-h { font-size: 1.9rem; margin-bottom: 1.25rem; }
+
+  .releases-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+  .rel-overlay { padding: .75rem; }
+
+  .video-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+
+  .epk-body { padding: 1.5rem 1.25rem; }
+
+  .form-row { grid-template-columns: 1fr 1fr; }
+  .btn { width: auto; height: 44px; }
+
+  #np-play { width: 34px; height: 34px; }
+  .np-ctrl { width: 26px; height: 26px; }
+  .np-close { min-width: 34px; min-height: 34px; }
+  .fab-music { bottom: .75rem; right: .75rem; width: 40px; height: 40px; }
+
+  .vid-lightbox { padding: .25rem; }
+  .lb-arrow { width: 36px; height: 36px; }
+
+  /* docked player bar (bottom:8px, ~48px tall here) can sit over the photo
+     band's badge/wordmark otherwise - .hero-split-right reserves 132px for
+     it always, so this does too (not just when player-active, or the
+     badge/logo would jump the moment the player opens) */
+  .hero-split-overlay { padding-bottom: 72px; }
+}
+
+/* ════════════════════════════════════════════
+   TINY LANDSCAPE (very short, e.g. split-screen)
+   ════════════════════════════════════════════ */
+@media (max-height: 360px) and (orientation: landscape) {
+  .hero-split { padding-top: 36px; --nav-pad: 36px; }
+  .hero-split-right { padding: .5rem 1rem 132px; gap: .35rem; }
+  .featured-badge { font-size: .36rem; padding: .2rem .6rem; margin-bottom: -.5rem; }
+  .featured-kicker { font-size: .5rem; margin-top: 0; margin-bottom: -.3rem; }
+  .f-btn { height: 32px; font-size: .44rem; }
+  .section { padding: 1.5rem 1rem; }
+  .nav { height: 36px; }
+  .nav-drawer { top: 36px; }
+  #np-play { width: 30px; height: 30px; }
+  .fab-music { width: 36px; height: 36px; bottom: .5rem; right: .5rem; }
+  .hero-split-overlay { padding-bottom: 66px; }
+}
+
+/* ════════════════════════════════════════════
+   SQUARE-ISH (iPad, foldables) - aspect ~1:1
+   ════════════════════════════════════════════ */
+@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (max-width: 1100px) {
+  .hero-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(min-content, 1fr);
+    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad, 0px) - var(--panel-floor, 470px) - 140px)));
+  }
+  .hero-split-left {
+    height: var(--band);
+    width: 100%;
+    min-height: unset; overflow: hidden;
+  }
+  .hero-split-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 8% 18%;
+  }
+  .hero-split-right { padding-bottom: 80px; }
+  .hero-icon { width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
+  .hero-name { font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); }
+  .releases-grid { grid-template-columns: repeat(2, 1fr); }
+  .video-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Square-ish tablets and short landscape phones above mobile-base's 900px
+   cutoff still need the EPK stacked, not the base 3-col desktop layout -
+   the base rule hardcodes .epk-photos-top/bottom to grid-column:2/3, which
+   only works against 3 columns, so this repoints them along with it. */
+@media ((min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (min-width: 901px) and (max-width: 1100px)), ((max-height: 500px) and (orientation: landscape)) {
+  .epk-section { grid-template-columns: 1fr; }
+  .epk-photos-top { grid-column: 1; grid-row: 1; }
+  .epk-body { grid-column: 1; grid-row: 2; padding: 1.5rem 1.25rem; text-align: left; display: grid; grid-template-columns: 1fr 1.5fr; grid-template-rows: auto auto; gap: .25rem 1rem; align-items: start; }
+  .epk-body .section-h { padding-bottom: .4rem; margin-bottom: 0; grid-column: 1; grid-row: 1; }
+  .epk-body .epk-text { grid-column: 1; grid-row: 2; }
+  .epk-body .btn-epk-dl { grid-column: 2; grid-row: 1 / 3; align-self: stretch; height: auto; flex-direction: row; padding: 0 1.2rem; }
+  .epk-body .btn-epk-dl svg { width: auto; height: 100%; max-height: 2.5rem; flex-shrink: 0; }
+  .epk-body .section-h::after { left: 0; transform: none; }
+  .epk-photos-bottom { grid-column: 1; grid-row: 3; }
+  .epk-photos { grid-template-columns: repeat(2, 1fr); }
+}
+/* The button-beside-text layout above needs real width to hold both
+   columns - landscape-short has no min-width guard, so below ~340px
+   the download button overflows past the section edge. Fall back to
+   stacked (same treatment as mobile-base) rather than clip. */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 340px) {
+  .epk-body { grid-template-columns: 1fr; }
+  .epk-body .btn-epk-dl { grid-column: 1; grid-row: auto; justify-content: center; padding: .9rem 1rem; height: auto; }
+}
+
+/* ════════════════════════════════════════════
+   TALL NARROW (folded phones, aspect < 9:21)
+   ════════════════════════════════════════════ */
+@media (max-aspect-ratio: 9/21) {
+  .hero-name { font-size: clamp(2.4rem,14cqi,4.2rem); }
+  .hero-split-right { padding: .75rem .75rem 80px; gap: .4rem; }
+  .section { padding: 2rem .75rem; }
+  .rel-track { font-size: .7rem; padding: .45rem .5rem; }
+}
+
+/* ════════════════════════════════════════════
+   HIGH-DPI - crisper borders
+   ════════════════════════════════════════════ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .rel-card, .vid-card { border-width: 0.5px; }
+  #player-bar { border-top-width: 0.5px; }
+}
+
+/* ════════════════════════════════════════════
+   GILLIAM FLOWERS - jittery stop-motion dance
+   ════════════════════════════════════════════ */
+.contact-section, .releases-section, .videos-section, .bio-section { position: relative; }
+.gilliam-flower {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.15));
+  will-change: transform;
+}
+@keyframes gj1 {
+  0%   { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+  12%  { transform: translate(-3px,2px) rotate(calc(var(--r,0deg) - 4deg)) scale(1.04); }
+  25%  { transform: translate(4px,-3px) rotate(calc(var(--r,0deg) + 6deg)) scale(.96); }
+  37%  { transform: translate(-2px,5px) rotate(calc(var(--r,0deg) - 2deg)) scale(1.02); }
+  50%  { transform: translate(5px,-1px) rotate(calc(var(--r,0deg) + 8deg)) scale(.98); }
+  62%  { transform: translate(-4px,3px) rotate(calc(var(--r,0deg) - 6deg)) scale(1.05); }
+  75%  { transform: translate(3px,-4px) rotate(calc(var(--r,0deg) + 3deg)) scale(.97); }
+  87%  { transform: translate(-1px,2px) rotate(calc(var(--r,0deg) - 5deg)) scale(1.03); }
+  100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+}
+@keyframes gj2 {
+  0%   { transform: translate(0,0) rotate(var(--r,0deg)) scaleX(1); }
+  15%  { transform: translate(2px,-4px) rotate(calc(var(--r,0deg) + 10deg)) scaleX(.92); }
+  30%  { transform: translate(-5px,1px) rotate(calc(var(--r,0deg) - 7deg)) scaleX(1.06); }
+  45%  { transform: translate(3px,3px) rotate(calc(var(--r,0deg) + 5deg)) scaleX(.95); }
+  60%  { transform: translate(-3px,-2px) rotate(calc(var(--r,0deg) - 12deg)) scaleX(1.04); }
+  75%  { transform: translate(4px,2px) rotate(calc(var(--r,0deg) + 8deg)) scaleX(.97); }
+  90%  { transform: translate(-2px,-3px) rotate(calc(var(--r,0deg) - 4deg)) scaleX(1.02); }
+  100% { transform: translate(0,0) rotate(var(--r,0deg)) scaleX(1); }
+}
+@keyframes gj3 {
+  0%   { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+  8%   { transform: translate(0,6px) rotate(calc(var(--r,0deg) + 2deg)) scale(1.06); }
+  20%  { transform: translate(0,-8px) rotate(calc(var(--r,0deg) - 3deg)) scale(.93); }
+  33%  { transform: translate(0,4px) rotate(calc(var(--r,0deg) + 5deg)) scale(1.04); }
+  50%  { transform: translate(0,-5px) rotate(calc(var(--r,0deg) - 6deg)) scale(.96); }
+  66%  { transform: translate(0,7px) rotate(calc(var(--r,0deg) + 4deg)) scale(1.05); }
+  80%  { transform: translate(0,-3px) rotate(calc(var(--r,0deg) - 2deg)) scale(.98); }
+  100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+}
+@keyframes gj4 {
+  0%   { transform: translate(0,0) rotate(var(--r,0deg)); }
+  16%  { transform: translate(-6px,0) rotate(calc(var(--r,0deg) - 15deg)); }
+  33%  { transform: translate(5px,-2px) rotate(calc(var(--r,0deg) + 12deg)); }
+  50%  { transform: translate(-3px,4px) rotate(calc(var(--r,0deg) - 8deg)); }
+  66%  { transform: translate(6px,-3px) rotate(calc(var(--r,0deg) + 18deg)); }
+  83%  { transform: translate(-4px,1px) rotate(calc(var(--r,0deg) - 10deg)); }
+  100% { transform: translate(0,0) rotate(var(--r,0deg)); }
+}
+@keyframes gj5 {
+  0%   { transform: translate(0,0) rotate(var(--r,0deg)) scale(1) skewX(0deg); }
+  20%  { transform: translate(3px,4px) rotate(calc(var(--r,0deg) + 7deg)) scale(1.08) skewX(3deg); }
+  40%  { transform: translate(-4px,-2px) rotate(calc(var(--r,0deg) - 5deg)) scale(.94) skewX(-2deg); }
+  60%  { transform: translate(2px,-5px) rotate(calc(var(--r,0deg) + 11deg)) scale(1.03) skewX(4deg); }
+  80%  { transform: translate(-3px,3px) rotate(calc(var(--r,0deg) - 9deg)) scale(.97) skewX(-3deg); }
+  100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1) skewX(0deg); }
+}
+@keyframes gj6 {
+  0%   { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+  10%  { transform: translate(2px,-1px) rotate(calc(var(--r,0deg) + 3deg)) scale(1.01); }
+  25%  { transform: translate(-1px,3px) rotate(calc(var(--r,0deg) - 2deg)) scale(.99); }
+  35%  { transform: translate(3px,-2px) rotate(calc(var(--r,0deg) + 5deg)) scale(1.03); }
+  50%  { transform: translate(-2px,1px) rotate(calc(var(--r,0deg) - 4deg)) scale(.97); }
+  65%  { transform: translate(1px,2px) rotate(calc(var(--r,0deg) + 2deg)) scale(1.02); }
+  80%  { transform: translate(-3px,-1px) rotate(calc(var(--r,0deg) - 6deg)) scale(.98); }
+  100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+}
+.gj1 { animation: gj1 var(--d,6s)   steps(4) infinite; }
+.gj2 { animation: gj2 var(--d,7s)   steps(5) infinite; }
+.gj3 { animation: gj3 var(--d,5.5s) steps(4) infinite; }
+.gj4 { animation: gj4 var(--d,8s)   steps(6) infinite; }
+.gj5 { animation: gj5 var(--d,6.5s) steps(3) infinite; }
+.gj6 { animation: gj6 var(--d,9s)   steps(8) infinite; }
+@media (min-width: 901px) {
+  .gilliam-flower.mob-only { display: none; }
+}
+@media (max-width: 900px) {
+  .gilliam-flower.desk-only { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gilliam-flower { animation: none !important; }
+}
+
+/* ════════════════════════════════════════════
+   FULLSCREEN PLAYER
+   ════════════════════════════════════════════ */
+.fs-player {
+  position: fixed; inset: 0; z-index: 400;
+  background: var(--ink);
+  transform: translateY(100%);
+  transition: transform .4s var(--ease);
+  overflow: hidden;
+  /* Mobile taps/drags on controls (especially the seek bar) were
+     triggering the browser's native text-selection highlight, since
+     nothing here told it these aren't selectable text - only real
+     content (essays, bio copy, etc.) should ever highlight like that. */
+  user-select: none; -webkit-user-select: none;
+}
+.fs-player.open { transform: translateY(0); }
+.fs-bg {
+  position: absolute; inset: -30%;
+  background: var(--ink) center/cover no-repeat;
+  filter: blur(90px) brightness(.4) saturate(2);
+}
+.fs-content {
+  position: relative; z-index: 1;
+  /* flex-start (not center) - on any viewport where the content
+     doesn't fill the full height, centering it as one block leaves a
+     large, unbalanced empty gap above the art with nothing below the
+     platform buttons. Anchoring from the top instead reads as an
+     intentional layout at any height, matching how a real "now
+     playing" screen (Spotify, Apple Music) is laid out. */
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-start;
+  height: 100%; width: 100%;
+  max-width: 400px; margin: 0 auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 4.5rem) 1.75rem calc(env(safe-area-inset-bottom, 0px) + 2.5rem);
+  gap: 0;
+  overflow-y: auto;
+}
+.fs-collapse {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + .5rem);
+  left: 50%; transform: translateX(-50%);
+  background: none; border: 1px solid transparent; color: rgba(255,255,255,.35);
+  cursor: pointer; padding: .75rem 2rem;
+  min-height: 44px;
+  border-radius: 22px;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent; z-index: 2;
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+}
+.fs-collapse:hover { color: var(--gold); background: rgb(from var(--gold) r g b / .1); border-color: rgb(from var(--gold) r g b / .3); }
+.fs-collapse:active { color: rgba(255,255,255,.7); }
+.fs-art-wrap {
+  width: min(80vw, 340px); aspect-ratio: 1;
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid rgb(from var(--paper) r g b / .14);
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
+  flex-shrink: 0;
+}
+.fs-art { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fs-info {
+  text-align: center; width: 100%;
+  margin-top: 2rem;
+}
+.fs-track {
+  display: block; font-family: var(--sans);
+  font-size: 1.2rem; font-weight: 700; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.fs-album {
+  display: block; font-size: .58rem; letter-spacing: .22em;
+  text-transform: uppercase; color: rgb(from var(--gold) r g b / .88);
+  margin-top: .4rem;
+}
+.fs-progress { width: 100%; margin-top: 1.75rem; }
+.fs-bar {
+  width: 100%; height: 4px; background: rgba(255,255,255,.15);
+  border-radius: 4px; cursor: pointer; position: relative;
+  touch-action: none;
+}
+.fs-fill {
+  height: 100%; background: var(--gold); width: 100%;
+  transform: scaleX(0); transform-origin: 0 50%;
+  border-radius: 4px; transition: transform .15s linear;
+  will-change: transform;
+  pointer-events: none;
+}
+.fs-bar:active .fs-fill { background: #fff; }
+.fs-times {
+  display: flex; justify-content: space-between;
+  font-size: .64rem; font-weight: 600; color: rgba(255,255,255,.6);
+  margin-top: .5rem; font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+.fs-controls {
+  /* 5 equal-width cells with the play disc in the middle one: play stays
+     dead-center even though shuffle gives the left side an extra button. */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center; justify-items: center;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+/* prev/play/next in the middle three cells, shuffle on the right edge;
+   the empty first cell keeps the play disc dead-center. */
+#fs-prev { grid-column: 2; }
+#fs-play { grid-column: 3; }
+#fs-next { grid-column: 4; }
+#fs-shuffle { grid-column: 5; }
+.fs-ctrl {
+  background: none; border: none; color: rgba(255,255,255,.65);
+  cursor: pointer;
+  min-width: 48px; min-height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.fs-ctrl:hover { color: #fff; background: rgba(255,255,255,.08); transform: scale(1.08); }
+.fs-ctrl:active { color: #fff; transform: scale(.92); }
+.fs-ctrl.active { color: var(--gold); }
+.fs-play {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--gold); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .35);
+  transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.fs-play:hover { box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
+.fs-play:active { transform: scale(.9); }
+.fs-play svg { margin-left: 0; }
+.fs-play[aria-label="Play"] svg { margin-left: 3px; }
+/* Short portrait screens (iPhone SE, small Androids): the full-size art
+   plus every row's breathing room overflows the height once the platform
+   buttons are present - cap the art off the height and tighten the
+   vertical rhythm so the whole stack fits without scrolling. */
+@media (max-height: 750px) and (orientation: portrait) {
+  .fs-art-wrap { width: min(80vw, 340px, 38vh); }
+  .fs-content { padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem); }
+  .fs-info { margin-top: 1rem; }
+  .fs-progress { margin-top: 1rem; }
+  .fs-controls { margin-top: .75rem; }
+  .fs-vol { margin-top: 1rem; }
+  .fs-platforms { margin-top: 1rem; }
+}
+/* Landscape phones: the portrait stack (art on top, controls below) is
+   taller than the screen - art alone can eat all 390px. Side-by-side
+   instead: art left, sized off the height, everything else in a column
+   on the right, vertically centered as one group. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .fs-content {
+    display: grid;
+    grid-template-columns: auto minmax(0, 420px);
+    grid-template-rows: repeat(5, auto);
+    align-content: center; justify-content: center;
+    column-gap: clamp(1.5rem, 5vw, 3rem);
+    max-width: none;
+    padding: calc(env(safe-area-inset-top, 0px) + 2.75rem) 2rem 1.25rem;
+  }
+  .fs-art-wrap { grid-column: 1; grid-row: 1 / 6; align-self: center; width: min(52vh, 300px); }
+  .fs-info { grid-column: 2; grid-row: 1; margin-top: 0; }
+  .fs-progress { grid-column: 2; grid-row: 2; margin-top: 1rem; }
+  .fs-controls { grid-column: 2; grid-row: 3; margin-top: .5rem; }
+  .fs-vol { grid-column: 2; grid-row: 4; margin-top: .5rem; }
+  .fs-platforms { grid-column: 2; grid-row: 5; margin-top: .75rem; }
+  .fs-play { width: 54px; height: 54px; }
+}
+
+/* ════════════════════════════════════════════
+   HOVER CAPABLE - only show overlays on hover
+   ════════════════════════════════════════════ */
+@media (hover: hover) {
+  .featured-play-overlay { opacity: 0; }
+  .featured-art-wrap:hover .featured-play-overlay { opacity: 1; }
+}
+@media (hover: none) {
+  .rel-play-overlay { opacity: 1; background: rgba(0,0,0,.18); }
+  .featured-play-overlay { opacity: 1; background: rgba(0,0,0,.2); }
+  .rel-card:hover { transform: none; box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
+  .vid-card:hover { transform: none; box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
+  .rel-card:hover .rel-art { transform: none; }
+  .vid-card:hover .vid-thumb img { transform: none; }
+  .rel-card:hover .rel-play-circle { transform: none; }
+  .vid-card:hover .vid-play-circle { transform: none; }
+}
+
+/* ── SEMANTIC HEADING RESETS (h2/h3 used inside components) ── */
+.rel-name,
+h3.rel-name  { margin: 0; }
+h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
+
+/* ── VIDEO GRID AS SEMANTIC CONTAINER ── */
+.video-grid { list-style: none; padding: 0; }
+
+/* ── HOME SECTION = EXACTLY ONE PHONE SCREEN (portrait) ──
+   Photo takes the top ~45% of the viewport, the album panel fills the rest;
+   art is capped in dvh so the whole section always lands on the fold. */
+/* Only lock the fold on true phone shapes (clearly taller than wide, with
+   real vertical room). Square-ish or short windows fall back to the flowing
+   mobile layout instead of clipping. */
+@media (max-width: 900px) and (orientation: portrait) and (max-aspect-ratio: 7/10) and (min-height: 700px) {
+  .hero-split {
+    /* One phone screen when it fits; if the panel's content is taller than
+       the leftover row, the section grows and scrolls instead of the
+       centered content overflowing onto the photo. */
+    min-height: 100dvh;
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(min-content, 1fr);
+    padding-top: 48px;
+    --nav-pad: 48px;
+    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad) - var(--panel-floor, 340px) - 140px)));
+    overflow: hidden;
+  }
+  /* full-bleed width; only height scales with --band */
+  .hero-split-left {
+    height: var(--band);
+    width: 100%;
+    min-height: 0; overflow: hidden; position: relative;
+  }
+  .hero-split-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 8% 18%;
+  }
+  .hero-split-right {
+    min-height: 0;
+    justify-content: center;
+    /* bottom padding clears the cue at rest; the JS dodge system softens it
+       if the docked player's lift pushes it over panel content instead */
+    padding: .75rem 1.25rem 80px;
+    gap: .5rem;
+  }
+  .featured-kicker { font-size: .7rem; margin-top: 0; margin-bottom: -.4rem; }
+  .featured-title { font-size: min(6.5cqi, 1.5rem); }
+  .featured-btns { flex-direction: row; flex-wrap: nowrap; gap: .5rem; width: auto; margin-top: 0; }
+  .f-btn { height: 38px; flex: 0 1 auto; }
+  .hero-icon { width: clamp(40px, min(18cqi, calc(var(--band) * .5)), 110px); }
+  .hero-name { font-size: clamp(1.8rem, min(16cqi, calc(var(--band) * .4)), 5rem); }
+}
+
+/* ── ABOUT HEADER ALIGNMENT ──
+   .bio-section has padding:0 (full-bleed photos), so its header carries its
+   own gutter - these mirror every .section padding override, in the same
+   cascade order, so "About" always lines up with the other section headers. */
+@media (min-width: 901px) and (max-width: 1199px) { .bio-section-header { padding-inline: clamp(1.5rem,4vw,3rem); } }
+@media (max-width: 900px) { .bio-section-header { padding-inline: 1.25rem; } }
+@media (max-width: 360px) { .bio-section-header { padding-inline: .75rem; } }
+@media (max-width: 520px) and (orientation: portrait) { .bio-section-header { padding-inline: 1rem; } }
+@media (max-height: 500px) and (orientation: landscape) { .bio-section-header { padding-inline: 1.25rem; } }
+@media (max-height: 360px) and (orientation: landscape) { .bio-section-header { padding-inline: 1rem; } }
+@media (max-aspect-ratio: 9/21) { .bio-section-header { padding-inline: .75rem; } }
+
+/* ── SHORT VIEWPORTS - trim panel chrome so the (shrinkable) art keeps
+   reasonable size when height is compressed ── */
+@media (max-height: 700px) {
+  .hero-split-right { padding-top: 1.25rem; gap: .75rem; }
+  .featured-title { font-size: min(6cqi, 1.35rem); }
+  .featured-kicker { font-size: .72rem; }
+}
+@media (max-height: 560px) {
+  .featured-badge { font-size: .4rem; padding: .25rem .7rem; margin-bottom: -.5rem; }
+}
+@media (max-height: 500px) {
+  .featured-kicker { font-size: .58rem; margin-top: 0; margin-bottom: -.35rem; }
+}

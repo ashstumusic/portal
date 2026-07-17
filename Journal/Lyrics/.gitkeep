@@ -1,0 +1,4 @@
+Drop lyrics .txt files here - filename becomes the title, file content
+is the raw lyrics (blank line between verses/sections). This file only
+keeps the folder itself present in git, which can't track empty
+directories - it isn't read as content. See CONTENT.md.

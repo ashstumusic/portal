@@ -1,0 +1,5 @@
+Drop entry .txt files here (same format as Essays - substack link
+optional, then "Title", optional subtitle, then "- Date", then body
+paragraphs). This file only keeps the folder itself present in git,
+which can't track empty directories - it isn't read as content.
+See CONTENT.md.

@@ -1,0 +1,58 @@
+name: Update site content
+
+# Regenerates releases.json / videos.json / journal.json from the Audio/,
+# Images/Releases/, Videos/, and Journal/ folders whenever they change, so
+# adding or removing a release/video/journal entry never needs an HTML or
+# JS edit - just add or delete files in those folders and push (or upload
+# directly via the GitHub web UI) and the live site picks it up.
+#
+# Deliberately does NOT trigger on changes to the generated *.json files
+# themselves, so this workflow's own commit can't re-trigger itself.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Audio/**"
+      - "Images/Releases/**"
+      - "Videos/**"
+      - "Journal/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-content
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history, not a shallow clone - generate_content.py uses
+          # `git log` to find each item's first-added date for ordering
+          # (e.g. which release is "latest"). A shallow clone would make
+          # that lookup come back empty and silently break ordering.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Generate releases.json / videos.json / journal.json
+        run: python3 scripts/generate_content.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add releases.json videos.json journal.json sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No content changes - nothing to commit."
+          else
+            git commit -m "Auto-update site content [skip ci]"
+            git push
+          fi
