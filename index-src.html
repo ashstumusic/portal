@@ -1246,8 +1246,8 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><img src="Icons/Youtube.webp" alt="" aria-hidden="true"/>YouTube</a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '" alt="" loading="lazy" aria-hidden="true"/>'
-: '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-hidden="true"></video>';
+? '<img src="' + escHtml(v.thumb) + '" alt="' + escHtml(v.title) + ' - Ash Stu video" loading="lazy"/>'
+: '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/
 // keyboard nav) - .vid-card wraps only the thumbnail (the "play"

@@ -6,26 +6,34 @@ import base64, io, json, re, sys, os
 from fontTools.subset import Subsetter, Options, load_font, save_font
 from PIL import Image
 
-ROOT = "/home/oem/Documents/Websites/Ash Music 2"
+ROOT = "/home/oem/Documents/Websites/Ash Music"
 os.chdir(ROOT)
 
-# ---------- fonts: subset -> woff2 -> base64 ----------
+# ---------- fonts: subset -> woff2 -> external file ----------
+SUBSET_DIR = "Fonts/subsetted"
+os.makedirs(SUBSET_DIR, exist_ok=True)
+
 UNICODES = "U+0020-007E,U+00B7,U+00E9,U+2013-2014,U+2018-201F,U+2026,U+2022,U+2605,U+2715"
-def font_b64(path, exact_text=None):
+FIGMENT_TEXT = "A figment of my own imagination."
+
+FONT_FILES = [
+    "Fonts/Header.ttf", "Fonts/Header-Italic.ttf",
+    "Fonts/j.d.ttf", "Fonts/Handmade.otf",
+    "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/Body.ttf",
+]
+FONT_RELPATHS = {}
+
+print("Subsetting fonts...")
+for f in FONT_FILES:
     opts = Options()
     opts.flavor = "woff2"
     opts.desubroutinize = True
     opts.hinting = False
     opts.drop_tables += ["FFTM", "meta"]
-    font = load_font(path, opts)
-    if exact_text is not None:
-        # This font is only ever used to render one fixed, hardcoded string
-        # (not arbitrary user content) - subsetting to exactly the
-        # characters that string uses, instead of the full site-wide
-        # charset, cuts a heavy decorative typeface down drastically.
-        # Computed from the literal text so it can't drift out of sync -
-        # if that text ever changes, this recomputes automatically.
-        codes = sorted(set(ord(c) for c in exact_text))
+    font = load_font(f, opts)
+    exact = FIGMENT_TEXT if f == "Fonts/j.d.ttf" else None
+    if exact is not None:
+        codes = sorted(set(ord(c) for c in exact))
     else:
         codes = []
         for r in UNICODES.replace("U+", "").split(","):
@@ -39,22 +47,14 @@ def font_b64(path, exact_text=None):
     ss.subset(font)
     buf = io.BytesIO()
     save_font(font, buf, opts)
-    data = buf.getvalue()
-    print(f"  font {path}: {os.path.getsize(path)//1024}KB -> {len(data)//1024}KB woff2")
-    return "data:font/woff2;base64," + base64.b64encode(data).decode()
-
-# "A figment of my own imagination." (index-src.html .bio-tagline) is the
-# only text j.d.ttf is ever used for - see the narrow-subset note above.
-FIGMENT_TEXT = "A figment of my own imagination."
-
-FONT_FILES = {
-    "Fonts/Header.ttf": None, "Fonts/Header-Italic.ttf": None,
-    "Fonts/j.d.ttf": None, "Fonts/Handmade.otf": None,
-    "Fonts/xperimental/Boiled-Pasta.ttf": None, "Fonts/Body.ttf": None,
-}
-print("Subsetting fonts...")
-for f in FONT_FILES:
-    FONT_FILES[f] = font_b64(f, exact_text=FIGMENT_TEXT if f == "Fonts/j.d.ttf" else None)
+    woff2_data = buf.getvalue()
+    stem = os.path.splitext(os.path.basename(f))[0]
+    out_name = stem + ".woff2"
+    out_path = os.path.join(SUBSET_DIR, out_name)
+    with open(out_path, "wb") as fh:
+        fh.write(woff2_data)
+    print(f"  font {f}: {os.path.getsize(f)//1024}KB -> {len(woff2_data)//1024}KB woff2 -> {out_path}")
+    FONT_RELPATHS[f] = f"{SUBSET_DIR}/{out_name}"
 
 # ---------- images: decode -> 90% scale -> webp -> base64 ----------
 IMG_CACHE = {}
@@ -79,10 +79,9 @@ def img_b64(path, quality=80):
 
 # ---------- CSS ----------
 css = open("styles.css").read()
-for f, uri in FONT_FILES.items():
-    css = css.replace(f"url('{f}') format('truetype')", f"url({uri}) format('woff2')")
-    css = css.replace(f"url('{f}') format('opentype')", f"url({uri}) format('woff2')")
-assert "Fonts/" not in css, "unreplaced font url"
+for src_path, rel_path in FONT_RELPATHS.items():
+    css = css.replace(f"url('{src_path}') format('truetype')", f"url('{rel_path}') format('woff2')")
+    css = css.replace(f"url('{src_path}') format('opentype')", f"url('{rel_path}') format('woff2')")
 
 def minify_css(s):
     # protect data URIs
@@ -102,10 +101,14 @@ css_min = minify_css(css)
 # ---------- HTML ----------
 html = open("index-src.html").read()
 
-# drop stylesheet link + preloads, inject inline style
+# drop stylesheet link, inject inline style + font preloads
 html = re.sub(r'<link rel="stylesheet"[^>]*>', "", html)
 html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
-html = html.replace("</head>", f"<style>{css_min}</style></head>")
+preloads = "\n".join(
+    f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
+    for rel in FONT_RELPATHS.values()
+)
+html = html.replace("</head>", f"{preloads}\n<style>{css_min}</style></head>")
 
 # favicon -> inline webp
 fav = img_b64("favicon.png", quality=75)

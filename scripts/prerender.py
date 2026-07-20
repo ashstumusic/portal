@@ -79,9 +79,9 @@ def render_video_card(v, v_idx):
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
                    f'<img src="Icons/Youtube.webp" alt="" aria-hidden="true"/>YouTube</a>')
     if v.get('thumb'):
-        thumb_el = f'<img src="{esc(v["thumb"])}" alt="" loading="lazy" aria-hidden="true"/>'
+        thumb_el = f'<img src="{esc(v["thumb"])}" alt="{esc(v["title"])} - Ash Stu video" loading="lazy"/>'
     else:
-        thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-hidden="true"></video>'
+        thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline></video>'
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-card" tabindex="0" role="button" '
             f'aria-label="Play &quot;{esc(v["title"])}&quot;" data-video-index="{v_idx}">'
