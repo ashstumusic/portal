@@ -145,7 +145,7 @@ def repl_src(m):
     # quality. Only above-the-fold LCP images (hero, featured) stay inline.
     if "/epk-" in path or path.startswith("Images/Profile-"):
         return m.group(0)
-    q = 82 if "hero-" in path or "featured-" in path else 78
+    q = 65 if "hero-" in path else 78
     return f'src="{img_b64(path, quality=q)}"'
 print("Inlining images...")
 _script_re = re.compile(r'(<script\b[^>]*>.*?</script>)', re.S)

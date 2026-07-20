@@ -122,7 +122,8 @@ f'rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" alt="Substack"/>S
                        f'{JOURNAL_LISTEN_SVG}<span>Listen</span></button>')
     return (f'<article class="journal-entry">'
             f'<div class="journal-entry-head" role="button" tabindex="0" aria-expanded="false" '
-            f'aria-controls="journal-body-{idx}" id="journal-toggle-{idx}">'
+            f'aria-controls="journal-body-{idx}" id="journal-toggle-{idx}" '
+            f'aria-label="Toggle {esc(entry["headline"])}">'
             f'<span class="journal-kicker">{kicker}</span>'
             f'<h3 class="journal-title">{esc(entry["headline"])}</h3>{dek_html}'
             f'<div class="journal-byline">{byline}</div>'

@@ -260,7 +260,7 @@
 <link rel="stylesheet" href="styles.css?v=76">
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
 <link rel="preload" as="image" href="Images/embedded/featured-my-morning-star.webp" fetchpriority="high">
-<script data-goatcounter="https://ashstu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://ashstu.goatcounter.com/count" defer src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <noscript><style>.nav-toggle,.nav-drawer,.vid-lightbox,#player-bar,.fab-music{display:none!important}.video-grid::after,.releases-grid::after{content:'Enable JavaScript to play music and videos inline. Titles and links above still work without it.';color:rgb(from var(--ink) r g b / .5);font-size:.84rem;display:block;padding:2rem;text-align:center}</style></noscript>
@@ -316,7 +316,7 @@
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
         <img src="Images/Icon.webp" alt="Ash Stu" class="hero-icon" id="hero-icon"/>
-        <h1 class="hero-name">Ash Stu</h1>
+        <h1 class="hero-name">Ash Stu<span class="sr-only"> - Outsider-Folk Singer-Songwriter</span></h1>
       </div>
     </div>
   </div>
@@ -421,7 +421,7 @@
     <span id="np-dur" class="np-time">&middot;</span>
   </div>
   <div class="np-left" id="np-expand">
-    <img id="np-art" class="np-art" src="" alt=""/>
+    <img id="np-art" class="np-art" src="" alt="Now playing"/>
     <div class="np-info">
       <span id="np-track" aria-live="polite">·</span>
       <span id="np-album" aria-hidden="true"></span>
@@ -458,7 +458,7 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
     <div class="fs-art-wrap">
-      <img id="fs-art" class="fs-art" src="" alt=""/>
+      <img id="fs-art" class="fs-art" src="" alt="Now playing"/>
     </div>
     <div class="fs-info">
       <span class="fs-track" id="fs-track"></span>
@@ -1287,7 +1287,7 @@ var listenBtn = entry.audio
 ? '<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="' + idx + '" aria-label="Listen to audio version of ' + escHtml(entry.headline) + '">' + JOURNAL_LISTEN_SVG + '<span>Listen</span></button>'
 : '';
 return '<article class="journal-entry">' +
-'<div class="journal-entry-head" role="button" tabindex="0" aria-expanded="false" aria-controls="journal-body-' + idx + '" id="journal-toggle-' + idx + '">' +
+'<div class="journal-entry-head" role="button" tabindex="0" aria-expanded="false" aria-controls="journal-body-' + idx + '" id="journal-toggle-' + idx + '" aria-label="Toggle ' + escHtml(entry.headline) + '">' +
 '<span class="journal-kicker">' + kicker + '</span>' +
 '<h3 class="journal-title">' + escHtml(entry.headline) + '</h3>' +
 dekHtml +
