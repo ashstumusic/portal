@@ -6,7 +6,7 @@ import base64, io, json, re, sys, os
 from fontTools.subset import Subsetter, Options, load_font, save_font
 from PIL import Image
 
-ROOT = "/home/oem/Documents/Websites/Ash Music"
+ROOT = "/home/oem/Documents/Websites/Ash Music 2"
 os.chdir(ROOT)
 
 # ---------- fonts: subset -> woff2 -> base64 ----------
