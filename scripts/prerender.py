@@ -47,11 +47,11 @@ def render_release_card(rel, r_idx):
     if rel.get('apple'):
         btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Apple Music" itemprop="url">'
-                  f'<img src="Icons/Apple_Music.webp" alt="" aria-hidden="true"/> Apple Music</a>')
+                   f'<img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>')
     if rel.get('spotify'):
         btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
-                  f'<img src="Icons/Spotify.webp" alt="" aria-hidden="true"/> Spotify</a>')
+                   f'<img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>')
     if not btns:
         btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>'
     tracklist = ''
@@ -77,7 +77,7 @@ def render_video_card(v, v_idx):
     if v.get('youtube'):
         yt_btn = (f'<a class="vid-yt" href="{esc(v["youtube"])}" target="_blank" rel="noopener" '
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
-                   f'<img src="Icons/Youtube.webp" alt="" aria-hidden="true"/>YouTube</a>')
+                   f'<img src="Icons/Youtube.webp" alt="YouTube"/>YouTube</a>')
     if v.get('thumb'):
         thumb_el = f'<img src="{esc(v["thumb"])}" alt="{esc(v["title"])} - Ash Stu video" loading="lazy"/>'
     else:
@@ -114,8 +114,7 @@ def render_journal_entry(entry, idx):
     source_html = ''
     if entry.get('substack'):
         source_html = (f'<p class="journal-source"><a href="{esc(entry["substack"])}" target="_blank" '
-                        f'rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" alt="" '
-                        f'aria-hidden="true"/>Substack</a></p>')
+f'rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" alt="Substack"/>Substack</a></p>')
     listen_btn = ''
     if entry.get('audio'):
         listen_btn = (f'<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="{idx}" '
@@ -175,10 +174,10 @@ def inject_featured(page, rel):
     btns = ''
     if rel.get('apple'):
         btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener" class="f-btn" '
-                  f'aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="" aria-hidden="true"/> Apple Music</a>')
+                   f'aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>')
     if rel.get('spotify'):
         btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener" class="f-btn" '
-                  f'aria-label="Spotify"><img src="Icons/Spotify.webp" alt="" aria-hidden="true"/> Spotify</a>')
+                   f'aria-label="Spotify"><img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>')
     page = re.sub(
         r'(<div class="featured-btns">).*?(</div>)',
         lambda m: m.group(1) + btns + m.group(2),
@@ -228,11 +227,12 @@ def main():
     # otherwise go stale here).
     with open('lyrics.json', encoding='utf-8') as f:
         lyrics = json.load(f)
-    def embed(dom_id, data):
-        payload = json.dumps(data, separators=(',', ':')).replace('</', '<\\/')
-        return f'<script type="application/json" id="{dom_id}">{payload}</script>'
-    blocks = (embed('data-releases', releases) + embed('data-videos', videos)
-              + embed('data-journal', journal) + embed('data-lyrics', lyrics))
+    combined = {
+        'releases': releases, 'videos': videos,
+        'journal': journal, 'lyrics': lyrics,
+    }
+    payload = json.dumps(combined, separators=(',', ':')).replace('</', '<\\/')
+    blocks = f'<script type="application/json" id="data-all">{payload}</script>'
     idx = page.index('<script>')
     page = page[:idx] + blocks + page[idx:]
 

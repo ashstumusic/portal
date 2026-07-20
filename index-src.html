@@ -269,7 +269,7 @@
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu · home">
     <div class="hero-brand">
-      <img src="Images/Icon.webp" alt="" class="hero-icon"/>
+      <img src="Images/Icon.webp" alt="Ash Stu" class="hero-icon"/>
       <span class="hero-name" style="font-size:1.805rem;padding-top:0;line-height:1">Ash Stu</span>
     </div>
   </a>
@@ -315,7 +315,7 @@
     <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" width="1400" height="950"/>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
-        <img src="Images/Icon.webp" alt="" class="hero-icon" id="hero-icon"/>
+        <img src="Images/Icon.webp" alt="Ash Stu" class="hero-icon" id="hero-icon"/>
         <h1 class="hero-name">Ash Stu</h1>
       </div>
     </div>
@@ -412,7 +412,7 @@
 </section>
 </main>
 <footer role="contentinfo">
-  <a href="#" class="footer-logo" aria-label="Ash Stu · back to top" title="Back to top"><img src="Images/Icon.webp" alt=""/></a>
+  <a href="#" class="footer-logo" aria-label="Ash Stu · back to top" title="Back to top"><img src="Images/Icon.webp" alt="Ash Stu"/></a>
 </footer>
 <div id="player-bar" role="region" aria-label="Now playing">
   <div id="np-bar-progress">
@@ -495,8 +495,8 @@
       <input type="range" id="fs-vol-slider" class="vol-slider" min="0" max="1" step="0.01" value="1" aria-label="Volume"/>
     </div>
     <div class="fs-platforms" id="fs-platforms">
-      <a href="#" id="fs-apple" target="_blank" rel="noopener" class="f-btn" aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="" aria-hidden="true"/> Apple Music</a>
-      <a href="#" id="fs-spotify" target="_blank" rel="noopener" class="f-btn" aria-label="Spotify"><img src="Icons/Spotify.webp" alt="" aria-hidden="true"/> Spotify</a>
+      <a href="#" id="fs-apple" target="_blank" rel="noopener" class="f-btn" aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>
+      <a href="#" id="fs-spotify" target="_blank" rel="noopener" class="f-btn" aria-label="Spotify"><img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>
     </div>
   </div>
 </div>
@@ -510,7 +510,7 @@
       <span class="lb-title" id="lb-title"></span>
       <div class="lb-actions">
         <a class="vid-yt" id="lb-yt" href="#" target="_blank" rel="noopener" aria-label="Watch on YouTube">
-          <img src="Icons/Youtube.webp" alt="" aria-hidden="true"/>YouTube
+<img src="Icons/Youtube.webp" alt="YouTube"/>YouTube
         </a>
         <button class="lb-close" id="lb-close" aria-label="Close" title="Close">✕</button>
       </div>
@@ -1226,8 +1226,8 @@ if (p && p.then) p.then(function() { thumbVideo.pause(); }).catch(function() {})
 function renderReleaseCard(rel, rIdx) {
 var kindWord = rel.type === 'Single' ? 'Single artwork for ' : rel.type === 'EP' ? 'EP artwork for ' : 'Album cover for ';
 var btns = '';
-if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><img src="Icons/Apple_Music.webp" alt="" aria-hidden="true"/> Apple Music</a>';
-if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><img src="Icons/Spotify.webp" alt="" aria-hidden="true"/> Spotify</a>';
+if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>';
+if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>';
 if (!btns) btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>';
 var tracklist = rel.tracks.length > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
@@ -1243,7 +1243,7 @@ tracklist +
 }
 function renderVideoCard(v, vIdx) {
 var ytBtn = v.youtube
-? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><img src="Icons/Youtube.webp" alt="" aria-hidden="true"/>YouTube</a>'
+? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><img src="Icons/Youtube.webp" alt="YouTube"/>YouTube</a>'
 : '';
 var thumbEl = v.thumb
 ? '<img src="' + escHtml(v.thumb) + '" alt="' + escHtml(v.title) + ' - Ash Stu video" loading="lazy"/>'
@@ -1275,7 +1275,7 @@ if (entry.readMin) metaParts.push(entry.readMin + ' min read');
 var byline = metaParts.map(function(p, i) { return i === 0 ? p : '<span class="journal-dot">&middot;</span>' + p; }).join('');
 var kicker = entry.category === 'essay' ? 'Essay' : entry.category === 'entry' ? 'Entry' : 'Lyrics';
 var sourceHtml = entry.substack
-? '<p class="journal-source"><a href="' + escHtml(entry.substack) + '" target="_blank" rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" alt="" aria-hidden="true"/>Substack</a></p>'
+? '<p class="journal-source"><a href="' + escHtml(entry.substack) + '" target="_blank" rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" alt="Substack"/>Substack</a></p>'
 : '';
 // entry.audio is only present once a matching mp3 shows up in
 // Journal/Audio/ - no file yet, no button, nothing to click.
@@ -1313,8 +1313,8 @@ if (title) title.textContent = rel.name;
 var btnsEl = document.querySelector('.featured-btns');
 if (btnsEl) {
 var h = '';
-if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener" class="f-btn" aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="" aria-hidden="true"/> Apple Music</a>';
-if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener" class="f-btn" aria-label="Spotify"><img src="Icons/Spotify.webp" alt="" aria-hidden="true"/> Spotify</a>';
+if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener" class="f-btn" aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>';
+if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener" class="f-btn" aria-label="Spotify"><img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>';
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming
@@ -1360,9 +1360,9 @@ if (typeof initMarquees === 'function') setTimeout(initMarquees, 50);
 function loadDynamicContent() {
 // Prerendered pages carry the content JSON embedded inline - render from
 // it immediately, zero fetches on the critical path.
-var embedded = [readEmbedded('data-releases'), readEmbedded('data-videos'), readEmbedded('data-journal'), readEmbedded('data-lyrics')];
-var haveEmbedded = embedded[0] !== null;
-if (haveEmbedded) renderAllContent(embedded, false);
+var dataAll = readEmbedded('data-all');
+var embedded = dataAll ? [dataAll.releases, dataAll.videos, dataAll.journal, dataAll.lyrics] : [null];
+if (embedded[0]) renderAllContent(embedded, false);
 // Still revalidate against the live .json files: content added through
 // the GitHub web UI (no local rebuild) updates those without touching
 // the embedded copy. Only re-render if something actually changed.
