@@ -47,11 +47,11 @@ def render_release_card(rel, r_idx):
     if rel.get('apple'):
         btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Apple Music" itemprop="url">'
-                   f'<img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>')
+                   f'<img src="Icons/Apple_Music.webp" width="17" height="17" alt="Apple Music" loading="lazy"/> Apple Music</a>')
     if rel.get('spotify'):
         btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
-                   f'<img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>')
+                   f'<img src="Icons/Spotify.webp" width="17" height="17" alt="Spotify" loading="lazy"/> Spotify</a>')
     if not btns:
         btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>'
     tracklist = ''
@@ -77,7 +77,7 @@ def render_video_card(v, v_idx):
     if v.get('youtube'):
         yt_btn = (f'<a class="vid-yt" href="{esc(v["youtube"])}" target="_blank" rel="noopener" '
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
-                   f'<img src="Icons/Youtube.webp" alt="YouTube"/>YouTube</a>')
+                   f'<img src="Icons/Youtube.webp" width="16" height="16" alt="YouTube" loading="lazy"/>YouTube</a>')
     if v.get('thumb'):
         thumb_el = f'<img src="{esc(v["thumb"])}" alt="{esc(v["title"])} - Ash Stu video" loading="lazy"/>'
     else:
@@ -114,7 +114,7 @@ def render_journal_entry(entry, idx):
     source_html = ''
     if entry.get('substack'):
         source_html = (f'<p class="journal-source"><a href="{esc(entry["substack"])}" target="_blank" '
-f'rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" alt="Substack"/>Substack</a></p>')
+f'rel="noopener" class="vid-yt"><img src="Icons/Substack.webp" width="16" height="16" alt="Substack" loading="lazy"/>Substack</a></p>')
     listen_btn = ''
     if entry.get('audio'):
         listen_btn = (f'<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="{idx}" '

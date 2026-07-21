@@ -421,7 +421,7 @@
     <span id="np-dur" class="np-time">&middot;</span>
   </div>
   <div class="np-left" id="np-expand">
-    <img id="np-art" class="np-art" src="" alt="Now playing"/>
+    <img id="np-art" class="np-art" src="" alt="Now playing" hidden>
     <div class="np-info">
       <span id="np-track" aria-live="polite">·</span>
       <span id="np-album" aria-hidden="true"></span>
@@ -458,7 +458,7 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
     <div class="fs-art-wrap">
-      <img id="fs-art" class="fs-art" src="" alt="Now playing"/>
+      <img id="fs-art" class="fs-art" src="" alt="Now playing" hidden>
     </div>
     <div class="fs-info">
       <span class="fs-track" id="fs-track"></span>
@@ -688,7 +688,7 @@ if (_npThumb) _npThumb.style.transform = 'translateX(0)';
 _npCur.textContent = '0:00';
 _npDur.textContent = '·';
 var art = _npJournalMode ? '' : npGetArt();
-if (_npArt) _npArt.src = art ? encodeURI(art) : '';
+if (_npArt) { _npArt.src = art ? encodeURI(art) : ''; _npArt.hidden = !art; }
 npUpdateMediaSession(track, album, art);
 try { sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
 npShow();
@@ -908,6 +908,7 @@ var art = npGetArt();
 if (art) {
 var encoded = encodeURI(art);
 fsArt.src = encoded;
+fsArt.hidden = false;
 fsBg.style.backgroundImage = 'url("' + encoded + '")';
 }
 }
@@ -1017,7 +1018,7 @@ _npTrackEl.dataset.label = '1. ' + t.title;
 npMarquee(_npTrackEl);
 _npAlbumEl.textContent = rel.name;
 var art = npGetArt();
-if (_npArt && art) _npArt.src = encodeURI(art);
+if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
 npAudio.src = t.file; _src = t.file;
 }
 var _tracklistDebounce = 0;
