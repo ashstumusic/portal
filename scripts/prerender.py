@@ -168,7 +168,7 @@ def inject_featured(page, rel):
         page, count=1,
     )
     page = re.sub(
-        r'(<h2 class="featured-title">)[^<]*(</h2>)',
+        r'(<p class="featured-title">)[^<]*(</p>)',
         lambda m: m.group(1) + esc(rel['name']) + m.group(2),
         page, count=1,
     )
