@@ -290,7 +290,7 @@ function emailAll() {
   api('/api/admin/subscribers').then(function(data) {
     if (!data.subscribers || !data.subscribers.length) return;
     var emails = data.subscribers.map(function(s) { return s.email; });
-    window.location.href = 'mailto:stubblefieldashton@gmail.com?bcc=' + encodeURIComponent(emails.join(','));
+    window.location.href = 'mailto:ashstumusic@gmail.com?bcc=' + encodeURIComponent(emails.join(','));
   });
 }
 
