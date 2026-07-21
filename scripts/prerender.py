@@ -114,7 +114,7 @@ def render_journal_entry(entry, idx):
     source_html = ''
     if entry.get('substack'):
         source_html = (f'<p class="journal-source"><a href="{esc(entry["substack"])}" target="_blank" '
-f'rel="noopener noreferrer" class="vid-yt"><img src="Icons/Substack.webp" width="16" height="16" alt="Substack" loading="lazy"/>Substack</a></p>')
+f'rel="noopener noreferrer" class="vid-yt" aria-label="Read on Substack"><img src="Icons/Substack.webp" width="16" height="16" alt="Substack" loading="lazy"/>Substack</a></p>')
     listen_btn = ''
     if entry.get('audio'):
         listen_btn = (f'<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="{idx}" '
