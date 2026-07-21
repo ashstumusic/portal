@@ -81,7 +81,7 @@ def render_video_card(v, v_idx):
     if v.get('thumb'):
         thumb_el = f'<img src="{esc(v["thumb"])}" alt="{esc(v["title"])} - Ash Stu video" loading="lazy"/>'
     else:
-        thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline></video>'
+        thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail"></video>'
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-card" tabindex="0" role="button" '
             f'aria-label="Play &quot;{esc(v["title"])}&quot;" data-video-index="{v_idx}">'

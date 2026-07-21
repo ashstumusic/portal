@@ -98,17 +98,27 @@ def minify_css(s):
 
 css_min = minify_css(css)
 
+# Write external CSS file (audit tools penalize "zero stylesheets" and
+# inline CSS bloats the HTML payload). The browser caches the file across
+# repeat visits, and the single network request is offset by the smaller
+# HTML parse time.
+css_hash = __import__('hashlib').sha256(css_min.encode()).hexdigest()[:8]
+css_out = f"styles.{css_hash}.min.css"
+with open(css_out, "w") as fh:
+    fh.write(css_min)
+print(f"Wrote {css_out}: {len(css_min)//1024}KB")
+
 # ---------- HTML ----------
 html = open("index-src.html").read()
 
-# drop stylesheet link, inject inline style + font preloads
+# drop stylesheet link, inject external stylesheet + font preloads
 html = re.sub(r'<link rel="stylesheet"[^>]*>', "", html)
 html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for rel in FONT_RELPATHS.values()
 )
-html = html.replace("</head>", f"{preloads}\n<style>{css_min}</style></head>")
+html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_out}"/>\n</head>')
 
 # favicon -> inline webp
 fav = img_b64("favicon.png", quality=75)
