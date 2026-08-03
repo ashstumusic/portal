@@ -117,13 +117,13 @@ html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for rel in FONT_RELPATHS.values()
-)
+) + '\n<link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">'
 html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_out}"/>\n</head>')
 
-# favicon -> inline webp
-fav = img_b64("favicon.png", quality=75)
-html = re.sub(r'<link rel="icon"[^>]*/>', f'<link rel="icon" type="image/webp" href="{fav}"/>', html)
-html = re.sub(r'<link rel="apple-touch-icon"[^>]*/>\n?', "", html)
+# favicon -> external webp file (10KB vs ~80KB inlined base64 in the
+# critical HTML payload; one small cached fetch wins for a page-load win)
+html = re.sub(r'<link rel="icon"[^>]*/>', '<link rel="icon" type="image/webp" href="favicon.webp"/>', html)
+html = re.sub(r'<link rel="apple-touch-icon"[^>]*/>\n?', '<link rel="apple-touch-icon" href="favicon.webp"/>', html)
 
 # minify JSON-LD
 def min_jsonld(m):
@@ -146,6 +146,12 @@ def repl_src(m):
     # platform buttons, fullscreen player...) - one cached file the
     # browser fetches once beats several duplicated inline copies.
     if path.startswith("Icons/") or path == "Images/Icon.webp":
+        return m.group(0)
+    # The hero is preloaded in <head> with fetchpriority="high", so shipping
+    # it as an external file costs no LCP round-trip while keeping the
+    # critical HTML payload lean (an inline 60-80KB base64 hero bloats the
+    # first byte more than the extra request saves).
+    if "hero-" in path:
         return m.group(0)
     # Below-the-fold photos (press kit strip, about section) stay external:
     # inlining them as base64 bloats the critical HTML payload ~95KB for

@@ -156,7 +156,8 @@ html {
 }
 .skip:focus { top: 1rem; }
 ::selection { background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
-:focus-visible { outline: none; box-shadow: var(--focus); border-radius: 8px; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
 
 /* ════════════════════════════════════════════
    NAV - glass bar
