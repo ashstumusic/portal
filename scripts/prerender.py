@@ -62,8 +62,8 @@ def render_release_card(rel, r_idx):
     return (f'<article class="rel-card" aria-label="{esc(rel["name"])} - {esc(rel["type"])} by Ash Stu" '
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-art-wrap">'
-            f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"] + " by Ash Stu")}" '
-            f'class="rel-art" loading="lazy" itemprop="image"/>'
+            f'<img src="{esc(rel["art"])}" alt="Album artwork: {esc(kind_word + rel["name"] + " by Ash Stu")}" '
+            f'class="rel-art" width="560" height="560" loading="lazy" itemprop="image"/>'
             f'<div class="rel-overlay"><div class="rel-overlay-inner">'
             f'<p class="rel-cat">{esc(rel["type"])}</p>'
             f'<h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>'
@@ -79,7 +79,7 @@ def render_video_card(v, v_idx):
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
                    f'<img src="Icons/Youtube.webp" width="16" height="16" alt="YouTube" loading="lazy"/>YouTube</a>')
     if v.get('thumb'):
-        thumb_el = f'<img src="{esc(v["thumb"])}" alt="{esc(v["title"])} - Ash Stu video" loading="lazy"/>'
+        thumb_el = f'<img src="{esc(v["thumb"])}" alt="Music video: {esc(v["title"])} by Ash Stu" width="640" height="360" loading="lazy"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
     return (f'<div class="vid-card-wrap">'
