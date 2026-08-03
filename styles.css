@@ -1787,12 +1787,16 @@ body.player-active { padding-bottom: 68px; }
   gap: .5rem; font-weight: 700;
   box-shadow: 0 4px 18px rgb(from var(--red) r g b / .35);
 }
+.btn-epk-dl span {
+  display: flex; flex-direction: column;
+  justify-content: center; line-height: 1.15;
+}
 .btn-epk-dl:hover {
   background: rgb(from var(--red) calc(r - 24) calc(g - 12) calc(b - 12)) ;
   border-color: rgb(from var(--red) calc(r - 24) calc(g - 12) calc(b - 12));
   box-shadow: 0 8px 28px rgb(from var(--red) r g b / .45);
-  transform: translateY(-2px) scale(1.02);
 }
+.btn-epk-dl:active { transform: none; }
 
 /* ════════════════════════════════════════════
    RESPONSIVE
