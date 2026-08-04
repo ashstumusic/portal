@@ -47,11 +47,11 @@ def render_release_card(rel, r_idx):
     if rel.get('apple'):
         btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Apple Music" itemprop="url">'
-                   f'<img src="Icons/Apple_Music.webp" width="17" height="17" alt="Apple Music" loading="lazy"/> Apple Music</a>')
+                   f'<span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>')
     if rel.get('spotify'):
         btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
-                   f'<img src="Icons/Spotify.webp" width="17" height="17" alt="Spotify" loading="lazy"/> Spotify</a>')
+                   f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
     if not btns:
         btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>'
     tracklist = ''
@@ -77,7 +77,7 @@ def render_video_card(v, v_idx):
     if v.get('youtube'):
         yt_btn = (f'<a class="vid-yt" href="{esc(v["youtube"])}" target="_blank" rel="noopener noreferrer" '
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
-                   f'<img src="Icons/Youtube.webp" width="16" height="16" alt="YouTube" loading="lazy"/>YouTube</a>')
+                   f'<span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>')
     if v.get('thumb'):
         thumb_el = f'<img src="{esc(v["thumb"])}" alt="Music video: {esc(v["title"])} by Ash Stu" width="640" height="360" loading="lazy"/>'
     else:
@@ -114,7 +114,7 @@ def render_journal_entry(entry, idx):
     source_html = ''
     if entry.get('substack'):
         source_html = (f'<p class="journal-source"><a href="{esc(entry["substack"])}" target="_blank" '
-f'rel="noopener noreferrer" class="vid-yt" aria-label="Read on Substack"><img src="Icons/Substack.webp" width="16" height="16" alt="Substack" loading="lazy"/>Substack</a></p>')
+f'rel="noopener noreferrer" class="vid-yt" aria-label="Read on Substack"><span class="pt pt--substack" aria-hidden="true"></span>Substack</a></p>')
     listen_btn = ''
     if entry.get('audio'):
         listen_btn = (f'<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="{idx}" '
@@ -175,10 +175,10 @@ def inject_featured(page, rel):
     btns = ''
     if rel.get('apple'):
         btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="f-btn" '
-                   f'aria-label="Apple Music"><img src="Icons/Apple_Music.webp" alt="Apple Music"/> Apple Music</a>')
+                   f'aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>')
     if rel.get('spotify'):
         btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="f-btn" '
-                   f'aria-label="Spotify"><img src="Icons/Spotify.webp" alt="Spotify"/> Spotify</a>')
+                   f'aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
     page = re.sub(
         r'(<div class="featured-btns">).*?(</div>)',
         lambda m: m.group(1) + btns + m.group(2),

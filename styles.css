@@ -239,7 +239,7 @@ html {
   transition: opacity .3s var(--ease), transform .3s var(--ease); text-decoration: none;
 }
 .nav-platform:hover { opacity: .9; transform: scale(1.15); }
-.nav-platform img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; }
+.nav-platform .pt { width: 26px; height: 26px; border-radius: 50%; }
 .nav-toggle {
   display: none; background: rgba(255,255,255,.06);
   border: 1px solid rgb(from var(--paper) r g b / .2); cursor: pointer;
@@ -311,7 +311,7 @@ html {
   transition: opacity .3s var(--ease), transform .3s var(--ease-spring);
 }
 .drawer-platforms a:hover { opacity: 1; padding-left: 0 !important; transform: scale(1.15); }
-.drawer-platforms img { width: 30px; height: 30px; object-fit: contain; border-radius: 50%; }
+.drawer-platforms .pt { width: 30px; height: 30px; border-radius: 50%; }
 
 /* ════════════════════════════════════════════
    HERO SPLIT - photo left, release right
@@ -470,6 +470,15 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
 }
 .btn:active { transform: scale(.97); }
+/* Platform logos as CSS backgrounds: one class per brand, sized by
+   context (nav/drawer/card buttons) via the .nav-platform .pt & co rules.
+   Keeps brand art exact while dropping dozens of duplicate <img> tags. */
+.pt { display: inline-block; flex-shrink: 0; background: center/contain no-repeat; }
+.pt--apple { background-image: url('Icons/Apple_Music.webp'); }
+.pt--spotify { background-image: url('Icons/Spotify.webp'); }
+.pt--youtube { background-image: url('Icons/Youtube.webp'); }
+.pt--substack { background-image: url('Icons/Substack.webp'); }
+.pt--patreon { background-image: url('Icons/Patreon.webp'); }
 .btn-fill {
   background: var(--ink);
   color: var(--paper); border: 1px solid var(--ink);
@@ -638,8 +647,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .rel-btn.rel-btn--label { font-size: .66rem; height: 44px; }
 .rel-btns:has(.rel-btn--label) { padding: .35rem; }
 .f-btn:active { transform: scale(.96); }
-.f-btn img { width: 17px; height: 17px; object-fit: contain; border-radius: 50%; transition: transform .2s var(--ease); }
-.f-btn:hover img { transform: scale(1.1); }
+.f-btn .pt { width: 17px; height: 17px; border-radius: 50%; transition: transform .2s var(--ease); }
+.f-btn:hover .pt { transform: scale(1.1); }
 .f-btn:hover { transform: translateY(-1px); }
 .f-btn.dl { color: var(--ink); background: var(--gold); border-color: var(--gold); font-weight: 600; box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .3); }
 /* Already gold at rest, so the shared ::after overlay (also gold)
@@ -756,8 +765,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .rel-btn:hover::after { opacity: 1; }
 .rel-btn:active { transform: scale(.96); }
-.rel-btn img { width: 17px; height: 17px; object-fit: contain; border-radius: 50%; transition: transform .2s var(--ease); }
-.rel-btn:hover img { transform: scale(1.1); }
+.rel-btn .pt, .f-btn .pt { width: 17px; height: 17px; border-radius: 50%; transition: transform .2s var(--ease); }
+.rel-btn:hover .pt, .f-btn:hover .pt { transform: scale(1.1); }
 .rel-btn:hover { color: var(--ink); transform: translateY(-1px); }
 .rel-btn.dl {
   color: var(--ink); font-weight: 600;
@@ -897,8 +906,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .vid-yt:hover::after { opacity: 1; }
 .vid-yt:active { transform: scale(.96); }
-.vid-yt img { width: 16px; height: 16px; object-fit: contain; border-radius: 50%; transition: transform .2s var(--ease); }
-.vid-yt:hover img { transform: scale(1.1); }
+.vid-yt .pt { width: 16px; height: 16px; border-radius: 50%; transition: transform .2s var(--ease); }
+.vid-yt:hover .pt { transform: scale(1.1); }
 .vid-yt:hover { color: var(--ink); transform: translateY(-1px); }
 
 /* Lightbox - glass overlay */
