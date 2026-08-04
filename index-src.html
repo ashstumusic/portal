@@ -337,7 +337,7 @@
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h">
   <div class="epk-body">
-    <h2 class="section-h section-h--tight" id="epk-h">Press Kit</h2>
+    <h2 class="section-h section-h--tight" id="epk-h">For Bookers &amp; Press</h2>
     <p class="epk-text">Songs and photos<br/>for booking and press.</p>
     <a href="ash-stu-press-kit.zip" download class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit" aria-label="Download Press Kit">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -354,10 +354,37 @@
   </div>
 </section>
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">
-  <h2 class="section-h" id="contact-h">Contact</h2>
+  <h2 class="section-h" id="contact-h">Say Hello</h2>
   <div class="section-inner">
     <div class="contact-inner">
-      <p class="contact-intro">For shows, press, or just to say something - reach out directly.</p>
+      <p class="contact-intro">Book a show, send a note to the press, or just tell me what the songs meant to you. I answer every message.</p>
+      <form class="form" id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="cf-name">Name</label>
+            <input class="form-input" type="text" id="cf-name" name="name" autocomplete="name" placeholder="Your name" required/>
+            <span class="form-error">Tell me who you are.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cf-email">Email</label>
+            <input class="form-input" type="email" id="cf-email" name="email" autocomplete="email" placeholder="you@example.com" required/>
+            <span class="form-error">A working email, please.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-message">What's on your mind? <span class="form-hint">(shows, press, stories)</span></label>
+          <textarea class="form-textarea" id="cf-message" name="message" rows="5" placeholder="Tell me about the venue, the date, the occasion..." required></textarea>
+          <span class="form-error">A line or two of message goes a long way.</span>
+        </div>
+        <div class="form-subscribe">
+          <input type="checkbox" id="cf-subscribe" name="subscribe"/>
+          <label for="cf-subscribe">Also put me on the mailing list for new songs.</label>
+        </div>
+        <span id="form-ok">Message sent. I'll get back to you soon.</span>
+        <span id="form-err">That didn't go through - try the email below instead.</span>
+        <button type="submit" class="btn btn-fill" id="contact-submit">Send it</button>
+      </form>
+      <p class="form-note">Prefer plain email? Write to me directly.</p>
       <a href="mailto:ashstumusic@gmail.com" class="contact-email-link" aria-label="Email Ash Stu">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         ashstumusic@gmail.com
@@ -366,7 +393,7 @@
   </div>
 </section>
 <section class="section releases-section" id="music" aria-labelledby="music-h">
-  <h2 class="section-h" id="music-h">Music</h2>
+  <h2 class="section-h" id="music-h">Discography</h2>
   <div class="section-inner">
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
@@ -392,7 +419,7 @@
 </section>
 <section class="bio-section" id="about" aria-labelledby="about-h">
   <div class="bio-section-header">
-    <h2 class="section-h" id="about-h">About</h2>
+    <h2 class="section-h" id="about-h">Who am I?</h2>
   </div>
   <div class="bio-body">
     <!-- One cream split-card, same object language as the contact card and
@@ -1619,6 +1646,55 @@ function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); raf
 start();
 if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
+})();
+(function() {
+var form = document.getElementById('contact-form');
+if (!form) return;
+var okEl = document.getElementById('form-ok');
+var errEl = document.getElementById('form-err');
+var submitBtn = document.getElementById('contact-submit');
+function setErr(id, on) {
+var g = document.getElementById(id).closest('.form-group');
+if (!g) return;
+if (on) g.classList.add('err'); else g.classList.remove('err');
+}
+function clearErrs() { setErr('cf-name', false); setErr('cf-email', false); setErr('cf-message', false); }
+form.addEventListener('submit', function(e) {
+e.preventDefault();
+if (okEl) okEl.style.display = 'none';
+if (errEl) errEl.style.display = 'none';
+var name = document.getElementById('cf-name').value.trim();
+var email = document.getElementById('cf-email').value.trim();
+var message = document.getElementById('cf-message').value.trim();
+var subscribe = document.getElementById('cf-subscribe').checked;
+var bad = false;
+if (!name) { setErr('cf-name', true); bad = true; } else setErr('cf-name', false);
+if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('cf-email', true); bad = true; } else setErr('cf-email', false);
+if (!message) { setErr('cf-message', true); bad = true; } else setErr('cf-message', false);
+if (bad) return;
+if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
+fetch('api/contact', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ name: name, email: email, message: message, subscribe: subscribe })
+}).then(function(r) {
+if (!r.ok) throw new Error('http ' + r.status);
+return r.json();
+}).then(function(data) {
+if (!data.ok) throw new Error('api');
+if (okEl) { okEl.style.display = 'block'; }
+form.reset();
+if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send it'; }
+}).catch(function() {
+if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send it'; }
+var body = message;
+if (subscribe) body += '\n\n(Also sign me up for updates.)';
+body += '\n\n\u2014 ' + name + ' (' + email + ')';
+var mail = 'mailto:ashstumusic@gmail.com?subject=' + encodeURIComponent('A note from ' + name) + '&body=' + encodeURIComponent(body);
+window.location.href = mail;
+if (okEl) { okEl.textContent = 'Opened your email app to finish sending.'; okEl.style.display = 'block'; }
+});
+});
 })();
 </script>
 </body>

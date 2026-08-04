@@ -1055,6 +1055,10 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .form-subscribe { display: flex; align-items: center; gap: .6rem; margin-top: .25rem; }
 .form-subscribe input[type="checkbox"] { accent-color: var(--ink); width: 16px; height: 16px; cursor: pointer; }
 .form-subscribe label { font-size: .7rem; color: rgb(from var(--ink) r g b / .8); cursor: pointer; }
+@media (max-width: 520px) {
+  .form-row { grid-template-columns: 1fr; }
+  .form #contact-submit { width: 100%; justify-content: center; }
+}
 
 /* ════════════════════════════════════════════
    BIO

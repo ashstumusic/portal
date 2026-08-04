@@ -36,7 +36,7 @@
 <link rel="preload" href="Fonts/subsetted/Boiled-Pasta.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="Fonts/subsetted/Body.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
-<link rel="stylesheet" href="styles.c89b825a.min.css"/>
+<link rel="stylesheet" href="styles.d01eb99f.min.css"/>
 </head>
 <body>
 <noscript><style>.nav-toggle,.nav-drawer,.vid-lightbox,#player-bar,.fab-music{display:none!important}.video-grid::after,.releases-grid::after{content:'Enable JavaScript to play music and videos inline. Titles and links above still work without it.';color:rgb(from var(--ink) r g b / .5);font-size:.84rem;display:block;padding:2rem;text-align:center}</style></noscript>
@@ -109,7 +109,7 @@
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h">
 <div class="epk-body">
-<h2 class="section-h section-h--tight" id="epk-h">Press Kit</h2>
+<h2 class="section-h section-h--tight" id="epk-h">For Bookers &amp; Press</h2>
 <p class="epk-text">Songs and photos<br/>for booking and press.</p>
 <a href="ash-stu-press-kit.zip" download class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit" aria-label="Download Press Kit">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -126,10 +126,37 @@
 </div>
 </section>
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">
-<h2 class="section-h" id="contact-h">Contact</h2>
+<h2 class="section-h" id="contact-h">Say Hello</h2>
 <div class="section-inner">
 <div class="contact-inner">
-<p class="contact-intro">For shows, press, or just to say something - reach out directly.</p>
+<p class="contact-intro">Book a show, send a note to the press, or just tell me what the songs meant to you. I answer every message.</p>
+<form class="form" id="contact-form" novalidate>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="cf-name">Name</label>
+<input class="form-input" type="text" id="cf-name" name="name" autocomplete="name" placeholder="Your name" required/>
+<span class="form-error">Tell me who you are.</span>
+</div>
+<div class="form-group">
+<label class="form-label" for="cf-email">Email</label>
+<input class="form-input" type="email" id="cf-email" name="email" autocomplete="email" placeholder="you@example.com" required/>
+<span class="form-error">A working email, please.</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label" for="cf-message">What's on your mind? <span class="form-hint">(shows, press, stories)</span></label>
+<textarea class="form-textarea" id="cf-message" name="message" rows="5" placeholder="Tell me about the venue, the date, the occasion..." required></textarea>
+<span class="form-error">A line or two of message goes a long way.</span>
+</div>
+<div class="form-subscribe">
+<input type="checkbox" id="cf-subscribe" name="subscribe"/>
+<label for="cf-subscribe">Also put me on the mailing list for new songs.</label>
+</div>
+<span id="form-ok">Message sent. I'll get back to you soon.</span>
+<span id="form-err">That didn't go through - try the email below instead.</span>
+<button type="submit" class="btn btn-fill" id="contact-submit">Send it</button>
+</form>
+<p class="form-note">Prefer plain email? Write to me directly.</p>
 <a href="mailto:ashstumusic@gmail.com" class="contact-email-link" aria-label="Email Ash Stu">
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
 ashstumusic@gmail.com
@@ -138,7 +165,7 @@ ashstumusic@gmail.com
 </div>
 </section>
 <section class="section releases-section" id="music" aria-labelledby="music-h">
-<h2 class="section-h" id="music-h">Music</h2>
+<h2 class="section-h" id="music-h">Discography</h2>
 <div class="section-inner">
 <div id="releases-grid" class="releases-grid" aria-label="Discography"><article class="rel-card" aria-label="My Morning Star - Album by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum"><div class="rel-art-wrap"><img src="Images/Releases/My Morning Star.webp" alt="Album artwork: Album cover for My Morning Star by Ash Stu" class="rel-art" width="560" height="560" loading="lazy" itemprop="image"/><div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">Album</p><h3 class="rel-name" itemprop="name">My Morning Star</h3></div></div></div><div class="rel-btns"><span class="rel-btn rel-btn--label">Distributing Soon</span></div><div class="rel-tracklist" id="tracklist-0"><ol aria-label="Tracklist for My Morning Star"><li>Slack Your Rope</li><li>Oh My Love</li><li>Pretty, May You Please</li><li>Is This Limerence</li><li>Paper-God Psalm</li><li>My Morning Star</li><li>Lucky to Grieve</li></ol></div></article><article class="rel-card" aria-label="Only a Baby, Vol. 2 - Album by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum"><div class="rel-art-wrap"><img src="Images/Releases/Only a Baby, Vol. 2.webp" alt="Album artwork: Album cover for Only a Baby, Vol. 2 by Ash Stu" class="rel-art" width="560" height="560" loading="lazy" itemprop="image"/><div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">Album</p><h3 class="rel-name" itemprop="name">Only a Baby, Vol. 2</h3></div></div></div><div class="rel-btns"><a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Only a Baby, Vol. 2 on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a><a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Only a Baby, Vol. 2 on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a></div><div class="rel-tracklist" id="tracklist-1"><ol aria-label="Tracklist for Only a Baby, Vol. 2"><li>Cool Cat Can&#39;t Comprehend</li><li>Dirge for Ducklings</li><li>Savior Complicated</li><li>Annabel Lena</li><li>Summertime Even on the Moon</li><li>Performatives Anonymous</li><li>Theory of Hope</li><li>Peacekeepers</li><li>The Wandering Jerk</li></ol></div></article><article class="rel-card" aria-label="Only a Baby, Vol. 1 - Album by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum"><div class="rel-art-wrap"><img src="Images/Releases/Only a Baby, Vol. 1.webp" alt="Album artwork: Album cover for Only a Baby, Vol. 1 by Ash Stu" class="rel-art" width="560" height="560" loading="lazy" itemprop="image"/><div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">Album</p><h3 class="rel-name" itemprop="name">Only a Baby, Vol. 1</h3></div></div></div><div class="rel-btns"><a href="https://music.apple.com/us/album/only-a-baby-vol-1/1879176371" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Only a Baby, Vol. 1 on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a><a href="https://open.spotify.com/album/7C9HCW6rKsXW2zXFR7QPf1" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Only a Baby, Vol. 1 on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a></div><div class="rel-tracklist" id="tracklist-2"><ol aria-label="Tracklist for Only a Baby, Vol. 1"><li>THE COSMOS IS ALIVE</li><li>the tragedy of the gifted child</li><li>SOMEWHERE SOMETIME</li><li>am soda</li><li>THE ONE WHO STUNS THE BIRDS</li><li>the raven</li><li>VCR</li><li>the cloud for the desert</li><li>PRETEND</li><li>sonnet for my delusion</li><li>PICK UP THE PHONE</li><li>the outdoor plant</li><li>WHY HAVE EYES</li><li>unanswerable questions</li><li>A GRIEF PRESERVED</li><li>future lives</li><li>DON&#39;T WISH YOUR LIFE AWAY</li><li>the tragedy of the gifted child (reprise)</li></ol></div></article><article class="rel-card" aria-label="Drive Me Home - Single by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum"><div class="rel-art-wrap"><img src="Images/Releases/Drive Me Home.webp" alt="Album artwork: Single artwork for Drive Me Home by Ash Stu" class="rel-art" width="560" height="560" loading="lazy" itemprop="image"/><div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">Single</p><h3 class="rel-name" itemprop="name">Drive Me Home</h3></div></div></div><div class="rel-btns"><a href="https://music.apple.com/us/album/drive-me-home-single/1888200397" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Drive Me Home on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a><a href="https://open.spotify.com/album/5wCuSFCPemL7sHXNtv6wRg" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Drive Me Home on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a></div></article><article class="rel-card" aria-label="Waste My Time - Single by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum"><div class="rel-art-wrap"><img src="Images/Releases/Waste My Time.webp" alt="Album artwork: Single artwork for Waste My Time by Ash Stu" class="rel-art" width="560" height="560" loading="lazy" itemprop="image"/><div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">Single</p><h3 class="rel-name" itemprop="name">Waste My Time</h3></div></div></div><div class="rel-btns"><a href="https://music.apple.com/us/album/waste-my-time-feat-trent-runyon-single/1877338128" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Waste My Time on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a><a href="https://open.spotify.com/album/02nDb7FH0IlNP9biBE5DPT" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to Waste My Time on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a></div></article></div>
 <blockquote class="disc-quote">
@@ -199,7 +226,7 @@ ashstumusic@gmail.com
 </section>
 <section class="bio-section" id="about" aria-labelledby="about-h">
 <div class="bio-section-header">
-<h2 class="section-h" id="about-h">About</h2>
+<h2 class="section-h" id="about-h">Who am I?</h2>
 </div>
 <div class="bio-body">
 <div class="bio-card">
@@ -1336,6 +1363,55 @@ function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); raf
 start();
 if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
+})();
+(function() {
+var form = document.getElementById('contact-form');
+if (!form) return;
+var okEl = document.getElementById('form-ok');
+var errEl = document.getElementById('form-err');
+var submitBtn = document.getElementById('contact-submit');
+function setErr(id, on) {
+var g = document.getElementById(id).closest('.form-group');
+if (!g) return;
+if (on) g.classList.add('err'); else g.classList.remove('err');
+}
+function clearErrs() { setErr('cf-name', false); setErr('cf-email', false); setErr('cf-message', false); }
+form.addEventListener('submit', function(e) {
+e.preventDefault();
+if (okEl) okEl.style.display = 'none';
+if (errEl) errEl.style.display = 'none';
+var name = document.getElementById('cf-name').value.trim();
+var email = document.getElementById('cf-email').value.trim();
+var message = document.getElementById('cf-message').value.trim();
+var subscribe = document.getElementById('cf-subscribe').checked;
+var bad = false;
+if (!name) { setErr('cf-name', true); bad = true; } else setErr('cf-name', false);
+if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('cf-email', true); bad = true; } else setErr('cf-email', false);
+if (!message) { setErr('cf-message', true); bad = true; } else setErr('cf-message', false);
+if (bad) return;
+if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
+fetch('api/contact', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ name: name, email: email, message: message, subscribe: subscribe })
+}).then(function(r) {
+if (!r.ok) throw new Error('http ' + r.status);
+return r.json();
+}).then(function(data) {
+if (!data.ok) throw new Error('api');
+if (okEl) { okEl.style.display = 'block'; }
+form.reset();
+if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send it'; }
+}).catch(function() {
+if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send it'; }
+var body = message;
+if (subscribe) body += '\n\n(Also sign me up for updates.)';
+body += '\n\n\u2014 ' + name + ' (' + email + ')';
+var mail = 'mailto:ashstumusic@gmail.com?subject=' + encodeURIComponent('A note from ' + name) + '&body=' + encodeURIComponent(body);
+window.location.href = mail;
+if (okEl) { okEl.textContent = 'Opened your email app to finish sending.'; okEl.style.display = 'block'; }
+});
+});
 })();</script>
 </body>
 </html>
