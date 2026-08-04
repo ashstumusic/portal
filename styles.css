@@ -839,6 +839,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .vid-card { cursor: pointer; }
 .vid-card:focus-visible { box-shadow: var(--focus); outline: none; }
+.rel-card:focus-visible, .journal-entry-head:focus-visible { box-shadow: var(--focus); outline: none; }
 .vid-thumb {
   position: relative; width: 100%; padding-top: 56.25%;
   background: var(--ink); overflow: hidden;
@@ -1642,6 +1643,8 @@ body.player-active { padding-bottom: 68px; }
 .rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .rel-play-circle svg { color: #fff; transition: color .35s var(--ease); }
 .rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle svg { color: var(--ink); }
+.rel-card:focus-visible:not(:has(.rel-btn:focus-visible)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.rel-card:focus-visible:not(:has(.rel-btn:focus-visible)) .rel-play-circle svg { color: var(--ink); }
 .rel-tracklist {
   max-height: 0; overflow: hidden;
 }
@@ -1717,6 +1720,9 @@ body.player-active { padding-bottom: 68px; }
 }
 .featured-play-overlay:hover .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .featured-play-overlay:hover .rel-play-circle svg { color: var(--ink); }
+.featured-play-overlay:focus-visible .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.featured-play-overlay:focus-visible .rel-play-circle svg { color: var(--ink); }
+.featured-play-overlay:focus-visible { box-shadow: var(--focus); outline: none; }
 
 /* ════════════════════════════════════════════
    PLAYER CONTROLS - prev/next/shuffle

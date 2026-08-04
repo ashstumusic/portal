@@ -422,9 +422,8 @@
     <div class="np-bar-track" id="np-bar-track"><div id="np-fill"></div><div class="seek-thumb" id="np-thumb"></div></div>
     <span id="np-dur" class="np-time">&middot;</span>
   </div>
-  <div class="np-left" id="np-expand">
-    <img id="np-art" class="np-art" src="" alt="Now playing" hidden>
-    <div class="np-info">
+    <div class="np-left" id="np-expand">
+      <div class="np-info">
       <span id="np-track" aria-live="polite">·</span>
       <span id="np-album" aria-hidden="true"></span>
     </div>
@@ -460,7 +459,6 @@
       <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
     <div class="fs-art-wrap">
-      <img id="fs-art" class="fs-art" src="" alt="Now playing" hidden>
     </div>
     <div class="fs-info">
       <span class="fs-track" id="fs-track"></span>
@@ -814,7 +812,9 @@ if (_featuredPlay) {
 _featuredPlay.addEventListener('click', function() { toggleRelease(0); });
 _featuredPlay.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleRelease(0); } });
 }
-var _npArt = document.getElementById('np-art');
+var _npArt = document.createElement('img');
+_npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = 'Now playing'; _npArt.hidden = true;
+document.getElementById('np-expand').insertBefore(_npArt, document.getElementById('np-expand').firstChild);
 let _lastTimeStore = 0;
 const _npFill = document.getElementById('np-fill');
 const _npThumb = document.getElementById('np-thumb');
@@ -893,7 +893,9 @@ npAudio.addEventListener('pause', function() { navigator.mediaSession.playbackSt
 (function() {
 var fs = document.getElementById('fs-player');
 var fsBg = document.getElementById('fs-bg');
-var fsArt = document.getElementById('fs-art');
+var fsArt = document.createElement('img');
+fsArt.id = 'fs-art'; fsArt.className = 'fs-art'; fsArt.alt = 'Now playing'; fsArt.hidden = true;
+document.getElementById('fs-art-wrap').appendChild(fsArt);
 var fsTrack = document.getElementById('fs-track');
 var fsAlbum = document.getElementById('fs-album');
 var fsFill = document.getElementById('fs-fill');
