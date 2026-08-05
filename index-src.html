@@ -337,7 +337,7 @@
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h">
   <div class="epk-body">
-    <h2 class="section-h section-h--tight" id="epk-h">For Bookers &amp; Press</h2>
+    <h2 class="section-h section-h--tight" id="epk-h">Press Kit</h2>
     <p class="epk-text">Songs and photos<br/>for booking and press.</p>
     <a href="ash-stu-press-kit.zip" download class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit" aria-label="Download Press Kit">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -354,7 +354,7 @@
   </div>
 </section>
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">
-  <h2 class="section-h" id="contact-h">Say Hello</h2>
+  <h2 class="section-h" id="contact-h">Contact</h2>
   <div class="section-inner">
     <div class="contact-inner">
       <p class="contact-intro">Book a show, send a note to the press, or just tell me what the songs meant to you. I answer every message.</p>
@@ -393,7 +393,7 @@
   </div>
 </section>
 <section class="section releases-section" id="music" aria-labelledby="music-h">
-  <h2 class="section-h" id="music-h">Discography</h2>
+  <h2 class="section-h" id="music-h">Music</h2>
   <div class="section-inner">
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
@@ -419,7 +419,7 @@
 </section>
 <section class="bio-section" id="about" aria-labelledby="about-h">
   <div class="bio-section-header">
-    <h2 class="section-h" id="about-h">Who am I?</h2>
+    <h2 class="section-h" id="about-h">About</h2>
   </div>
   <div class="bio-body">
     <!-- One cream split-card, same object language as the contact card and
@@ -1694,6 +1694,20 @@ var mail = 'mailto:ashstumusic@gmail.com?subject=' + encodeURIComponent('A note 
 window.location.href = mail;
 if (okEl) { okEl.textContent = 'Opened your email app to finish sending.'; okEl.style.display = 'block'; }
 });
+});
+})();
+(function() {
+var heroIcon = document.getElementById('hero-icon');
+var heroPhoto = document.querySelector('.hero-split-photo');
+if (!heroIcon || !heroPhoto) return;
+var clicks = 0;
+heroIcon.addEventListener('click', function() {
+clicks++;
+if (clicks >= 5) {
+clicks = 0;
+heroPhoto.src = 'Images/Cat.webp';
+heroPhoto.alt = 'A cat';
+}
 });
 })();
 </script>
