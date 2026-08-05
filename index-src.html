@@ -316,7 +316,7 @@
   <div class="hero-split-left">
     <div class="hero-photo-track" id="hero-photo-track">
       <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="950"/>
-      <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="" class="hero-split-photo" loading="lazy" width="1400" height="950"/>
+      <div class="hero-photo-frame" role="img" aria-label="Ash Stu with guitar"></div>
     </div>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
@@ -1635,9 +1635,18 @@ if (clicks >= 5) {
 clicks = 0;
 if (swapped) return;
 swapped = true;
-var photos = heroTrack.querySelectorAll('.hero-split-photo');
-photos.forEach(function(p) { p.src = 'Images/Cat.webp'; p.alt = 'A cat'; });
+var img = heroTrack.querySelector('.hero-split-photo');
+var frame = heroTrack.querySelector('.hero-photo-frame');
+if (frame) frame.style.backgroundImage = 'url("Images/Cat.webp")';
+heroTrack.classList.add('slide');
+heroTrack.addEventListener('animationend', function done(e) {
+if (e.target !== heroTrack) return;
+heroTrack.removeEventListener('animationend', done);
+if (img) { img.src = 'Images/Cat.webp'; img.alt = 'A cat'; }
+heroTrack.classList.remove('slide');
+heroTrack.style.transform = 'translateX(-50%)';
 heroTrack.classList.add('pan');
+});
 }
 });
 })();
