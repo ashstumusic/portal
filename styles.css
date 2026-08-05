@@ -1561,6 +1561,11 @@ body.player-active { padding-bottom: 68px; }
   #np-fill { border-radius: 4px; }
   /* finger-sized dot on the phone layout's real progress row */
   #player-bar .seek-thumb::before { width: 14px; height: 14px; }
+  /* Keep the knob fully inside the track at 0% and 100% - the rail is
+     inset by half the dot, so its center never hangs past the edges into
+     the time labels (the 0:00 position used to overhang left). */
+  #player-bar .seek-thumb { left: 7px; right: 7px; }
+  .fs-bar .seek-thumb { left: 8px; right: 8px; }
   /* Two-tone bar: a second background band placed on the grid's own
      controls row, sized to that row's real rendered height (not a
      guessed pixel split) so it stays correct however tall the row
