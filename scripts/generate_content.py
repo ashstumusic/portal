@@ -203,6 +203,7 @@ def parse_essay_or_entry(path, category):
     if not tl:
         raise ValueError(f'{path}: no title found')
     tl[0] = re.sub(r'^["“]', '', tl[0])
+    tl[0] = re.sub(r'["”]\s*$', '', tl[0])
     tl[-1] = re.sub(r'["”]\s*$', '', tl[-1])
     headline = tl[0].strip()
     dek = tl[1].strip() if len(tl) > 1 else None
