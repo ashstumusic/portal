@@ -36,7 +36,7 @@
 <link rel="preload" href="Fonts/subsetted/Boiled-Pasta.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="Fonts/subsetted/Body.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
-<link rel="stylesheet" href="styles.e230e165.min.css"/>
+<link rel="stylesheet" href="styles.1d497b03.min.css"/>
 </head>
 <body>
 <noscript><style>.nav-toggle,.nav-drawer,.vid-lightbox,#player-bar,.fab-music{display:none!important}.video-grid::after,.releases-grid::after{content:'Enable JavaScript to play music and videos inline. Titles and links above still work without it.';color:rgb(from var(--ink) r g b / .5);font-size:.84rem;display:block;padding:2rem;text-align:center}</style></noscript>
@@ -1297,7 +1297,7 @@ btn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key ===
 }
 (function() {
 const cvs = document.getElementById('confetti-canvas');
-if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !window.matchMedia('(min-width: 601px)').matches) return;
 const COLORS = ['#F7C549','#DF2B2C','#4E97AD','#FFFFFF','#9FBFCB'];
 const COUNT = 45;
 const ctx = cvs.getContext('2d', { desynchronized: true, alpha: true });

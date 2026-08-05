@@ -1580,7 +1580,7 @@ btn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key ===
 }
 (function() {
 const cvs = document.getElementById('confetti-canvas');
-if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !window.matchMedia('(min-width: 601px)').matches) return;
 const COLORS = ['#F7C549','#DF2B2C','#4E97AD','#FFFFFF','#9FBFCB'];
 const COUNT = 45;
 const ctx = cvs.getContext('2d', { desynchronized: true, alpha: true });
