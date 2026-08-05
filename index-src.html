@@ -314,7 +314,10 @@
 <main id="main">
 <section class="hero-split" id="latest" aria-label="Ash Stu">
   <div class="hero-split-left">
-    <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="950"/>
+    <div class="hero-photo-track" id="hero-photo-track">
+      <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="950"/>
+      <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="" class="hero-split-photo" loading="lazy" width="1400" height="950"/>
+    </div>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
         <img width="330" height="330" src="Images/Icon.webp" alt="Ash Stu" class="hero-icon" id="hero-icon"/>
@@ -1698,15 +1701,19 @@ if (okEl) { okEl.textContent = 'Opened your email app to finish sending.'; okEl.
 })();
 (function() {
 var heroIcon = document.getElementById('hero-icon');
-var heroPhoto = document.querySelector('.hero-split-photo');
-if (!heroIcon || !heroPhoto) return;
+var heroTrack = document.getElementById('hero-photo-track');
+if (!heroIcon || !heroTrack) return;
 var clicks = 0;
+var swapped = false;
 heroIcon.addEventListener('click', function() {
 clicks++;
 if (clicks >= 5) {
 clicks = 0;
-heroPhoto.src = 'Images/Cat.webp';
-heroPhoto.alt = 'A cat';
+if (swapped) return;
+swapped = true;
+var photos = heroTrack.querySelectorAll('.hero-split-photo');
+photos.forEach(function(p) { p.src = 'Images/Cat.webp'; p.alt = 'A cat'; });
+heroTrack.classList.add('pan');
 }
 });
 })();
