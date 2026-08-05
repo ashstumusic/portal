@@ -234,7 +234,7 @@ def main():
     }
     payload = json.dumps(combined, separators=(',', ':')).replace('</', '<\\/')
     blocks = f'<script type="application/json" id="data-all">{payload}</script>'
-    idx = page.index('<script>')
+    idx = page.rindex('<script')
     page = page[:idx] + blocks + page[idx:]
 
     with open('index.html', 'w', encoding='utf-8') as f:

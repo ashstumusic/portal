@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Build the deployed single-file index.html from index-src.html.
+"""Build the deployed index.html + cached assets from index-src.html.
 
-Edit index-src.html + styles.css, then run: python3 build-fast.py"""
+Edit index-src.html + styles.css, then run: python3 build-fast.py && python3 scripts/prerender.py"""
 import base64, io, json, re, sys, os
 from fontTools.subset import Subsetter, Options, load_font, save_font
 from PIL import Image
@@ -170,17 +170,30 @@ for _i in range(0, len(_parts), 2):  # even indices = markup outside <script>
     _parts[_i] = re.sub(r'src="([^"]+\.(?:webp|png|jpg))"', repl_src, _parts[_i])
 html = "".join(_parts)
 
-# light JS minify: strip full-line comments, trailing line comments are risky -> only strip leading whitespace + blank lines
-def minify_js_block(m):
-    body = m.group(1)
+# Externalize the main script: one hashed, cached file instead of an
+# inline render-blocking block that re-downloads every visit. `defer` runs
+# it after the prerendered DOM is ready; the inline data-all JSON (injected
+# later by prerender.py) and any content JSON lives in the page already.
+def minify_js_body(body):
+    # light JS minify: strip full-line comments + blank lines; trailing
+    # line comments are risky, so leave them in place
     lines = []
     for ln in body.split("\n"):
         t = ln.strip()
         if not t or t.startswith("//"):
             continue
         lines.append(t)
-    return "<script>" + "\n".join(lines) + "</script>"
-html = re.sub(r"<script>(.*?)</script>", minify_js_block, html, flags=re.S)
+    return "\n".join(lines)
+
+_m = re.search(r"<script>(.*?)</script>", html, flags=re.S)
+if _m:
+    js_min = minify_js_body(_m.group(1))
+    js_hash = __import__('hashlib').sha256(js_min.encode()).hexdigest()[:8]
+    js_out = f"main.{js_hash}.js"
+    with open(js_out, "w") as fh:
+        fh.write(js_min)
+    html = html.replace(_m.group(0), f'<script src="{js_out}" defer></script>')
+    print(f"Wrote {js_out}: {len(js_min)//1024}KB")
 
 # strip HTML comments + indentation, collapse blank lines
 html = re.sub(r"<!--(?!\[).*?-->", "", html, flags=re.S)
