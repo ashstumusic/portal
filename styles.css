@@ -353,15 +353,15 @@ html {
   display: flex;
   will-change: transform;
 }
-.hero-photo-track.slide { animation: heroSlide 1.4s var(--ease) forwards; }
+.hero-photo-track.slide { animation: heroSlide 1.4s linear forwards; }
 @keyframes heroSlide {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 .hero-photo-track.pan { animation: heroPan 45s linear infinite; }
 @keyframes heroPan {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(-100%); }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 @media (prefers-reduced-motion: reduce) { .hero-photo-track.pan { animation: none; } }
 .hero-split-photo {

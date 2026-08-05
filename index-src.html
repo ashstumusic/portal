@@ -1644,7 +1644,6 @@ if (e.target !== heroTrack) return;
 heroTrack.removeEventListener('animationend', done);
 if (img) { img.src = 'Images/Cat.webp'; img.alt = 'A cat'; }
 heroTrack.classList.remove('slide');
-heroTrack.style.transform = 'translateX(-50%)';
 heroTrack.classList.add('pan');
 });
 }
