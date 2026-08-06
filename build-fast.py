@@ -114,9 +114,15 @@ html = open("index-src.html").read()
 # drop stylesheet link, inject external stylesheet + font preloads
 html = re.sub(r'<link rel="stylesheet"[^>]*>', "", html)
 html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
+# Only preload the fonts used above the fold (hero name: Logo, fallback:
+# Display). The rest (italic, handwriting, grit, body) are used below the
+# fold and load lazily on first use via font-display: swap - preloading
+# them all just burns ~90KB of rural-cell-tower bandwidth on a race the
+# first paint never waits on.
+_PRELOAD_FONTS = {"Fonts/Header.ttf", "Fonts/xperimental/Boiled-Pasta.ttf"}
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
-    for rel in FONT_RELPATHS.values()
+    for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS
 ) + '\n<link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">'
 html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_out}"/>\n</head>')
 
