@@ -1745,17 +1745,33 @@ swapped = true;
 var img = heroTrack.querySelector('.hero-split-photo');
 var frame = heroTrack.querySelector('.hero-photo-frame');
 var grid = buildWarholGrid();
-var left = document.createElement('div');
-left.className = 'warhol-half';
-left.appendChild(grid.cloneNode(true));
 frame.innerHTML = '';
 frame.appendChild(grid);
-heroTrack.insertBefore(left, img);
-heroTrack.classList.add('warhol');
 var heroLeft = heroTrack.parentNode;
 if (heroLeft) heroLeft.classList.add('warhol-on');
 frame.setAttribute('aria-label', 'A pop-art cat by Ash Stu');
+var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduced) {
+var left = document.createElement('div');
+left.className = 'warhol-half';
+left.appendChild(grid.cloneNode(true));
+heroTrack.insertBefore(left, img);
+heroTrack.classList.add('warhol');
 heroTrack.classList.add('pan');
+return;
+}
+heroTrack.classList.add('reveal');
+heroTrack.addEventListener('animationend', function done(e) {
+if (e.target !== heroTrack) return;
+heroTrack.removeEventListener('animationend', done);
+var left = document.createElement('div');
+left.className = 'warhol-half';
+left.appendChild(grid.cloneNode(true));
+heroTrack.insertBefore(left, img);
+heroTrack.classList.add('warhol');
+heroTrack.classList.remove('reveal');
+heroTrack.classList.add('pan');
+});
 });
 })();
 </script>

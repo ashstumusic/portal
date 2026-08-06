@@ -359,11 +359,16 @@ html {
   to { transform: translateX(-50%); }
 }
 .hero-photo-track.pan { animation: heroPan 45s linear infinite; }
+.hero-photo-track.reveal { animation: heroReveal 45s linear forwards; }
+@keyframes heroReveal {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 @keyframes heroPan {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-@media (prefers-reduced-motion: reduce) { .hero-photo-track.pan { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-photo-track.pan, .hero-photo-track.reveal { animation: none; } }
 .hero-split-photo {
   width: 50%; height: 100%;
   display: block;
