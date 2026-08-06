@@ -1625,29 +1625,95 @@ if ('IntersectionObserver' in window) { new IntersectionObserver(function(entrie
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
 })();
 (function() {
+var WARHOL_BG = ['#FF4DA6','#00C2C7','#FFE600','#FF6E00','#FF2A2A','#2B6BFF','#8AFF00','#A64DFF','#00E5FF','#FF8C00','#00FF87','#FF00AA','#FFC100','#3A86FF','#FF5C8A','#D90368'];
 var heroIcon = document.getElementById('hero-icon');
 var heroTrack = document.getElementById('hero-photo-track');
 if (!heroIcon || !heroTrack) return;
 var clicks = 0;
 var swapped = false;
+function randHue(near) {
+for (var t = 0; t < 24; t++) {
+var h = Math.floor(Math.random() * 360);
+var ok = true;
+for (var i = 0; i < near.length; i++) {
+var d = Math.abs(h - near[i]);
+if (d > 180) d = 360 - d;
+if (d < 42) { ok = false; break; }
+}
+if (ok) return h;
+}
+return Math.floor(Math.random() * 360);
+}
+function buildWarholGrid() {
+var COLS = 4, ROWS = 4;
+var grid = document.createElement('div');
+grid.className = 'warhol-grid';
+for (var r = 0; r < ROWS; r++) {
+for (var c = 0; c < COLS; c++) {
+var bg;
+var pickBg = function(seen) {
+var pool = WARHOL_BG.slice();
+for (var i = 0; i < seen.length; i++) pool = pool.filter(function(x) { return x !== seen[i]; });
+if (!pool.length) pool = WARHOL_BG.slice();
+return pool[Math.floor(Math.random() * pool.length)];
+};
+var seen = [];
+if (r > 0) {
+var up = grid.children[(r - 1) * COLS + c];
+if (up) seen.push(up.getAttribute('data-bg'));
+}
+if (c > 0) {
+var lf = grid.children[r * COLS + c - 1];
+if (lf) seen.push(lf.getAttribute('data-bg'));
+}
+bg = pickBg(seen);
+var hue = randHue([]);
+var nearHue = [];
+if (r > 0) {
+var upCell = grid.children[(r - 1) * COLS + c];
+if (upCell) nearHue.push(parseInt(upCell.getAttribute('data-hue'), 10));
+}
+if (c > 0) {
+var lfCell = grid.children[r * COLS + c - 1];
+if (lfCell) nearHue.push(parseInt(lfCell.getAttribute('data-hue'), 10));
+}
+hue = randHue(nearHue);
+var tilt = (Math.random() * 8 - 4).toFixed(2);
+var cell = document.createElement('div');
+cell.className = 'warhol-cell';
+cell.setAttribute('data-bg', bg);
+cell.setAttribute('data-hue', hue);
+cell.style.background = bg;
+cell.innerHTML = '<img src="Images/Cat_pop.webp" alt="" draggable="false" style="filter:sepia(1) saturate(7) hue-rotate(' + hue + 'deg) contrast(1.06);--tilt:' + tilt + 'deg">';
+grid.appendChild(cell);
+}
+}
+return grid;
+}
 heroIcon.addEventListener('click', function() {
 clicks++;
-if (clicks >= 5) {
+if (clicks < 5) return;
 clicks = 0;
 if (swapped) return;
 swapped = true;
 var img = heroTrack.querySelector('.hero-split-photo');
 var frame = heroTrack.querySelector('.hero-photo-frame');
-if (frame) frame.style.backgroundImage = 'url("Images/Cat.webp")';
+var grid = buildWarholGrid();
+var left = document.createElement('div');
+left.className = 'warhol-half';
+left.appendChild(grid.cloneNode(true));
+frame.innerHTML = '';
+frame.appendChild(grid);
+heroTrack.insertBefore(left, img);
+heroTrack.classList.add('warhol');
+frame.setAttribute('aria-label', 'A pop-art cat by Ash Stu');
 heroTrack.classList.add('slide');
 heroTrack.addEventListener('animationend', function done(e) {
 if (e.target !== heroTrack) return;
 heroTrack.removeEventListener('animationend', done);
-if (img) { img.src = 'Images/Cat.webp'; img.alt = 'A cat'; }
 heroTrack.classList.remove('slide');
 heroTrack.classList.add('pan');
 });
-}
 });
 })();
 </script>

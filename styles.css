@@ -374,7 +374,35 @@ html {
 .hero-photo-frame {
   width: 50%; height: 100%;
   flex-shrink: 0;
+  position: relative;
   background: url('Images/embedded/hero-ash-stu-guitar.webp') 8% 18% / cover no-repeat;
+}
+.hero-photo-track.warhol .hero-split-photo { display: none; }
+.hero-photo-track.warhol .hero-photo-frame { background: none; }
+.warhol-half {
+  width: 50%; height: 100%;
+  flex-shrink: 0;
+  position: relative;
+}
+.warhol-grid {
+  position: absolute; inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 2px;
+  background: #111;
+}
+.warhol-cell {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.warhol-cell img {
+  width: 82%; height: 90%;
+  object-fit: contain;
+  transform: rotate(var(--tilt, 0deg));
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .hero-split-left::after {
   content: '';
