@@ -1766,7 +1766,7 @@ return;
 if (heroTrack.animate) {
 var revealAnim = heroTrack.animate(
 [{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }],
-{ duration: 4500, easing: 'linear', fill: 'forwards' }
+{ duration: 2250, easing: 'linear', fill: 'forwards' }
 );
 revealAnim.onfinish = function() { revealAnim.cancel(); finishReveal(); };
 } else {
