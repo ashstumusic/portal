@@ -358,8 +358,8 @@ html {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-.hero-photo-track.pan { animation: heroPan 45s linear infinite; }
-.hero-photo-track.reveal { animation: heroReveal 45s linear forwards; }
+.hero-photo-track.pan { animation: heroPan 9s linear infinite; }
+.hero-photo-track.reveal { animation: heroReveal 9s linear forwards; }
 @keyframes heroReveal {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
