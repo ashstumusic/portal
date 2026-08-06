@@ -1641,10 +1641,10 @@ return [116*fy-16, 500*(fx-fy), 200*(fy-fz)];
 function deltaE(a, b) {
 return Math.sqrt(Math.pow(a[0]-b[0],2) + Math.pow(a[1]-b[1],2) + Math.pow(a[2]-b[2],2));
 }
-function cellAt(grid, r, c, COLS) {
-return (r >= 0 && c >= 0 && r < 4 && c < COLS) ? grid.children[r*COLS+c] : null;
+function cellAt(grid, r, c, COLS, ROWS) {
+return (r >= 0 && c >= 0 && r < ROWS && c < COLS) ? grid.children[r*COLS+c] : null;
 }
-function pickBg(grid, r, c, COLS, minDist) {
+function pickBg(grid, r, c, COLS, ROWS, minDist) {
 var pool = WARHOL_BG.slice();
 for (var i = pool.length-1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
 for (var i = 0; i < pool.length; i++) {
@@ -1652,7 +1652,7 @@ var ok = true;
 for (var dr = -1; dr <= 1; dr++) {
 for (var dc = -1; dc <= 1; dc++) {
 if (dr === 0 && dc === 0) continue;
-var n = cellAt(grid, r+dr, c+dc, COLS);
+var n = cellAt(grid, r+dr, c+dc, COLS, ROWS);
 if (n && deltaE(hexToLab(pool[i]), hexToLab(n.getAttribute('data-bg'))) < minDist) { ok = false; break; }
 }
 if (!ok) break;
@@ -1680,18 +1680,18 @@ if (ok) return h;
 return Math.floor(Math.random() * 360);
 }
 function buildWarholGrid() {
-var COLS = 4, ROWS = 4;
+var COLS = 4, ROWS = 3;
 var grid = document.createElement('div');
 grid.className = 'warhol-grid';
 for (var r = 0; r < ROWS; r++) {
 for (var c = 0; c < COLS; c++) {
-var bg = pickBg(grid, r, c, COLS, 48);
+var bg = pickBg(grid, r, c, COLS, ROWS, 48);
 var hue = randHue([]);
 var nearHue = [];
 for (var dr = -1; dr <= 1; dr++) {
 for (var dc = -1; dc <= 1; dc++) {
 if (dr === 0 && dc === 0) continue;
-var n = cellAt(grid, r+dr, c+dc, COLS);
+var n = cellAt(grid, r+dr, c+dc, COLS, ROWS);
 if (n) nearHue.push(parseInt(n.getAttribute('data-hue'), 10));
 }
 }
@@ -1725,13 +1725,7 @@ frame.appendChild(grid);
 heroTrack.insertBefore(left, img);
 heroTrack.classList.add('warhol');
 frame.setAttribute('aria-label', 'A pop-art cat by Ash Stu');
-heroTrack.classList.add('slide');
-heroTrack.addEventListener('animationend', function done(e) {
-if (e.target !== heroTrack) return;
-heroTrack.removeEventListener('animationend', done);
-heroTrack.classList.remove('slide');
 heroTrack.classList.add('pan');
-});
 });
 })();
 </script>
