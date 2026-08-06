@@ -1625,14 +1625,49 @@ if ('IntersectionObserver' in window) { new IntersectionObserver(function(entrie
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
 })();
 (function() {
-var WARHOL_BG = ['#FF4DA6','#00C2C7','#FFE600','#FF6E00','#FF2A2A','#2B6BFF','#8AFF00','#A64DFF','#00E5FF','#FF8C00','#00FF87','#FF00AA','#FFC100','#3A86FF','#FF5C8A','#D90368'];
+var WARHOL_BG = ['#FF0055','#00B8D9','#FFE600','#FF5400','#E7000B','#0055FF','#7FFF00','#9B5CFF','#00E5FF','#00C853','#FF0080','#FF9F00','#FFD500','#1E40FF','#00FF9D','#FF3D5A'];
+function hexToLab(hex) {
+var r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+r = r > .04045 ? Math.pow((r+.055)/1.055, 2.4) : r/12.92;
+g = g > .04045 ? Math.pow((g+.055)/1.055, 2.4) : g/12.92;
+b = b > .04045 ? Math.pow((b+.055)/1.055, 2.4) : b/12.92;
+var X = (r*.4124+g*.3576+b*.1805)/.95047;
+var Y = (r*.2126+g*.7152+b*.0722);
+var Z = (r*.0193+g*.1192+b*.9505)/1.08883;
+var f = function(t){ return t > .008856 ? Math.cbrt(t) : 7.787*t+16/116; };
+var fx = f(X), fy = f(Y), fz = f(Z);
+return [116*fy-16, 500*(fx-fy), 200*(fy-fz)];
+}
+function deltaE(a, b) {
+return Math.sqrt(Math.pow(a[0]-b[0],2) + Math.pow(a[1]-b[1],2) + Math.pow(a[2]-b[2],2));
+}
+function cellAt(grid, r, c, COLS) {
+return (r >= 0 && c >= 0 && r < 4 && c < COLS) ? grid.children[r*COLS+c] : null;
+}
+function pickBg(grid, r, c, COLS, minDist) {
+var pool = WARHOL_BG.slice();
+for (var i = pool.length-1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+for (var i = 0; i < pool.length; i++) {
+var ok = true;
+for (var dr = -1; dr <= 1; dr++) {
+for (var dc = -1; dc <= 1; dc++) {
+if (dr === 0 && dc === 0) continue;
+var n = cellAt(grid, r+dr, c+dc, COLS);
+if (n && deltaE(hexToLab(pool[i]), hexToLab(n.getAttribute('data-bg'))) < minDist) { ok = false; break; }
+}
+if (!ok) break;
+}
+if (ok) return pool[i];
+}
+return pool[Math.floor(Math.random()*pool.length)];
+}
 var heroIcon = document.getElementById('hero-icon');
 var heroTrack = document.getElementById('hero-photo-track');
 if (!heroIcon || !heroTrack) return;
 var clicks = 0;
 var swapped = false;
 function randHue(near) {
-for (var t = 0; t < 24; t++) {
+for (var t = 0; t < 64; t++) {
 var h = Math.floor(Math.random() * 360);
 var ok = true;
 for (var i = 0; i < near.length; i++) {
@@ -1650,32 +1685,15 @@ var grid = document.createElement('div');
 grid.className = 'warhol-grid';
 for (var r = 0; r < ROWS; r++) {
 for (var c = 0; c < COLS; c++) {
-var bg;
-var pickBg = function(seen) {
-var pool = WARHOL_BG.slice();
-for (var i = 0; i < seen.length; i++) pool = pool.filter(function(x) { return x !== seen[i]; });
-if (!pool.length) pool = WARHOL_BG.slice();
-return pool[Math.floor(Math.random() * pool.length)];
-};
-var seen = [];
-if (r > 0) {
-var up = grid.children[(r - 1) * COLS + c];
-if (up) seen.push(up.getAttribute('data-bg'));
-}
-if (c > 0) {
-var lf = grid.children[r * COLS + c - 1];
-if (lf) seen.push(lf.getAttribute('data-bg'));
-}
-bg = pickBg(seen);
+var bg = pickBg(grid, r, c, COLS, 48);
 var hue = randHue([]);
 var nearHue = [];
-if (r > 0) {
-var upCell = grid.children[(r - 1) * COLS + c];
-if (upCell) nearHue.push(parseInt(upCell.getAttribute('data-hue'), 10));
+for (var dr = -1; dr <= 1; dr++) {
+for (var dc = -1; dc <= 1; dc++) {
+if (dr === 0 && dc === 0) continue;
+var n = cellAt(grid, r+dr, c+dc, COLS);
+if (n) nearHue.push(parseInt(n.getAttribute('data-hue'), 10));
 }
-if (c > 0) {
-var lfCell = grid.children[r * COLS + c - 1];
-if (lfCell) nearHue.push(parseInt(lfCell.getAttribute('data-hue'), 10));
 }
 hue = randHue(nearHue);
 var tilt = (Math.random() * 8 - 4).toFixed(2);
