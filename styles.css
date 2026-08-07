@@ -725,6 +725,9 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   display: flex; flex-direction: column;
   transition: background .35s var(--ease), border-color .35s var(--ease), transform .4s var(--ease-spring), box-shadow .35s var(--ease); cursor: default;
   box-shadow: 0 1px 4px rgba(8,76,97,.08);
+  /* Deep-link target: release permalinks scroll here with the fixed nav
+     taken into account, same offset as the [id] anchors. */
+  scroll-margin-top: 64px;
 }
 .rel-card:hover {
   background: var(--cream);
@@ -813,6 +816,13 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .rel-btn:hover::after { opacity: 1; }
 .rel-btn:active { transform: scale(.96); }
+/* Fixed-width icon button for the per-release copy-link sublink. Sits last
+   in the .rel-btns row; the flex:1 streaming buttons absorb the rest. */
+.rel-btn--share {
+  flex: 0 0 auto; width: 38px; height: 38px; padding: 0;
+}
+.rel-btn--share.copied { color: var(--ink); background: rgb(from var(--gold) r g b / .9); }
+.rel-btn--share.copied:hover::before, .rel-btn--share.copied:hover::after { opacity: 0; }
 .rel-btn .pt, .f-btn .pt { width: 17px; height: 17px; border-radius: 50%; transition: transform .2s var(--ease); }
 .rel-btn:hover .pt, .f-btn:hover .pt { transform: scale(1.1); }
 .rel-btn:hover { color: var(--ink); transform: translateY(-1px); }
