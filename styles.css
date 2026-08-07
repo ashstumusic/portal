@@ -215,27 +215,34 @@ html {
   font-family: var(--sans); font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
   color: rgb(from var(--paper) r g b / .92); text-decoration: none;
   transition: color .3s var(--ease); white-space: nowrap;
-  padding: .25rem 0; min-height: 44px; display: flex; align-items: center;
-  position: relative;
+  padding: .25rem .7rem; min-height: 44px; display: flex; align-items: center;
+  position: relative; border-radius: 10px;
+}
+/* Same ink-bleed hover language as the streaming buttons (.rel-btn,
+   .f-btn, .vid-yt): a gold lamplight bloom plus a gold fill, text flipping
+   to ink - one consistent "button" highlight across the site. */
+.nav-links a::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .25) 0%, transparent 70%);
+  opacity: 0; transform: scale(.3);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
 }
 .nav-links a::after {
-  /* Hand-drawn marker swash instead of the stock center-growing underline.
-     It draws on left-to-right and carries a slight downward list, the way a
-     hand-held highlighter drags - a mark of the same family as the site's
-     gold tick and notebook ruling, not a generic animated border. Gold over
-     the ink bar, translucent so the label stays legible on top of it. */
-  content: ''; position: absolute;
-  left: -4%; right: -4%; bottom: 10px; height: 7px;
-  background: rgb(from var(--gold) r g b / .42);
-  border-radius: 1px;
-  transform-origin: left center;
-  transform: rotate(-1.3deg) scaleX(0);
-  transition: transform .35s var(--ease);
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background: var(--gold);
+  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
+  opacity: 0;
+  transition: opacity .25s var(--ease);
+  pointer-events: none;
 }
-.nav-links a:hover { color: var(--gold); }
-.nav-links a:hover::after { transform: rotate(-1.3deg) scaleX(1); }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover::before { opacity: 1; transform: scale(1.6); }
+.nav-links a:hover::after { opacity: 1; }
 .nav-links a[aria-current] { color: #fff; }
-.nav-links a[aria-current]::after { transform: rotate(-1.3deg) scaleX(1); background: rgb(from var(--paper) r g b / .45); opacity: 1; }
+.nav-links a[aria-current]::after { opacity: .18; }
 .nav-platforms { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
 .nav-platform {
   display: flex; align-items: center; opacity: .55;
