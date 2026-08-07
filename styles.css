@@ -1905,7 +1905,7 @@ body.player-active { padding-bottom: 68px; }
    TABLET PORTRAIT (601–900px) - transitional
    ════════════════════════════════════════════ */
 @media (max-width: 900px) {
-  .nav { height: 48px; padding: 0 1rem; }
+  .nav { height: 48px; min-height: 48px; padding: 0 1rem; }
   .nav-logo .hero-icon { width: 24px; }
   .nav-logo .hero-name { font-size: 1.038rem; top: 0.17em; }
   .nav-links, .nav-platforms { display: none; }
@@ -2040,7 +2040,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split { padding-top: 44px; --nav-pad: 44px; }
   .hero-name { font-size: clamp(3rem,17cqi,4.6rem); }
   .section-h { font-size: 2rem; }
-  .nav { height: 44px; }
+  .nav { height: 44px; min-height: 44px; }
   .nav-logo .hero-icon { width: 22px; }
   .nav-logo .hero-name { font-size: .83rem; top: 0.17em; }
   .nav-drawer { top: 44px; }
@@ -2108,7 +2108,7 @@ body.player-active { padding-bottom: 68px; }
   .featured-btns { flex-direction: row; flex-wrap: wrap; }
   .f-btn { width: auto; height: 36px; font-size: .48rem; }
 
-  .nav { height: 40px; }
+  .nav { height: 40px; min-height: 40px; }
   .nav-drawer { top: 40px; }
   .nav-toggle { width: 30px; height: 30px; }
   .nav-toggle-bar { width: 13px; }
@@ -2153,7 +2153,7 @@ body.player-active { padding-bottom: 68px; }
   .featured-kicker { font-size: .5rem; margin-top: 0; margin-bottom: -.3rem; }
   .f-btn { height: 32px; font-size: .44rem; }
   .section { padding: 1.5rem 1rem; }
-  .nav { height: 36px; }
+  .nav { height: 36px; min-height: 36px; }
   .nav-drawer { top: 36px; }
   #np-play { width: 30px; height: 30px; }
   .fab-music { width: 36px; height: 36px; bottom: .5rem; right: .5rem; }
