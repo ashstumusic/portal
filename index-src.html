@@ -998,8 +998,6 @@ if (_fsOpen) setTimeout(fsSync, 50);
 };
 })();
 const PLAY_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>';
-const LINK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
-const CHECK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
 function escHtml(s) {
 return (s == null ? '' : String(s))
 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -1030,48 +1028,6 @@ _npAlbumEl.textContent = rel.name;
 var art = npGetArt();
 if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
 npAudio.src = t.file; _src = t.file;
-}
-// Deep-link entry point: queue an arbitrary release without autoplaying -
-// same wiring as initDefaultTrack (which hardcodes release 0) but for the
-// release named in the #release/<name> hash. Nothing plays until the
-// visitor presses play; the tracklist is opened by applyReleaseHash.
-var _hashApplied = false;
-function queueRelease(rIdx, autoplay) {
-var rel = RELEASE_LIST[rIdx];
-if (!rel || !rel.tracks[0]) return;
-pState.releaseIdx = rIdx;
-pState.playlist = rel.tracks.map(function(t, i) { return { title: t.title, file: t.file, releaseIdx: rIdx, trackIdx: i }; });
-pState.plIdx = 0;
-var t = rel.tracks[0];
-_npTrackEl.dataset.label = '1. ' + t.title;
-npMarquee(_npTrackEl);
-_npAlbumEl.textContent = rel.name;
-var art = npGetArt();
-if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
-npAudio.src = t.file; _src = t.file;
-if (autoplay) npLoad(t.title, rel.name, t.file, true);
-updatePlayUI();
-}
-function releaseHashName() {
-if (!location.hash) return null;
-var m = location.hash.match(/^#release\/(.*)$/);
-if (!m) return null;
-try { return decodeURIComponent(m[1]); } catch (e) { return null; }
-}
-function applyReleaseHash() {
-var name = releaseHashName();
-if (_hashApplied || !name || !RELEASE_LIST.length) return;
-for (var i = 0; i < RELEASE_LIST.length; i++) {
-if (RELEASE_LIST[i].name === name) {
-_hashApplied = true;
-queueRelease(i, false);
-setTracklist(i, false);
-var cards = document.querySelectorAll('.rel-card');
-var card = cards[i];
-if (card) setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
-return;
-}
-}
 }
 var _tracklistDebounce = 0;
 function onRelOverlay(e, rIdx) {
@@ -1153,41 +1109,6 @@ _discCache[rIdx] = overlay.querySelector('svg');
 wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
 wrap.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRelOverlay(e, rIdx); } });
 });
-document.querySelectorAll('.rel-btn--share').forEach(function(btn) {
-btn.addEventListener('click', function(e) {
-e.stopPropagation();
-e.preventDefault();
-copyReleaseLink(btn);
-});
-});
-}
-function copyReleaseLink(btn) {
-var name = btn.dataset.share;
-var url = location.origin + location.pathname + '#release/' + encodeURIComponent(name);
-function flash() {
-btn.classList.add('copied');
-btn.innerHTML = CHECK_SVG;
-btn.setAttribute('aria-label', 'Link copied');
-setTimeout(function() {
-btn.classList.remove('copied');
-btn.innerHTML = LINK_SVG;
-btn.setAttribute('aria-label', 'Copy link to ' + name);
-}, 1600);
-}
-function legacy() {
-var ta = document.createElement('textarea');
-ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
-document.body.appendChild(ta);
-ta.select();
-try { document.execCommand('copy'); } catch (err) {}
-document.body.removeChild(ta);
-flash();
-}
-if (navigator.clipboard && navigator.clipboard.writeText) {
-navigator.clipboard.writeText(url).then(flash).catch(legacy);
-} else {
-legacy();
-}
 }
 function buildTracklists() {
 RELEASE_LIST.forEach(function(rel, rIdx) {
@@ -1317,9 +1238,6 @@ var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 if (!btns) btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>';
-// Per-release sublink: copies a #release/<name> permalink that, when
-// opened, queues the release and opens its tracklist without autoplaying.
-btns += '<button type="button" class="rel-btn rel-btn--share" data-share="' + escHtml(rel.name) + '" aria-label="Copy link to ' + escHtml(rel.name) + '" title="Copy link">' + LINK_SVG + '</button>';
 var tracklist = rel.tracks.length > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
@@ -1454,7 +1372,6 @@ function loadDynamicContent() {
 var dataAll = readEmbedded('data-all');
 var embedded = dataAll ? [dataAll.releases, dataAll.videos, dataAll.journal, dataAll.lyrics] : [null];
 if (embedded[0]) renderAllContent(embedded, false);
-applyReleaseHash();
 // Still revalidate against the live .json files: content added through
 // the GitHub web UI (no local rebuild) updates those without touching
 // the embedded copy. Only re-render if something actually changed.
@@ -1468,8 +1385,8 @@ if (results[0] === null) results[0] = haveEmbedded ? embedded[0] : [];
 if (results[1] === null) results[1] = haveEmbedded ? embedded[1] : [];
 if (results[2] === null) results[2] = haveEmbedded ? embedded[2] : [];
 if (results[3] === null) results[3] = haveEmbedded ? embedded[3] : {};
-if (!haveEmbedded) { renderAllContent(results, false); applyReleaseHash(); return; }
-if (JSON.stringify(results) !== JSON.stringify(embedded)) { renderAllContent(results, true); applyReleaseHash(); }
+if (!haveEmbedded) { renderAllContent(results, false); return; }
+if (JSON.stringify(results) !== JSON.stringify(embedded)) renderAllContent(results, true);
 });
 }
 loadDynamicContent();
