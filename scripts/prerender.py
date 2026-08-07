@@ -24,6 +24,8 @@ import os
 import re
 import sys
 
+from buildutil import img_b64
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 
@@ -208,6 +210,17 @@ def main():
         videos = json.load(f)
     with open('journal.json', encoding='utf-8') as f:
         journal = json.load(f)
+
+    # Single-file build: bake raster art/thumb paths as 90%-scale base64
+    # WebP data URIs so the prerendered cards AND the embedded data-all JSON
+    # make zero image requests. (Audio/video file paths stay external - they
+    # are user-triggered media, not initial-render assets.)
+    for r in releases:
+        if r.get('art'):
+            r['art'] = img_b64(r['art'])
+    for v in videos:
+        if v.get('thumb'):
+            v['thumb'] = img_b64(v['thumb'])
 
     with open('index.html', encoding='utf-8') as f:
         page = f.read()

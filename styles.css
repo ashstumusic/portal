@@ -179,11 +179,6 @@ html {
   display: flex; align-items: center;
   padding: 0 clamp(1.25rem, 4vw, 3rem);
   background: rgb(from var(--ink) r g b / .82);
-  /* blur(20px), was 40px: behind an .82-opaque fill the two are visually
-     identical, but the backdrop blur re-runs every scroll frame on a fixed
-     bar and its cost scales with the radius. */
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid rgb(from var(--ink) r g b / .3);
 }
 /* Compositor-only scrolled state: the darker fill + shadow live on an
@@ -229,7 +224,7 @@ html {
   transform: scaleX(0); transform-origin: center;
   transition: transform .3s var(--ease);
 }
-.nav-links a:hover { color: var(--gold); letter-spacing: .32em; }
+.nav-links a:hover { color: var(--gold); }
 .nav-links a:hover::after { transform: scaleX(1); }
 .nav-links a[aria-current] { color: #fff; }
 .nav-links a[aria-current]::after { transform: scaleX(1); background: #fff; opacity: .4; }
@@ -245,8 +240,6 @@ html {
   border: 1px solid rgb(from var(--paper) r g b / .2); cursor: pointer;
   position: relative;
   width: 44px; height: 44px; padding: 0; margin-left: auto;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
   border-radius: 10px;
 }
@@ -273,8 +266,6 @@ html {
   position: fixed;
   top: 56px; left: 0; right: 0; z-index: 199;
   background: rgb(from var(--paper) r g b / .92);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--hairline);
   box-shadow: 0 8px 32px rgba(0,0,0,.08);
   padding: .5rem clamp(1.25rem,5vw,3rem) .75rem;
@@ -300,7 +291,7 @@ html {
 @media (min-width: 901px) {
   .nav-drawer, .nav-drawer.open { display: none; }
 }
-.nav-drawer a:hover { color: var(--rust); padding-left: .5rem; letter-spacing: .1em; }
+.nav-drawer a:hover { color: var(--rust); transform: translateX(.5rem); }
 .drawer-platforms {
   display: none; justify-content: center; gap: 1.25rem;
   padding: .85rem 0; border-bottom: 1px solid var(--hairline);
@@ -310,7 +301,7 @@ html {
   padding: 0 !important; opacity: .45;
   transition: opacity .3s var(--ease), transform .3s var(--ease-spring);
 }
-.drawer-platforms a:hover { opacity: 1; padding-left: 0 !important; transform: scale(1.15); }
+.drawer-platforms a:hover { opacity: 1; transform: scale(1.15); }
 .drawer-platforms .pt { width: 30px; height: 30px; border-radius: 50%; }
 
 /* ════════════════════════════════════════════
@@ -722,6 +713,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   grid-template-columns: repeat(auto-fill, minmax(min(100%,280px),1fr));
   gap: clamp(1rem,2.5vw,1.75rem);
   align-items: start;
+  contain: layout style;
 }
 .rel-card {
   container-type: inline-size;
@@ -767,7 +759,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   filter: grayscale(12%) contrast(1.08);
   transition: filter .5s var(--ease), transform .6s var(--ease);
 }
-.rel-card:hover .rel-art { filter: grayscale(0%) contrast(1.04); transform: scale(1.04); }
+.rel-card:hover .rel-art { transform: scale(1.04); }
 .rel-overlay {
   position: absolute; inset: 0; z-index: 2;
   display: flex; align-items: flex-end;
@@ -875,6 +867,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));
   gap: clamp(1rem,2.5vw,1.75rem);
+  contain: layout style;
 }
 /* The card's visible shape/chrome lives on the outer wrap now, not on
    the button itself - .vid-card (role=button) only wraps the
@@ -969,13 +962,10 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 
 /* Lightbox - glass overlay */
 .vid-lightbox {
-  position: fixed; inset: 0; z-index: 500;
+  position: fixed; inset: 0; z-index: 80;
   background: rgba(0,0,0,.92);
-  /* behind a .92 black fill a 16px blur is indistinguishable from 30px,
-     at roughly half the per-frame filter cost while open */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   display: flex; flex-direction: column; align-items: center;
+  padding: clamp(1rem,4vw,3rem);
   /* 'safe' - a 16:9 video sized off width can be taller than a short
      viewport; unsafe centering would clip the top bar (incl. close
      button) off-screen instead of scrolling to it. */
@@ -993,7 +983,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .lb-arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
   background: rgba(0,0,0,.45);
-  backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,.08);
   color: rgba(255,255,255,.8); cursor: pointer;
   width: 48px; height: 48px; border-radius: 50%;
@@ -1028,8 +1017,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   cursor: pointer; width: 34px; height: 34px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-size: .9rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
 }
 .lb-close:hover { color: #fff; border-color: var(--gold); background: rgb(from var(--gold) r g b / .12); transform: scale(1.08) rotate(90deg); }
@@ -1070,8 +1057,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   border-radius: 10px;
   background: rgba(0,0,0,.65);
   border: 1.5px solid rgba(255,255,255,.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 2px 12px rgba(0,0,0,.2);
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
 }
@@ -1193,11 +1178,11 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   filter: grayscale(100%);
   transition: filter .5s var(--ease);
 }
-.bio-card-media img:not(.bio-media-main):hover { filter: grayscale(0%) brightness(1.05); }
+.bio-card-media img:not(.bio-media-main):hover { transform: scale(1.03); }
 /* the piano shot is underexposed - lift it (was an inline style, moved
    here so the grayscale treatment above can compose with it) */
 .bio-card-media img:last-child { filter: grayscale(100%) brightness(1.4); }
-.bio-card-media img:last-child:hover { filter: grayscale(0%) brightness(1.45); }
+.bio-card-media img:last-child:hover { transform: scale(1.03); }
 .bio-name {
   font-family: 'Logo', var(--display);
   font-size: clamp(2.6rem, 4.8vw, 4rem);
@@ -1257,6 +1242,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    dividers from reading as stray notebook lines. */
 .journal-list {
   display: flex; flex-direction: column;
+  contain: layout style;
   background: var(--cream);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
@@ -1372,10 +1358,7 @@ footer {
   position: fixed; bottom: 0; left: 0; right: 0;
   z-index: 300;
   background: rgb(from var(--ink) r g b / .97);
-  /* fill is .97 opaque - the blur barely shows through; 16px reads the
-     same as 30px and halves the fixed bar's backdrop cost */
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  /* fill is .97 opaque - blur was invisible, so it's gone */
   box-shadow: 0 -2px 20px rgba(8,76,97,.25);
   display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
   align-items: center; gap: .5rem;
@@ -1825,6 +1808,7 @@ body.player-active { padding-bottom: 68px; }
 .epk-section {
   background: transparent;
   display: grid;
+  contain: layout style;
   grid-template-columns: 1fr auto auto;
   grid-template-rows: auto;
   align-items: center;
@@ -1853,9 +1837,9 @@ body.player-active { padding-bottom: 68px; }
   object-fit: cover;
   display: block;
   filter: grayscale(100%);
-  transition: filter .5s var(--ease), transform .5s var(--ease);
+  transition: transform .5s var(--ease);
 }
-.epk-photos img:hover { filter: grayscale(0%) brightness(1.05); }
+.epk-photos img:hover { transform: scale(1.04); }
 /* The one download CTA on the page - red pop accent so it can't be confused
    with the gold utility buttons (email, streaming chips). */
 .btn-epk-dl {
@@ -2247,7 +2231,6 @@ body.player-active { padding-bottom: 68px; }
   position: absolute;
   pointer-events: none;
   z-index: 10;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,.15));
   will-change: transform;
 }
 @keyframes gj1 {
@@ -2330,6 +2313,7 @@ body.player-active { padding-bottom: 68px; }
 .fs-player {
   position: fixed; inset: 0; z-index: 400;
   background: var(--ink);
+  contain: layout style;
   transform: translateY(100%);
   transition: transform .4s var(--ease);
   overflow: hidden;
