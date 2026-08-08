@@ -299,7 +299,7 @@ html {
   color: rgb(from var(--ink) r g b / .8); text-decoration: none;
   padding: .85rem 1rem; border-bottom: 1px solid var(--hairline);
   transition: color .25s var(--ease);
-  position: relative; border-radius: 10px;
+  position: relative; border-radius: 10px; text-align: center;
 }
 .nav-drawer a:last-child { border-bottom: none; }
 /* Drawer is mobile-only: if it was left open and the viewport grows past the
