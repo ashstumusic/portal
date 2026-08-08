@@ -337,7 +337,11 @@ html {
   display: flex; align-items: center; border-bottom: none !important;
   padding: 0 !important; opacity: .45;
   transition: opacity .3s var(--ease), transform .3s var(--ease-spring);
+  width: auto; margin: 0;
 }
+/* Icons keep the desktop toolbar's scale-up hover - no gold ink-bleed
+   pill behind them, that's for the text menu items only. */
+.drawer-platforms a::before, .drawer-platforms a::after { content: none; }
 .drawer-platforms a:hover { opacity: 1; transform: scale(1.15); }
 .drawer-platforms .pt { width: 30px; height: 30px; border-radius: 50%; }
 
