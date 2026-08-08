@@ -230,7 +230,13 @@ html {
   pointer-events: none;
 }
 .nav-links a::after {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  content: ''; position: absolute;
+  left: 0; right: 0; top: 50%; z-index: -1;
+  /* Vertically tighter than the button's 44px hit-box: the pill hugs the
+     label instead of filling the whole tap target, so the highlight reads
+     as "this link" rather than a chunky filled button. */
+  height: calc(100% - 16px);
+  transform: translateY(-50%);
   border-radius: inherit;
   background: var(--gold);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
@@ -239,7 +245,7 @@ html {
   pointer-events: none;
 }
 .nav-links a:hover { color: var(--ink); }
-.nav-links a:hover::before { opacity: 1; transform: scale(1.6); }
+.nav-links a:hover::before { opacity: 1; transform: scale(1.5, 1.15); }
 .nav-links a:hover::after { opacity: 1; }
 .nav-links a[aria-current] { color: #fff; }
 .nav-links a[aria-current]::after { opacity: .18; }
