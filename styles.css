@@ -295,13 +295,13 @@ html {
   visibility: visible;
 }
 .nav-drawer a {
-  display: block; font-family: var(--sans); font-style: normal; font-size: 1.1rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  display: block; width: fit-content; margin: .35rem auto;
+  font-family: var(--sans); font-style: normal; font-size: 1.1rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
   color: rgb(from var(--ink) r g b / .8); text-decoration: none;
-  padding: .85rem 1rem; border-bottom: 1px solid var(--hairline);
+  padding: .6rem 1.4rem; border: none;
   transition: color .25s var(--ease);
   position: relative; border-radius: 10px; text-align: center;
 }
-.nav-drawer a:last-child { border-bottom: none; }
 /* Drawer is mobile-only: if it was left open and the viewport grows past the
    breakpoint, kill it entirely so a stale .open can't show it on desktop. */
 @media (min-width: 901px) {
@@ -1948,7 +1948,7 @@ body.player-active { padding-bottom: 68px; }
   .nav-links, .nav-platforms { display: none; }
   .nav-toggle { display: block; }
   .nav-drawer { top: 48px; }
-  .nav-drawer a { padding: 1rem 0; font-size: 1.1rem; min-height: 48px; display: flex; align-items: center; }
+  .nav-drawer a { padding: .6rem 1.4rem; font-size: 1.1rem; min-height: 48px; width: fit-content; margin-inline: auto; }
   .drawer-platforms { display: flex; }
 
   .hero-split {
