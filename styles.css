@@ -600,12 +600,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   margin-bottom: clamp(2rem,4vw,3rem);
   letter-spacing: -.01em;
   text-wrap: balance;
-  position: relative; display: inline-block; padding-bottom: .4rem;
-}
-.section-h::after {
-  content: ''; position: absolute; bottom: 0; left: 0;
-  width: 2rem; height: 2.5px; border-radius: 4px;
-  background: var(--gold);
+  position: relative; display: inline-block;
 }
 .section-h--tight { margin-bottom: 0; }
 .btn--start { align-self: flex-start; }
@@ -1248,14 +1243,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   line-height: 1.85;
   color: #000;
   max-width: 46ch;
-}
-/* Gold tick under the name - same mark the section headers carry, so the
-   card reads as part of the same editorial system. */
-.bio-name::after {
-  content: ''; display: block;
-  width: 2rem; height: 2.5px; border-radius: 4px;
-  background: var(--gold);
-  margin-top: .6rem;
 }
 /* The "figment" line is an aside, not more bio copy - set it as an
    epigraph in the journal's pull-quote language (gold rule, italic serif)
@@ -2006,7 +1993,6 @@ body.player-active { padding-bottom: 68px; }
   .bio-desc { margin-inline: auto; }
   /* centered panel: center the gold tick, drop the left-rule epigraph
      treatment (a side rule on centered text reads lopsided) */
-  .bio-name::after { margin-inline: auto; }
   .bio-tagline { margin-top: 1.1rem; }
   .bio-name { font-size: 2.2rem; }
   .bio-text { max-width: 100%; }
@@ -2019,7 +2005,6 @@ body.player-active { padding-bottom: 68px; }
   .epk-body .epk-text { grid-column: 1; grid-row: 2; }
   .epk-body .btn-epk-dl { grid-column: 2; grid-row: 1 / 3; align-self: stretch; height: auto; flex-direction: row; padding: 0 1.2rem; }
   .epk-body .btn-epk-dl svg { width: auto; height: 100%; max-height: 2.5rem; flex-shrink: 0; }
-  .epk-body .section-h::after { left: 0; transform: none; }
   .epk-photos-bottom { grid-column: 1; grid-row: 3; }
   .epk-photos { grid-template-columns: repeat(2, 1fr); }
   .epk-text { font-size: .82rem; max-width: 100%; }
@@ -2072,6 +2057,7 @@ body.player-active { padding-bottom: 68px; }
 @media (max-width: 600px) {
   .releases-grid { grid-template-columns: 1fr; gap: 1rem; }
   .video-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .section-h::after { left: -1.1rem; }
 }
 
 /* ════════════════════════════════════════════
@@ -2081,6 +2067,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split { padding-top: 44px; --nav-pad: 44px; }
   .hero-name { font-size: clamp(3rem,17cqi,4.6rem); }
   .section-h { font-size: 2rem; }
+  .section-h::after { left: -.9rem; }
   .nav { height: 44px; min-height: 44px; }
   .nav-logo .hero-icon { width: 22px; }
   .nav-logo .hero-name { font-size: .83rem; top: 0.17em; }
@@ -2093,6 +2080,7 @@ body.player-active { padding-bottom: 68px; }
 @media (max-width: 360px) {
   .hero-name { font-size: 2.7rem; }
   .hero-icon { width: 56px; }
+  .section-h::after { left: -.7rem; }
   .hero-split-right { padding: .75rem .75rem 80px; gap: .4rem; }
   .featured-badge { font-size: .4rem; padding: .2rem .5rem; }
   .f-btn { height: 40px; font-size: .48rem; }
