@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://ashstu.media/</loc>
-    <lastmod>2026-08-07</lastmod>
+    <lastmod>2026-08-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -25,11 +25,6 @@
       <image:loc>https://ashstu.media/Images/Guitar.webp</image:loc>
       <image:title>Ash Stu with Guitar</image:title>
       <image:caption>Ash Stu performing with guitar</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://ashstu.media/Images/Releases/My%20Morning%20Star.webp</image:loc>
-      <image:title>My Morning Star - Album Art</image:title>
-      <image:caption>Album cover for My Morning Star by Ash Stu</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://ashstu.media/Images/Releases/Only%20a%20Baby%2C%20Vol.%202.webp</image:loc>
