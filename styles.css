@@ -1887,9 +1887,9 @@ body.player-active { padding-bottom: 68px; }
   justify-content: center; line-height: 1.15;
 }
 .btn-epk-dl:hover {
-  background: rgb(from var(--red) calc(r - 24) calc(g - 12) calc(b - 12)) ;
-  border-color: rgb(from var(--red) calc(r - 24) calc(g - 12) calc(b - 12));
-  box-shadow: 0 8px 28px rgb(from var(--red) r g b / .45);
+  background: var(--gold); color: var(--ink);
+  border-color: var(--gold);
+  box-shadow: 0 8px 28px rgb(from var(--gold) r g b / .45);
 }
 .btn-epk-dl:active { transform: none; }
 
