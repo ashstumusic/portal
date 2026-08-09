@@ -572,7 +572,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .pt--spotify { background-image: url('Icons/Spotify.webp'); }
 .pt--youtube { background-image: url('Icons/Youtube.webp'); }
 .pt--substack { background-image: url('Icons/Substack.webp'); }
-.pt--patreon { background-image: url('Icons/Patreon.webp'); }
 .btn-fill {
   background: var(--ink);
   color: var(--paper); border: 1px solid var(--ink);
