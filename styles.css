@@ -64,13 +64,13 @@
   --cream:      #FAFCFC;  /* raised surface: card fill, popovers */
   --ink:        #084C61;  /* primary: deep teal - text, panels, CTAs */
   --ink-soft:   #4A6E7C;  /* secondary/muted text */
-  --ink-hover:  rgb(from var(--ink) calc(r + 18) calc(g + 18) calc(b + 18));
-  --hairline:   rgb(from var(--ink) r g b / .08);
+  --ink-hover: rgb(26,94,115);  /* fallback: older engines lack rgb(from…) */
+  --hairline: rgba(8,76,97,.08);  /* fallback: older engines lack rgb(from…) */
   --rust:       #084C61;  /* accent roles collapse into primary teal */
-  --rust-hover: rgb(from var(--rust) calc(r - 18) calc(g - 18) calc(b - 18));
+  --rust-hover: rgb(0,58,79);  /* fallback: older engines lack rgb(from…) */
   --gold:       #F7C549;  /* accent: sunny yellow - lamplight, hovers, marks */
   --red:        #DF2B2C;  /* pop accent: Latest Release badge, confetti */
-  --gold-hover: rgb(from var(--gold) calc(r * .86) calc(g * .86) calc(b * .86));
+  --gold-hover: rgb(212,169,63);  /* fallback: older engines lack rgb(from…) */
   --sage:       #F7C549;  /* now-playing - 3-color palette, accent doubles
                              as the "live" signal */
   --radius:     8px;      /* was a 16px "squircle" - a shade sharper reads as
@@ -106,6 +106,7 @@ body {
      always covers at least two device pixels, so every rule renders,
      at every zoom, at the same weight. Whole-pixel 34px period keeps
      the spacing exact; opacity low enough to stay texture. */
+  background: repeating-linear-gradient(to bottom, transparent 0 32px, rgba(8,76,97,.025) 32px 34px), var(--paper);
   background:
     repeating-linear-gradient(to bottom, transparent 0 32px, rgb(from var(--ink) r g b / .025) 32px 34px),
     var(--paper);
@@ -137,17 +138,22 @@ a, button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-c
    compositor layer up front - all small, cheap-to-hold surfaces. */
 .hero-scroll { will-change: transform; }
 #player-bar { will-change: transform; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-img[loading="lazy"] { animation: fadeIn .4s var(--ease) both; }
+/* Removed the img[loading=lazy] fadeIn animation: its animation-fill-mode
+   "both" could leave below-the-fold images stranded at opacity 0 on older
+   mobile engines (Samsung Internet / older Chrome) once the animation
+   finished before the lazy image actually decoded - the "photos don't
+   load / unload" bug on the Galaxy S9. Lazy images now render plainly
+   with no fade. */
 a { color: inherit; }
 html {
   scrollbar-width: thin;
+  scrollbar-color: rgba(8,76,97,.12) transparent;
   scrollbar-color: rgb(from var(--ink) r g b / .12) transparent;
 }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgb(from var(--ink) r g b / .12); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgb(from var(--ink) r g b / .25); }
+::-webkit-scrollbar-thumb { background: rgba(8,76,97,.12); background: rgb(from var(--ink) r g b / .12); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(8,76,97,.25); background: rgb(from var(--ink) r g b / .25); }
 .skip {
   position: absolute; top: -999px; left: 1rem;
   background: var(--cream); color: var(--ink);
@@ -155,7 +161,7 @@ html {
   padding: .5rem 1rem; text-decoration: none; z-index: 9999;
 }
 .skip:focus { top: 1rem; }
-::selection { background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
+::selection { background: rgba(8,76,97,.15); background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
 :focus { outline: none; }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
 
@@ -178,7 +184,9 @@ html {
   flex-wrap: wrap;
   display: flex; align-items: center;
   padding: 0 clamp(1.25rem, 4vw, 3rem);
+  background: rgba(8,76,97,.82);
   background: rgb(from var(--ink) r g b / .82);
+  border-bottom: 1px solid rgba(8,76,97,.3);
   border-bottom: 1px solid rgb(from var(--ink) r g b / .3);
 }
 /* Compositor-only scrolled state: the darker fill + shadow live on an
@@ -188,6 +196,7 @@ html {
    .92 fill (.556 + .82 x .444 = .92). */
 .nav::before {
   content: ''; position: absolute; inset: 0; z-index: -1;
+  background: rgba(8,76,97,.556);
   background: rgb(from var(--ink) r g b / .556);
   box-shadow: 0 2px 20px rgba(8,76,97,.2);
   opacity: 0; transition: opacity .4s var(--ease);
@@ -213,6 +222,7 @@ html {
      labels need to scan fast, too - a plain sans does both jobs better and
      leaves the handwriting for places where it can actually read as a hand. */
   font-family: var(--sans); font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(240,245,246,.92); text-decoration: none;
   color: rgb(from var(--paper) r g b / .92); text-decoration: none;
   transition: color .3s var(--ease); white-space: nowrap;
   padding: .25rem .7rem; min-height: 44px; display: flex; align-items: center;
@@ -224,6 +234,7 @@ html {
 .nav-links a::before {
   content: ''; position: absolute; inset: 0;
   border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(247,197,73,.25) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .25) 0%, transparent 70%);
   opacity: 0; transform: scale(.3);
   transition: opacity .5s var(--ease), transform .6s var(--ease);
@@ -239,6 +250,7 @@ html {
   transform: translateY(-50%);
   border-radius: inherit;
   background: var(--gold);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
   opacity: 0;
   transition: opacity .25s var(--ease);
@@ -258,20 +270,22 @@ html {
 .nav-platform .pt { width: 26px; height: 26px; border-radius: 50%; }
 .nav-toggle {
   display: none; background: rgba(255,255,255,.06);
+  border: 1px solid rgba(240,245,246,.2); cursor: pointer;
   border: 1px solid rgb(from var(--paper) r g b / .2); cursor: pointer;
   position: relative;
   width: 44px; height: 44px; padding: 0; margin-left: auto;
   transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
   border-radius: 10px;
 }
-.nav-toggle:hover { background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); }
-.nav-toggle[aria-expanded=true] { border-color: var(--gold); background: rgb(from var(--gold) r g b / .08); }
+.nav-toggle:hover { background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); }
+.nav-toggle[aria-expanded=true] { border-color: var(--gold); background: rgba(247,197,73,.08); background: rgb(from var(--gold) r g b / .08); }
 /* Hamburger that morphs into an X - three bars rotate/fade into place
    instead of swapping a text label, so the icon itself communicates
    open/close state at a glance. */
 .nav-toggle-bar {
   position: absolute; left: 50%; top: 50%;
   width: 16px; height: 2px;
+  background: rgba(240,245,246,.85);
   background: rgb(from var(--paper) r g b / .85);
   border-radius: 2px;
   transition: transform .3s var(--ease), opacity .2s var(--ease), background .3s var(--ease);
@@ -286,6 +300,7 @@ html {
 .nav-drawer {
   position: fixed;
   top: 56px; left: 0; right: 0; z-index: 199;
+  background: rgba(240,245,246,.92);
   background: rgb(from var(--paper) r g b / .92);
   border-bottom: 1px solid var(--hairline);
   box-shadow: 0 8px 32px rgba(0,0,0,.08);
@@ -303,6 +318,7 @@ html {
 .nav-drawer a {
   display: block; width: fit-content; margin: .35rem auto;
   font-family: var(--sans); font-style: normal; font-size: 1.1rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(8,76,97,.8); text-decoration: none;
   color: rgb(from var(--ink) r g b / .8); text-decoration: none;
   padding: .6rem 1.4rem; border: none;
   transition: color .25s var(--ease);
@@ -318,6 +334,7 @@ html {
 .nav-drawer a::before {
   content: ''; position: absolute; inset: 0;
   border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(247,197,73,.25) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .25) 0%, transparent 70%);
   opacity: 0; transform: scale(.3);
   transition: opacity .5s var(--ease), transform .6s var(--ease);
@@ -327,6 +344,7 @@ html {
   content: ''; position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
   opacity: 0;
   transition: opacity .25s var(--ease);
@@ -468,6 +486,7 @@ html {
   font-weight: normal;
   letter-spacing: -.02em;
   margin: 0; padding-top: .15em;
+  text-shadow: 0 2px 20px rgba(0,0,0,.3), 0 0 60px rgba(247,197,73,.15);
   text-shadow: 0 2px 20px rgba(0,0,0,.3), 0 0 60px rgb(from var(--gold) r g b / .15);
 }
 .hero-split-right {
@@ -483,9 +502,11 @@ html {
   /* A single warm spotlight falling on the record - the one lit object on
      a dark stage pulls the eye harder than any color-block panel could. */
   /* same deep teal as the nav bar, with the warm spotlight on the record */
+  background: radial-gradient(ellipse 95% 60% at 50% 36%, rgba(247,197,73,.28), transparent 70%), var(--ink);
   background:
     radial-gradient(ellipse 95% 60% at 50% 36%, rgb(from var(--gold) r g b / .28), transparent 70%),
     var(--ink);
+  border-left: 1px solid rgba(8,76,97,.06);
   border-left: 1px solid rgb(from var(--ink) r g b / .06);
   overflow: hidden;
   min-height: 0;
@@ -498,7 +519,9 @@ html {
 /* On the gold panel the translucent-teal buttons went olive; cream chips
    read as printed tickets and keep the icons crisp. */
 .hero-split-right .f-btn {
+  background: rgba(250,252,252,.8);
   background: rgb(from var(--cream) r g b / .8);
+  border-color: rgba(8,76,97,.18);
   border-color: rgb(from var(--ink) r g b / .18);
 }
 /* Hover fill comes from .f-btn's shared ::after overlay (see above) -
@@ -515,7 +538,9 @@ html {
   /* gold disc + ink chevron, same as every play disc on the site */
   color: var(--ink); opacity: .5;
   background: var(--gold);
+  border: 1px solid rgba(247,197,73,.5);
   border: 1px solid rgb(from var(--gold) r g b / .5);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4), 0 1px 4px rgba(0,0,0,.15);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4), 0 1px 4px rgba(0,0,0,.15);
   transition: opacity .3s var(--ease), background .3s var(--ease);
   animation: heroScrollBob 2.4s var(--ease) infinite;
@@ -575,11 +600,13 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .btn-fill {
   background: var(--ink);
   color: var(--paper); border: 1px solid var(--ink);
+  box-shadow: 0 2px 8px rgba(8,76,97,.15);
   box-shadow: 0 2px 8px rgb(from var(--ink) r g b / .15);
 }
 .btn-fill:hover {
   background: var(--ink-hover);
   border-color: var(--ink-hover);
+  box-shadow: 0 4px 16px rgba(8,76,97,.25);
   box-shadow: 0 4px 16px rgb(from var(--ink) r g b / .25);
   transform: translateY(-2px) scale(1.01);
 }
@@ -609,8 +636,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .section-h--tight { margin-bottom: 0; }
 .btn--start { align-self: flex-start; }
-.featured-art-rounded { border-radius: var(--radius); box-shadow: 0 10px 36px rgba(8,76,97,.22), 0 0 60px rgb(from var(--gold) r g b / .3); transition: box-shadow .4s var(--ease), transform .4s var(--ease); }
-.featured-art-rounded:hover { box-shadow: 0 14px 48px rgba(8,76,97,.3), 0 0 90px rgb(from var(--gold) r g b / .45); }
+.featured-art-rounded { border-radius: var(--radius); box-shadow: 0 10px 36px rgba(8,76,97,.22), 0 0 60px rgba(247,197,73,.3); box-shadow: 0 10px 36px rgba(8,76,97,.22), 0 0 60px rgb(from var(--gold) r g b / .3); transition: box-shadow .4s var(--ease), transform .4s var(--ease); }
+.featured-art-rounded:hover { box-shadow: 0 14px 48px rgba(8,76,97,.3), 0 0 90px rgba(247,197,73,.45); box-shadow: 0 14px 48px rgba(8,76,97,.3), 0 0 90px rgb(from var(--gold) r g b / .45); }
 
 .featured-art-wrap { position: relative; flex-shrink: 0; }
 .featured-art-wrap:not(.featured-art-hero) { width: clamp(200px,28vw,360px); }
@@ -643,6 +670,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   padding: .4rem 1.1rem;
   border-radius: 20px;
   margin-bottom: -.75rem;
+  box-shadow: 0 2px 12px rgba(223,43,44,.4);
   box-shadow: 0 2px 12px rgb(from var(--red) r g b / .4);
 }
 .featured-badge { animation: flashBadge 2s ease-in-out 5; }
@@ -651,6 +679,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .featured-badge.soon {
   color: var(--ink);
   background: var(--gold); border-color: var(--gold);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
 }
 @media (prefers-reduced-motion: reduce) { .featured-badge { animation: none; } }
@@ -658,7 +687,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    a small, cheap signal of "handmade object" every time the eye passes over
    one, without spending a script font (which needs room to breathe) on a
    two-word label. */
-.featured-kicker { font-family: var(--sans); font-size: 1rem; letter-spacing: .16em; text-transform: uppercase; color: rgb(from var(--gold) r g b / .9); margin-bottom: -.75rem; margin-top: .25rem; }
+.featured-kicker { font-family: var(--sans); font-size: 1rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(247,197,73,.9); color: rgb(from var(--gold) r g b / .9); margin-bottom: -.75rem; margin-top: .25rem; }
 /* The -.75rem pull-ups assume the desktop panel's 1.25rem gap. In any
    condensed layout (narrow or short) the gap shrinks below that, so negative
    margins would stack content into an overlap - zero them out there. */
@@ -685,8 +714,10 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   font-family: var(--sans); font-size: .52rem; letter-spacing: .14em; text-transform: uppercase;
   text-decoration: none; color: var(--ink);
   padding: 0 1.1rem; height: 40px; white-space: nowrap;
+  border: 1px solid rgba(8,76,97,.15);
   border: 1px solid rgb(from var(--ink) r g b / .15);
   border-radius: 12px;
+  background: rgba(8,76,97,.1);
   background: rgb(from var(--ink) r g b / .1);
   transition: transform .3s var(--ease), opacity .3s var(--ease);
 }
@@ -696,6 +727,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .f-btn::before {
   content: ''; position: absolute; inset: 0;
   border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(247,197,73,.22) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
   opacity: 0; transform: scale(.3);
   transition: opacity .5s var(--ease), transform .6s var(--ease);
@@ -713,6 +745,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   content: ''; position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
   opacity: 0;
   transition: opacity .3s var(--ease);
@@ -726,6 +759,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   pointer-events: none; cursor: default;
   background: var(--gold); border-color: var(--gold);
   color: var(--ink); font-weight: 700; letter-spacing: .16em;
+  box-shadow: 0 2px 12px rgba(247,197,73,.35);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .35);
 }
 .f-btn.f-btn--label::before, .rel-btn.rel-btn--label::before { display: none; }
@@ -738,7 +772,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .f-btn .pt { width: 17px; height: 17px; border-radius: 50%; transition: transform .2s var(--ease); }
 .f-btn:hover .pt { transform: scale(1.1); }
 .f-btn:hover { transform: translateY(-1px); }
-.f-btn.dl { color: var(--ink); background: var(--gold); border-color: var(--gold); font-weight: 600; box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .3); }
+.f-btn.dl { color: var(--ink); background: var(--gold); border-color: var(--gold); font-weight: 600; box-shadow: 0 2px 12px rgba(247,197,73,.3); box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .3); }
 /* Already gold at rest, so the shared ::after overlay (also gold)
    would be invisible here - the lift (inherited from .f-btn:hover)
    plus the ink-bleed glow (::before, inherited too) still give real
@@ -769,17 +803,21 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .rel-card:hover {
   background: var(--cream);
+  border-color: rgba(247,197,73,.6);
   border-color: rgb(from var(--gold) r g b / .6);
   transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgba(247,197,73,.2);
   box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgb(from var(--gold) r g b / .2);
 }
 .rel-card.now-playing {
   position: relative;
   border-color: var(--sage);
+  box-shadow: 0 0 0 2px rgba(247,197,73,.3), 0 0 20px rgba(247,197,73,.15), 0 4px 16px rgba(8,76,97,.08);
   box-shadow: 0 0 0 2px rgb(from var(--sage) r g b / .3), 0 0 20px rgb(from var(--sage) r g b / .15), 0 4px 16px rgb(from var(--ink) r g b / .08);
 }
 .rel-card.now-playing::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(247,197,73,.35), 0 0 30px rgba(247,197,73,.25);
   box-shadow: 0 0 0 1px rgb(from var(--sage) r g b / .35), 0 0 30px rgb(from var(--sage) r g b / .25);
   opacity: 0; animation: cardGlowFade 2.5s ease-in-out infinite;
   will-change: opacity; pointer-events: none;
@@ -809,7 +847,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   pointer-events: none;
 }
 .rel-overlay-inner { width: 100%; min-width: 0; overflow: hidden; }
-.rel-cat { font-family: var(--sans); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: rgb(from var(--gold) calc(r + 30) calc(g + 30) calc(b + 20)); margin-bottom: .3rem; font-weight: 600; }
+.rel-cat { font-family: var(--sans); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: rgb(255,227,93); color: rgb(from var(--gold) calc(r + 30) calc(g + 30) calc(b + 20)); margin-bottom: .3rem; font-weight: 600; }
 .rel-name { font-family: var(--grit); font-style: normal; font-size: min(6.3cqi, 1.55rem); color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; letter-spacing: -.01em; }
 .rel-btns {
   display: flex; gap: .5rem;
@@ -826,7 +864,9 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   white-space: nowrap;
   font-weight: 500;
   border: none; border-radius: 10px;
+  color: rgba(8,76,97,.7);
   color: rgb(from var(--ink) r g b / .7);
+  background: rgba(8,76,97,.03);
   background: rgb(from var(--ink) r g b / .03);
   padding: 0 .5rem;
   transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease);
@@ -834,6 +874,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .rel-btn::before {
   content: ''; position: absolute; inset: 0;
   border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(247,197,73,.22) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
   opacity: 0; transform: scale(.3);
   transition: opacity .5s var(--ease), transform .6s var(--ease);
@@ -847,6 +888,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   content: ''; position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
   opacity: 0;
   transition: opacity .25s var(--ease);
@@ -862,6 +904,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   background: var(--gold);
   border-radius: 8px;
   border: 1px solid var(--gold);
+  box-shadow: 0 1px 6px rgba(247,197,73,.2);
   box-shadow: 0 1px 6px rgb(from var(--gold) r g b / .2);
 }
 /* Already gold at rest - see .f-btn.dl's comment above for why there's
@@ -879,6 +922,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
      whatever room the section actually has, and pinned to nowrap so each
      hand-set line break is a real line break, never a reflow point. */
   font-size: clamp(.57rem, 3.28cqi, 4.15rem);
+  font-style: italic; color: rgba(8,76,97,.78);
   font-style: italic; color: rgb(from var(--ink) r g b / .78);
   line-height: 1.85;
   white-space: nowrap;
@@ -893,6 +937,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   display: block; margin-top: .75rem;
   font-family: var(--sans);
   font-style: normal; font-size: clamp(.65rem, 1.2vw, .76rem);
+  color: rgba(8,76,97,.78); letter-spacing: .12em;
   color: rgb(from var(--ink) r g b / .78); letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -923,8 +968,10 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .vid-card-wrap:hover {
   background: var(--cream);
+  border-color: rgba(247,197,73,.6);
   border-color: rgb(from var(--gold) r g b / .6);
   transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(8,76,97,.1), 0 2px 8px rgba(8,76,97,.06);
   box-shadow: 0 12px 32px rgb(from var(--ink) r g b / .1), 0 2px 8px rgb(from var(--ink) r g b / .06);
 }
 .vid-card { cursor: pointer; }
@@ -955,7 +1002,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   display: flex; align-items: center; justify-content: center;
   transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease), opacity .35s var(--ease), box-shadow .35s var(--ease);
 }
-.vid-card-wrap:hover:not(:has(.vid-yt:hover)) .vid-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.vid-card-wrap:hover:not(:has(.vid-yt:hover)) .vid-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgba(247,197,73,.45); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .vid-play-circle svg { color: #fff; margin-left: 3px; transition: color .35s var(--ease); }
 .vid-card-wrap:hover:not(:has(.vid-yt:hover)) .vid-play-circle svg { color: var(--ink); }
 .vid-info {
@@ -968,9 +1015,12 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   position: relative; overflow: hidden;
   display: inline-flex; align-items: center; gap: .3rem;
   font-family: var(--sans); font-size: .44rem; letter-spacing: .12em; text-transform: uppercase;
+  text-decoration: none; color: rgba(8,76,97,.65);
   text-decoration: none; color: rgb(from var(--ink) r g b / .65);
+  border: 1px solid rgba(8,76,97,.08); padding: .25rem .65rem;
   border: 1px solid rgb(from var(--ink) r g b / .08); padding: .25rem .65rem;
   border-radius: 8px;
+  background: rgba(8,76,97,.02);
   background: rgb(from var(--ink) r g b / .02);
   transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease); flex-shrink: 0;
 }
@@ -979,6 +1029,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .vid-yt::before {
   content: ''; position: absolute; inset: 0;
   border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(247,197,73,.22) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
   opacity: 0; transform: scale(.3);
   transition: opacity .5s var(--ease), transform .6s var(--ease);
@@ -990,6 +1041,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   content: ''; position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
+  box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
   opacity: 0;
   transition: opacity .25s var(--ease);
@@ -1060,7 +1112,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   font-size: .9rem;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
 }
-.lb-close:hover { color: #fff; border-color: var(--gold); background: rgb(from var(--gold) r g b / .12); transform: scale(1.08) rotate(90deg); }
+.lb-close:hover { color: #fff; border-color: var(--gold); background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); transform: scale(1.08) rotate(90deg); }
 .lb-video-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.4); }
 .lb-video-wrap video:fullscreen, .lb-video-wrap video:-webkit-full-screen { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999; border-radius: 0; }
 .lb-video-wrap video { position: absolute; inset: 0; width: 100%; height: 100%; outline: none; }
@@ -1103,15 +1155,17 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .contact-email-link:hover, .contact-email-link:focus-visible {
   background: var(--gold); border-color: var(--gold); color: var(--ink);
+  box-shadow: 0 4px 20px rgba(247,197,73,.45);
   box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45);
   transform: translateY(-1px);
 }
 .form { display: flex; flex-direction: column; gap: 1.25rem; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 .form-group { display: flex; flex-direction: column; gap: .4rem; }
-.form-label { font-size: .52rem; letter-spacing: .24em; text-transform: uppercase; color: rgb(from var(--ink) r g b / .65); font-weight: 600; transition: color .25s var(--ease); }
+.form-label { font-size: .52rem; letter-spacing: .24em; text-transform: uppercase; color: rgba(8,76,97,.65); color: rgb(from var(--ink) r g b / .65); font-weight: 600; transition: color .25s var(--ease); }
 .form-group:focus-within .form-label { color: var(--ink); }
 .form-input, .form-textarea {
+  background: rgba(240,245,246,.55); border: 1px solid rgba(8,76,97,.08);
   background: rgb(from var(--paper) r g b / .55); border: 1px solid rgb(from var(--ink) r g b / .08);
   color: var(--ink); font-family: var(--sans); font-size: .88rem;
   padding: .8rem 1rem; width: 100%; outline: none;
@@ -1120,14 +1174,16 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease), transform .2s var(--ease);
 }
 .form-input:focus, .form-textarea:focus {
+  border-color: rgba(8,76,97,.35);
   border-color: rgb(from var(--ink) r g b / .35);
   background: rgba(255,255,255,.8);
+  box-shadow: 0 0 0 4px rgba(8,76,97,.06), 0 2px 12px rgba(8,76,97,.06);
   box-shadow: 0 0 0 4px rgb(from var(--ink) r g b / .06), 0 2px 12px rgb(from var(--ink) r g b / .06);
   transform: translateY(-1px);
 }
-.form-input::placeholder, .form-textarea::placeholder { color: rgb(from var(--ink) r g b / .4); }
-.form-hint { font-weight: 400; color: rgb(from var(--ink) r g b / .65); }
-.form-note { font-size: .7rem; color: rgb(from var(--ink) r g b / .55); font-weight: 400; font-style: italic; margin-top: -.25rem; }
+.form-input::placeholder, .form-textarea::placeholder { color: rgba(8,76,97,.4); color: rgb(from var(--ink) r g b / .4); }
+.form-hint { font-weight: 400; color: rgba(8,76,97,.65); color: rgb(from var(--ink) r g b / .65); }
+.form-note { font-size: .7rem; color: rgba(8,76,97,.55); color: rgb(from var(--ink) r g b / .55); font-weight: 400; font-style: italic; margin-top: -.25rem; }
 .form-error { font-size: .5rem; letter-spacing: .06em; color: var(--rust); display: none; }
 .form-group.err .form-input, .form-group.err .form-textarea { border-color: var(--rust); }
 .form-group.err .form-error { display: block; }
@@ -1136,7 +1192,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 .form-subscribe { display: flex; align-items: center; gap: .6rem; margin-top: .25rem; }
 .form-subscribe input[type="checkbox"] { accent-color: var(--ink); width: 16px; height: 16px; cursor: pointer; }
-.form-subscribe label { font-size: .7rem; color: rgb(from var(--ink) r g b / .8); cursor: pointer; }
+.form-subscribe label { font-size: .7rem; color: rgba(8,76,97,.8); color: rgb(from var(--ink) r g b / .8); cursor: pointer; }
 
 /* ════════════════════════════════════════════
    BIO
@@ -1146,6 +1202,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   overflow: hidden;
   /* Faint echo of the hero's warm spotlight. The ruled notebook lines
      come from the body background, shared by the whole page. */
+  background: radial-gradient(ellipse 70% 55% at 50% 42%, rgba(247,197,73,.14), transparent 70%);
   background: radial-gradient(ellipse 70% 55% at 50% 42%, rgb(from var(--gold) r g b / .14), transparent 70%);
 }
 .bio-section-header {
@@ -1182,6 +1239,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   justify-content: center;
   /* faint lamplight falling across the sheet from the upper left - same
      warm-spotlight language as the hero panel, one shade above invisible */
+  background: radial-gradient(ellipse 85% 70% at 18% 15%, rgba(247,197,73,.08), transparent 70%);
   background: radial-gradient(ellipse 85% 70% at 18% 15%, rgb(from var(--gold) r g b / .08), transparent 70%);
 }
 /* Photo mosaic fills the media panel edge-to-edge: the portrait full
@@ -1235,6 +1293,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .bio-text {
   font-size: clamp(.84rem, 1.1vw, .94rem);
+  color: rgba(8,76,97,.55);
   color: rgb(from var(--ink) r g b / .55);
   line-height: 1.3;
   max-width: 52ch;
@@ -1258,6 +1317,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
      the slight tilt sells it as something jotted in the margin, not set */
   font-family: 'Figment', var(--display), cursive; font-style: normal;
   font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  color: rgba(8,76,97,.72);
   color: rgb(from var(--ink) r g b / .72);
   line-height: 1.4;
   transform: rotate(-1.4deg);
@@ -1306,11 +1366,13 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .journal-listen-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
 .journal-dek {
   font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.05rem,1.8vw,1.25rem); color: rgba(8,76,97,.78);
   font-size: clamp(1.05rem,1.8vw,1.25rem); color: rgb(from var(--ink) r g b / .78);
   line-height: 1.45; margin-bottom: .85rem; max-width: 56ch;
 }
 .journal-byline {
   font-family: var(--sans); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+  color: rgba(8,76,97,.78); font-weight: 600;
   color: rgb(from var(--ink) r g b / .78); font-weight: 600;
 }
 .journal-byline .journal-dot { margin: 0 .45em; opacity: .6; }
@@ -1382,7 +1444,7 @@ footer {
   box-shadow: 0 4px 16px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
   transition: background .4s var(--ease), color .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease), opacity .4s var(--ease), box-shadow .4s var(--ease);
 }
-.footer-logo:hover img { opacity: .9; box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 40px rgb(from var(--gold) r g b / .1); }
+.footer-logo:hover img { opacity: .9; box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 40px rgba(247,197,73,.1); box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 40px rgb(from var(--gold) r g b / .1); }
 
 /* ════════════════════════════════════════════
    AUDIO PLAYER BAR
@@ -1390,6 +1452,7 @@ footer {
 #player-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   z-index: 300;
+  background: rgba(8,76,97,.97);
   background: rgb(from var(--ink) r g b / .97);
   /* fill is .97 opaque - blur was invisible, so it's gone */
   box-shadow: 0 -2px 20px rgba(8,76,97,.25);
@@ -1484,6 +1547,7 @@ body.player-active { padding-bottom: 68px; }
 #np-album {
   font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
   /* gold, matching .fs-album in the fullscreen player */
+  color: rgba(247,197,73,.88); margin-top: 1px;
   color: rgb(from var(--gold) r g b / .88); margin-top: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -1494,11 +1558,12 @@ body.player-active { padding-bottom: 68px; }
   border: none; background: var(--gold);
   color: var(--ink); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(247,197,73,.35);
   box-shadow: 0 4px 16px rgb(from var(--gold) r g b / .35);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-#np-play:hover { box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
+#np-play:hover { box-shadow: 0 6px 24px rgba(247,197,73,.5); box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
 #np-play:active { transform: scale(.9); }
 #np-play[aria-label="Play"] svg { margin-left: 2px; }
 .np-ctrl {
@@ -1575,7 +1640,7 @@ body.player-active { padding-bottom: 68px; }
 /* Same fix as .hero-split-right .f-btn: on a dark photo backdrop, the
    button's own translucent-teal fill goes muddy - a light cream chip
    keeps the icon and text legible regardless of what's blurred behind it. */
-.fs-platforms .f-btn { background: rgb(from var(--cream) r g b / .9); border-color: rgb(from var(--ink) r g b / .18); }
+.fs-platforms .f-btn { background: rgba(250,252,252,.9); background: rgb(from var(--cream) r g b / .9); border-color: rgba(8,76,97,.18); border-color: rgb(from var(--ink) r g b / .18); }
 /* Hover fill comes from .f-btn's shared ::after overlay - see its
    definition above, works over any base background. */
 /* Phones: a single row can't fit track info + play + prev/next/shuffle/
@@ -1626,6 +1691,7 @@ body.player-active { padding-bottom: 68px; }
     content: '';
     grid-row: 3; grid-column: 1 / -1;
     margin: 0 -.75rem -.65rem;
+    background: rgba(26,94,115,.97);
     background: rgb(from var(--ink-hover) r g b / .97);
   }
   .np-left { grid-area: left; }
@@ -1644,6 +1710,7 @@ body.player-active { padding-bottom: 68px; }
     background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22);
   }
   #player-bar #np-close:active {
+    background: rgba(247,197,73,.3); border-color: var(--gold); color: var(--gold);
     background: rgb(from var(--gold) r g b / .3); border-color: var(--gold); color: var(--gold);
     transform: scale(.92);
   }
@@ -1689,7 +1756,7 @@ body.player-active { padding-bottom: 68px; }
   -webkit-tap-highlight-color: transparent;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
 }
-.np-close:hover { color: var(--gold); background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); transform: scale(1.08); }
+.np-close:hover { color: var(--gold); background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); transform: scale(1.08); }
 .np-close:active { color: #fff; }
 
 /* ════════════════════════════════════════════
@@ -1717,10 +1784,10 @@ body.player-active { padding-bottom: 68px; }
    matching the gold play discs in the player bar and fullscreen player.
    Exactly one highlight per card: when a streaming button is hovered, the
    play circle stands down (the :has guard). */
-.rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgba(247,197,73,.45); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .rel-play-circle svg { color: #fff; transition: color .35s var(--ease); }
 .rel-card:hover:not(:has(.rel-btn:hover)) .rel-play-circle svg { color: var(--ink); }
-.rel-card:focus-visible:not(:has(.rel-btn:focus-visible)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.rel-card:focus-visible:not(:has(.rel-btn:focus-visible)) .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgba(247,197,73,.45); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .rel-card:focus-visible:not(:has(.rel-btn:focus-visible)) .rel-play-circle svg { color: var(--ink); }
 .rel-tracklist {
   max-height: 0; overflow: hidden;
@@ -1731,14 +1798,16 @@ body.player-active { padding-bottom: 68px; }
 .rel-track {
   display: flex; align-items: center; gap: .5rem;
   padding: .55rem .75rem;
+  font-size: .76rem; color: rgba(8,76,97,.82);
   font-size: .76rem; color: rgb(from var(--ink) r g b / .82);
   cursor: pointer; transition: background .2s var(--ease), color .2s var(--ease);
   border-bottom: 1px solid var(--hairline);
 }
 .rel-track:last-child { border-bottom: none; }
-.rel-track:hover { background: rgb(from var(--ink) r g b / .04); color: var(--ink); }
-.rel-track.active { color: var(--ink); font-weight: 600; background: rgb(from var(--ink) r g b / .06); border-left: 2px solid var(--sage); }
+.rel-track:hover { background: rgba(8,76,97,.04); background: rgb(from var(--ink) r g b / .04); color: var(--ink); }
+.rel-track.active { color: var(--ink); font-weight: 600; background: rgba(8,76,97,.06); background: rgb(from var(--ink) r g b / .06); border-left: 2px solid var(--sage); }
 .rel-track-num {
+  font-size: .62rem; color: rgba(8,76,97,.5); min-width: 1.4rem;
   font-size: .62rem; color: rgb(from var(--ink) r g b / .5); min-width: 1.4rem;
   text-align: right; font-variant-numeric: tabular-nums;
 }
@@ -1761,11 +1830,12 @@ body.player-active { padding-bottom: 68px; }
 .rel-lyrics-toggle {
   display: flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; flex-shrink: 0;
+  color: rgba(8,76,97,.55); background: none; border: none;
   color: rgb(from var(--ink) r g b / .55); background: none; border: none;
   border-radius: 6px; cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
   font-size: .6rem;
 }
-.rel-lyrics-toggle:hover { color: var(--ink); background: rgb(from var(--ink) r g b / .05); }
+.rel-lyrics-toggle:hover { color: var(--ink); background: rgba(8,76,97,.05); background: rgb(from var(--ink) r g b / .05); }
 .rel-lyrics-toggle.open { color: var(--ink); transform: rotate(180deg); }
 .rel-lyrics {
   max-height: 0; overflow: hidden;
@@ -1773,6 +1843,7 @@ body.player-active { padding-bottom: 68px; }
 .rel-lyrics-inner {
   padding: .5rem .75rem .75rem 2.4rem;
   font-size: .72rem; line-height: 1.8;
+  color: rgba(8,76,97,.75);
   color: rgb(from var(--ink) r g b / .75);
   white-space: pre-line;
 }
@@ -1795,9 +1866,9 @@ body.player-active { padding-bottom: 68px; }
   opacity: 0; transition: opacity .35s var(--ease);
   border-radius: var(--radius);
 }
-.featured-play-overlay:hover .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.featured-play-overlay:hover .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgba(247,197,73,.45); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .featured-play-overlay:hover .rel-play-circle svg { color: var(--ink); }
-.featured-play-overlay:focus-visible .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
+.featured-play-overlay:focus-visible .rel-play-circle { border-color: var(--gold); background: var(--gold); transform: scale(1.1); box-shadow: 0 4px 20px rgba(247,197,73,.45); box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45); }
 .featured-play-overlay:focus-visible .rel-play-circle svg { color: var(--ink); }
 .featured-play-overlay:focus-visible { box-shadow: var(--focus); outline: none; }
 
@@ -1824,14 +1895,16 @@ body.player-active { padding-bottom: 68px; }
   z-index: 250;
   width: 48px; height: 48px; border-radius: 50%;
   background: var(--gold);
+  border: 1px solid rgba(247,197,73,.5);
   border: 1px solid rgb(from var(--gold) r g b / .5);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: var(--ink);
+  box-shadow: 0 4px 20px rgba(247,197,73,.4), 0 1px 4px rgba(0,0,0,.15);
   box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .4), 0 1px 4px rgba(0,0,0,.15);
   transition: background .35s var(--ease-spring), color .35s var(--ease-spring), border-color .35s var(--ease-spring), transform .35s var(--ease-spring), opacity .35s var(--ease-spring), box-shadow .35s var(--ease-spring);
 }
-.fab-music:hover { transform: scale(1.12); box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5), 0 0 40px rgb(from var(--gold) r g b / .2); }
+.fab-music:hover { transform: scale(1.12); box-shadow: 0 8px 32px rgba(247,197,73,.5), 0 0 40px rgba(247,197,73,.2); box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5), 0 0 40px rgb(from var(--gold) r g b / .2); }
 .fab-music:active { transform: scale(.93); }
 .fab-music.hidden { opacity: 0; pointer-events: none; transform: scale(.7); }
 
@@ -1877,6 +1950,7 @@ body.player-active { padding-bottom: 68px; }
   background: var(--red); color: #fff;
   border: 1px solid var(--red);
   gap: .5rem; font-weight: 700;
+  box-shadow: 0 4px 18px rgba(223,43,44,.35);
   box-shadow: 0 4px 18px rgb(from var(--red) r g b / .35);
 }
 .btn-epk-dl span {
@@ -1886,6 +1960,7 @@ body.player-active { padding-bottom: 68px; }
 .btn-epk-dl:hover {
   background: var(--gold); color: var(--ink);
   border-color: var(--gold);
+  box-shadow: 0 8px 28px rgba(247,197,73,.45);
   box-shadow: 0 8px 28px rgb(from var(--gold) r g b / .45);
 }
 .btn-epk-dl:active { transform: none; }
@@ -2389,11 +2464,12 @@ body.player-active { padding-bottom: 68px; }
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.fs-collapse:hover { color: var(--gold); background: rgb(from var(--gold) r g b / .1); border-color: rgb(from var(--gold) r g b / .3); }
+.fs-collapse:hover { color: var(--gold); background: rgba(247,197,73,.1); background: rgb(from var(--gold) r g b / .1); border-color: rgba(247,197,73,.3); border-color: rgb(from var(--gold) r g b / .3); }
 .fs-collapse:active { color: rgba(255,255,255,.7); }
 .fs-art-wrap {
   width: min(80vw, 340px); aspect-ratio: 1;
   border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(240,245,246,.14);
   border: 1px solid rgb(from var(--paper) r g b / .14);
   box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
   flex-shrink: 0;
@@ -2411,6 +2487,7 @@ body.player-active { padding-bottom: 68px; }
 }
 .fs-album {
   display: block; font-size: .58rem; letter-spacing: .22em;
+  text-transform: uppercase; color: rgba(247,197,73,.88);
   text-transform: uppercase; color: rgb(from var(--gold) r g b / .88);
   margin-top: .4rem;
 }
@@ -2465,11 +2542,12 @@ body.player-active { padding-bottom: 68px; }
   background: var(--gold); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: var(--ink);
+  box-shadow: 0 6px 24px rgba(247,197,73,.35);
   box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .35);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-play:hover { box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
+.fs-play:hover { box-shadow: 0 8px 32px rgba(247,197,73,.5); box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
 .fs-play:active { transform: scale(.9); }
 .fs-play svg { margin-left: 0; }
 .fs-play[aria-label="Play"] svg { margin-left: 3px; }
@@ -2519,8 +2597,8 @@ body.player-active { padding-bottom: 68px; }
 @media (hover: none) {
   .rel-play-overlay { opacity: 1; background: rgba(0,0,0,.18); }
   .featured-play-overlay { opacity: 1; background: rgba(0,0,0,.2); }
-  .rel-card:hover { transform: none; box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
-  .vid-card:hover { transform: none; box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
+  .rel-card:hover { transform: none; box-shadow: 0 1px 4px rgba(8,76,97,.06); box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
+  .vid-card:hover { transform: none; box-shadow: 0 1px 4px rgba(8,76,97,.06); box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
   .rel-card:hover .rel-art { transform: none; }
   .vid-card:hover .vid-thumb img { transform: none; }
   .rel-card:hover .rel-play-circle { transform: none; }
@@ -2614,5 +2692,18 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
     body.player-active .hero-scroll { bottom: calc(.9rem + 70px + env(safe-area-inset-bottom)); }
     .fab-music { bottom: calc(1rem + env(safe-area-inset-bottom)); }
     .hero-scroll { bottom: calc(.9rem + env(safe-area-inset-bottom)); }
+  }
+}
+
+
+/* Browsers that support relative colors (Chromium 119+) re-derive
+   the derived tints here; the concrete fallbacks above stand for
+   older engines (Samsung Internet, older Chrome). */
+@supports (color: rgb(from red r g b / 1)) {
+  :root {
+    --ink-hover: rgb(from var(--ink) calc(r + 18) calc(g + 18) calc(b + 18));
+    --hairline: rgb(from var(--ink) r g b / .08);
+    --rust-hover: rgb(from var(--rust) calc(r - 18) calc(g - 18) calc(b - 18));
+    --gold-hover: rgb(from var(--gold) calc(r * .86) calc(g * .86) calc(b * .86));
   }
 }
