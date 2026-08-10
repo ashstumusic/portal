@@ -548,7 +548,7 @@ const heroBrand = document.getElementById('hero-brand');
 const heroSection = document.querySelector('.hero-split-left');
 let offsets = [], ticking = false, heroH = 400;
 function cacheOffsets() {
-offsets = ids.map(id => ({ id, top: document.getElementById(id)?.offsetTop || 0 }));
+offsets = ids.map(id => ({ id, top: (document.getElementById(id) || {}).offsetTop || 0 }));
 heroH = heroSection ? heroSection.offsetHeight : 400;
 }
 cacheOffsets();
@@ -566,7 +566,7 @@ for (let i = 0; i < offsets.length; i++) { if (scrollY >= offsets[i].top - 100) 
 // invalidates style - only touch the DOM on a real section change,
 // never every scroll frame.
 if (cur !== _lastCur) {
-ids.forEach(id => links[id]?.removeAttribute('aria-current'));
+ids.forEach(id => { if (links[id]) links[id].removeAttribute('aria-current'); });
 if (cur && links[cur]) links[cur].setAttribute('aria-current','page');
 _lastCur = cur;
 }
