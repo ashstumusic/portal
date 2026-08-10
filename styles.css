@@ -1870,9 +1870,7 @@ body.player-active { padding-bottom: 68px; }
   object-fit: cover;
   display: block;
   filter: grayscale(100%);
-  transition: transform .5s var(--ease);
 }
-.epk-photos img:hover { transform: scale(1.04); }
 /* The one download CTA on the page - red pop accent so it can't be confused
    with the gold utility buttons (email, streaming chips). */
 .btn-epk-dl {
