@@ -390,6 +390,7 @@ html {
   /* grows instead of clipping on short viewports. Pinned to the photo's
      native ratio (1260/855) on wide-aspect monitors, so cover always crops
      the sides and never flips to cropping top/bottom. */
+  min-height: calc(100vw * .4847); /* fallback: dvh/max() unsupported (old Samsung/Chrome) */
   min-height: max(100dvh, calc(100vw * .4847));
   overflow: hidden;
   position: relative;
@@ -399,6 +400,7 @@ html {
 .hero-split-left {
   position: relative;
   background: var(--ink);
+  max-height: calc(100vw * .4847 - var(--nav-pad, 0px)); /* fallback: dvh/max() unsupported */
   max-height: max(calc(100dvh - var(--nav-pad, 0px)), calc(100vw * .4847 - var(--nav-pad, 0px)));
   overflow: hidden;
   container-type: inline-size;
@@ -513,6 +515,7 @@ html {
   /* Definite height budget so the art's flex-shrink engages: viewport minus
      nav pad and photo band (vars published per layout). The 320px floor is
      the honest minimum for the text stack - below it the section scrolls. */
+  max-height: var(--panel-floor, 470px); /* fallback: dvh/max() unsupported */
   max-height: max(var(--panel-floor, 470px), calc(100dvh - var(--nav-pad, 0px) - var(--band, 0px)));
 }
 .hero-split-right > * { position: relative; z-index: 1; }
@@ -2001,7 +2004,7 @@ body.player-active { padding-bottom: 68px; }
    TABLET LANDSCAPE (900–1200px) - 2-col grids
    ════════════════════════════════════════════ */
 @media (min-width: 901px) and (max-width: 1199px) {
-  .hero-split { grid-template-columns: 3fr 1.5fr; min-height: 100dvh; }
+  .hero-split { grid-template-columns: 3fr 1.5fr; min-height: 100vh; min-height: 100dvh; }
   .releases-grid { grid-template-columns: repeat(2, 1fr); }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
   .section { padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
@@ -2024,11 +2027,12 @@ body.player-active { padding-bottom: 68px; }
     grid-template-columns: 1fr;
     /* everything fits one screen; min-content floor lets it grow if it must */
     grid-template-rows: auto minmax(min-content, 1fr);
-    height: auto; min-height: 100dvh; padding-top: 48px;
+    height: auto; min-height: 100vh; min-height: 100dvh; padding-top: 48px;
     --nav-pad: 48px;
     --panel-floor: 340px;
     /* photo band is full-width; height shrinks with the panel but never
        below width/2.5, or the crop is too thin a sliver to read as a photo */
+    --band: calc(100vw / 2.5); /* fallback: dvh/min()/max() unsupported */
     --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad) - var(--panel-floor) - 140px)));
   }
   .hero-split-left {
@@ -2204,7 +2208,7 @@ body.player-active { padding-bottom: 68px; }
    LANDSCAPE PHONE (short + landscape)
    ════════════════════════════════════════════ */
 @media (max-height: 500px) and (orientation: landscape) {
-  .hero-split { grid-template-columns: 1fr 1fr; min-height: 100dvh; padding-top: 40px; --nav-pad: 40px; --band: 0px; }
+  .hero-split { grid-template-columns: 1fr 1fr; min-height: 100vh; min-height: 100dvh; padding-top: 40px; --nav-pad: 40px; --band: 0px; }
   /* real 2-col grid here - undo the stacked width:calc(band...) formula or
      the column collapses to zero width (band is 0 in this breakpoint) */
   .hero-split-left { width: auto; height: auto; min-height: unset; justify-self: stretch; overflow: hidden; }
@@ -2274,6 +2278,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(min-content, 1fr);
+    --band: calc(100vw / 2.5); /* fallback: dvh/min()/max() unsupported */
     --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad, 0px) - var(--panel-floor, 470px) - 140px)));
   }
   .hero-split-left {
@@ -2624,12 +2629,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
     /* One phone screen when it fits; if the panel's content is taller than
        the leftover row, the section grows and scrolls instead of the
        centered content overflowing onto the photo. */
+    min-height: 100vh; /* fallback: dvh unsupported */
     min-height: 100dvh;
     height: auto;
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(min-content, 1fr);
     padding-top: 48px;
     --nav-pad: 48px;
+    --band: calc(100vw / 2.5); /* fallback: dvh/min()/max() unsupported */
     --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad) - var(--panel-floor, 340px) - 140px)));
     overflow: hidden;
   }
@@ -2696,14 +2703,21 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 }
 
 
-/* Browsers that support relative colors (Chromium 119+) re-derive
-   the derived tints here; the concrete fallbacks above stand for
-   older engines (Samsung Internet, older Chrome). */
-@supports (color: rgb(from red r g b / 1)) {
+/* Browsers that support relative-color channel math (Chromium 119+)
+   re-derive the derived tints here; the concrete fallbacks above stand
+   for older engines (Samsung Internet, older Chrome). Guard uses the exact
+   calc() channel syntax so Chromium 111-118 (which parses plain relative
+   colors but not channel math) also keeps the fallbacks instead of
+   declaring these variables guaranteed-invalid. */
+@supports (color: rgb(from red calc(r + 1) calc(g + 1) calc(b + 1))) {
   :root {
+    --ink-hover: rgb(26,94,115);  /* fallback: channel math unsupported */
     --ink-hover: rgb(from var(--ink) calc(r + 18) calc(g + 18) calc(b + 18));
+    --hairline: rgba(8,76,97,.08);  /* fallback: channel math unsupported */
     --hairline: rgb(from var(--ink) r g b / .08);
+    --rust-hover: rgb(0,58,79);  /* fallback: channel math unsupported */
     --rust-hover: rgb(from var(--rust) calc(r - 18) calc(g - 18) calc(b - 18));
+    --gold-hover: rgb(212,169,63);  /* fallback: channel math unsupported */
     --gold-hover: rgb(from var(--gold) calc(r * .86) calc(g * .86) calc(b * .86));
   }
 }
