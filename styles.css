@@ -183,6 +183,7 @@ html {
      so it growing taller here doesn't shift anything beneath it. */
   flex-wrap: wrap;
   display: flex; align-items: center;
+  padding: 0 1.25rem;
   padding: 0 clamp(1.25rem, 4vw, 3rem);
   background: rgba(8,76,97,.82);
   background: rgb(from var(--ink) r g b / .82);
@@ -195,7 +196,7 @@ html {
    An .556-alpha ink layer over the base .82 composites to exactly the old
    .92 fill (.556 + .82 x .444 = .92). */
 .nav::before {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; z-index: -1;
   background: rgba(8,76,97,.556);
   background: rgb(from var(--ink) r g b / .556);
   box-shadow: 0 2px 20px rgba(8,76,97,.2);
@@ -211,7 +212,8 @@ html {
 .nav-logo .hero-icon { width: 28px; border-radius: 6px; filter: none; }
 .nav-logo .hero-name { font-size: 1.805rem; padding-top: 0; line-height: 1; position: relative; top: 0.13em; }
 .nav-links {
-  display: flex; gap: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex; gap: 1.5rem;
+ gap: clamp(1.5rem, 3vw, 2.5rem);
   list-style: none; margin: 0 auto;
 }
 .nav-links a {
@@ -232,7 +234,7 @@ html {
    .f-btn, .vid-yt): a gold lamplight bloom plus a gold fill, text flipping
    to ink - one consistent "button" highlight across the site. */
 .nav-links a::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0;
   border-radius: inherit;
   background: radial-gradient(circle at center, rgba(247,197,73,.25) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .25) 0%, transparent 70%);
@@ -303,6 +305,7 @@ html {
   background: rgb(from var(--paper) r g b / .92);
   border-bottom: 1px solid var(--hairline);
   box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  padding: .5rem 1.25rem .75rem;
   padding: .5rem clamp(1.25rem,5vw,3rem) .75rem;
   opacity: 0; transform: translateY(-8px);
   transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s;
@@ -331,7 +334,7 @@ html {
 /* Same ink-bleed highlight as the desktop toolbar and the streaming
    buttons: gold lamplight bloom + gold fill, text flipping to ink. */
 .nav-drawer a::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0;
   border-radius: inherit;
   background: radial-gradient(circle at center, rgba(247,197,73,.25) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .25) 0%, transparent 70%);
@@ -340,7 +343,7 @@ html {
   pointer-events: none;
 }
 .nav-drawer a::after {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
   box-shadow: 0 2px 12px rgba(247,197,73,.4);
@@ -377,6 +380,7 @@ html {
   transition: opacity .3s var(--ease);
 }
 .hero-icon {
+  width: 90px;
   width: clamp(90px,15vw,165px); height: auto;
   border-radius: var(--radius);
   box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
@@ -445,7 +449,7 @@ html {
   position: relative;
 }
 .warhol-grid {
-  position: absolute; inset: 0;
+  position: absolute; top:0;right:0;bottom:0;left:0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -466,20 +470,22 @@ html {
 }
 .hero-split-left::after {
   content: '';
-  position: absolute; inset: 0;
+  position: absolute; top:0;right:0;bottom:0;left:0;
   background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.2) 100%);
   pointer-events: none;
 }
 .hero-split-left.warhol-on::after { display: none; }
 .hero-split-overlay {
-  position: absolute; inset: 0; z-index: 1;
+  position: absolute; top:0;right:0;bottom:0;left:0; z-index: 1;
   display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: 0 1.5rem 2rem;
   padding: 0 clamp(1.5rem,4vw,3rem) clamp(2rem,5vw,3.5rem);
   overflow: hidden;
 }
 .hero-name {
   position: relative;
   font-family: 'Logo', var(--display);
+  font-size: 4rem;
   font-size: clamp(4rem, 9vw, 9rem);
   line-height: 1; color: var(--gold);
   font-weight: normal;
@@ -496,6 +502,7 @@ html {
      (scrollable) instead of bleeding up over the photo */
   justify-content: safe center; align-items: center;
   text-align: center;
+  padding: 3rem 2rem 132px;
   padding: clamp(3rem,7vw,6rem) clamp(2rem,5vw,4rem) 132px;
   gap: 1.25rem;
   /* A single warm spotlight falling on the record - the one lit object on
@@ -513,6 +520,8 @@ html {
      nav pad and photo band (vars published per layout). The 320px floor is
      the honest minimum for the text stack - below it the section scrolls. */
   max-height: var(--panel-floor, 470px); /* fallback: dvh/max() unsupported */
+  max-height: 470px;
+  max-height: max(var(--panel-floor, 470px), calc(100vh - var(--nav-pad, 0px) - var(--band, 0px)));
   max-height: max(var(--panel-floor, 470px), calc(100dvh - var(--nav-pad, 0px) - var(--band, 0px)));
 }
 .hero-split-right > * { position: relative; z-index: 1; }
@@ -570,7 +579,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    docked-player-lifted position - the JS dodge system (.soft class) handles
    that overlap instead, so stacked layouts aren't stuck with a dead gap. */
 .confetti-canvas {
-  position: absolute; inset: 0;
+  position: absolute; top:0;right:0;bottom:0;left:0;
   width: 100%; height: 100%;
   pointer-events: none; z-index: 0;
   will-change: transform; transform: translateZ(0);
@@ -618,7 +627,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 /* ════════════════════════════════════════════
    SECTION SHARED
    ════════════════════════════════════════════ */
-.section { padding: clamp(5rem,10vw,8rem) clamp(3rem,7vw,6rem); }
+.section { padding: 5rem 3rem;
+ padding: clamp(5rem,10vw,8rem) clamp(3rem,7vw,6rem); }
 .section-inner { max-width: 1060px; margin: 0 auto; }
 .section-h {
   /* Matches the nav's toolbar-button font (.nav-links a) rather than the
@@ -626,8 +636,10 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
      nav chrome and section headlines. */
   font-family: var(--sans);
   font-style: normal;
+  font-size: 1.9rem;
   font-size: clamp(1.9rem,4.5vw,3.2rem); color: var(--ink);
   font-weight: 700; line-height: 1.1;
+  margin-bottom: 2rem;
   margin-bottom: clamp(2rem,4vw,3rem);
   letter-spacing: -.01em;
   text-wrap: balance;
@@ -639,7 +651,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .featured-art-rounded:hover { box-shadow: 0 14px 48px rgba(8,76,97,.3), 0 0 90px rgba(247,197,73,.45); box-shadow: 0 14px 48px rgba(8,76,97,.3), 0 0 90px rgb(from var(--gold) r g b / .45); }
 
 .featured-art-wrap { position: relative; flex-shrink: 0; }
-.featured-art-wrap:not(.featured-art-hero) { width: clamp(200px,28vw,360px); }
+.featured-art-wrap:not(.featured-art-hero) { width: 200px;
+ width: clamp(200px,28vw,360px); }
 /* The hero art is the flexible piece of the panel: preferred size below,
    but shrinkable all the way down, so badge/title/buttons always fit inside
    one viewport at any aspect ratio - the art absorbs the deficit. */
@@ -647,7 +660,9 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   /* grows to fill slack panel height instead of leaving dead space below
      the buttons, but never past a sensible cap; shrinks below that only
      when the panel is genuinely tight */
+  flex: 1 1 360px;
   flex: 1 1 min(360px, 45dvh, 80cqw);
+  max-height: 400px;
   max-height: min(400px, 45dvh, 80cqw);
   /* the cover is the hero of the panel - never smaller than this;
      tight viewports scroll instead */
@@ -697,6 +712,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .featured-title {
   font-family: var(--grit);
   font-style: normal;
+  font-size: 2.5rem;
   font-size: min(8cqi, 2.5rem); color: #fff;
   font-weight: 600; line-height: 1.1;
   letter-spacing: -.01em; white-space: nowrap;
@@ -724,7 +740,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    color swap - reads as "wet ink soaking into paper" rather than a UI
    state change, reinforcing the handmade-notebook material metaphor. */
 .f-btn::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0;
   border-radius: inherit;
   background: radial-gradient(circle at center, rgba(247,197,73,.22) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
@@ -741,7 +757,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    are normal-flow content and always paint above negative-z-index
    siblings within a positioned ancestor. */
 .f-btn::after {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
   box-shadow: 0 2px 12px rgba(247,197,73,.4);
@@ -784,7 +800,9 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .releases-section .section-inner { container-type: inline-size; }
 .releases-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
   grid-template-columns: repeat(auto-fill, minmax(min(100%,280px),1fr));
+  gap: 1rem;
   gap: clamp(1rem,2.5vw,1.75rem);
   align-items: start;
   contain: layout style;
@@ -815,7 +833,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   box-shadow: 0 0 0 2px rgb(from var(--sage) r g b / .3), 0 0 20px rgb(from var(--sage) r g b / .15), 0 4px 16px rgb(from var(--ink) r g b / .08);
 }
 .rel-card.now-playing::after {
-  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; border-radius: inherit;
   box-shadow: 0 0 0 1px rgba(247,197,73,.35), 0 0 30px rgba(247,197,73,.25);
   box-shadow: 0 0 0 1px rgb(from var(--sage) r g b / .35), 0 0 30px rgb(from var(--sage) r g b / .25);
   opacity: 0; animation: cardGlowFade 2.5s ease-in-out infinite;
@@ -832,14 +850,14 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   50%     { opacity: .85; }
 }
 .rel-art {
-  position: absolute; inset: 0; width: 100%; height: 100%;
+  position: absolute; top:0;right:0;bottom:0;left:0; width: 100%; height: 100%;
   object-fit: cover; display: block;
   filter: grayscale(12%) contrast(1.08);
   transition: filter .5s var(--ease), transform .6s var(--ease);
 }
 .rel-card:hover .rel-art { transform: scale(1.04); }
 .rel-overlay {
-  position: absolute; inset: 0; z-index: 2;
+  position: absolute; top:0;right:0;bottom:0;left:0; z-index: 2;
   display: flex; align-items: flex-end;
   padding: 1.25rem;
   background: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.4) 35%, transparent 65%);
@@ -847,7 +865,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .rel-overlay-inner { width: 100%; min-width: 0; overflow: hidden; }
 .rel-cat { font-family: var(--sans); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: rgb(255,227,93); color: rgb(from var(--gold) calc(r + 30) calc(g + 30) calc(b + 20)); margin-bottom: .3rem; font-weight: 600; }
-.rel-name { font-family: var(--grit); font-style: normal; font-size: min(6.3cqi, 1.55rem); color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; letter-spacing: -.01em; }
+.rel-name { font-family: var(--grit); font-style: normal; font-size: 1.55rem;
+ font-size: min(6.3cqi, 1.55rem); color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; letter-spacing: -.01em; }
 .rel-btns {
   display: flex; gap: .5rem;
   padding: .75rem .85rem;
@@ -871,7 +890,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease);
 }
 .rel-btn::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0;
   border-radius: inherit;
   background: radial-gradient(circle at center, rgba(247,197,73,.22) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
@@ -884,7 +903,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    comment above for why (opacity-only instead of animating
    background/box-shadow directly). */
 .rel-btn::after {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
   box-shadow: 0 2px 12px rgba(247,197,73,.4);
@@ -912,6 +931,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 
 
 .disc-quote {
+  margin-top: 2.5rem;
   margin-top: clamp(2.5rem,5vw,4rem);
   /* No hairline rule here - a bare horizontal line on the ruled page
      reads as one more (misaligned) notebook line. */
@@ -920,6 +940,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   /* Sized off the container's inline width (not the viewport) so it fills
      whatever room the section actually has, and pinned to nowrap so each
      hand-set line break is a real line break, never a reflow point. */
+  font-size: .57rem;
   font-size: clamp(.57rem, 3.28cqi, 4.15rem);
   font-style: italic; color: rgba(8,76,97,.78);
   font-style: italic; color: rgb(from var(--ink) r g b / .78);
@@ -935,7 +956,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .disc-quote cite {
   display: block; margin-top: .75rem;
   font-family: var(--sans);
-  font-style: normal; font-size: clamp(.65rem, 1.2vw, .76rem);
+  font-style: normal; font-size: .65rem;
+ font-size: clamp(.65rem, 1.2vw, .76rem);
   color: rgba(8,76,97,.78); letter-spacing: .12em;
   color: rgb(from var(--ink) r g b / .78); letter-spacing: .12em;
   text-transform: uppercase;
@@ -950,7 +972,9 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .video-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
   grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));
+  gap: 1rem;
   gap: clamp(1rem,2.5vw,1.75rem);
   contain: layout style;
 }
@@ -981,14 +1005,14 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   background: var(--ink); overflow: hidden;
 }
 .vid-thumb img, .vid-thumb video {
-  position: absolute; inset: 0; width: 100%; height: 100%;
+  position: absolute; top:0;right:0;bottom:0;left:0; width: 100%; height: 100%;
   object-fit: cover; pointer-events: none;
   display: block; filter: contrast(1.08);
   transition: transform .6s var(--ease);
 }
 
 .vid-play-overlay {
-  position: absolute; inset: 0; z-index: 2;
+  position: absolute; top:0;right:0;bottom:0;left:0; z-index: 2;
   display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,.35); transition: background .25s var(--ease);
 }
@@ -1026,7 +1050,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 /* Same ink-bleed hover as .f-btn/.rel-btn, for one consistent "button"
    highlight language across every platform/link chip on the site. */
 .vid-yt::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0;
   border-radius: inherit;
   background: radial-gradient(circle at center, rgba(247,197,73,.22) 0%, transparent 70%);
   background: radial-gradient(circle at center, rgb(from var(--gold) r g b / .22) 0%, transparent 70%);
@@ -1037,7 +1061,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .vid-yt:hover::before { opacity: 1; transform: scale(1.6); }
 /* Same compositor-only hover-fill technique as .f-btn/.rel-btn. */
 .vid-yt::after {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; z-index: -1;
   border-radius: inherit;
   background: var(--gold);
   box-shadow: 0 2px 12px rgba(247,197,73,.4);
@@ -1054,7 +1078,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 
 /* Lightbox - glass overlay */
 .vid-lightbox {
-  position: fixed; inset: 0; z-index: 80;
+  position: fixed; top:0;right:0;bottom:0;left:0; z-index: 80;
   background: rgba(0,0,0,.92);
   display: flex; flex-direction: column; align-items: center;
   padding: clamp(1rem,4vw,3rem);
@@ -1113,8 +1137,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .lb-close:hover { color: #fff; border-color: var(--gold); background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); transform: scale(1.08) rotate(90deg); }
 .lb-video-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.4); }
-.lb-video-wrap video:fullscreen, .lb-video-wrap video:-webkit-full-screen { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999; border-radius: 0; }
-.lb-video-wrap video { position: absolute; inset: 0; width: 100%; height: 100%; outline: none; }
+.lb-video-wrap video:fullscreen, .lb-video-wrap video:-webkit-full-screen { position: fixed; top:0;right:0;bottom:0;left:0; width: 100vw; height: 100vh; z-index: 9999; border-radius: 0; }
+.lb-video-wrap video { position: absolute; top:0;right:0;bottom:0;left:0; width: 100%; height: 100%; outline: none; }
 
 /* ════════════════════════════════════════════
    CONTACT - glass panel
@@ -1135,6 +1159,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   background: var(--cream);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
+  padding: 1.5rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
   box-shadow: 0 1px 4px rgba(8,76,97,.08);
 }
@@ -1206,6 +1231,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .bio-section-header {
   position: relative; z-index: 1;
+  padding: 2rem 3rem 0;
   padding: clamp(2rem, 4vw, 3rem) clamp(3rem, 7vw, 6rem) 0;
 }
 .bio-section-header .section-h { margin-bottom: 0; }
@@ -1213,6 +1239,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   position: relative; z-index: 1;
   max-width: 1000px;
   margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
   padding: clamp(2rem, 4vw, 4rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5.5rem);
   text-align: left;
 }
@@ -1232,6 +1259,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 /* Text panel: name + copy as one identity block, vertically centered
    against the mosaic. */
 .bio-card-text {
+  padding: 2rem;
   padding: clamp(2rem, 4.5vw, 3.5rem);
   align-self: stretch;
   display: flex; flex-direction: column;
@@ -1283,6 +1311,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .bio-card-media img:last-child:hover { filter: none; }
 .bio-name {
   font-family: 'Logo', var(--display);
+  font-size: 2.6rem;
   font-size: clamp(2.6rem, 4.8vw, 4rem);
   color: var(--ink);
   line-height: 1.1;
@@ -1291,6 +1320,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   margin-bottom: 1.25rem;
 }
 .bio-text {
+  font-size: .84rem;
   font-size: clamp(.84rem, 1.1vw, .94rem);
   color: rgba(8,76,97,.55);
   color: rgb(from var(--ink) r g b / .55);
@@ -1302,6 +1332,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   /* Same voice as .epk-text (press-kit body copy), scaled up to a real
      reading size - at .88rem the paragraph disappeared into its column. */
   font-family: var(--sans);
+  font-size: .95rem;
   font-size: clamp(.95rem, 1.15vw, 1.05rem);
   line-height: 1.85;
   color: #000;
@@ -1315,6 +1346,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   /* handwriting face, so the aside literally reads as a hand's note -
      the slight tilt sells it as something jotted in the margin, not set */
   font-family: 'Figment', var(--display), cursive; font-style: normal;
+  font-size: 1.2rem;
   font-size: clamp(1.2rem, 1.6vw, 1.45rem);
   color: rgba(8,76,97,.72);
   color: rgb(from var(--ink) r g b / .72);
@@ -1329,6 +1361,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 /* One compact row: icon · wordmark · copyright. */
 footer {
   background: var(--ink);
+  padding: 1.1rem 1.5rem;
   padding: 1.1rem clamp(1.5rem,5vw,4rem);
   display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .9rem;
   border-top: 1px solid rgba(255,255,255,.06);
@@ -1399,7 +1432,7 @@ body.player-active { padding-bottom: 68px; }
    no layout/paint. pointer-events:none keeps drags on the track itself
    (which pointer-captures), the dot is just the visual handle. */
 .seek-thumb {
-  position: absolute; inset: 0;
+  position: absolute; top:0;right:0;bottom:0;left:0;
   transform: translateX(0);
   will-change: transform;
   pointer-events: none;
@@ -1523,7 +1556,8 @@ body.player-active { padding-bottom: 68px; }
 /* Phones: stretch toward the edges like iOS's lock-screen volume - a
    thumb-width bar in the middle of a phone screen reads undersized. */
 @media (max-width: 700px) {
-  .fs-vol { max-width: min(400px, 90%); }
+  .fs-vol { max-width: 90%;
+ max-width: min(400px, 90%); }
   .fs-vol .vol-slider { height: 12px; border-radius: 12px; }
   .fs-vol .vol-slider::-webkit-slider-thumb { width: 22px; height: 22px; }
   .fs-vol .vol-slider::-moz-range-thumb { width: 22px; height: 22px; }
@@ -1581,7 +1615,7 @@ body.player-active { padding-bottom: 68px; }
   /* A 4px line is precise to grab with a finger - this invisible
      pseudo-element extends the actual draggable hit area to ~18px
      tall without changing how thin the visible track looks. */
-  #player-bar .np-bar-track::before { content: ''; position: absolute; inset: -7px 0; }
+  #player-bar .np-bar-track::before { content: ''; position: absolute; top:-7px;right:0;bottom:-7px;left:0; }
   #np-fill { border-radius: 4px; }
   /* finger-sized dot on the phone layout's real progress row */
   #player-bar .seek-thumb::before { width: 14px; height: 14px; }
@@ -1650,7 +1684,7 @@ body.player-active { padding-bottom: 68px; }
      their parent's layout size. */
   #player-bar .np-ctrl, #player-bar #np-play, #player-bar .np-close { position: relative; }
   #player-bar .np-ctrl::before, #player-bar #np-play::before, #player-bar .np-close::before {
-    content: ''; position: absolute; inset: -7px;
+    content: ''; position: absolute; top:-7px;right:-7px;bottom:-7px;left:-7px;
   }
 }
 @media (max-width: 360px) {
@@ -1672,7 +1706,7 @@ body.player-active { padding-bottom: 68px; }
    RELEASE PLAY OVERLAY + TRACKLIST
    ════════════════════════════════════════════ */
 .rel-play-overlay {
-  position: absolute; inset: 0; z-index: 3;
+  position: absolute; top:0;right:0;bottom:0;left:0; z-index: 3;
   display: flex; align-items: center; justify-content: center;
   /* idle-visible, same as .vid-play-overlay - one affordance site-wide */
   background: rgba(0,0,0,.35); cursor: pointer;
@@ -1769,7 +1803,7 @@ body.player-active { padding-bottom: 68px; }
 @media (prefers-reduced-motion: reduce) { .rel-track-eq rect { animation: none; } }
 
 .featured-play-overlay {
-  position: absolute; inset: 0; z-index: 3;
+  position: absolute; top:0;right:0;bottom:0;left:0; z-index: 3;
   display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,.2); cursor: pointer;
   opacity: 0; transition: opacity .35s var(--ease);
@@ -1834,6 +1868,7 @@ body.player-active { padding-bottom: 68px; }
 .epk-body {
   grid-column: 1; grid-row: 1;
   display: flex; flex-direction: column; gap: 1.25rem;
+  padding: 4rem 3rem;
   padding: clamp(4rem,8vw,6rem) clamp(3rem,7vw,6rem);
 }
 .epk-body .section-h { color: var(--ink); }
@@ -1895,7 +1930,8 @@ body.player-active { padding-bottom: 68px; }
   .section-h { font-size: 1.65rem; }
   .releases-grid { grid-template-columns: repeat(4, 1fr); }
   .video-grid { grid-template-columns: repeat(3, 1fr); }
-  .epk-body { padding: clamp(3rem,5vw,5rem) clamp(3rem,6vw,6rem); }
+  .epk-body { padding: 3rem 3rem;
+ padding: clamp(3rem,5vw,5rem) clamp(3rem,6vw,6rem); }
 }
 
 /* ════════════════════════════════════════════
@@ -1913,7 +1949,8 @@ body.player-active { padding-bottom: 68px; }
   .hero-split { grid-template-columns: 3fr 1.5fr; min-height: calc(100vw * .4525); }
   .releases-grid { grid-template-columns: repeat(2, 1fr); }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
-  .section { padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
+  .section { padding: 4rem 1.5rem;
+ padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
 }
 
 /* ════════════════════════════════════════════
@@ -1949,12 +1986,15 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-left::after { background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 40%); }
   .hero-split-overlay { padding-bottom: 1.5rem; }
   /* clamped against --band too, so it still shrinks when the band is squeezed */
-  .hero-icon { width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
+  .hero-icon { width: 40px;
+ width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
   .hero-brand { gap: .5rem; }
-  .hero-name { font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); margin-bottom: 0; -webkit-text-stroke: none; }
+  .hero-name { font-size: 1.8rem;
+ font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); margin-bottom: 0; -webkit-text-stroke: none; }
 
   .hero-split-right { border-left: none; padding: 1.5rem 1.25rem 80px; gap: .75rem; }
-  .featured-title { font-size: min(7cqi, 1.7rem); }
+  .featured-title { font-size: 1.7rem;
+ font-size: min(7cqi, 1.7rem); }
   .featured-badge { font-size: .54rem; padding: .3rem .85rem; margin-bottom: 0; }
   .featured-kicker { font-size: .88rem; }
   .featured-btns { flex-direction: row; flex-wrap: wrap; gap: .5rem; width: 100%; justify-content: center; }
@@ -2053,7 +2093,8 @@ body.player-active { padding-bottom: 68px; }
    ════════════════════════════════════════════ */
 @media (max-width: 520px) {
   .hero-split { padding-top: 44px; --nav-pad: 44px; }
-  .hero-name { font-size: clamp(3rem,17cqi,4.6rem); }
+  .hero-name { font-size: 3rem;
+ font-size: clamp(3rem,17cqi,4.6rem); }
   .section-h { font-size: 2rem; }
   .section-h::after { left: -.9rem; }
   .nav { height: 44px; min-height: 44px; }
@@ -2119,8 +2160,10 @@ body.player-active { padding-bottom: 68px; }
      the column collapses to zero width (band is 0 in this breakpoint) */
   .hero-split-left { width: auto; height: auto; min-height: unset; justify-self: stretch; overflow: hidden; }
   .hero-split-right { padding: 1rem 1.25rem 132px; gap: .5rem; }
-  .hero-name { font-size: clamp(2.2rem,10cqi,3.4rem); }
-  .hero-icon { width: clamp(44px,10cqi,68px); }
+  .hero-name { font-size: 2.2rem;
+ font-size: clamp(2.2rem,10cqi,3.4rem); }
+  .hero-icon { width: 44px;
+ width: clamp(44px,10cqi,68px); }
   .featured-badge { font-size: .42rem; }
   .featured-btns { flex-direction: row; flex-wrap: wrap; }
   .f-btn { width: auto; height: 36px; font-size: .48rem; }
@@ -2193,8 +2236,10 @@ body.player-active { padding-bottom: 68px; }
     min-height: unset; max-height: none; overflow: hidden;
   }
   .hero-split-right { padding-bottom: 80px; }
-  .hero-icon { width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
-  .hero-name { font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); }
+  .hero-icon { width: 40px;
+ width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
+  .hero-name { font-size: 1.8rem;
+ font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); }
   .releases-grid { grid-template-columns: repeat(2, 1fr); }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -2338,7 +2383,7 @@ body.player-active { padding-bottom: 68px; }
    FULLSCREEN PLAYER
    ════════════════════════════════════════════ */
 .fs-player {
-  position: fixed; inset: 0; z-index: 400;
+  position: fixed; top:0;right:0;bottom:0;left:0; z-index: 400;
   background: var(--ink);
   contain: layout style;
   transform: translateY(100%);
@@ -2352,7 +2397,7 @@ body.player-active { padding-bottom: 68px; }
 }
 .fs-player.open { transform: translateY(0); }
 .fs-bg {
-  position: absolute; inset: -30%;
+  position: absolute; top:-30%;right:-30%;bottom:-30%;left:-30%;
   background: var(--ink) center/cover no-repeat;
   filter: blur(90px) brightness(.4) saturate(2);
 }
@@ -2387,6 +2432,7 @@ body.player-active { padding-bottom: 68px; }
 .fs-collapse:hover { color: var(--gold); background: rgba(247,197,73,.1); background: rgb(from var(--gold) r g b / .1); border-color: rgba(247,197,73,.3); border-color: rgb(from var(--gold) r g b / .3); }
 .fs-collapse:active { color: rgba(255,255,255,.7); }
 .fs-art-wrap {
+  width: 80vw;
   width: min(80vw, 340px); aspect-ratio: 1;
   border-radius: 16px; overflow: hidden;
   border: 1px solid rgba(240,245,246,.14);
@@ -2476,7 +2522,8 @@ body.player-active { padding-bottom: 68px; }
    buttons are present - cap the art off the height and tighten the
    vertical rhythm so the whole stack fits without scrolling. */
 @media (max-height: 750px) and (orientation: portrait) {
-  .fs-art-wrap { width: min(80vw, 340px, 38vh); }
+  .fs-art-wrap { width: 80vw;
+ width: min(80vw, 340px, 38vh); }
   .fs-content { padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem); }
   .fs-info { margin-top: 1rem; }
   .fs-progress { margin-top: 1rem; }
@@ -2494,11 +2541,13 @@ body.player-active { padding-bottom: 68px; }
     grid-template-columns: auto minmax(0, 420px);
     grid-template-rows: repeat(5, auto);
     align-content: center; justify-content: center;
+    column-gap: 1.5rem;
     column-gap: clamp(1.5rem, 5vw, 3rem);
     max-width: none;
     padding: calc(env(safe-area-inset-top, 0px) + 2.75rem) 2rem 1.25rem;
   }
-  .fs-art-wrap { grid-column: 1; grid-row: 1 / 6; align-self: center; width: min(52vh, 300px); }
+  .fs-art-wrap { grid-column: 1; grid-row: 1 / 6; align-self: center; width: 52vh;
+ width: min(52vh, 300px); }
   .fs-info { grid-column: 2; grid-row: 1; margin-top: 0; }
   .fs-progress { grid-column: 2; grid-row: 2; margin-top: 1rem; }
   .fs-controls { grid-column: 2; grid-row: 3; margin-top: .5rem; }
@@ -2570,11 +2619,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
     gap: .5rem;
   }
   .featured-kicker { font-size: .7rem; margin-top: 0; margin-bottom: -.4rem; }
-  .featured-title { font-size: min(6.5cqi, 1.5rem); }
+  .featured-title { font-size: 1.5rem;
+ font-size: min(6.5cqi, 1.5rem); }
   .featured-btns { flex-direction: row; flex-wrap: nowrap; gap: .5rem; width: auto; margin-top: 0; }
   .f-btn { height: 38px; flex: 0 1 auto; }
-  .hero-icon { width: clamp(40px, min(18cqi, calc(var(--band) * .5)), 110px); }
-  .hero-name { font-size: clamp(1.8rem, min(16cqi, calc(var(--band) * .4)), 5rem); }
+  .hero-icon { width: 40px;
+ width: clamp(40px, min(18cqi, calc(var(--band) * .5)), 110px); }
+  .hero-name { font-size: 1.8rem;
+ font-size: clamp(1.8rem, min(16cqi, calc(var(--band) * .4)), 5rem); }
 }
 
 /* Portrait phones show the FULL photo: the band is the photo's native ratio
@@ -2601,7 +2653,8 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    reasonable size when height is compressed ── */
 @media (max-height: 700px) {
   .hero-split-right { padding-top: 1.25rem; gap: .75rem; }
-  .featured-title { font-size: min(6cqi, 1.35rem); }
+  .featured-title { font-size: 1.35rem;
+ font-size: min(6cqi, 1.35rem); }
   .featured-kicker { font-size: .72rem; }
 }
 @media (max-height: 560px) {
