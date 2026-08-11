@@ -387,11 +387,10 @@ html {
 .hero-split {
   display: grid;
   grid-template-columns: 2.5fr 1fr;
-  /* grows instead of clipping on short viewports. Pinned to the photo's
-     native ratio (1260/855) on wide-aspect monitors, so cover always crops
-     the sides and never flips to cropping top/bottom. */
-  min-height: calc(100vw * .4847); /* fallback: dvh/max() unsupported (old Samsung/Chrome) */
-  min-height: max(100dvh, calc(100vw * .4847));
+  /* Pinned to the photo's native ratio (1260/855), so the cover crop always
+     cuts the sides, never the top/bottom - the photo is never vertically
+     cropped. The featured panel's height is whatever this row leaves. */
+  min-height: calc(100vw * .4847);
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -400,8 +399,7 @@ html {
 .hero-split-left {
   position: relative;
   background: var(--ink);
-  max-height: calc(100vw * .4847 - var(--nav-pad, 0px)); /* fallback: dvh/max() unsupported */
-  max-height: max(calc(100dvh - var(--nav-pad, 0px)), calc(100vw * .4847 - var(--nav-pad, 0px)));
+  max-height: calc(100vw * .4847 - var(--nav-pad, 0px));
   overflow: hidden;
   container-type: inline-size;
 }
@@ -1280,11 +1278,11 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   filter: grayscale(100%);
   transition: filter .5s var(--ease);
 }
-.bio-card-media img:not(.bio-media-main):hover { transform: scale(1.03); }
+.bio-card-media img:not(.bio-media-main):hover { filter: none; }
 /* the piano shot is underexposed - lift it (was an inline style, moved
    here so the grayscale treatment above can compose with it) */
 .bio-card-media img:last-child { filter: grayscale(100%) brightness(1.4); }
-.bio-card-media img:last-child:hover { transform: scale(1.03); }
+.bio-card-media img:last-child:hover { filter: none; }
 .bio-name {
   font-family: 'Logo', var(--display);
   font-size: clamp(2.6rem, 4.8vw, 4rem);
@@ -1640,6 +1638,13 @@ body.player-active { padding-bottom: 68px; }
    fit the longer label, with the shorter one centered inside via
    justify-content instead of stretching to fill the whole row. */
 .fs-platforms .f-btn { flex: none; width: 148px; justify-content: center; padding: 0 .65rem; }
+/* Fold-cover / tiny screens (Galaxy Z Flip cover is ~280px wide): two fixed
+   148px pills plus their gap don't fit one row and bleed past the screen
+   edge. Stack them full-width instead of clipping. */
+@media (max-width: 340px) {
+  .fs-platforms { flex-wrap: wrap; }
+  .fs-platforms .f-btn { flex: 1 1 100%; width: 100%; max-width: none; }
+}
 /* Same fix as .hero-split-right .f-btn: on a dark photo backdrop, the
    button's own translucent-teal fill goes muddy - a light cream chip
    keeps the icon and text legible regardless of what's blurred behind it. */
@@ -2004,7 +2009,7 @@ body.player-active { padding-bottom: 68px; }
    TABLET LANDSCAPE (900–1200px) - 2-col grids
    ════════════════════════════════════════════ */
 @media (min-width: 901px) and (max-width: 1199px) {
-  .hero-split { grid-template-columns: 3fr 1.5fr; min-height: 100vh; min-height: 100dvh; }
+  .hero-split { grid-template-columns: 3fr 1.5fr; min-height: calc(100vw * .4525); }
   .releases-grid { grid-template-columns: repeat(2, 1fr); }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
   .section { padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
@@ -2291,6 +2296,15 @@ body.player-active { padding-bottom: 68px; }
   .hero-name { font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); }
   .releases-grid { grid-template-columns: repeat(2, 1fr); }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Landscape square-ish screens (iPad landscape 1024x768, foldables) run out
+   of height before width: once the photo band is subtracted, the default
+   470px panel floor can exceed what's actually left, pushing the whole hero
+   past the fold (title + buttons land below the viewport). Drop the floor
+   so the panel takes what's left, and trim its bottom padding to match. */
+@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (orientation: landscape) and (max-height: 850px) {
+  .hero-split-right { --panel-floor: 340px; padding: .75rem 1.25rem 40px; gap: .5rem; }
+  .hero-split-right .featured-art-hero { min-height: 0; }
 }
 /* Square-ish tablets and short landscape phones above mobile-base's 900px
    cutoff still need the EPK stacked, not the base 3-col desktop layout -
