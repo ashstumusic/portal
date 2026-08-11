@@ -2043,7 +2043,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-left {
     height: var(--band);
     width: 100%;
-    min-height: unset; overflow: hidden;
+    min-height: unset; max-height: none; overflow: hidden;
   }
   .hero-split-left::after { background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 40%); }
   .hero-split-overlay { padding-bottom: 1.5rem; }
@@ -2289,7 +2289,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-left {
     height: var(--band);
     width: 100%;
-    min-height: unset; overflow: hidden;
+    min-height: unset; max-height: none; overflow: hidden;
   }
   .hero-split-right { padding-bottom: 80px; }
   .hero-icon { width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
@@ -2658,7 +2658,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   .hero-split-left {
     height: var(--band);
     width: 100%;
-    min-height: 0; overflow: hidden; position: relative;
+    min-height: 0; max-height: none; overflow: hidden; position: relative;
   }
   .hero-split-right {
     min-height: 0;
@@ -2674,6 +2674,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   .f-btn { height: 38px; flex: 0 1 auto; }
   .hero-icon { width: clamp(40px, min(18cqi, calc(var(--band) * .5)), 110px); }
   .hero-name { font-size: clamp(1.8rem, min(16cqi, calc(var(--band) * .4)), 5rem); }
+}
+
+/* Portrait phones show the FULL photo: the band is the photo's native ratio
+   (1260/855), so cover crops the sides, never the top/bottom. The panel then
+   takes whatever the row leaves; when that pushes the hero past one screen it
+   scrolls naturally instead of slicing the photo. */
+@media (max-width: 900px) and (orientation: portrait) {
+  .hero-split { --band: calc(100vw / 1.4737); }
 }
 
 /* ── ABOUT HEADER ALIGNMENT ──
