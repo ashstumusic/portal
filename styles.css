@@ -130,10 +130,10 @@ a, button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-c
 .featured-badge { will-change: opacity; }
 .rel-track-title.marquee > span { will-change: transform; }
 .vid-card-wrap { contain: layout style; }
-/* Same isolation as .vid-card-wrap: style/layout changes inside one card or
-   journal entry (tracklist opens, marquees, accordion) never force the
-   browser to reconsider the rest of the tree. */
-.rel-card, .journal-entry { contain: layout style; }
+/* Same isolation as .vid-card-wrap: style/layout changes inside one card
+   (tracklist opens, marquees) never force the browser to reconsider the
+   rest of the tree. */
+.rel-card { contain: layout style; }
 /* Permanently animating (bob) / transform-transitioned fixed chrome gets a
    compositor layer up front - all small, cheap-to-hold surfaces. */
 .hero-scroll { will-change: transform; }
@@ -270,15 +270,14 @@ html {
 .nav-platform .pt { width: 26px; height: 26px; border-radius: 50%; }
 .nav-toggle {
   display: none; background: rgba(255,255,255,.06);
-  border: 1px solid rgba(240,245,246,.2); cursor: pointer;
-  border: 1px solid rgb(from var(--paper) r g b / .2); cursor: pointer;
+  cursor: pointer;
   position: relative;
   width: 44px; height: 44px; padding: 0; margin-left: auto;
-  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
+  transition: background .3s var(--ease), color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease);
   border-radius: 10px;
 }
-.nav-toggle:hover { background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); }
-.nav-toggle[aria-expanded=true] { border-color: var(--gold); background: rgba(247,197,73,.08); background: rgb(from var(--gold) r g b / .08); }
+.nav-toggle:hover { background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); }
+.nav-toggle[aria-expanded=true] { background: rgba(247,197,73,.08); background: rgb(from var(--gold) r g b / .08); }
 /* Hamburger that morphs into an X - three bars rotate/fade into place
    instead of swapping a text label, so the icon itself communicates
    open/close state at a glance. */
@@ -597,7 +596,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .pt--apple { background-image: url('Icons/Apple_Music.webp'); }
 .pt--spotify { background-image: url('Icons/Spotify.webp'); }
 .pt--youtube { background-image: url('Icons/Youtube.webp'); }
-.pt--substack { background-image: url('Icons/Substack.webp'); }
 .btn-fill {
   background: var(--ink);
   color: var(--paper); border: 1px solid var(--ink);
@@ -977,7 +975,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 }
 .vid-card { cursor: pointer; }
 .vid-card:focus-visible { box-shadow: var(--focus); outline: none; }
-.rel-card:focus-visible, .journal-entry-head:focus-visible { box-shadow: var(--focus); outline: none; }
+.rel-card:focus-visible { box-shadow: var(--focus); outline: none; }
 .vid-thumb {
   position: relative; width: 100%; padding-top: 56.25%;
   background: var(--ink); overflow: hidden;
@@ -1218,8 +1216,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   padding: clamp(2rem, 4vw, 4rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5.5rem);
   text-align: left;
 }
-/* Split card in the site's shared object language (contact card, journal
-   sheet, release cards): cream sheet, hairline, one shadow. Text panel
+/* Split card in the site's shared object language (contact card, release
+   cards): cream sheet, hairline, one shadow. Text panel
    left, portrait bleeding to the card's right edge. */
 .bio-card {
   display: grid;
@@ -1310,7 +1308,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   max-width: 46ch;
 }
 /* The "figment" line is an aside, not more bio copy - set it as an
-   epigraph in the journal's pull-quote language (gold rule, italic serif)
+   epigraph (gold rule, italic serif)
    instead of letting it run on as a second plain paragraph. */
 .bio-tagline {
   margin-top: 1.75rem;
@@ -1323,103 +1321,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   line-height: 1.4;
   transform: rotate(-1.4deg);
   transform-origin: 0 50%;
-}
-
-/* ════════════════════════════════════════════
-   JOURNAL - essays / journal entries, accordion list
-   Editorial newspaper treatment: upright serif headline, kicker,
-   dek, byline rule, drop cap, pull-quote epigraphs.
-   ════════════════════════════════════════════ */
-.journal-section .section-inner { max-width: 720px; }
-/* Entries sit on a solid cream sheet, matching the release/video/contact
-   cards - lifts the text off the ruled page, and keeps the entry
-   dividers from reading as stray notebook lines. */
-.journal-list {
-  display: flex; flex-direction: column;
-  contain: layout style;
-  background: var(--cream);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 0 clamp(1.5rem, 4vw, 2.5rem);
-  box-shadow: 0 1px 4px rgba(8,76,97,.08);
-}
-.journal-entry { border-bottom: 1px solid var(--hairline); }
-.journal-entry:last-child { border-bottom: none; }
-.journal-entry-head {
-  display: block; width: 100%; text-align: left;
-  background: none; border: none; cursor: pointer;
-  padding: clamp(1.75rem,3.5vw,2.5rem) 0;
-  font: inherit; color: inherit;
-}
-.journal-kicker {
-  display: block;
-  font-family: var(--sans); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--rust); font-weight: 700; margin-bottom: .6rem;
-}
-.journal-title {
-  font-family: var(--display); font-style: normal; font-weight: 700;
-  font-size: clamp(1.5rem,3.4vw,2.15rem); color: var(--ink);
-  line-height: 1.18; letter-spacing: -.01em; margin-bottom: .5rem;
-  transition: color .25s var(--ease);
-}
-.journal-entry-head:hover .journal-title { color: var(--rust); }
-.journal-listen-btn { margin: 0 0 .85rem; }
-.journal-listen-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
-.journal-dek {
-  font-family: var(--display); font-style: italic; font-weight: 400;
-  font-size: clamp(1.05rem,1.8vw,1.25rem); color: rgba(8,76,97,.78);
-  font-size: clamp(1.05rem,1.8vw,1.25rem); color: rgb(from var(--ink) r g b / .78);
-  line-height: 1.45; margin-bottom: .85rem; max-width: 56ch;
-}
-.journal-byline {
-  font-family: var(--sans); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
-  color: rgba(8,76,97,.78); font-weight: 600;
-  color: rgb(from var(--ink) r g b / .78); font-weight: 600;
-}
-.journal-byline .journal-dot { margin: 0 .45em; opacity: .6; }
-.journal-readmore {
-  display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.1rem;
-  font-family: var(--sans); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
-  font-weight: 600; color: var(--rust);
-}
-.journal-chevron { transition: transform .3s var(--ease); flex-shrink: 0; }
-.journal-entry.open .journal-chevron { transform: rotate(180deg); }
-.journal-body { max-height: 0; overflow: hidden; }
-.journal-body-inner {
-  padding: .25rem 0 clamp(2rem,4vw,3rem);
-  font-family: var(--body); font-size: 1.02rem; line-height: 1.85;
-  color: #181818;
-  max-width: 64ch;
-}
-.journal-body-inner p { margin-top: 1.15rem; }
-/* '>' scopes both rules to direct children only, so an epigraph's own
-   <p> (nested inside its <blockquote>) never counts as "first" here,
-   even when the article opens with an epigraph. */
-.journal-body-inner > p:first-of-type { margin-top: 0; }
-/* Drop cap on the article's opening line - classic editorial signal
-   that a piece has begun, not just more list chrome. */
-.journal-body-inner > p:first-of-type::first-letter {
-  font-family: var(--display); font-weight: 700; font-style: normal;
-  font-size: 3.6em; line-height: .78; float: left;
-  padding: .04em .08em 0 0; color: #181818;
-}
-.journal-epigraph {
-  margin: 1.75rem 0; padding-left: 1.25rem;
-  border-left: 3px solid var(--gold);
-}
-.journal-epigraph p {
-  font-family: var(--body); font-style: normal; font-weight: 700;
-  font-size: 1.02rem; line-height: 1.65;
-  color: #181818;
-  margin-top: .5rem;
-}
-.journal-epigraph p:first-child { margin-top: 0; }
-.journal-epigraph cite {
-  font-style: normal; font-weight: 400;
-}
-.journal-source {
-  margin-top: 1.75rem !important; padding-top: 1.25rem;
-  border-top: 1px solid var(--hairline);
 }
 
 /* ════════════════════════════════════════════

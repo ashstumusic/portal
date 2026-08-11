@@ -96,46 +96,6 @@ def render_video_card(v, v_idx):
             f'</div>')
 
 
-JOURNAL_CHEVRON_SVG = ('<svg class="journal-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" '
-                        'stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" '
-                        'aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>')
-JOURNAL_LISTEN_SVG = ('<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
-                       '<polygon points="5,3 19,12 5,21"/></svg>')
-
-
-def render_journal_entry(entry, idx):
-    dek_html = f'<p class="journal-dek">{esc(entry["dek"])}</p>' if entry.get('dek') else ''
-    meta_parts = ['By Ash Stu']
-    if entry.get('date'):
-        meta_parts.append(esc(entry['date']))
-    if entry.get('readMin'):
-        meta_parts.append(f'{entry["readMin"]} min read')
-    byline = ''.join(p if i == 0 else f'<span class="journal-dot">&middot;</span>{p}'
-                      for i, p in enumerate(meta_parts))
-    kicker = {'essay': 'Essay', 'entry': 'Entry'}.get(entry['category'], 'Lyrics')
-    source_html = ''
-    if entry.get('substack'):
-        source_html = (f'<p class="journal-source"><a href="{esc(entry["substack"])}" target="_blank" '
-f'rel="noopener noreferrer" class="vid-yt" aria-label="Read on Substack"><span class="pt pt--substack" aria-hidden="true"></span>Substack</a></p>')
-    listen_btn = ''
-    if entry.get('audio'):
-        listen_btn = (f'<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="{idx}" '
-                       f'aria-label="Listen to audio version of {esc(entry["headline"])}">'
-                       f'{JOURNAL_LISTEN_SVG}<span>Listen</span></button>')
-    return (f'<article class="journal-entry">'
-            f'<div class="journal-entry-head" role="button" tabindex="0" aria-expanded="false" '
-            f'aria-controls="journal-body-{idx}" id="journal-toggle-{idx}" '
-            f'aria-label="Toggle {esc(entry["headline"])}">'
-            f'<span class="journal-kicker">{kicker}</span>'
-            f'<h3 class="journal-title">{esc(entry["headline"])}</h3>{dek_html}'
-            f'<div class="journal-byline">{byline}</div>'
-            f'<span class="journal-readmore"><span class="journal-readmore-label">Read</span>'
-            f'{JOURNAL_CHEVRON_SVG}</span></div>{listen_btn}'
-            f'<div class="journal-body" id="journal-body-{idx}" role="region" '
-            f'aria-labelledby="journal-toggle-{idx}">'
-            f'<div class="journal-body-inner">{entry["bodyHtml"]}{source_html}</div></div></article>')
-
-
 def inject_container(page, container_id, cls_attr, inner_html):
     pattern = re.compile(
         r'(<div [^>]*id="' + re.escape(container_id) + r'"[^>]*>)\s*(</div>)'
@@ -208,8 +168,6 @@ def main():
         releases = json.load(f)
     with open('videos.json', encoding='utf-8') as f:
         videos = json.load(f)
-    with open('journal.json', encoding='utf-8') as f:
-        journal = json.load(f)
 
     # Single-file build: bake raster art/thumb paths as 90%-scale base64
     # WebP data URIs so the prerendered cards AND the embedded data-all JSON
@@ -227,11 +185,9 @@ def main():
 
     releases_html = ''.join(render_release_card(r, i) for i, r in enumerate(releases))
     videos_html = ''.join(render_video_card(v, i) for i, v in enumerate(videos))
-    journal_html = ''.join(render_journal_entry(e, i) for i, e in enumerate(journal))
 
     page = inject_container(page, 'releases-grid', 'releases-grid', releases_html)
     page = inject_container(page, 'video-grid', 'video-grid', videos_html)
-    page = inject_container(page, 'journal-list', 'journal-list', journal_html)
     page = inject_featured(page, releases[0] if releases else None)
 
     # Embed the content JSON directly in the page so the runtime JS can
@@ -243,7 +199,7 @@ def main():
         lyrics = json.load(f)
     combined = {
         'releases': releases, 'videos': videos,
-        'journal': journal, 'lyrics': lyrics,
+        'lyrics': lyrics,
     }
     payload = json.dumps(combined, separators=(',', ':')).replace('</', '<\\/')
     blocks = f'<script type="application/json" id="data-all">{payload}</script>'
@@ -252,8 +208,8 @@ def main():
 
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(page)
-    print(f'Prerendered {len(releases)} release(s), {len(videos)} video(s), '
-          f'{len(journal)} journal entr(y/ies) into index.html')
+    print(f'Prerendered {len(releases)} release(s), {len(videos)} video(s) '
+          f'into index.html')
 
 
 if __name__ == '__main__':

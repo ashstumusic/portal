@@ -11,7 +11,7 @@
 <link rel="sitemap" type="application/xml" title="Sitemap" href="https://ashstu.media/sitemap.xml"/>
 <meta property="og:site_name" content="Ash Stu"/>
 <meta property="og:title" content="Ash Stu Media by Ashton Stubblefield"/>
-<meta property="og:description" content="Outsider-folk songs and midnight confessionals from Guthrie, Oklahoma. Ash Stu (Ashton Stubblefield): stream, watch, read the journal, and book the artist."/>
+<meta property="og:description" content="Outsider-folk songs and midnight confessionals from Guthrie, Oklahoma. Ash Stu (Ashton Stubblefield): stream, watch, and book the artist."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://ashstu.media/"/>
 <meta property="og:image" content="https://ashstu.media/Images/social-card.png"/>
@@ -21,7 +21,7 @@
 <meta property="og:image:alt" content="Ash Stu (Ashton Stubblefield) - Outsider-folk singer-songwriter from Guthrie, Oklahoma"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Ash Stu Media by Ashton Stubblefield"/>
-<meta name="twitter:description" content="Outsider-folk songs and midnight confessionals from Guthrie, Oklahoma. Ash Stu (Ashton Stubblefield): stream, watch, read the journal, book the artist."/>
+<meta name="twitter:description" content="Outsider-folk songs and midnight confessionals from Guthrie, Oklahoma. Ash Stu (Ashton Stubblefield): stream, watch, book the artist."/>
 <meta name="twitter:image" content="https://ashstu.media/Images/social-card.png"/>
 <meta name="twitter:image:alt" content="Ash Stu (Ashton Stubblefield) - Outsider-folk singer-songwriter from Guthrie, Oklahoma"/>
 <script type="application/ld+json">
@@ -260,7 +260,6 @@
     <li><a href="#contact">Contact</a></li>
     <li><a href="#music">Music</a></li>
     <li><a href="#videos">Videos</a></li>
-    <li><a href="#journal">Journal</a></li>
   </ul>
   <div class="nav-platforms" aria-label="Streaming platforms">
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Apple Music" title="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
@@ -283,7 +282,6 @@
   <a href="#contact">Contact</a>
   <a href="#music">Music</a>
   <a href="#videos">Videos</a>
-  <a href="#journal">Journal</a>
 </nav>
 </header>
 
@@ -364,20 +362,13 @@
     </div>
   </div>
 </section>
-<section class="section journal-section" id="journal" aria-labelledby="journal-h">
-  <h2 class="section-h" id="journal-h">Journal</h2>
-  <div class="section-inner">
-    <div class="journal-list" id="journal-list">
-    </div>
-  </div>
-</section>
 <section class="bio-section" id="about" aria-labelledby="about-h">
   <div class="bio-section-header">
     <h2 class="section-h" id="about-h">About</h2>
   </div>
   <div class="bio-body">
-    <!-- One cream split-card, same object language as the contact card and
-         journal sheet: text panel left, portrait right, childhood shots as
+    <!-- One cream split-card, same object language as the contact card:
+         text panel left, portrait right, childhood shots as
          small thumbnails under the copy. -->
     <div class="bio-card">
       <div class="bio-card-text">
@@ -539,7 +530,7 @@ if (e.key === 'ArrowRight') lbNav(1);
 }
 });
 (function() {
-const ids = ['epk','contact','music','videos','journal'];
+const ids = ['epk','contact','music','videos'];
 const links = {};
 ids.forEach(id => { links[id] = document.querySelector(`.nav-links a[href="#${id}"]`); });
 const nav = document.querySelector('.nav');
@@ -644,7 +635,6 @@ requestAnimationFrame(function() { requestAnimationFrame(check); });
 // re-triggering a check - catch that case too.
 if (document.fonts && document.fonts.ready) { document.fonts.ready.then(check); }
 }
-var _npJournalMode = false;
 function npUpdateMediaSession(track, album, art) {
 if (!('mediaSession' in navigator)) return;
 navigator.mediaSession.metadata = new MediaMetadata({
@@ -655,10 +645,8 @@ var hasMulti = pState.playlist.length > 1;
 navigator.mediaSession.setActionHandler('previoustrack', hasMulti ? function() { npPrev(); } : null);
 navigator.mediaSession.setActionHandler('nexttrack', hasMulti ? function() { npNext(); } : null);
 }
-function npLoad(track, album, src, autoplay, opts) {
-opts = opts || {};
-_npJournalMode = !!opts.journal;
-var label = _npJournalMode ? track : (npTrackLabel() + track);
+function npLoad(track, album, src, autoplay) {
+var label = npTrackLabel() + track;
 _npTrackEl.dataset.label = label;
 _npAlbumEl.textContent = album || '';
 npMarquee(_npTrackEl);
@@ -668,7 +656,7 @@ _npFill.style.transform = 'scaleX(0)';
 if (_npThumb) _npThumb.style.transform = 'translateX(0)';
 _npCur.textContent = '0:00';
 _npDur.textContent = '·';
-var art = _npJournalMode ? '' : npGetArt();
+var art = npGetArt();
 if (_npArt) { _npArt.src = art ? encodeURI(art) : ''; _npArt.hidden = !art; }
 npUpdateMediaSession(track, album, art);
 try { sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
@@ -710,20 +698,6 @@ npToggle();
 return;
 }
 playRelease(rIdx);
-}
-function playJournalAudio(entry) {
-pState.releaseIdx = -1;
-pState.playlist = [];
-pState.plIdx = -1;
-npLoad(entry.headline, 'Audio Essay', entry.audio, true, { journal: true });
-}
-function toggleJournalAudio(entry) {
-if (_npJournalMode && _src === entry.audio) {
-if (npAudio.paused) npShow();
-npToggle();
-return;
-}
-playJournalAudio(entry);
 }
 function npNext() {
 if (!pState.playlist.length) return;
@@ -862,7 +836,7 @@ wireSeekBar(document.getElementById('np-bar-track'));
 // and, just as importantly, is what tells the OS this is legitimate
 // background media playback rather than an inactive tab - without it,
 // phones tend to suspend audio a few seconds after the screen locks.
-// Only wired to npAudio (music tracks + journal audio essays), never
+// Only wired to npAudio (music tracks), never
 // to the video lightbox, so videos keep the normal "stops when you
 // leave" behavior.
 if ('mediaSession' in navigator) {
@@ -936,13 +910,10 @@ fs.setAttribute('aria-hidden', 'true');
 fs.inert = true;
 _fsOpen = false;
 }
-// Journal audio essays have no release/art/queue behind them - fullscreen
-// doesn't make sense for them, so expand is a no-op while one is playing.
 // The whole bar is the expand target, not just the art/title corner -
 // clicks on real controls (buttons, sliders, the seek track) are theirs
 // and must not also expand.
 npBar.addEventListener('click', function(e) {
-if (_npJournalMode) return;
 if (e.target.closest('button, input, a, .np-bar-track')) return;
 fsOpen();
 });
@@ -1181,7 +1152,6 @@ npMarquee(_npTrackEl);
 npShow();
 }
 var VIDEO_LIST = [];
-var JOURNAL_LIST = [];
 function encPath(p) { return p.replace(/"/g, '%22'); }
 function wireVideos() {
 const grid = document.getElementById('video-grid');
@@ -1205,8 +1175,8 @@ if (p && p.then) p.then(function() { thumbVideo.pause(); }).catch(function() {})
 });
 }
 
-/* ── Dynamic content: releases/videos/journal are fetched from JSON
-   (generated from Audio/, Videos/, Journal/ by scripts/generate_content.py,
+/* ── Dynamic content: releases/videos are fetched from JSON
+   (generated from Audio/, Videos/ by scripts/generate_content.py,
    auto-regenerated by the update-content GitHub Action) rather than
    hardcoded here, so adding/removing a project needs no code edit. ── */
 function renderReleaseCard(rel, rIdx) {
@@ -1251,41 +1221,6 @@ ytBtn +
 '</div>' +
 '</div>';
 }
-var JOURNAL_CHEVRON_SVG = '<svg class="journal-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
-var JOURNAL_LISTEN_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>';
-function renderJournalEntry(entry, idx) {
-var dekHtml = entry.dek ? '<p class="journal-dek">' + escHtml(entry.dek) + '</p>' : '';
-var metaParts = ['By Ash Stu'];
-if (entry.date) metaParts.push(escHtml(entry.date));
-if (entry.readMin) metaParts.push(entry.readMin + ' min read');
-var byline = metaParts.map(function(p, i) { return i === 0 ? p : '<span class="journal-dot">&middot;</span>' + p; }).join('');
-var kicker = entry.category === 'essay' ? 'Essay' : entry.category === 'entry' ? 'Entry' : 'Lyrics';
-var sourceHtml = entry.substack
-? '<p class="journal-source"><a href="' + escHtml(entry.substack) + '" target="_blank" rel="noopener noreferrer" class="vid-yt" aria-label="Read on Substack"><span class="pt pt--substack" aria-hidden="true"></span>Substack</a></p>'
-: '';
-// entry.audio is only present once a matching mp3 shows up in
-// Journal/Audio/ - no file yet, no button, nothing to click.
-// It's a sibling of journal-entry-head, not nested inside it - a real
-// interactive control (button) inside a role=button region confuses
-// screen readers/keyboard nav, same issue video cards had with their
-// YouTube link (see renderVideoCard).
-var listenBtn = entry.audio
-? '<button type="button" class="journal-listen-btn vid-yt" data-journal-idx="' + idx + '" aria-label="Listen to audio version of ' + escHtml(entry.headline) + '">' + JOURNAL_LISTEN_SVG + '<span>Listen</span></button>'
-: '';
-return '<article class="journal-entry">' +
-'<div class="journal-entry-head" role="button" tabindex="0" aria-expanded="false" aria-controls="journal-body-' + idx + '" id="journal-toggle-' + idx + '" aria-label="Toggle ' + escHtml(entry.headline) + '">' +
-'<span class="journal-kicker">' + kicker + '</span>' +
-'<h3 class="journal-title">' + escHtml(entry.headline) + '</h3>' +
-dekHtml +
-'<div class="journal-byline">' + byline + '</div>' +
-'<span class="journal-readmore"><span class="journal-readmore-label">Read</span>' + JOURNAL_CHEVRON_SVG + '</span>' +
-'</div>' +
-listenBtn +
-'<div class="journal-body" id="journal-body-' + idx + '" role="region" aria-labelledby="journal-toggle-' + idx + '">' +
-'<div class="journal-body-inner">' + entry.bodyHtml + sourceHtml + '</div>' +
-'</div>' +
-'</article>';
-}
 function renderFeatured(rel) {
 if (!rel) return;
 var img = document.querySelector('.featured-art-hero .featured-art');
@@ -1322,8 +1257,7 @@ function renderAllContent(results, isRefresh) {
 _dodgeEls = null; // cards/entries below are about to be replaced
 RELEASE_LIST = results[0] || [];
 VIDEO_LIST = results[1] || [];
-JOURNAL_LIST = results[2] || [];
-LYRICS = results[3] || {};
+LYRICS = results[2] || {};
 
 var relGrid = document.getElementById('releases-grid');
 if (relGrid) relGrid.innerHTML = RELEASE_LIST.map(renderReleaseCard).join('');
@@ -1331,23 +1265,19 @@ if (relGrid) relGrid.innerHTML = RELEASE_LIST.map(renderReleaseCard).join('');
 var vidGrid = document.getElementById('video-grid');
 if (vidGrid) vidGrid.innerHTML = VIDEO_LIST.map(renderVideoCard).join('');
 
-var journalList = document.getElementById('journal-list');
-if (journalList) journalList.innerHTML = JOURNAL_LIST.map(renderJournalEntry).join('');
-
 renderFeatured(RELEASE_LIST[0]);
 // A background refresh must never yank whatever's loaded in the player.
 if (!isRefresh || !_src) initDefaultTrack();
 buildTracklists();
 setupCardListeners();
 wireVideos();
-wireJournalAccordion();
 if (typeof initMarquees === 'function') setTimeout(initMarquees, 50);
 }
 function loadDynamicContent() {
 // Prerendered pages carry the content JSON embedded inline - render from
 // it immediately, zero fetches on the critical path.
 var dataAll = readEmbedded('data-all');
-var embedded = dataAll ? [dataAll.releases, dataAll.videos, dataAll.journal, dataAll.lyrics] : [null];
+var embedded = dataAll ? [dataAll.releases, dataAll.videos, dataAll.lyrics] : [null];
 if (embedded[0]) renderAllContent(embedded, false);
 // Still revalidate against the live .json files: content added through
 // the GitHub web UI (no local rebuild) updates those without touching
@@ -1355,14 +1285,12 @@ if (embedded[0]) renderAllContent(embedded, false);
 Promise.all([
 fetch('releases.json').then(function(r) { return r.json(); }).catch(function() { return null; }),
 fetch('videos.json').then(function(r) { return r.json(); }).catch(function() { return null; }),
-fetch('journal.json').then(function(r) { return r.json(); }).catch(function() { return null; }),
 fetch('lyrics.json').then(function(r) { return r.json(); }).catch(function() { return null; })
 ]).then(function(results) {
-if (results[0] === null) results[0] = haveEmbedded ? embedded[0] : [];
-if (results[1] === null) results[1] = haveEmbedded ? embedded[1] : [];
-if (results[2] === null) results[2] = haveEmbedded ? embedded[2] : [];
-if (results[3] === null) results[3] = haveEmbedded ? embedded[3] : {};
-if (!haveEmbedded) { renderAllContent(results, false); return; }
+if (results[0] === null) results[0] = embedded[0] ? embedded[0] : [];
+if (results[1] === null) results[1] = embedded[1] ? embedded[1] : [];
+if (results[2] === null) results[2] = embedded[2] ? embedded[2] : {};
+if (!embedded[0]) { renderAllContent(results, false); return; }
 if (JSON.stringify(results) !== JSON.stringify(embedded)) renderAllContent(results, true);
 });
 }
@@ -1442,7 +1370,7 @@ if (e.target === this) closeLightbox();
 (function() {
 var arrow = document.getElementById('hero-scroll');
 if (!arrow) return;
-var SECTIONS = ['epk','contact','music','videos','journal','about'];
+var SECTIONS = ['epk','contact','music','videos','about'];
 function nextTarget() {
 var y = scrollY + 80;
 for (var i = 0; i < SECTIONS.length; i++) {
@@ -1462,7 +1390,7 @@ function getDodgeEls() {
 if (_dodgeEls === null) {
 _dodgeEls = Array.prototype.slice.call(document.querySelectorAll(
 '.hero-split-right > *:not(canvas), .rel-play-circle, .vid-play-circle, ' +
-'.rel-btn, .vid-yt, .f-btn, .btn-epk-dl, .contact-email-link, .journal-entry-head'
+'.rel-btn, .vid-yt, .f-btn, .btn-epk-dl, .contact-email-link'
 ));
 }
 return _dodgeEls;
@@ -1504,58 +1432,6 @@ var first = focusable[0], last = focusable[focusable.length - 1];
 if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
 else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 });
-function closeJournalEntry(entry) {
-var btn = entry.querySelector('.journal-entry-head');
-var body = entry.querySelector('.journal-body');
-var label = entry.querySelector('.journal-readmore-label');
-entry.classList.remove('open');
-btn.setAttribute('aria-expanded', 'false');
-body.style.maxHeight = '0';
-if (label) label.textContent = 'Read';
-}
-function wireJournalAccordion() {
-document.querySelectorAll('.journal-entry-head').forEach(function(btn) {
-var entry = btn.closest('.journal-entry');
-var body = document.getElementById(btn.getAttribute('aria-controls'));
-var label = btn.querySelector('.journal-readmore-label');
-var listenBtn = entry.querySelector('.journal-listen-btn');
-if (listenBtn) {
-listenBtn.addEventListener('click', function() {
-var idx = parseInt(listenBtn.dataset.journalIdx, 10);
-var jEntry = JOURNAL_LIST[idx];
-if (jEntry) toggleJournalAudio(jEntry);
-});
-}
-function toggle() {
-// Closing a different, already-open entry above this one collapses
-// that content and shifts everything below it - including this
-// button - up the page. Left uncompensated, that reads as the page
-// randomly jumping when what should happen is just this entry
-// expanding in place. Pin the button's on-screen position across
-// the DOM change instead of letting the browser's own scroll
-// restoration guess at it.
-var beforeY = btn.getBoundingClientRect().top;
-var opening = !entry.classList.contains('open');
-if (opening) {
-document.querySelectorAll('.journal-entry.open').forEach(function(other) {
-if (other !== entry) closeJournalEntry(other);
-});
-}
-entry.classList.toggle('open', opening);
-btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
-body.style.maxHeight = opening ? 'none' : '0';
-if (label) label.textContent = opening ? 'Show less' : 'Read';
-var afterY = btn.getBoundingClientRect().top;
-// The site sets scroll-behavior:smooth globally - a plain scrollBy()
-// here would animate the correction over time instead of applying it
-// instantly, which is itself visible as a jump. behavior:'instant'
-// overrides that for just this call.
-if (afterY !== beforeY) window.scrollBy({ top: afterY - beforeY, left: 0, behavior: 'instant' });
-}
-btn.addEventListener('click', toggle);
-btn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-});
-}
 (function() {
 const cvs = document.getElementById('confetti-canvas');
 if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
