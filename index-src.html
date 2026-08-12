@@ -651,6 +651,14 @@ _npTrackEl.dataset.label = label;
 _npAlbumEl.textContent = album || '';
 npMarquee(_npTrackEl);
 if (_srAnnounce) _srAnnounce.textContent = 'Now playing: ' + track + (album ? ' from ' + album : '');
+// A skip (or a re-skip before the previous load finished) must tear down
+// the in-flight play() immediately: bumping the intent voids any still
+// pending promise, pausing aborts the current fetch, and preload="auto"
+// lets the browser start pulling the new source the moment src changes
+// instead of waiting for play() - so rapid skipping never queues up.
+_playIntent++;
+npAudio.pause();
+npAudio.preload = 'auto';
 npAudio.src = src; _src = src;
 _npFill.style.transform = 'scaleX(0)';
 if (_npThumb) _npThumb.style.transform = 'translateX(0)';
@@ -662,6 +670,7 @@ npUpdateMediaSession(track, album, art);
 try { sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
 npShow();
 if (autoplay) { var intent = ++_playIntent; npAudio.play().then(function() { if (intent === _playIntent) npSetPlaying(true); }).catch(function(){}); }
+preloadNextTrack();
 }
 var _npResizeTimer;
 window.addEventListener('resize', function() {
@@ -669,6 +678,21 @@ clearTimeout(_npResizeTimer);
 _npResizeTimer = setTimeout(function() { if (npBar.classList.contains('show')) npMarquee(_npTrackEl); }, 150);
 }, { passive: true });
 var _playIntent = 0;
+// Background-preload the next track so a rapid skip has its bytes already
+// in the HTTP cache - the swap then starts in a frame or two instead of a
+// cold fetch. Only warmed once the user is actually listening (npLoad with
+// autoplay), never on page load. Shuffle is random, so nothing to preload.
+var _preAudio = new Audio();
+_preAudio.preload = 'auto';
+_preAudio.setAttribute('playsinline', '');
+function preloadNextTrack() {
+if (!pState.playlist.length || pState.shuffle) return;
+var n = pState.plIdx + 1;
+if (n >= pState.playlist.length) return;
+var item = pState.playlist[n];
+var rel = RELEASE_LIST[item.releaseIdx];
+if (rel && rel.tracks[item.trackIdx]) _preAudio.src = rel.tracks[item.trackIdx].file;
+}
 function npToggle() {
 var intent = ++_playIntent;
 if (npAudio.paused) {
@@ -891,6 +915,13 @@ fsFill.style.transform = 'scaleX(' + syncPct + ')';
 fsThumb.style.transform = 'translateX(' + (syncPct * 100) + '%)';
 fsCur.textContent = fmtT(npAudio.currentTime);
 fsDur.textContent = fmtT(npAudio.duration);
+} else {
+// Mid-skip the new source has no metadata yet - reset the readout so a
+// rapid next/prev doesn't leave the previous track's times on screen.
+fsFill.style.transform = 'scaleX(0)';
+if (fsThumb) fsThumb.style.transform = 'translateX(0)';
+fsCur.textContent = '0:00';
+fsDur.textContent = '·';
 }
 }
 function fsOpen() {
@@ -898,7 +929,11 @@ fsSync();
 fs.classList.add('open');
 fs.setAttribute('aria-hidden', 'false');
 fs.inert = false;
+npBar.inert = true; // can't keyboard-tab behind the maximized player
 _fsOpen = true;
+// Pin the page: nothing behind the maximized player scrolls (wheel,
+// touch, or keys) until it's collapsed again.
+document.documentElement.classList.add('fs-locked');
 }
 function fsClose() {
 fs.classList.remove('open');
@@ -908,8 +943,43 @@ fs.setAttribute('aria-hidden', 'true');
 // and interact with controls they can't see. inert does both: takes
 // it out of the tab order and hides it from the accessibility tree.
 fs.inert = true;
+npBar.inert = false;
 _fsOpen = false;
+document.documentElement.classList.remove('fs-locked');
 }
+// Swipe up on the docked bar maximizes; swipe down on the maximized
+// player collapses it. Pointer Events unify mouse/touch, and the
+// threshold is generous so taps and horizontal drags never misfire. The
+// down-gesture only closes when the player's content is already at its
+// top - if it's scrolled, the swipe scrolls it instead (iOS-style).
+var _swipe = null;
+var _fsContentEl = document.querySelector('.fs-content');
+npBar.addEventListener('pointerdown', function(e) {
+if (e.target.closest('button, input, a, .np-bar-track')) return;
+_swipe = { y: e.clientY, x: e.clientX, target: npBar };
+}, { passive: true });
+npBar.addEventListener('pointermove', function(e) {
+if (!_swipe || _swipe.target !== npBar) return;
+if (Math.abs(e.clientX - _swipe.x) > 24) { _swipe = null; return; }
+if (e.clientY - _swipe.y < -40) { _swipe = null; fsOpen(); }
+}, { passive: true });
+npBar.addEventListener('pointerup', function() { _swipe = null; }, { passive: true });
+npBar.addEventListener('pointercancel', function() { _swipe = null; }, { passive: true });
+fs.addEventListener('pointerdown', function(e) {
+if (e.target.closest('button, input, a, .fs-bar')) return;
+_swipe = { y: e.clientY, x: e.clientX, target: fs };
+}, { passive: true });
+fs.addEventListener('pointermove', function(e) {
+if (!_swipe || _swipe.target !== fs || !_fsOpen) return;
+if (_fsContentEl && _fsContentEl.scrollTop > 0) return;
+if (Math.abs(e.clientX - _swipe.x) > 24) { _swipe = null; return; }
+if (e.clientY - _swipe.y > 48) { _swipe = null; fsClose(); }
+}, { passive: true });
+fs.addEventListener('pointerup', function() { _swipe = null; }, { passive: true });
+fs.addEventListener('pointercancel', function() { _swipe = null; }, { passive: true });
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape' && _fsOpen) fsClose();
+});
 // The whole bar is the expand target, not just the art/title corner -
 // clicks on real controls (buttons, sliders, the seek track) are theirs
 // and must not also expand.
@@ -919,8 +989,8 @@ fsOpen();
 });
 document.getElementById('fs-collapse').addEventListener('click', fsClose);
 document.getElementById('fs-play').addEventListener('click', function() { npToggle(); fsSync(); });
-document.getElementById('fs-prev').addEventListener('click', function() { npPrev(); setTimeout(fsSync, 50); });
-document.getElementById('fs-next').addEventListener('click', function() { npNext(); setTimeout(fsSync, 50); });
+document.getElementById('fs-prev').addEventListener('click', function() { npPrev(); fsSync(); });
+document.getElementById('fs-next').addEventListener('click', function() { npNext(); fsSync(); });
 document.getElementById('fs-shuffle').addEventListener('click', npShuffleToggle);
 var _fsBar = document.getElementById('fs-bar');
 wireSeekBar(_fsBar);
@@ -979,13 +1049,14 @@ npAudio.src = t.file; _src = t.file;
 }
 var _tracklistDebounce = 0;
 function onRelOverlay(e, rIdx) {
+// Same behavior everywhere (desktop and touch): the play disc plays,
+// tapping the rest of the artwork expands the tracklist. Singles have no
+// tracklist, so any tap plays them.
 if (RELEASE_LIST[rIdx].type === 'Single') {
 closeAllTracklists();
 toggleRelease(rIdx);
-} else if ('ontouchstart' in window) {
-closeAllTracklists();
-toggleRelease(rIdx);
 } else if (e.target.closest('.rel-play-circle')) {
+closeAllTracklists();
 toggleRelease(rIdx);
 } else {
 var now = Date.now();

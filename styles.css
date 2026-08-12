@@ -66,6 +66,10 @@
   --ink-soft:   #4A6E7C;  /* secondary/muted text */
   --ink-hover: rgb(26,94,115);  /* fallback: older engines lack rgb(from…) */
   --hairline: rgba(8,76,97,.08);  /* fallback: older engines lack rgb(from…) */
+  --player:     #3E2352;  /* music player: deep plum - deliberately distinct
+                             from the site's teal so the player always reads
+                             as "the music surface," never as part of the page */
+  --player-hi: rgb(82,48,106);  /* fallback: lifted player surface (mobile band) */
   --rust:       #084C61;  /* accent roles collapse into primary teal */
   --rust-hover: rgb(0,58,79);  /* fallback: older engines lack rgb(from…) */
   --gold:       #F7C549;  /* accent: sunny yellow - lamplight, hovers, marks */
@@ -1387,15 +1391,19 @@ footer {
 #player-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   z-index: 300;
-  background: rgba(8,76,97,.97);
-  background: rgb(from var(--ink) r g b / .97);
+  background: rgba(62,35,82,.97);
+  background: rgb(from var(--player) r g b / .97);
   /* fill is .97 opaque - blur was invisible, so it's gone */
-  box-shadow: 0 -2px 20px rgba(8,76,97,.25);
+  box-shadow: 0 -2px 20px rgba(62,35,82,.25);
   display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
   align-items: center; gap: .5rem;
   padding: 0 .75rem;
   height: 64px;
   user-select: none; -webkit-user-select: none;
+  /* Vertical gestures (swipe-up to maximize) are handled in JS instead of
+     scrolling the page; horizontal pan is left alone. Buttons/track keep
+     their own tighter touch-action rules. */
+  touch-action: pan-x;
   transform: translateY(calc(100% + 16px));
   transition: transform .4s var(--ease-spring);
   font-family: var(--sans);
@@ -1486,7 +1494,7 @@ body.player-active { padding-bottom: 68px; }
   color: rgb(from var(--gold) r g b / .88); margin-top: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.np-right { display: flex; align-items: center; gap: .25rem; justify-self: end; }
+.np-right { display: flex; align-items: center; gap: .15rem; justify-self: end; }
 /* Same look as the fullscreen player's .fs-play, scaled down */
 #np-play {
   width: 42px; height: 42px; border-radius: 50%;
@@ -1513,23 +1521,26 @@ body.player-active { padding-bottom: 68px; }
 .np-ctrl.active { color: var(--gold); }
 /* Volume - same idea as the video player's native control: icon + slider.
    Shared by the docked bar and the fullscreen player. */
-.np-vol { display: flex; align-items: center; gap: .15rem; }
+.np-vol { display: flex; align-items: center; gap: .1rem; }
 .vol-slider {
   -webkit-appearance: none; appearance: none;
-  width: 72px; height: 4px; border-radius: 4px;
+  /* Thicker + wider than the original 4px/72px line: an easier grab in the
+     docked bar. The row's gaps/buttons shave to compensate so the mute
+     icon doesn't drift when the slider grows. */
+  width: 84px; height: 8px; border-radius: 8px;
   background: linear-gradient(to right, var(--gold) var(--vol, 100%), rgba(255,255,255,.18) var(--vol, 100%));
   outline: none; cursor: pointer;
 }
 .vol-slider::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
-  width: 12px; height: 12px; border-radius: 50%;
+  width: 16px; height: 16px; border-radius: 50%;
   background: #fff; border: none;
   box-shadow: 0 1px 4px rgba(0,0,0,.35);
   transition: transform .15s var(--ease);
 }
 .vol-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .vol-slider::-moz-range-thumb {
-  width: 12px; height: 12px; border-radius: 50%;
+  width: 16px; height: 16px; border-radius: 50%;
   background: #fff; border: none;
   box-shadow: 0 1px 4px rgba(0,0,0,.35);
 }
@@ -1634,8 +1645,8 @@ body.player-active { padding-bottom: 68px; }
     content: '';
     grid-row: 3; grid-column: 1 / -1;
     margin: 0 -.75rem -.65rem;
-    background: rgba(26,94,115,.97);
-    background: rgb(from var(--ink-hover) r g b / .97);
+    background: rgba(82,48,106,.97);
+    background: rgb(from var(--player-hi) r g b / .97);
   }
   .np-left { grid-area: left; }
   /* align-self:start (not center) puts it near the top edge instead of
@@ -1675,6 +1686,10 @@ body.player-active { padding-bottom: 68px; }
   /* Scoped to the docked bar only - unscoped this also capped the
      fullscreen player's volume at 100px on phones. */
   .np-vol .vol-slider { width: 100%; max-width: 100px; }
+  /* The docked slider inherits the thicker 8px base track; give its thumb
+     a real finger-sized target on phones too. */
+  .np-vol .vol-slider::-webkit-slider-thumb { width: 18px; height: 18px; }
+  .np-vol .vol-slider::-moz-range-thumb { width: 18px; height: 18px; }
   body.player-active { padding-bottom: 138px; }
   /* Bigger tap targets without growing the bar or the visible buttons:
      an invisible pseudo-element extends the actual clickable area past
@@ -1819,7 +1834,7 @@ body.player-active { padding-bottom: 68px; }
    PLAYER CONTROLS - prev/next/shuffle
    ════════════════════════════════════════════ */
 .np-ctrl {
-  width: 30px; height: 30px; border-radius: 50%;
+  width: 28px; height: 28px; border-radius: 50%;
   border: none; background: transparent;
   /* matches .fs-ctrl in the fullscreen player */
   color: rgba(255,255,255,.65); cursor: pointer;
@@ -2384,7 +2399,7 @@ body.player-active { padding-bottom: 68px; }
    ════════════════════════════════════════════ */
 .fs-player {
   position: fixed; top:0;right:0;bottom:0;left:0; z-index: 400;
-  background: var(--ink);
+  background: var(--player);
   contain: layout style;
   transform: translateY(100%);
   transition: transform .4s var(--ease);
@@ -2396,9 +2411,12 @@ body.player-active { padding-bottom: 68px; }
   user-select: none; -webkit-user-select: none;
 }
 .fs-player.open { transform: translateY(0); }
+/* Maximized player pins the page behind it: wheel/touch/keyboard can no
+   longer scroll the document while the fullscreen player is up. */
+html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-bg {
   position: absolute; top:-30%;right:-30%;bottom:-30%;left:-30%;
-  background: var(--ink) center/cover no-repeat;
+  background: var(--player) center/cover no-repeat;
   filter: blur(90px) brightness(.4) saturate(2);
 }
 .fs-content {
@@ -2416,6 +2434,9 @@ body.player-active { padding-bottom: 68px; }
   padding: calc(env(safe-area-inset-top, 0px) + 4.5rem) 1.75rem calc(env(safe-area-inset-bottom, 0px) + 2.5rem);
   gap: 0;
   overflow-y: auto;
+  /* Its own scroll must never chain to the page underneath - overscroll
+     stays inside the player instead of bouncing the locked page behind it. */
+  overscroll-behavior: contain;
 }
 .fs-collapse {
   position: absolute;
