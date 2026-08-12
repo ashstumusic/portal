@@ -66,10 +66,14 @@
   --ink-soft:   #4A6E7C;  /* secondary/muted text */
   --ink-hover: rgb(26,94,115);  /* fallback: older engines lack rgb(from…) */
   --hairline: rgba(8,76,97,.08);  /* fallback: older engines lack rgb(from…) */
-  --player:     #3E2352;  /* music player: deep plum - deliberately distinct
-                             from the site's teal so the player always reads
-                             as "the music surface," never as part of the page */
-  --player-hi: rgb(82,48,106);  /* fallback: lifted player surface (mobile band) */
+  --player:     #F7C549;  /* music player: sunny gold surface - the site's
+                             accent yellow, so the player reads as "the music
+                             surface"; everything on it flips to its deep
+                             teal companion (#084C61) for contrast */
+  --player-hi: rgb(226,165,44);  /* fallback: deeper gold lifted surface (mobile band) */
+  --player-ink: #084C61;  /* deep teal: text, icons, accents on gold - the
+                             site's primary ink, carrying the brand color
+                             through the player surface */
   --rust:       #084C61;  /* accent roles collapse into primary teal */
   --rust-hover: rgb(0,58,79);  /* fallback: older engines lack rgb(from…) */
   --gold:       #F7C549;  /* accent: sunny yellow - lamplight, hovers, marks */
@@ -1391,10 +1395,10 @@ footer {
 #player-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   z-index: 300;
-  background: rgba(62,35,82,.97);
+  background: rgba(247,197,73,.97);
   background: rgb(from var(--player) r g b / .97);
   /* fill is .97 opaque - blur was invisible, so it's gone */
-  box-shadow: 0 -2px 20px rgba(62,35,82,.25);
+  box-shadow: 0 -2px 20px rgba(8,76,97,.32);
   display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
   align-items: center; gap: .5rem;
   padding: 0 .75rem;
@@ -1413,11 +1417,15 @@ footer {
 }
 #player-bar.show { transform: translateY(0); }
 body.player-active { padding-bottom: 68px; }
+/* The global focus ring is gold - invisible on the gold player surface.
+   These two switch it to the player's deep-teal ink so keyboard focus
+   stays visible wherever the player is showing. */
+#player-bar :focus-visible, .fs-player :focus-visible { outline-color: var(--player-ink); }
 @media (max-width: 900px) {
   #player-bar {
     bottom: 8px; left: 8px; right: 8px;
     border-radius: 14px; height: 60px;
-    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.06);
+    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(8,76,97,.3);
   }
   body.player-active { padding-bottom: 76px; }
 }
@@ -1428,12 +1436,12 @@ body.player-active { padding-bottom: 68px; }
 /* Hidden by default (desktop's thin overlay bar has no room for text) -
    shown and given real space on mobile below, where the strip becomes
    a proper row instead of an absolute-positioned overlay. */
-.np-time { display: none; font-size: .58rem; color: rgba(255,255,255,.65); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.np-time { display: none; font-size: .58rem; color: rgba(8,76,97,.85); font-variant-numeric: tabular-nums; flex-shrink: 0; }
 .np-bar-track {
-  flex: 1; height: 100%; background: rgba(255,255,255,.1);
+  flex: 1; height: 100%; background: rgba(8,76,97,.24);
   position: relative; cursor: pointer; touch-action: none;
 }
-#np-fill { height: 100%; background: var(--gold); width: 100%; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s linear; will-change: transform; pointer-events: none; }
+#np-fill { height: 100%; background: var(--player-ink); width: 100%; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s linear; will-change: transform; pointer-events: none; }
 /* Seek thumb: a visible grab dot riding the playhead. The element is a
    full-track-width rail, so translateX(n%) of its own width lands the dot
    at n% of the track - same transform-only write that drives the fill,
@@ -1449,7 +1457,7 @@ body.player-active { padding-bottom: 68px; }
   content: ''; position: absolute; top: 50%; left: 0;
   width: 10px; height: 10px; border-radius: 50%;
   transform: translate(-50%, -50%);
-  background: #fff;
+  background: var(--player-ink);
   box-shadow: 0 1px 4px rgba(0,0,0,.35);
 }
 /* match each bar's fill transition so dot and fill move as one */
@@ -1476,7 +1484,7 @@ body.player-active { padding-bottom: 68px; }
 .np-art[src=""] { display: none; }
 .np-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 #np-track {
-  font-size: .8rem; color: #fff; font-weight: 500;
+  font-size: .8rem; color: var(--player-ink); font-weight: 500;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;
 }
 /* Too long to fit? Slow marquee instead of ellipsis (same as tracklists). */
@@ -1489,36 +1497,37 @@ body.player-active { padding-bottom: 68px; }
 @media (prefers-reduced-motion: reduce) { #np-track.marquee > span { animation: none; } }
 #np-album {
   font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
-  /* gold, matching .fs-album in the fullscreen player */
-  color: rgba(247,197,73,.88); margin-top: 1px;
-  color: rgb(from var(--gold) r g b / .88); margin-top: 1px;
+  /* deep teal, matching .fs-album in the fullscreen player - the
+     brand accent on the gold surface */
+  color: rgba(8,76,97,.85); margin-top: 1px;
+  color: rgb(from var(--player-ink) r g b / .85); margin-top: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .np-right { display: flex; align-items: center; gap: .15rem; justify-self: end; }
 /* Same look as the fullscreen player's .fs-play, scaled down */
 #np-play {
   width: 42px; height: 42px; border-radius: 50%;
-  border: none; background: var(--gold);
-  color: var(--ink); cursor: pointer;
+  border: none; background: var(--player-ink);
+  color: var(--gold); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(247,197,73,.35);
-  box-shadow: 0 4px 16px rgb(from var(--gold) r g b / .35);
+  box-shadow: 0 4px 16px rgba(8,76,97,.35);
+  box-shadow: 0 4px 16px rgb(from var(--player-ink) r g b / .35);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-#np-play:hover { box-shadow: 0 6px 24px rgba(247,197,73,.5); box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
+#np-play:hover { box-shadow: 0 6px 24px rgba(8,76,97,.5); box-shadow: 0 6px 24px rgb(from var(--player-ink) r g b / .5); transform: scale(1.04); }
 #np-play:active { transform: scale(.9); }
 #np-play[aria-label="Play"] svg { margin-left: 2px; }
 .np-ctrl {
   width: 40px; height: 40px; border-radius: 50%;
   border: none; background: transparent;
-  color: rgba(255,255,255,.6); cursor: pointer; flex-shrink: 0;
+  color: rgba(8,76,97,.8); cursor: pointer; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: color .15s;
   -webkit-tap-highlight-color: transparent;
 }
-.np-ctrl:active { color: #fff; }
-.np-ctrl.active { color: var(--gold); }
+.np-ctrl:active { color: var(--player-ink); }
+.np-ctrl.active { color: var(--player-ink); }
 /* Volume - same idea as the video player's native control: icon + slider.
    Shared by the docked bar and the fullscreen player. */
 .np-vol { display: flex; align-items: center; gap: .1rem; }
@@ -1528,20 +1537,20 @@ body.player-active { padding-bottom: 68px; }
      docked bar. The row's gaps/buttons shave to compensate so the mute
      icon doesn't drift when the slider grows. */
   width: 84px; height: 8px; border-radius: 8px;
-  background: linear-gradient(to right, var(--gold) var(--vol, 100%), rgba(255,255,255,.18) var(--vol, 100%));
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgba(8,76,97,.24) var(--vol, 100%));
   outline: none; cursor: pointer;
 }
 .vol-slider::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
   width: 16px; height: 16px; border-radius: 50%;
-  background: #fff; border: none;
+  background: var(--player-ink); border: none;
   box-shadow: 0 1px 4px rgba(0,0,0,.35);
   transition: transform .15s var(--ease);
 }
 .vol-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .vol-slider::-moz-range-thumb {
   width: 16px; height: 16px; border-radius: 50%;
-  background: #fff; border: none;
+  background: var(--player-ink); border: none;
   box-shadow: 0 1px 4px rgba(0,0,0,.35);
 }
 .vol-slider:focus-visible { box-shadow: var(--focus); }
@@ -1559,7 +1568,7 @@ body.player-active { padding-bottom: 68px; }
 .fs-vol .fs-ctrl { min-width: 38px; min-height: 38px; flex-shrink: 0; }
 /* The icon+slider pair reads visually off-center even when the row
    itself is centered - the icon's own width isn't mirrored by
-   anything on the right, so the slider (the eye-catching gold part)
+   anything on the right, so the slider (the eye-catching teal part)
    ends up left of true center. A matching right-side spacer balances
    that out without needing a second icon. */
 .fs-vol .vol-slider { flex: 1; width: auto; }
@@ -1593,8 +1602,10 @@ body.player-active { padding-bottom: 68px; }
 }
 /* Same fix as .hero-split-right .f-btn: on a dark photo backdrop, the
    button's own translucent-teal fill goes muddy - a light cream chip
-   keeps the icon and text legible regardless of what's blurred behind it. */
-.fs-platforms .f-btn { background: rgba(250,252,252,.9); background: rgb(from var(--cream) r g b / .9); border-color: rgba(8,76,97,.18); border-color: rgb(from var(--ink) r g b / .18); }
+   keeps the icon and text legible regardless of what's blurred behind it.
+   On the gold player surface those teal-tinted chips carry the
+   complementary color through to the streaming links too. */
+.fs-platforms .f-btn { background: rgba(250,252,252,.9); background: rgb(from var(--cream) r g b / .9); border-color: rgba(8,76,97,.3); border-color: rgb(from var(--player-ink) r g b / .3); color: var(--player-ink); }
 /* Hover fill comes from .f-btn's shared ::after overlay - see its
    definition above, works over any base background. */
 /* Phones: a single row can't fit track info + play + prev/next/shuffle/
@@ -1645,7 +1656,7 @@ body.player-active { padding-bottom: 68px; }
     content: '';
     grid-row: 3; grid-column: 1 / -1;
     margin: 0 -.75rem -.65rem;
-    background: rgba(82,48,106,.97);
+    background: rgba(226,165,44,.97);
     background: rgb(from var(--player-hi) r g b / .97);
   }
   .np-left { grid-area: left; }
@@ -1661,11 +1672,11 @@ body.player-active { padding-bottom: 68px; }
     /* Bar padding is 10.4px top / 12px right - this closes that 1.6px
        gap so the button reads as truly equidistant from both edges. */
     margin-top: .1rem;
-    background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22);
+    background: rgba(8,76,97,.08); border-color: rgba(8,76,97,.3);
   }
   #player-bar #np-close:active {
-    background: rgba(247,197,73,.3); border-color: var(--gold); color: var(--gold);
-    background: rgb(from var(--gold) r g b / .3); border-color: var(--gold); color: var(--gold);
+    background: rgba(8,76,97,.3); border-color: var(--player-ink); color: var(--player-ink);
+    background: rgb(from var(--player-ink) r g b / .3); border-color: var(--player-ink); color: var(--player-ink);
     transform: scale(.92);
   }
   /* .np-right's own box drops out of layout (its children become direct
@@ -1706,7 +1717,7 @@ body.player-active { padding-bottom: 68px; }
   .np-art { display: none; }
 }
 .np-close {
-  background: none; border: 1px solid transparent; color: rgba(255,255,255,.4); cursor: pointer;
+  background: none; border: 1px solid transparent; color: rgba(8,76,97,.72); cursor: pointer;
   font-size: .9rem; line-height: 1;
   min-width: 40px; min-height: 40px;
   border-radius: 50%;
@@ -1714,8 +1725,8 @@ body.player-active { padding-bottom: 68px; }
   -webkit-tap-highlight-color: transparent;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
 }
-.np-close:hover { color: var(--gold); background: rgba(247,197,73,.12); background: rgb(from var(--gold) r g b / .12); border-color: var(--gold); transform: scale(1.08); }
-.np-close:active { color: #fff; }
+.np-close:hover { color: var(--player-ink); background: rgba(8,76,97,.12); background: rgb(from var(--player-ink) r g b / .12); border-color: var(--player-ink); transform: scale(1.08); }
+.np-close:active { color: var(--player-ink); }
 
 /* ════════════════════════════════════════════
    RELEASE PLAY OVERLAY + TRACKLIST
@@ -1837,13 +1848,13 @@ body.player-active { padding-bottom: 68px; }
   width: 28px; height: 28px; border-radius: 50%;
   border: none; background: transparent;
   /* matches .fs-ctrl in the fullscreen player */
-  color: rgba(255,255,255,.65); cursor: pointer;
+  color: rgba(8,76,97,.65); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease); flex-shrink: 0;
 }
-.np-ctrl:hover { color: #fff; background: rgba(255,255,255,.08); transform: scale(1.08); }
-.np-ctrl:active { color: #fff; transform: scale(.92); }
-.np-ctrl.active { color: var(--gold); }
+.np-ctrl:hover { color: var(--player-ink); background: rgba(8,76,97,.08); background: rgb(from var(--player-ink) r g b / .08); transform: scale(1.08); }
+.np-ctrl:active { color: var(--player-ink); transform: scale(.92); }
+.np-ctrl.active { color: var(--player-ink); }
 
 /* ════════════════════════════════════════════
    FLOATING MUSIC BUTTON
@@ -2442,7 +2453,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + .5rem);
   left: 50%; transform: translateX(-50%);
-  background: none; border: 1px solid transparent; color: rgba(255,255,255,.35);
+  background: none; border: 1px solid transparent; color: rgba(8,76,97,.72);
   cursor: pointer; padding: .75rem 2rem;
   min-height: 44px;
   border-radius: 22px;
@@ -2450,14 +2461,14 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.fs-collapse:hover { color: var(--gold); background: rgba(247,197,73,.1); background: rgb(from var(--gold) r g b / .1); border-color: rgba(247,197,73,.3); border-color: rgb(from var(--gold) r g b / .3); }
-.fs-collapse:active { color: rgba(255,255,255,.7); }
+.fs-collapse:hover { color: var(--player-ink); background: rgba(8,76,97,.1); background: rgb(from var(--player-ink) r g b / .1); border-color: rgba(8,76,97,.3); border-color: rgb(from var(--player-ink) r g b / .3); }
+.fs-collapse:active { color: rgba(8,76,97,.75); }
 .fs-art-wrap {
   width: 80vw;
   width: min(80vw, 340px); aspect-ratio: 1;
   border-radius: 16px; overflow: hidden;
-  border: 1px solid rgba(240,245,246,.14);
-  border: 1px solid rgb(from var(--paper) r g b / .14);
+  border: 1px solid rgba(8,76,97,.35);
+  border: 1px solid rgb(from var(--player-ink) r g b / .35);
   box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
   flex-shrink: 0;
 }
@@ -2468,33 +2479,33 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 }
 .fs-track {
   display: block; font-family: var(--sans);
-  font-size: 1.2rem; font-weight: 700; color: #fff;
+  font-size: 1.2rem; font-weight: 700; color: var(--player-ink);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   line-height: 1.3;
 }
 .fs-album {
   display: block; font-size: .58rem; letter-spacing: .22em;
-  text-transform: uppercase; color: rgba(247,197,73,.88);
-  text-transform: uppercase; color: rgb(from var(--gold) r g b / .88);
+  text-transform: uppercase; color: rgba(8,76,97,.85);
+  text-transform: uppercase; color: rgb(from var(--player-ink) r g b / .85);
   margin-top: .4rem;
 }
 .fs-progress { width: 100%; margin-top: 1.75rem; }
 .fs-bar {
-  width: 100%; height: 4px; background: rgba(255,255,255,.15);
+  width: 100%; height: 4px; background: rgba(8,76,97,.26);
   border-radius: 4px; cursor: pointer; position: relative;
   touch-action: none;
 }
 .fs-fill {
-  height: 100%; background: var(--gold); width: 100%;
+  height: 100%; background: var(--player-ink); width: 100%;
   transform: scaleX(0); transform-origin: 0 50%;
   border-radius: 4px; transition: transform .15s linear;
   will-change: transform;
   pointer-events: none;
 }
-.fs-bar:active .fs-fill { background: #fff; }
+.fs-bar:active .fs-fill { background: rgba(8,76,97,.7); background: rgb(from var(--player-ink) r g b / .7); }
 .fs-times {
   display: flex; justify-content: space-between;
-  font-size: .64rem; font-weight: 600; color: rgba(255,255,255,.6);
+  font-size: .64rem; font-weight: 600; color: rgba(8,76,97,.85);
   margin-top: .5rem; font-variant-numeric: tabular-nums;
   user-select: none;
 }
@@ -2514,27 +2525,27 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 #fs-next { grid-column: 4; }
 #fs-shuffle { grid-column: 5; }
 .fs-ctrl {
-  background: none; border: none; color: rgba(255,255,255,.65);
+  background: none; border: none; color: rgba(8,76,97,.8);
   cursor: pointer;
   min-width: 48px; min-height: 48px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   transition: color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-ctrl:hover { color: #fff; background: rgba(255,255,255,.08); transform: scale(1.08); }
-.fs-ctrl:active { color: #fff; transform: scale(.92); }
-.fs-ctrl.active { color: var(--gold); }
+.fs-ctrl:hover { color: var(--player-ink); background: rgba(8,76,97,.08); background: rgb(from var(--player-ink) r g b / .08); transform: scale(1.08); }
+.fs-ctrl:active { color: var(--player-ink); transform: scale(.92); }
+.fs-ctrl.active { color: var(--player-ink); }
 .fs-play {
   width: 68px; height: 68px; border-radius: 50%;
-  background: var(--gold); border: none; cursor: pointer;
+  background: var(--player-ink); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  color: var(--ink);
-  box-shadow: 0 6px 24px rgba(247,197,73,.35);
-  box-shadow: 0 6px 24px rgb(from var(--gold) r g b / .35);
+  color: var(--gold);
+  box-shadow: 0 6px 24px rgba(8,76,97,.35);
+  box-shadow: 0 6px 24px rgb(from var(--player-ink) r g b / .35);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-play:hover { box-shadow: 0 8px 32px rgba(247,197,73,.5); box-shadow: 0 8px 32px rgb(from var(--gold) r g b / .5); transform: scale(1.04); }
+.fs-play:hover { box-shadow: 0 8px 32px rgba(8,76,97,.5); box-shadow: 0 8px 32px rgb(from var(--player-ink) r g b / .5); transform: scale(1.04); }
 .fs-play:active { transform: scale(.9); }
 .fs-play svg { margin-left: 0; }
 .fs-play[aria-label="Play"] svg { margin-left: 3px; }
