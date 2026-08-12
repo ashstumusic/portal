@@ -1463,7 +1463,7 @@ body.player-active { padding-bottom: 68px; }
 /* match each bar's fill transition so dot and fill move as one */
 #np-bar-track .seek-thumb { transition: transform .3s linear; }
 .fs-bar .seek-thumb { transition: transform .15s linear; }
-.fs-bar .seek-thumb::before { width: 16px; height: 16px; }
+.fs-bar .seek-thumb::before { width: 18px; height: 18px; box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35); box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35); }
 /* While scrubbing (.seeking set on pointerdown, cleared on release):
    fill + thumb stick to the finger with zero transition lag, and the
    dot swells like the volume slider's thumb does on hover. */
@@ -1571,7 +1571,15 @@ body.player-active { padding-bottom: 68px; }
    anything on the right, so the slider (the eye-catching teal part)
    ends up left of true center. A matching right-side spacer balances
    that out without needing a second icon. */
-.fs-vol .vol-slider { flex: 1; width: auto; }
+.fs-vol .vol-slider {
+  flex: 1; width: auto;
+  /* Cream unfilled half - the ink fill vs cream rail stays legible over
+     the blurred art instead of vanishing the way a dark rail would. */
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgba(250,252,252,.5) var(--vol, 100%));
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgb(from var(--cream) r g b / .5) var(--vol, 100%));
+}
+.fs-vol .vol-slider::-webkit-slider-thumb { box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35); box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35); }
+.fs-vol .vol-slider::-moz-range-thumb { box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35); box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35); }
 .fs-vol::after { content: ''; width: 38px; flex-shrink: 0; }
 /* Phones: stretch toward the edges like iOS's lock-screen volume - a
    thumb-width bar in the middle of a phone screen reads undersized. */
@@ -2428,7 +2436,12 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-bg {
   position: absolute; top:-30%;right:-30%;bottom:-30%;left:-30%;
   background: var(--player) center/cover no-repeat;
-  filter: blur(90px) brightness(.4) saturate(2);
+  /* The gold surface under this is the true base - the blurred art
+     tints it, so it wants to be brighter than the page's dark hero
+     blurs. Too dark a value (old .4) dragged the whole room muddy
+     olive; .55 keeps the album's colors present while the gold keeps
+     its warmth. */
+  filter: blur(70px) brightness(.55) saturate(2);
 }
 .fs-content {
   position: relative; z-index: 1;
@@ -2453,23 +2466,31 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + .5rem);
   left: 50%; transform: translateX(-50%);
-  background: none; border: 1px solid transparent; color: rgba(8,76,97,.72);
-  cursor: pointer; padding: .75rem 2rem;
+  background: rgba(250,252,252,.7);
+  background: rgb(from var(--cream) r g b / .7);
+  border: 1px solid rgba(8,76,97,.25);
+  border: 1px solid rgb(from var(--player-ink) r g b / .25);
+  color: rgba(8,76,97,.85); cursor: pointer; padding: .75rem 2rem;
   min-height: 44px;
   border-radius: 22px;
   display: flex; align-items: center; justify-content: center;
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.fs-collapse:hover { color: var(--player-ink); background: rgba(8,76,97,.1); background: rgb(from var(--player-ink) r g b / .1); border-color: rgba(8,76,97,.3); border-color: rgb(from var(--player-ink) r g b / .3); }
-.fs-collapse:active { color: rgba(8,76,97,.75); }
+.fs-collapse:hover { color: var(--player-ink); background: rgba(250,252,252,.95); background: rgb(from var(--cream) r g b / .95); border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); }
+.fs-collapse:active { color: rgba(8,76,97,.85); }
 .fs-art-wrap {
   width: 80vw;
   width: min(80vw, 340px); aspect-ratio: 1;
   border-radius: 16px; overflow: hidden;
-  border: 1px solid rgba(8,76,97,.35);
-  border: 1px solid rgb(from var(--player-ink) r g b / .35);
-  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
+  border: 2px solid rgba(8,76,97,.45);
+  border: 2px solid rgb(from var(--player-ink) r g b / .45);
+  /* Gold halo behind the cover echoes the site's lamplight motif - the
+     cover reads as lit from behind, with the teal frame holding it. */
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4),
+      0 0 0 8px rgba(247,197,73,.22), 0 0 60px rgba(247,197,73,.35);
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4),
+      0 0 0 8px rgb(from var(--gold) r g b / .22), 0 0 60px rgb(from var(--gold) r g b / .35);
   flex-shrink: 0;
 }
 .fs-art { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -2480,32 +2501,44 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-track {
   display: block; font-family: var(--sans);
   font-size: 1.2rem; font-weight: 700; color: var(--player-ink);
+  /* The max player sits on a darkened art blur, so pure teal can vanish -
+     a cream text-shadow lifts the copy off whatever tint is behind it. */
+  text-shadow: 0 1px 0 rgba(250,252,252,.6), 0 2px 8px rgba(250,252,252,.35);
+  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .6), 0 2px 8px rgb(from var(--cream) r g b / .35);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   line-height: 1.3;
 }
 .fs-album {
   display: block; font-size: .58rem; letter-spacing: .22em;
-  text-transform: uppercase; color: rgba(8,76,97,.85);
-  text-transform: uppercase; color: rgb(from var(--player-ink) r g b / .85);
+  text-transform: uppercase; color: rgba(8,76,97,.9);
+  text-transform: uppercase; color: rgb(from var(--player-ink) r g b / .9);
+  text-shadow: 0 1px 0 rgba(250,252,252,.5), 0 2px 6px rgba(250,252,252,.3);
+  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .5), 0 2px 6px rgb(from var(--cream) r g b / .3);
   margin-top: .4rem;
 }
 .fs-progress { width: 100%; margin-top: 1.75rem; }
 .fs-bar {
-  width: 100%; height: 4px; background: rgba(8,76,97,.26);
-  border-radius: 4px; cursor: pointer; position: relative;
+  width: 100%; height: 6px;
+  /* Cream rail instead of a dark one: over the blurred art a teal-tinted
+     track disappears, a light one always reads. */
+  background: rgba(250,252,252,.5);
+  background: rgb(from var(--cream) r g b / .5);
+  border-radius: 6px; cursor: pointer; position: relative;
   touch-action: none;
 }
 .fs-fill {
   height: 100%; background: var(--player-ink); width: 100%;
   transform: scaleX(0); transform-origin: 0 50%;
-  border-radius: 4px; transition: transform .15s linear;
+  border-radius: 6px; transition: transform .15s linear;
   will-change: transform;
   pointer-events: none;
 }
 .fs-bar:active .fs-fill { background: rgba(8,76,97,.7); background: rgb(from var(--player-ink) r g b / .7); }
 .fs-times {
   display: flex; justify-content: space-between;
-  font-size: .64rem; font-weight: 600; color: rgba(8,76,97,.85);
+  font-size: .64rem; font-weight: 600; color: rgba(8,76,97,.9);
+  text-shadow: 0 1px 0 rgba(250,252,252,.55), 0 2px 6px rgba(250,252,252,.3);
+  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .55), 0 2px 6px rgb(from var(--cream) r g b / .3);
   margin-top: .5rem; font-variant-numeric: tabular-nums;
   user-select: none;
 }
@@ -2525,27 +2558,36 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 #fs-next { grid-column: 4; }
 #fs-shuffle { grid-column: 5; }
 .fs-ctrl {
-  background: none; border: none; color: rgba(8,76,97,.8);
-  cursor: pointer;
+  /* Cream chips - same legibility trick as the platform buttons below:
+     over the blurred art a translucent-teal icon goes muddy, a light
+     chip always reads. */
+  background: rgba(250,252,252,.72);
+  background: rgb(from var(--cream) r g b / .72);
+  border: 1px solid rgba(8,76,97,.3);
+  border: 1px solid rgb(from var(--player-ink) r g b / .3);
+  color: var(--player-ink); cursor: pointer;
   min-width: 48px; min-height: 48px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  transition: color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease);
+  transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-ctrl:hover { color: var(--player-ink); background: rgba(8,76,97,.08); background: rgb(from var(--player-ink) r g b / .08); transform: scale(1.08); }
+.fs-ctrl:hover { color: var(--player-ink); background: rgba(250,252,252,.95); background: rgb(from var(--cream) r g b / .95); border-color: rgba(8,76,97,.5); border-color: rgb(from var(--player-ink) r g b / .5); transform: scale(1.08); }
 .fs-ctrl:active { color: var(--player-ink); transform: scale(.92); }
-.fs-ctrl.active { color: var(--player-ink); }
+.fs-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 .fs-play {
   width: 68px; height: 68px; border-radius: 50%;
   background: var(--player-ink); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: var(--gold);
-  box-shadow: 0 6px 24px rgba(8,76,97,.35);
-  box-shadow: 0 6px 24px rgb(from var(--player-ink) r g b / .35);
+  /* Gold ring ties the teal disc to the site's gold "press play"
+     circles, with a lamplight glow behind it; the cream halo keeps the
+     disc's edge defined when the blurred art behind it runs dark. */
+  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 6px 24px rgba(8,76,97,.35), 0 0 36px rgba(247,197,73,.3);
+  box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .7), 0 0 0 5px rgb(from var(--cream) r g b / .22), 0 6px 24px rgb(from var(--player-ink) r g b / .35), 0 0 36px rgb(from var(--gold) r g b / .3);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-play:hover { box-shadow: 0 8px 32px rgba(8,76,97,.5); box-shadow: 0 8px 32px rgb(from var(--player-ink) r g b / .5); transform: scale(1.04); }
+.fs-play:hover { box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .8), 0 0 0 5px rgb(from var(--cream) r g b / .3), 0 8px 32px rgb(from var(--player-ink) r g b / .5), 0 0 48px rgb(from var(--gold) r g b / .45); transform: scale(1.04); }
 .fs-play:active { transform: scale(.9); }
 .fs-play svg { margin-left: 0; }
 .fs-play[aria-label="Play"] svg { margin-left: 3px; }
