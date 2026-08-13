@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a fully self-contained single-file index.html for ashstu.media.
+"""Build a fully self-contained single-file index.html for the portal site.
 
 Inline everything: minified CSS in <head>, minified JS at end of <body>,
 subsetted fonts and every raster image as base64 data URIs, favicon as a
