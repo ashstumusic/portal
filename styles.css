@@ -71,9 +71,9 @@
                              surface"; everything on it flips to its deep
                              teal companion (#084C61) for contrast */
   --player-hi: rgb(226,165,44);  /* fallback: deeper gold lifted surface (mobile band) */
-  --player-ink: #084C61;  /* deep teal: text, icons, accents on gold - the
-                             site's primary ink, carrying the brand color
-                             through the player surface */
+  --player-ink: #063E50;  /* deep teal-navy: text, icons, accents on gold -
+                             deepened for maximum contrast over the frosted
+                             gold glass surface */
   --rust:       #084C61;  /* accent roles collapse into primary teal */
   --rust-hover: rgb(0,58,79);  /* fallback: older engines lack rgb(from…) */
   --gold:       #F7C549;  /* accent: sunny yellow - lamplight, hovers, marks */
@@ -1420,7 +1420,7 @@ footer {
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
   backdrop-filter: blur(16px) saturate(1.6);
   border-top: 1px solid rgba(250,252,252,.28);
-  box-shadow: 0 -2px 20px rgba(8,76,97,.32), inset 0 1px 0 rgba(250,252,252,.4);
+  box-shadow: 0 -2px 20px rgba(6,62,80,.32), inset 0 1px 0 rgba(250,252,252,.4);
   display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
   align-items: center; gap: .5rem;
   padding: 0 .75rem;
@@ -1467,9 +1467,9 @@ body.player-active { padding-bottom: 68px; }
 /* Hidden by default (desktop's thin overlay bar has no room for text) -
    shown and given real space on mobile below, where the strip becomes
    a proper row instead of an absolute-positioned overlay. */
-.np-time { display: none; font-size: .58rem; color: rgba(8,76,97,.85); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.np-time { display: none; font-size: .58rem; color: rgba(6,62,80,.92); font-variant-numeric: tabular-nums; flex-shrink: 0; text-shadow: 0 1px 0 rgba(250,252,252,.55), 0 2px 6px rgba(250,252,252,.3); }
 .np-bar-track {
-  flex: 1; height: 100%; background: rgba(8,76,97,.24);
+  flex: 1; height: 100%; background: rgba(6,62,80,.24);
   position: relative; cursor: pointer; touch-action: none;
 }
 #np-fill { height: 100%; background: var(--player-ink); width: 100%; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s linear; will-change: transform; pointer-events: none; }
@@ -1516,6 +1516,10 @@ body.player-active { padding-bottom: 68px; }
 .np-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 #np-track {
   font-size: .8rem; color: var(--player-ink); font-weight: 500;
+  /* Over the frosted gold, a cream text-shadow lifts the title off whatever
+     tint is blurred behind the bar (same trick as the max player). */
+  text-shadow: 0 1px 0 rgba(250,252,252,.6), 0 2px 8px rgba(250,252,252,.35);
+  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .6), 0 2px 8px rgb(from var(--cream) r g b / .35);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;
 }
 /* Too long to fit? Slow marquee instead of ellipsis (same as tracklists). */
@@ -1530,8 +1534,10 @@ body.player-active { padding-bottom: 68px; }
   font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
   /* deep teal, matching .fs-album in the fullscreen player - the
      brand accent on the gold surface */
-  color: rgba(8,76,97,.85); margin-top: 1px;
-  color: rgb(from var(--player-ink) r g b / .85); margin-top: 1px;
+  color: rgba(6,62,80,.92); margin-top: 1px;
+  color: rgb(from var(--player-ink) r g b / .92); margin-top: 1px;
+  text-shadow: 0 1px 0 rgba(250,252,252,.55), 0 2px 6px rgba(250,252,252,.3);
+  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .55), 0 2px 6px rgb(from var(--cream) r g b / .3);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .np-right { display: flex; align-items: center; gap: .15rem; justify-self: end; }
@@ -1541,7 +1547,7 @@ body.player-active { padding-bottom: 68px; }
   border: none; background: var(--player-ink);
   color: var(--gold); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 4px 16px rgba(8,76,97,.35);
+  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 4px 16px rgba(6,62,80,.35);
   box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .7), 0 0 0 5px rgb(from var(--cream) r g b / .22), 0 4px 16px rgb(from var(--player-ink) r g b / .35);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
@@ -1557,14 +1563,14 @@ body.player-active { padding-bottom: 68px; }
   width: 40px; height: 40px; border-radius: 50%;
   background: rgba(250,252,252,.72);
   background: rgb(from var(--cream) r g b / .72);
-  border: 1px solid rgba(8,76,97,.3);
+  border: 1px solid rgba(6,62,80,.3);
   border: 1px solid rgb(from var(--player-ink) r g b / .3);
   color: var(--player-ink); cursor: pointer; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-#player-bar .np-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.45); border-color: rgb(from var(--player-ink) r g b / .45); transform: scale(1.08); }
+#player-bar .np-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(6,62,80,.45); border-color: rgb(from var(--player-ink) r g b / .45); transform: scale(1.08); }
 #player-bar .np-ctrl:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); transform: scale(.92); }
 #player-bar .np-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 /* Volume - same idea as the video player's native control: icon + slider.
@@ -1647,7 +1653,7 @@ body.player-active { padding-bottom: 68px; }
    keeps the icon and text legible regardless of what's blurred behind it.
    On the gold player surface those teal-tinted chips carry the
    complementary color through to the streaming links too. */
-.fs-platforms .f-btn { background: rgba(250,252,252,.9); background: rgb(from var(--cream) r g b / .9); border-color: rgba(8,76,97,.3); border-color: rgb(from var(--player-ink) r g b / .3); color: var(--player-ink); }
+.fs-platforms .f-btn { background: rgba(250,252,252,.9); background: rgb(from var(--cream) r g b / .9); border-color: rgba(6,62,80,.3); border-color: rgb(from var(--player-ink) r g b / .3); color: var(--player-ink); }
 /* Hover fill comes from .f-btn's shared ::after overlay - see its
    definition above, works over any base background. */
 /* Phones: a single row can't fit track info + play + prev/next/shuffle/
@@ -1715,7 +1721,7 @@ body.player-active { padding-bottom: 68px; }
     /* Bar padding is 10.4px top / 12px right - this closes that 1.6px
        gap so the button reads as truly equidistant from both edges. */
      margin-top: .1rem;
-     background: rgba(250,252,252,.72); border-color: rgba(8,76,97,.3);
+     background: rgba(250,252,252,.72); border-color: rgba(6,62,80,.3);
    }
    #player-bar #np-close:active {
      background: var(--player-ink); border-color: var(--player-ink); color: var(--gold);
@@ -1761,9 +1767,9 @@ body.player-active { padding-bottom: 68px; }
 .np-close {
   background: rgba(250,252,252,.72);
   background: rgb(from var(--cream) r g b / .72);
-  border: 1px solid rgba(8,76,97,.25);
+  border: 1px solid rgba(6,62,80,.25);
   border: 1px solid rgb(from var(--player-ink) r g b / .25);
-  color: rgba(8,76,97,.85); cursor: pointer;
+  color: rgba(6,62,80,.85); cursor: pointer;
   font-size: .9rem; line-height: 1;
   min-width: 40px; min-height: 40px;
   border-radius: 50%;
@@ -1771,7 +1777,7 @@ body.player-active { padding-bottom: 68px; }
   -webkit-tap-highlight-color: transparent;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
 }
-.np-close:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); transform: scale(1.08); }
+.np-close:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(6,62,80,.4); border-color: rgb(from var(--player-ink) r g b / .4); transform: scale(1.08); }
 .np-close:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 
 /* ════════════════════════════════════════════
@@ -2502,22 +2508,22 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   left: 50%; transform: translateX(-50%);
   background: rgba(250,252,252,.7);
   background: rgb(from var(--cream) r g b / .7);
-  border: 1px solid rgba(8,76,97,.25);
+  border: 1px solid rgba(6,62,80,.25);
   border: 1px solid rgb(from var(--player-ink) r g b / .25);
-  color: rgba(8,76,97,.85); cursor: pointer; padding: .75rem 2rem;
+  color: rgba(6,62,80,.85); cursor: pointer; padding: .75rem 2rem;
   min-height: 44px;
   border-radius: 22px;
   display: flex; align-items: center; justify-content: center;
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.fs-collapse:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); }
+.fs-collapse:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(6,62,80,.4); border-color: rgb(from var(--player-ink) r g b / .4); }
 .fs-collapse:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 .fs-art-wrap {
   width: 80vw;
   width: min(80vw, 340px); aspect-ratio: 1;
   border-radius: 16px; overflow: hidden;
-  border: 2px solid rgba(8,76,97,.45);
+  border: 2px solid rgba(6,62,80,.45);
   border: 2px solid rgb(from var(--player-ink) r g b / .45);
   /* Gold halo behind the cover echoes the site's lamplight motif - the
      cover reads as lit from behind, with the teal frame holding it. */
@@ -2544,7 +2550,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 }
 .fs-album {
   display: block; font-size: .58rem; letter-spacing: .22em;
-  text-transform: uppercase; color: rgba(8,76,97,.9);
+  text-transform: uppercase; color: rgba(6,62,80,.9);
   text-transform: uppercase; color: rgb(from var(--player-ink) r g b / .9);
   text-shadow: 0 1px 0 rgba(250,252,252,.5), 0 2px 6px rgba(250,252,252,.3);
   text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .5), 0 2px 6px rgb(from var(--cream) r g b / .3);
@@ -2577,10 +2583,10 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   will-change: transform;
   pointer-events: none;
 }
-.fs-bar:active .fs-fill { background: rgba(8,76,97,.7); background: rgb(from var(--player-ink) r g b / .7); }
+.fs-bar:active .fs-fill { background: rgba(6,62,80,.7); background: rgb(from var(--player-ink) r g b / .7); }
 .fs-times {
   display: flex; justify-content: space-between;
-  font-size: .64rem; font-weight: 600; color: rgba(8,76,97,.9);
+  font-size: .64rem; font-weight: 600; color: rgba(6,62,80,.9);
   text-shadow: 0 1px 0 rgba(250,252,252,.55), 0 2px 6px rgba(250,252,252,.3);
   text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .55), 0 2px 6px rgb(from var(--cream) r g b / .3);
   margin-top: .5rem; font-variant-numeric: tabular-nums;
@@ -2607,7 +2613,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
      chip always reads. */
   background: rgba(250,252,252,.72);
   background: rgb(from var(--cream) r g b / .72);
-  border: 1px solid rgba(8,76,97,.3);
+  border: 1px solid rgba(6,62,80,.3);
   border: 1px solid rgb(from var(--player-ink) r g b / .3);
   color: var(--player-ink); cursor: pointer;
   min-width: 48px; min-height: 48px; border-radius: 50%;
@@ -2615,7 +2621,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.5); border-color: rgb(from var(--player-ink) r g b / .5); transform: scale(1.08); }
+.fs-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(6,62,80,.5); border-color: rgb(from var(--player-ink) r g b / .5); transform: scale(1.08); }
 .fs-ctrl:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); transform: scale(.92); }
 .fs-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 .fs-play {
@@ -2626,7 +2632,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   /* Gold ring ties the teal disc to the site's gold "press play"
      circles, with a lamplight glow behind it; the cream halo keeps the
      disc's edge defined when the blurred art behind it runs dark. */
-  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 6px 24px rgba(8,76,97,.35), 0 0 36px rgba(247,197,73,.3);
+  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 6px 24px rgba(6,62,80,.35), 0 0 36px rgba(247,197,73,.3);
   box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .7), 0 0 0 5px rgb(from var(--cream) r g b / .22), 0 6px 24px rgb(from var(--player-ink) r g b / .35), 0 0 36px rgb(from var(--gold) r g b / .3);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
