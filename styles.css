@@ -2625,13 +2625,13 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
    vertical rhythm so the whole stack fits without scrolling. */
 @media (max-height: 750px) and (orientation: portrait) {
   .fs-art-wrap { width: 80vw;
- width: min(80vw, 340px, 38vh); }
-  .fs-content { padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem); }
-  .fs-info { margin-top: 1rem; }
-  .fs-progress { margin-top: 1rem; }
-  .fs-controls { margin-top: .75rem; }
-  .fs-vol { margin-top: 1rem; }
-  .fs-platforms { margin-top: 1rem; }
+ width: min(80vw, 340px, 32vh); }
+  .fs-content { padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.75rem); }
+  .fs-info { margin-top: .9rem; }
+  .fs-progress { margin-top: .9rem; }
+  .fs-controls { margin-top: .6rem; }
+  .fs-vol { margin-top: .9rem; }
+  .fs-platforms { margin-top: .9rem; }
 }
 /* Landscape phones: the portrait stack (art on top, controls below) is
    taller than the screen - art alone can eat all 390px. Side-by-side
@@ -2646,12 +2646,12 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
     column-gap: 1.5rem;
     column-gap: clamp(1.5rem, 5vw, 3rem);
     max-width: none;
-    padding: calc(env(safe-area-inset-top, 0px) + 2.75rem) 2rem 1.25rem;
+    padding: calc(env(safe-area-inset-top, 0px) + 2rem) 1.5rem 1rem;
   }
-  .fs-art-wrap { grid-column: 1; grid-row: 1 / 6; align-self: center; width: 52vh;
- width: min(52vh, 300px); }
+  .fs-art-wrap { grid-column: 1; grid-row: 1 / 6; align-self: center; width: 28vh;
+ width: min(28vh, 220px); }
   .fs-info { grid-column: 2; grid-row: 1; margin-top: 0; }
-  .fs-progress { grid-column: 2; grid-row: 2; margin-top: 1rem; }
+  .fs-progress { grid-column: 2; grid-row: 2; margin-top: .75rem; }
   .fs-controls { grid-column: 2; grid-row: 3; margin-top: .5rem; }
   .fs-vol { grid-column: 2; grid-row: 4; margin-top: .5rem; }
   .fs-platforms { grid-column: 2; grid-row: 5; margin-top: .75rem; }

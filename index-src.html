@@ -927,27 +927,57 @@ fsDur.textContent = '·';
 }
 }
 function fsOpen() {
-fsSync();
-fs.classList.add('open');
-fs.setAttribute('aria-hidden', 'false');
-fs.inert = false;
-npBar.inert = true; // can't keyboard-tab behind the maximized player
-_fsOpen = true;
-// Pin the page: nothing behind the maximized player scrolls (wheel,
-// touch, or keys) until it's collapsed again.
-document.documentElement.classList.add('fs-locked');
+ fsSync();
+ fs.classList.add('open');
+ fs.setAttribute('aria-hidden', 'false');
+ fs.inert = false;
+ npBar.inert = true; // can't keyboard-tab behind the maximized player
+ _fsOpen = true;
+ // Pin the page: nothing behind the maximized player scrolls (wheel,
+ // touch, or keys) until it's collapsed again.
+ document.documentElement.classList.add('fs-locked');
+ fitFsArt();
 }
 function fsClose() {
-fs.classList.remove('open');
-fs.setAttribute('aria-hidden', 'true');
-// aria-hidden alone doesn't remove buttons/links/the seek bar from the
-// tab order - a keyboard user could still tab into the closed player
-// and interact with controls they can't see. inert does both: takes
-// it out of the tab order and hides it from the accessibility tree.
-fs.inert = true;
-npBar.inert = false;
-_fsOpen = false;
-document.documentElement.classList.remove('fs-locked');
+ fs.classList.remove('open');
+ fs.setAttribute('aria-hidden', 'true');
+ // aria-hidden alone doesn't remove buttons/links/the seek bar from the
+ // tab order - a keyboard user could still tab into the closed player
+ // and interact with controls they can't see. inert does both: takes
+ // it out of the tab order and hides it from the accessibility tree.
+ fs.inert = true;
+ npBar.inert = false;
+ _fsOpen = false;
+ document.documentElement.classList.remove('fs-locked');
+}
+// The maximized player must fit on one screen, never scrolling: shrink the
+// square art to whatever height the rest of the stack leaves over, and hide
+// it entirely if even the controls alone would overflow. The short-landscape
+// side-by-side grid sizes its art from CSS, so that layout is left alone.
+function fitFsArt() {
+ var wrap = document.getElementById('fs-art-wrap');
+ if (!wrap || !_fsContentEl) return;
+ if (window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches) {
+   wrap.style.width = '';
+   wrap.style.display = '';
+   return;
+ }
+ var c = _fsContentEl;
+ wrap.style.display = '';
+ for (var i = 0; i < 2; i++) {
+   var nonArt = c.scrollHeight - wrap.offsetHeight;
+   var avail = c.clientHeight - nonArt;
+   if (avail <= 0) { wrap.style.display = 'none'; return; }
+   wrap.style.width = Math.min(c.clientWidth, 340, avail) + 'px';
+ }
+}
+// Re-fit whenever the viewport changes while the player is up - the URL bar
+// collapsing, rotation, and window resizes all change the available height.
+window.addEventListener('resize', function() {
+ if (_fsOpen) fitFsArt();
+}, { passive: true });
+if (document.fonts && document.fonts.ready) {
+ document.fonts.ready.then(function() { if (_fsOpen) fitFsArt(); });
 }
 // Swipe up on the docked bar maximizes; swipe down on the maximized
 // player collapses it. Pointer Events unify mouse/touch, and the
