@@ -1510,24 +1510,32 @@ body.player-active { padding-bottom: 68px; }
   border: none; background: var(--player-ink);
   color: var(--gold); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(8,76,97,.35);
-  box-shadow: 0 4px 16px rgb(from var(--player-ink) r g b / .35);
+  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 4px 16px rgba(8,76,97,.35);
+  box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .7), 0 0 0 5px rgb(from var(--cream) r g b / .22), 0 4px 16px rgb(from var(--player-ink) r g b / .35);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-#np-play:hover { box-shadow: 0 6px 24px rgba(8,76,97,.5); box-shadow: 0 6px 24px rgb(from var(--player-ink) r g b / .5); transform: scale(1.04); }
+#np-play:hover { box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .8), 0 0 0 5px rgb(from var(--cream) r g b / .3), 0 6px 24px rgb(from var(--player-ink) r g b / .5); transform: scale(1.04); }
 #np-play:active { transform: scale(.9); }
 #np-play[aria-label="Play"] svg { margin-left: 2px; }
-.np-ctrl {
+/* Docked-bar controls get the same cream-chip format as the maximized
+   player's .fs-ctrl - one button language for both states of the player.
+   Scoped to #player-bar so the tracklist's bare mini controls keep their
+   own plain-ink look on the cream cards. */
+#player-bar .np-ctrl {
   width: 40px; height: 40px; border-radius: 50%;
-  border: none; background: transparent;
-  color: rgba(8,76,97,.8); cursor: pointer; flex-shrink: 0;
+  background: rgba(250,252,252,.72);
+  background: rgb(from var(--cream) r g b / .72);
+  border: 1px solid rgba(8,76,97,.3);
+  border: 1px solid rgb(from var(--player-ink) r g b / .3);
+  color: var(--player-ink); cursor: pointer; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  transition: color .15s;
+  transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.np-ctrl:active { color: var(--player-ink); }
-.np-ctrl.active { color: var(--player-ink); }
+#player-bar .np-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.45); border-color: rgb(from var(--player-ink) r g b / .45); transform: scale(1.08); }
+#player-bar .np-ctrl:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); transform: scale(.92); }
+#player-bar .np-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 /* Volume - same idea as the video player's native control: icon + slider.
    Shared by the docked bar and the fullscreen player. */
 .np-vol { display: flex; align-items: center; gap: .1rem; }
@@ -1537,21 +1545,24 @@ body.player-active { padding-bottom: 68px; }
      docked bar. The row's gaps/buttons shave to compensate so the mute
      icon doesn't drift when the slider grows. */
   width: 84px; height: 8px; border-radius: 8px;
-  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgba(8,76,97,.24) var(--vol, 100%));
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgba(250,252,252,.5) var(--vol, 100%));
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgb(from var(--cream) r g b / .5) var(--vol, 100%));
   outline: none; cursor: pointer;
 }
 .vol-slider::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
   width: 16px; height: 16px; border-radius: 50%;
   background: var(--player-ink); border: none;
-  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+  box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35);
+  box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35);
   transition: transform .15s var(--ease);
 }
 .vol-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .vol-slider::-moz-range-thumb {
   width: 16px; height: 16px; border-radius: 50%;
   background: var(--player-ink); border: none;
-  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+  box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35);
+  box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35);
 }
 .vol-slider:focus-visible { box-shadow: var(--focus); }
 .fs-vol {
@@ -1571,15 +1582,7 @@ body.player-active { padding-bottom: 68px; }
    anything on the right, so the slider (the eye-catching teal part)
    ends up left of true center. A matching right-side spacer balances
    that out without needing a second icon. */
-.fs-vol .vol-slider {
-  flex: 1; width: auto;
-  /* Cream unfilled half - the ink fill vs cream rail stays legible over
-     the blurred art instead of vanishing the way a dark rail would. */
-  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgba(250,252,252,.5) var(--vol, 100%));
-  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgb(from var(--cream) r g b / .5) var(--vol, 100%));
-}
-.fs-vol .vol-slider::-webkit-slider-thumb { box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35); box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35); }
-.fs-vol .vol-slider::-moz-range-thumb { box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35); box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35); }
+.fs-vol .vol-slider { flex: 1; width: auto; }
 .fs-vol::after { content: ''; width: 38px; flex-shrink: 0; }
 /* Phones: stretch toward the edges like iOS's lock-screen volume - a
    thumb-width bar in the middle of a phone screen reads undersized. */
@@ -1679,14 +1682,13 @@ body.player-active { padding-bottom: 68px; }
     grid-area: close; justify-self: end; align-self: start;
     /* Bar padding is 10.4px top / 12px right - this closes that 1.6px
        gap so the button reads as truly equidistant from both edges. */
-    margin-top: .1rem;
-    background: rgba(8,76,97,.08); border-color: rgba(8,76,97,.3);
-  }
-  #player-bar #np-close:active {
-    background: rgba(8,76,97,.3); border-color: var(--player-ink); color: var(--player-ink);
-    background: rgb(from var(--player-ink) r g b / .3); border-color: var(--player-ink); color: var(--player-ink);
-    transform: scale(.92);
-  }
+     margin-top: .1rem;
+     background: rgba(250,252,252,.72); border-color: rgba(8,76,97,.3);
+   }
+   #player-bar #np-close:active {
+     background: var(--player-ink); border-color: var(--player-ink); color: var(--gold);
+     transform: scale(.92);
+   }
   /* .np-right's own box drops out of layout (its children become direct
      grid items instead, each placed in the template above) - the only
      way to put prev/play/next/shuffle/volume in one evenly-spaced row
@@ -1725,7 +1727,11 @@ body.player-active { padding-bottom: 68px; }
   .np-art { display: none; }
 }
 .np-close {
-  background: none; border: 1px solid transparent; color: rgba(8,76,97,.72); cursor: pointer;
+  background: rgba(250,252,252,.72);
+  background: rgb(from var(--cream) r g b / .72);
+  border: 1px solid rgba(8,76,97,.25);
+  border: 1px solid rgb(from var(--player-ink) r g b / .25);
+  color: rgba(8,76,97,.85); cursor: pointer;
   font-size: .9rem; line-height: 1;
   min-width: 40px; min-height: 40px;
   border-radius: 50%;
@@ -1733,8 +1739,8 @@ body.player-active { padding-bottom: 68px; }
   -webkit-tap-highlight-color: transparent;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
 }
-.np-close:hover { color: var(--player-ink); background: rgba(8,76,97,.12); background: rgb(from var(--player-ink) r g b / .12); border-color: var(--player-ink); transform: scale(1.08); }
-.np-close:active { color: var(--player-ink); }
+.np-close:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); transform: scale(1.08); }
+.np-close:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 
 /* ════════════════════════════════════════════
    RELEASE PLAY OVERLAY + TRACKLIST
@@ -2433,16 +2439,6 @@ body.player-active { padding-bottom: 68px; }
 /* Maximized player pins the page behind it: wheel/touch/keyboard can no
    longer scroll the document while the fullscreen player is up. */
 html.fs-locked, html.fs-locked body { overflow: hidden; }
-.fs-bg {
-  position: absolute; top:-30%;right:-30%;bottom:-30%;left:-30%;
-  background: var(--player) center/cover no-repeat;
-  /* The gold surface under this is the true base - the blurred art
-     tints it, so it wants to be brighter than the page's dark hero
-     blurs. Too dark a value (old .4) dragged the whole room muddy
-     olive; .55 keeps the album's colors present while the gold keeps
-     its warmth. */
-  filter: blur(70px) brightness(.55) saturate(2);
-}
 .fs-content {
   position: relative; z-index: 1;
   /* flex-start (not center) - on any viewport where the content
@@ -2477,8 +2473,8 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.fs-collapse:hover { color: var(--player-ink); background: rgba(250,252,252,.95); background: rgb(from var(--cream) r g b / .95); border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); }
-.fs-collapse:active { color: rgba(8,76,97,.85); }
+.fs-collapse:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); }
+.fs-collapse:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 .fs-art-wrap {
   width: 80vw;
   width: min(80vw, 340px); aspect-ratio: 1;
@@ -2514,8 +2510,18 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   text-transform: uppercase; color: rgb(from var(--player-ink) r g b / .9);
   text-shadow: 0 1px 0 rgba(250,252,252,.5), 0 2px 6px rgba(250,252,252,.3);
   text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .5), 0 2px 6px rgb(from var(--cream) r g b / .3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   margin-top: .4rem;
 }
+/* Long titles in the maximized player scroll so all of them is visible -
+   same marquee as the docked bar's #np-track and the tracklists. */
+.fs-track.marquee, .fs-album.marquee { text-overflow: clip; }
+.fs-track.marquee > span, .fs-album.marquee > span {
+  display: inline-block;
+  animation: marquee var(--marquee-duration, 8s) linear infinite;
+  padding-right: 3rem;
+}
+@media (prefers-reduced-motion: reduce) { .fs-track.marquee > span, .fs-album.marquee > span { animation: none; } }
 .fs-progress { width: 100%; margin-top: 1.75rem; }
 .fs-bar {
   width: 100%; height: 6px;
@@ -2571,8 +2577,8 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-ctrl:hover { color: var(--player-ink); background: rgba(250,252,252,.95); background: rgb(from var(--cream) r g b / .95); border-color: rgba(8,76,97,.5); border-color: rgb(from var(--player-ink) r g b / .5); transform: scale(1.08); }
-.fs-ctrl:active { color: var(--player-ink); transform: scale(.92); }
+.fs-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.5); border-color: rgb(from var(--player-ink) r g b / .5); transform: scale(1.08); }
+.fs-ctrl:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); transform: scale(.92); }
 .fs-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 .fs-play {
   width: 68px; height: 68px; border-radius: 50%;

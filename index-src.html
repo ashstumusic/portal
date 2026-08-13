@@ -425,7 +425,6 @@
 <audio id="np-audio" preload="none"></audio>
 <div id="sr-announce" aria-live="assertive" aria-atomic="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
 <div id="fs-player" class="fs-player" role="dialog" aria-modal="true" aria-label="Now playing" aria-hidden="true" inert>
-  <div class="fs-bg" id="fs-bg"></div>
   <div class="fs-content">
     <button type="button" class="fs-collapse" id="fs-collapse" aria-label="Collapse player">
       <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -613,13 +612,15 @@ if (pState.releaseIdx >= 0 && RELEASE_LIST[pState.releaseIdx] && RELEASE_LIST[pS
 return (pState.plIdx >= 0 ? (pState.plIdx + 1) + '. ' : '') ;
 }
 var _npMarqueeToken = 0;
+var _npMarqueeTokens = new WeakMap();
 function npMarquee(el) {
 var t = el.dataset.label || el.textContent;
 var token = ++_npMarqueeToken;
+_npMarqueeTokens.set(el, token);
 el.classList.remove('marquee');
 el.textContent = t;
 function check() {
-if (token !== _npMarqueeToken) return;
+if (_npMarqueeTokens.get(el) !== token) return;
 if (el.scrollWidth > el.clientWidth + 2) {
 el.classList.add('marquee');
 el.style.setProperty('--marquee-duration', Math.max(6, t.length * 0.35) + 's');
@@ -871,7 +872,6 @@ npAudio.addEventListener('pause', function() { navigator.mediaSession.playbackSt
 }
 (function() {
 var fs = document.getElementById('fs-player');
-var fsBg = document.getElementById('fs-bg');
 var fsArt = document.createElement('img');
 fsArt.id = 'fs-art'; fsArt.className = 'fs-art'; fsArt.alt = 'Now playing'; fsArt.hidden = true;
 document.getElementById('fs-art-wrap').appendChild(fsArt);
@@ -892,7 +892,6 @@ if (art) {
 var encoded = encodeURI(art);
 fsArt.src = encoded;
 fsArt.hidden = false;
-fsBg.style.backgroundImage = 'url("' + encoded + '")';
 }
 }
 function fsUpdatePlatforms() {
@@ -904,7 +903,9 @@ if (rel && rel.spotify) { fsSpotify.href = rel.spotify; fsSpotify.style.display 
 }
 function fsSync() {
 fsTrack.textContent = _npTrackEl.dataset.label || _npTrackEl.textContent;
+npMarquee(fsTrack);
 fsAlbum.textContent = _npAlbumEl.textContent;
+npMarquee(fsAlbum);
 fsUpdateArt();
 fsUpdatePlatforms();
 fsPlayIcon.innerHTML = npAudio.paused ? PLAY : PAUSE;
