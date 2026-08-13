@@ -1603,14 +1603,16 @@ body.player-active { padding-bottom: 68px; }
    that out without needing a second icon. */
 .fs-vol .vol-slider { flex: 1; width: auto; }
 .fs-vol::after { content: ''; width: 38px; flex-shrink: 0; }
-/* Phones: stretch toward the edges like iOS's lock-screen volume - a
-   thumb-width bar in the middle of a phone screen reads undersized. */
+/* Phones: give the slider the whole row - a thumb-width bar floating in
+   the middle of a small screen reads undersized. The mute button and its
+   mirrored spacer grow with the thumb so centering stays exact. */
 @media (max-width: 700px) {
-  .fs-vol { max-width: 90%;
- max-width: min(400px, 90%); }
-  .fs-vol .vol-slider { height: 12px; border-radius: 12px; }
-  .fs-vol .vol-slider::-webkit-slider-thumb { width: 22px; height: 22px; }
-  .fs-vol .vol-slider::-moz-range-thumb { width: 22px; height: 22px; }
+  .fs-vol { width: 100%; max-width: none; }
+  .fs-vol .vol-slider { height: 14px; border-radius: 14px; }
+  .fs-vol .vol-slider::-webkit-slider-thumb { width: 26px; height: 26px; }
+  .fs-vol .vol-slider::-moz-range-thumb { width: 26px; height: 26px; }
+  .fs-vol .fs-ctrl { min-width: 42px; min-height: 42px; }
+  .fs-vol::after { width: 42px; }
 }
 .fs-platforms {
   display: flex; justify-content: center; gap: .6rem;
@@ -1725,11 +1727,11 @@ body.player-active { padding-bottom: 68px; }
   .np-vol .np-ctrl { width: 36px; height: 36px; min-width: 36px; }
   /* Scoped to the docked bar only - unscoped this also capped the
      fullscreen player's volume at 100px on phones. */
-  .np-vol .vol-slider { width: 100%; max-width: 100px; }
+  .np-vol .vol-slider { width: 100%; max-width: 140px; height: 10px; border-radius: 10px; }
   /* The docked slider inherits the thicker 8px base track; give its thumb
      a real finger-sized target on phones too. */
-  .np-vol .vol-slider::-webkit-slider-thumb { width: 18px; height: 18px; }
-  .np-vol .vol-slider::-moz-range-thumb { width: 18px; height: 18px; }
+  .np-vol .vol-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
+  .np-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
   body.player-active { padding-bottom: 138px; }
   /* Bigger tap targets without growing the bar or the visible buttons:
      an invisible pseudo-element extends the actual clickable area past
@@ -2654,6 +2656,15 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   .fs-vol { grid-column: 2; grid-row: 4; margin-top: .5rem; }
   .fs-platforms { grid-column: 2; grid-row: 5; margin-top: .75rem; }
   .fs-play { width: 54px; height: 54px; }
+}
+/* Narrow phones (Galaxy S9 360px, iPhone SE 375px): tighten the player's
+   side padding so the volume bar gets the full width, and supersize the
+   bar + thumb for fat-thumb dragging. */
+@media (max-width: 400px) {
+  .fs-content { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .fs-vol .vol-slider { height: 16px; border-radius: 16px; }
+  .fs-vol .vol-slider::-webkit-slider-thumb { width: 30px; height: 30px; }
+  .fs-vol .vol-slider::-moz-range-thumb { width: 30px; height: 30px; }
 }
 
 /* ════════════════════════════════════════════
