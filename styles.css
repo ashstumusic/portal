@@ -1317,6 +1317,24 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    here so the grayscale treatment above can compose with it) */
 .bio-card-media img:last-child { filter: grayscale(100%) brightness(1.4); }
 .bio-card-media img:last-child:hover { filter: none; }
+/* Touch has no hover, so a tap toggles color on/off instead - the same
+   reveal, but sticky and reversible (later rules, higher specificity). */
+.bio-card-media img:not(.bio-media-main).bio-revealed { filter: none; }
+.bio-card-media img:last-child.bio-revealed { filter: brightness(1.4); }
+.bio-color-hint {
+  grid-column: 1 / -1;
+  display: none;
+  margin: .4rem auto 0;
+  padding: .3rem .8rem;
+  border: 1px solid rgba(8,76,97,.2);
+  border-radius: 999px;
+  font-size: .55rem; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(8,76,97,.6); text-align: center;
+  font-weight: 600;
+}
+@media (pointer: coarse) {
+  .bio-color-hint { display: block; }
+}
 .bio-name {
   font-family: 'Logo', var(--display);
   font-size: 2.6rem;
@@ -1395,10 +1413,14 @@ footer {
 #player-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   z-index: 300;
-  background: rgba(247,197,73,.97);
-  background: rgb(from var(--player) r g b / .97);
-  /* fill is .97 opaque - blur was invisible, so it's gone */
-  box-shadow: 0 -2px 20px rgba(8,76,97,.32);
+  background: rgba(247,197,73,.55);
+  background: rgb(from var(--player) r g b / .55);
+  /* Glass: translucent gold lets the page show through, and the backdrop
+     blur frosts it. The old .97 fill made the blur invisible. */
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  backdrop-filter: blur(16px) saturate(1.6);
+  border-top: 1px solid rgba(250,252,252,.28);
+  box-shadow: 0 -2px 20px rgba(8,76,97,.32), inset 0 1px 0 rgba(250,252,252,.4);
   display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
   align-items: center; gap: .5rem;
   padding: 0 .75rem;
@@ -1425,9 +1447,18 @@ body.player-active { padding-bottom: 68px; }
   #player-bar {
     bottom: 8px; left: 8px; right: 8px;
     border-radius: 14px; height: 60px;
-    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(8,76,97,.3);
+    border: 1px solid rgba(250,252,252,.35);
+    border-top: 1px solid rgba(250,252,252,.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(250,252,252,.35);
   }
   body.player-active { padding-bottom: 76px; }
+}
+/* Engines without backdrop-filter can't frost the glass - fall back to a
+   near-opaque fill so the page under it doesn't bleed through as noise. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #player-bar { background: rgba(247,197,73,.92); }
+  #player-bar::before { background: rgba(226,165,44,.92); }
+  .fs-player { background: var(--player); }
 }
 #np-bar-progress {
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -1667,8 +1698,9 @@ body.player-active { padding-bottom: 68px; }
     content: '';
     grid-row: 3; grid-column: 1 / -1;
     margin: 0 -.75rem -.65rem;
-    background: rgba(226,165,44,.97);
-    background: rgb(from var(--player-hi) r g b / .97);
+    background: rgba(226,165,44,.6);
+    background: rgb(from var(--player-hi) r g b / .6);
+    border-top: 1px solid rgba(250,252,252,.25);
   }
   .np-left { grid-area: left; }
   /* align-self:start (not center) puts it near the top edge instead of
@@ -2424,7 +2456,13 @@ body.player-active { padding-bottom: 68px; }
    ════════════════════════════════════════════ */
 .fs-player {
   position: fixed; top:0;right:0;bottom:0;left:0; z-index: 400;
-  background: var(--player);
+  background: rgba(247,197,73,.55);
+  background: rgb(from var(--player) r g b / .55);
+  /* Same frosted gold as the docked bar - the page underneath stays
+     faintly visible as soft color. */
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow: inset 0 1px 0 rgba(250,252,252,.3);
   contain: layout style;
   transform: translateY(100%);
   transition: transform .4s var(--ease);

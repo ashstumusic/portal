@@ -380,6 +380,7 @@
         <img class="bio-media-main" src="Images/Profile-3.webp" alt="Ash Stu - Outsider-folk singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
         <img src="Images/Profile-4.webp" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/>
         <img src="Images/Profile-6.webp" alt="Ash Stu at the piano" width="360" height="402"/>
+        <div class="bio-color-hint" aria-hidden="true">Tap photos for color</div>
       </div>
     </div>
   </div>
@@ -1743,6 +1744,17 @@ finishReveal();
 });
 }
 });
+})();
+/* About-section childhood shots are grayscale at rest, color on hover -
+   touch devices have no hover, so a tap toggles each photo to color and
+   back. Only wired where the pointer is coarse, leaving desktop hover
+   behavior untouched. */
+(function() {
+if (window.matchMedia && !matchMedia('(pointer: coarse)').matches) return;
+var shots = document.querySelectorAll('.bio-card-media img:not(.bio-media-main)');
+for (var i = 0; i < shots.length; i++) {
+shots[i].addEventListener('click', function() { this.classList.toggle('bio-revealed'); });
+}
 })();
 </script>
 </body>
