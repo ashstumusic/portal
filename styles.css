@@ -530,7 +530,7 @@ html {
   max-height: var(--panel-floor, 470px); /* fallback: dvh/max() unsupported */
   max-height: 470px;
   max-height: max(var(--panel-floor, 470px), calc(100vh - var(--nav-pad, 0px) - var(--band, 0px)));
-  max-height: max(var(--panel-floor, 470px), calc(100dvh - var(--nav-pad, 0px) - var(--band, 0px)));
+  max-height: max(var(--panel-floor, 470px), calc(100svh - var(--nav-pad, 0px) - var(--band, 0px)));
 }
 .hero-split-right > * { position: relative; z-index: 1; }
 /* On the gold panel the translucent-teal buttons went olive; cream chips
@@ -1648,12 +1648,13 @@ body.player-active { padding-bottom: 68px; }
 @media (max-width: 600px) {
   #player-bar {
     height: auto;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1.4fr;
-    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
     grid-template-areas:
-      "left left left left close"
-      "time time time time time"
-      "prev play next shuf vol";
+      "left left left close"
+      "time time time time"
+      "prev play next shuf"
+      "vol vol vol vol";
     row-gap: .4rem;
     padding: .65rem .75rem;
     overflow: hidden;
@@ -1686,7 +1687,7 @@ body.player-active { padding-bottom: 68px; }
      it back to the bar's rounded corners. */
   #player-bar::before {
     content: '';
-    grid-row: 3; grid-column: 1 / -1;
+    grid-row: 4; grid-column: 1 / -1;
     margin: 0 -.75rem -.65rem;
     background: rgba(226,165,44,.97);
     background: rgb(from var(--player-hi) r g b / .97);
@@ -2031,13 +2032,13 @@ body.player-active { padding-bottom: 68px; }
     grid-template-columns: 1fr;
     /* everything fits one screen; min-content floor lets it grow if it must */
     grid-template-rows: auto minmax(min-content, 1fr);
-    height: auto; min-height: 100vh; min-height: 100dvh; padding-top: 48px;
+    height: auto; min-height: 100vh; min-height: 100svh; padding-top: 48px;
     --nav-pad: 48px;
     --panel-floor: 340px;
     /* photo band is full-width; height shrinks with the panel but never
        below width/2.5, or the crop is too thin a sliver to read as a photo */
     --band: calc(100vw / 2.5); /* fallback: dvh/min()/max() unsupported */
-    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad) - var(--panel-floor) - 140px)));
+    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100svh - var(--nav-pad) - var(--panel-floor) - 140px)));
   }
   .hero-split-left {
     height: var(--band);
@@ -2216,7 +2217,7 @@ body.player-active { padding-bottom: 68px; }
    LANDSCAPE PHONE (short + landscape)
    ════════════════════════════════════════════ */
 @media (max-height: 500px) and (orientation: landscape) {
-  .hero-split { grid-template-columns: 1fr 1fr; min-height: 100vh; min-height: 100dvh; padding-top: 40px; --nav-pad: 40px; --band: 0px; }
+  .hero-split { grid-template-columns: 1fr 1fr; min-height: 100vh; min-height: 100svh; padding-top: 40px; --nav-pad: 40px; --band: 0px; }
   /* real 2-col grid here - undo the stacked width:calc(band...) formula or
      the column collapses to zero width (band is 0 in this breakpoint) */
   .hero-split-left { width: auto; height: auto; min-height: unset; justify-self: stretch; overflow: hidden; }
@@ -2289,7 +2290,7 @@ body.player-active { padding-bottom: 68px; }
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(min-content, 1fr);
     --band: calc(100vw / 2.5); /* fallback: dvh/min()/max() unsupported */
-    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad, 0px) - var(--panel-floor, 470px) - 140px)));
+    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100svh - var(--nav-pad, 0px) - var(--panel-floor, 470px) - 140px)));
   }
   .hero-split-left {
     height: var(--band);
@@ -2705,14 +2706,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
        the leftover row, the section grows and scrolls instead of the
        centered content overflowing onto the photo. */
     min-height: 100vh; /* fallback: dvh unsupported */
-    min-height: 100dvh;
+    min-height: 100svh;
     height: auto;
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(min-content, 1fr);
     padding-top: 48px;
     --nav-pad: 48px;
     --band: calc(100vw / 2.5); /* fallback: dvh/min()/max() unsupported */
-    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100dvh - var(--nav-pad) - var(--panel-floor, 340px) - 140px)));
+    --band: max(calc(100vw / 2.5), min(calc(100vw * 909 / 1364), calc(100svh - var(--nav-pad) - var(--panel-floor, 340px) - 140px)));
     overflow: hidden;
   }
   /* full-bleed width; only height scales with --band */

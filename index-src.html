@@ -637,6 +637,21 @@ requestAnimationFrame(function() { requestAnimationFrame(check); });
 // re-triggering a check - catch that case too.
 if (document.fonts && document.fonts.ready) { document.fonts.ready.then(check); }
 }
+// Lock phones to portrait: gyroscopic rotation never flips the layout.
+// screen.orientation.lock works on Android Chrome; iOS Safari lacks it, so
+// there the orientation media queries still provide a landscape fallback.
+if (navigator.maxTouchPoints > 0 && window.innerWidth < 900) {
+  var lockPortrait = function() {
+    var so = screen.orientation || screen.webkitOrientation || screen.msOrientation || screen.mozOrientation;
+    if (so && so.lock) {
+      try { so.lock('portrait').catch(function() {}); } catch (e) {}
+    }
+  };
+  lockPortrait();
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) lockPortrait();
+  });
+}
 function npUpdateMediaSession(track, album, art) {
 if (!('mediaSession' in navigator)) return;
 navigator.mediaSession.metadata = new MediaMetadata({
