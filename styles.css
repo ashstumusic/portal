@@ -1595,14 +1595,14 @@ body.player-active { padding-bottom: 68px; }
 .fs-vol .vol-slider { height: 10px; border-radius: 10px; }
 .fs-vol .vol-slider::-webkit-slider-thumb { width: 18px; height: 18px; }
 .fs-vol .vol-slider::-moz-range-thumb { width: 18px; height: 18px; }
-.fs-vol .fs-ctrl { min-width: 38px; min-height: 38px; flex-shrink: 0; }
+.fs-vol .fs-ctrl { width: 40px; height: 40px; flex-shrink: 0; }
 /* The icon+slider pair reads visually off-center even when the row
    itself is centered - the icon's own width isn't mirrored by
    anything on the right, so the slider (the eye-catching teal part)
    ends up left of true center. A matching right-side spacer balances
    that out without needing a second icon. */
 .fs-vol .vol-slider { flex: 1; width: auto; }
-.fs-vol::after { content: ''; width: 38px; flex-shrink: 0; }
+.fs-vol::after { content: ''; width: 40px; flex-shrink: 0; }
 /* Phones: match the docked bar's slider exactly - same track height and
    thumb, and the same fill-the-row width (icon and gap match the mini bar;
    the trailing spacer that centered the row is dropped so the track runs
@@ -1612,7 +1612,7 @@ body.player-active { padding-bottom: 68px; }
   .fs-vol .vol-slider { height: 10px; border-radius: 10px; }
   .fs-vol .vol-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
   .fs-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
-  .fs-vol .fs-ctrl { min-width: 36px; min-height: 36px; }
+  .fs-vol .fs-ctrl { width: 36px; height: 36px; }
   .fs-vol::after { display: none; }
 }
 .fs-platforms {
@@ -2593,7 +2593,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   border: 1px solid rgba(8,76,97,.3);
   border: 1px solid rgb(from var(--player-ink) r g b / .3);
   color: var(--player-ink); cursor: pointer;
-  min-width: 48px; min-height: 48px; border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
@@ -2602,7 +2602,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-ctrl:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); transform: scale(.92); }
 .fs-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 .fs-play {
-  width: 68px; height: 68px; border-radius: 50%;
+  width: 42px; height: 42px; border-radius: 50%;
   background: var(--player-ink); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: var(--gold);
@@ -2654,7 +2654,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   .fs-controls { grid-column: 2; grid-row: 3; margin-top: .5rem; }
   .fs-vol { grid-column: 2; grid-row: 4; margin-top: .5rem; }
   .fs-platforms { grid-column: 2; grid-row: 5; margin-top: .75rem; }
-  .fs-play { width: 54px; height: 54px; }
+  .fs-play { width: 42px; height: 42px; }
 }
 /* Narrow phones (Galaxy S9 360px, iPhone SE 375px): tighten the player's
    side padding so the volume bar gets the full width, and supersize the
