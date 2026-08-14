@@ -2570,20 +2570,19 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   user-select: none;
 }
 .fs-controls {
-  /* 5 equal-width cells with the play disc in the middle one: play stays
-     dead-center even though shuffle gives the left side an extra button. */
+  /* Same 4-button row as the minimized player on phones: prev, play,
+     next, shuffle left-to-right in four equal cells - the two states
+     then place their transport identically. */
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: center; justify-items: center;
   width: 100%;
   margin-top: 1.5rem;
 }
-/* prev/play/next in the middle three cells, shuffle on the right edge;
-   the empty first cell keeps the play disc dead-center. */
-#fs-prev { grid-column: 2; }
-#fs-play { grid-column: 3; }
-#fs-next { grid-column: 4; }
-#fs-shuffle { grid-column: 5; }
+#fs-prev { grid-column: 1; }
+#fs-play { grid-column: 2; }
+#fs-next { grid-column: 3; }
+#fs-shuffle { grid-column: 4; }
 .fs-ctrl {
   /* Cream chips - same legibility trick as the platform buttons below:
      over the blurred art a translucent-teal icon goes muddy, a light
