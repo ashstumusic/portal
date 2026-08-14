@@ -1746,9 +1746,6 @@ body.player-active { padding-bottom: 68px; }
     content: ''; position: absolute; top:-7px;right:-7px;bottom:-7px;left:-7px;
   }
 }
-@media (max-width: 360px) {
-  .np-art { display: none; }
-}
 .np-close {
   background: rgba(250,252,252,.72);
   background: rgb(from var(--cream) r g b / .72);
