@@ -1321,20 +1321,6 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    reveal, but sticky and reversible (later rules, higher specificity). */
 .bio-card-media img:not(.bio-media-main).bio-revealed { filter: none; }
 .bio-card-media img:last-child.bio-revealed { filter: brightness(1.4); }
-.bio-color-hint {
-  grid-column: 1 / -1;
-  display: none;
-  margin: .4rem auto 0;
-  padding: .3rem .8rem;
-  border: 1px solid rgba(8,76,97,.2);
-  border-radius: 999px;
-  font-size: .55rem; letter-spacing: .18em; text-transform: uppercase;
-  color: rgba(8,76,97,.6); text-align: center;
-  font-weight: 600;
-}
-@media (pointer: coarse) {
-  .bio-color-hint { display: block; }
-}
 .bio-name {
   font-family: 'Logo', var(--display);
   font-size: 2.6rem;
