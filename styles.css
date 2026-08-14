@@ -1720,20 +1720,20 @@ body.player-active { padding-bottom: 68px; }
   #np-play { grid-area: play; justify-self: center; }
   #np-next { grid-area: next; justify-self: center; }
   #np-shuffle { grid-area: shuf; justify-self: center; }
-  .np-vol { grid-area: vol; justify-self: center; }
+  .np-vol { grid-area: vol; justify-self: stretch; }
   #player-bar .np-ctrl { width: 40px; height: 40px; }
   #player-bar #np-play { width: 42px; height: 42px; }
   #player-bar .np-close { min-width: 40px; min-height: 40px; }
-  .np-vol { display: flex; align-items: center; justify-content: center; gap: .4rem; }
+  .np-vol { display: flex; align-items: center; gap: .4rem; }
   .np-vol .np-ctrl { width: 36px; height: 36px; min-width: 36px; }
-  /* Scoped to the docked bar only - unscoped this also capped the
-     fullscreen player's volume at 100px on phones. */
-  .np-vol .vol-slider { width: 100%; max-width: 140px; height: 10px; border-radius: 10px; }
+  /* Volume gets the whole bottom row on phones - the slider stretches to
+     fill it (minus the mute button) so there's no narrow column left. */
+  .np-vol .vol-slider { flex: 1; min-width: 0; max-width: none; width: auto; height: 10px; border-radius: 10px; }
   /* The docked slider inherits the thicker 8px base track; give its thumb
      a real finger-sized target on phones too. */
   .np-vol .vol-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
   .np-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
-  body.player-active { padding-bottom: 138px; }
+  body.player-active { padding-bottom: 190px; }
   /* Bigger tap targets without growing the bar or the visible buttons:
      an invisible pseudo-element extends the actual clickable area past
      each button's own box (up to a 54px target on the smallest ones),
