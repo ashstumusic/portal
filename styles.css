@@ -1603,16 +1603,17 @@ body.player-active { padding-bottom: 68px; }
    that out without needing a second icon. */
 .fs-vol .vol-slider { flex: 1; width: auto; }
 .fs-vol::after { content: ''; width: 38px; flex-shrink: 0; }
-/* Phones: give the slider the whole row - a thumb-width bar floating in
-   the middle of a small screen reads undersized. The mute button and its
-   mirrored spacer grow with the thumb so centering stays exact. */
+/* Phones: match the docked bar's slider exactly - same track height and
+   thumb, and the same fill-the-row width (icon and gap match the mini bar;
+   the trailing spacer that centered the row is dropped so the track runs
+   edge-to-edge like the minimized one). */
 @media (max-width: 700px) {
-  .fs-vol { width: 100%; max-width: none; }
-  .fs-vol .vol-slider { height: 14px; border-radius: 14px; }
-  .fs-vol .vol-slider::-webkit-slider-thumb { width: 26px; height: 26px; }
-  .fs-vol .vol-slider::-moz-range-thumb { width: 26px; height: 26px; }
-  .fs-vol .fs-ctrl { min-width: 42px; min-height: 42px; }
-  .fs-vol::after { width: 42px; }
+  .fs-vol { width: 100%; max-width: none; gap: .4rem; }
+  .fs-vol .vol-slider { height: 10px; border-radius: 10px; }
+  .fs-vol .vol-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
+  .fs-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
+  .fs-vol .fs-ctrl { min-width: 36px; min-height: 36px; }
+  .fs-vol::after { display: none; }
 }
 .fs-platforms {
   display: flex; justify-content: center; gap: .6rem;
@@ -2663,9 +2664,6 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
    bar + thumb for fat-thumb dragging. */
 @media (max-width: 400px) {
   .fs-content { padding-left: 1.25rem; padding-right: 1.25rem; }
-  .fs-vol .vol-slider { height: 16px; border-radius: 16px; }
-  .fs-vol .vol-slider::-webkit-slider-thumb { width: 30px; height: 30px; }
-  .fs-vol .vol-slider::-moz-range-thumb { width: 30px; height: 30px; }
 }
 
 /* ════════════════════════════════════════════

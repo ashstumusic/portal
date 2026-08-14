@@ -1000,66 +1000,112 @@ if (document.fonts && document.fonts.ready) {
 // down-gesture only closes when the player's content is already at its
 // top - if it's scrolled, the swipe scrolls it instead (iOS-style).
 var _swipe = null;
+var _swipeConsumed = false;
 var _fsContentEl = document.querySelector('.fs-content');
 npBar.addEventListener('pointerdown', function(e) {
-if (e.target.closest('button, input, a, .np-bar-track')) return;
-_swipe = { y: e.clientY, x: e.clientX, target: npBar };
+ if (e.target.closest('button, input, a, .np-bar-track')) return;
+ _swipe = { y: e.clientY, x: e.clientX, target: npBar, dir: null };
 }, { passive: true });
 npBar.addEventListener('pointermove', function(e) {
-if (!_swipe || _swipe.target !== npBar) return;
-if (Math.abs(e.clientX - _swipe.x) > 24) { _swipe = null; return; }
-if (e.clientY - _swipe.y < -40) { _swipe = null; fsOpen(); }
+ if (!_swipe || _swipe.target !== npBar) return;
+ var dx = e.clientX - _swipe.x;
+ var dy = e.clientY - _swipe.y;
+ if (!_swipe.dir) {
+   if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+   _swipe.dir = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+ }
+ if (_swipe.dir === 'y' && dy < -40) { _swipe = null; fsOpen(); }
 }, { passive: true });
-npBar.addEventListener('pointerup', function() { _swipe = null; }, { passive: true });
+npBar.addEventListener('pointerup', function(e) {
+ if (_swipe && _swipe.target === npBar) {
+   var dx = e.clientX - _swipe.x;
+   if (_swipe.dir === 'x' && Math.abs(dx) > 60) {
+     _swipe = null;
+     _swipeConsumed = true;
+     if (dx < 0) { npNext(); fsSync(); } else { npPrev(); fsSync(); }
+   }
+ }
+ _swipe = null;
+}, { passive: true });
 npBar.addEventListener('pointercancel', function() { _swipe = null; }, { passive: true });
 fs.addEventListener('pointerdown', function(e) {
-if (e.pointerType === 'touch') return; // touch path handles touch below
-if (e.target.closest('button, input, a, .fs-bar')) return;
-_swipe = { y: e.clientY, x: e.clientX, target: fs };
+ if (e.pointerType === 'touch') return; // touch path handles touch below
+ if (e.target.closest('button, input, a, .fs-bar')) return;
+ _swipe = { y: e.clientY, x: e.clientX, target: fs, dir: null };
 }, { passive: true });
 fs.addEventListener('pointermove', function(e) {
-if (!_swipe || _swipe.target !== fs || !_fsOpen) return;
-if (e.pointerType === 'touch') return;
-if (_fsContentEl && _fsContentEl.scrollTop > 0) return;
-if (Math.abs(e.clientX - _swipe.x) > 24) { _swipe = null; return; }
-if (e.clientY - _swipe.y > 48) { _swipe = null; fsClose(); }
+ if (!_swipe || _swipe.target !== fs || !_fsOpen) return;
+ if (e.pointerType === 'touch') return;
+ if (_fsContentEl && _fsContentEl.scrollTop > 0) return;
+ var dx = e.clientX - _swipe.x;
+ var dy = e.clientY - _swipe.y;
+ if (!_swipe.dir) {
+   if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+   _swipe.dir = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+ }
+ if (_swipe.dir === 'y') {
+   if (dy > 48) { _swipe = null; fsClose(); }
+ } else if (Math.abs(dx) > 60) {
+   _swipe = null;
+   if (dx < 0) { npNext(); fsSync(); } else { npPrev(); fsSync(); }
+ }
 }, { passive: true });
 fs.addEventListener('pointerup', function() { _swipe = null; }, { passive: true });
 fs.addEventListener('pointercancel', function() { _swipe = null; }, { passive: true });
-// Touch swipe-down to minimize. The player's content is scrollable
+// Touch swipe to minimize or skip. The player's content is scrollable
 // (overflow-y:auto), so the browser would normally grab a vertical pan
 // and fire pointercancel - that's why pointer events alone won't work
 // here. Touch events with a non-passive move let us claim the gesture:
-// once the finger drags down past the top of the content, preventDefault
-// hands the pan to us and the player collapses on release.
+// once the finger drags past the top of the content, preventDefault
+// hands the pan to us. Horizontal drags are always claimed so the
+// browser's back-swipe doesn't hijack them; releasing past 60px skips.
 var _fsTouch = null;
 fs.addEventListener('touchstart', function(e) {
 if (!_fsOpen) return;
 if (e.target.closest('button, input, a, .fs-bar')) return;
 var t = e.touches[0];
-_fsTouch = { y: t.clientY, x: t.clientX, active: false };
+_fsTouch = { y: t.clientY, x: t.clientX, active: false, dir: null };
 }, { passive: true });
 fs.addEventListener('touchmove', function(e) {
 if (!_fsTouch || !_fsOpen) return;
 var t = e.touches[0];
 var dy = t.clientY - _fsTouch.y;
-var dx = Math.abs(t.clientX - _fsTouch.x);
+var dx = t.clientX - _fsTouch.x;
 if (_fsTouch.active) { e.preventDefault(); return; }
+if (!_fsTouch.dir) {
+  if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+  _fsTouch.dir = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+}
+if (_fsTouch.dir === 'x') {
+  if (Math.abs(dx) > 10) { _fsTouch.active = true; e.preventDefault(); }
+  return;
+}
 // Content is scrolled and the finger is moving up (scrolling down the
 // track info): hand the gesture back to native scrolling.
 if (_fsContentEl && _fsContentEl.scrollTop > 0) {
-if (dy < 0) { _fsTouch = null; }
-return;
+  if (dy < 0) { _fsTouch = null; }
+  return;
 }
-if (dx > 24) { _fsTouch = null; return; }
 if (dy > 8) {
 _fsTouch.active = true;
 e.preventDefault();
 if (dy > 48) { _fsTouch = null; fsClose(); }
 }
 }, { passive: false });
-fs.addEventListener('touchend', function() {
-if (_fsTouch && _fsTouch.active) { _fsTouch = null; fsClose(); }
+fs.addEventListener('touchend', function(e) {
+if (_fsTouch) {
+  if (_fsTouch.active) {
+    if (_fsTouch.dir === 'x') {
+      var dx = e.changedTouches[0].clientX - _fsTouch.x;
+      if (dx < -60) { _fsTouch = null; npNext(); fsSync(); }
+      else if (dx > 60) { _fsTouch = null; npPrev(); fsSync(); }
+    } else {
+      _fsTouch = null; fsClose();
+    }
+  } else {
+    _fsTouch = null;
+  }
+}
 _fsTouch = null;
 }, { passive: true });
 fs.addEventListener('touchcancel', function() { _fsTouch = null; }, { passive: true });
@@ -1070,6 +1116,7 @@ if (e.key === 'Escape' && _fsOpen) fsClose();
 // clicks on real controls (buttons, sliders, the seek track) are theirs
 // and must not also expand.
 npBar.addEventListener('click', function(e) {
+if (_swipeConsumed) { _swipeConsumed = false; return; }
 if (e.target.closest('button, input, a, .np-bar-track')) return;
 fsOpen();
 });
