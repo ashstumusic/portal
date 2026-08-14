@@ -652,15 +652,42 @@ if (navigator.maxTouchPoints > 0 && window.innerWidth < 900) {
     if (!document.hidden) lockPortrait();
   });
 }
+function npArtwork() {
+ var src = npGetArt();
+ if (!src) return [];
+ var abs = new URL(src, location.href).href;
+ return [96, 128, 192, 256, 384, 512].map(function(s) {
+   return { src: abs, sizes: s + 'x' + s, type: 'image/webp' };
+ });
+}
+function npSyncMediaState() {
+ if (!('mediaSession' in navigator)) return;
+ navigator.mediaSession.playbackState = npAudio.paused ? 'paused' : 'playing';
+ try {
+   navigator.mediaSession.setPositionState({ duration: npAudio.duration || 0, playbackRate: 1, position: npAudio.currentTime || 0 });
+ } catch (err) {}
+}
 function npUpdateMediaSession(track, album, art) {
-if (!('mediaSession' in navigator)) return;
-navigator.mediaSession.metadata = new MediaMetadata({
-title: track, artist: 'Ash Stu', album: album || '',
-artwork: art ? [{ src: encodeURI(art), sizes: '512x512', type: 'image/webp' }] : []
-});
-var hasMulti = pState.playlist.length > 1;
-navigator.mediaSession.setActionHandler('previoustrack', hasMulti ? function() { npPrev(); } : null);
-navigator.mediaSession.setActionHandler('nexttrack', hasMulti ? function() { npNext(); } : null);
+ if (!('mediaSession' in navigator)) return;
+ var ms = navigator.mediaSession;
+ ms.metadata = new MediaMetadata({
+   title: npTrackLabel() + track,
+   artist: 'Ash Stu',
+   album: album || '',
+   artwork: art ? npArtwork() : []
+ });
+ // Handlers are re-registered on every load so the notification always
+ // carries the full transport. Always-on: npNext/npPrev already no-op at
+ // the boundaries, so even a single-track release shows skip buttons.
+ ms.setActionHandler('play', function() { npToggle(); });
+ ms.setActionHandler('pause', function() { npToggle(); });
+ ms.setActionHandler('previoustrack', function() { npPrev(); });
+ ms.setActionHandler('nexttrack', function() { npNext(); });
+ ms.setActionHandler('seekbackward', function() { npAudio.currentTime = Math.max(0, npAudio.currentTime - 10); });
+ ms.setActionHandler('seekforward', function() { if (npAudio.duration) npAudio.currentTime = Math.min(npAudio.duration, npAudio.currentTime + 10); });
+ ms.setActionHandler('seekto', function(details) { if (npAudio.duration) npAudio.currentTime = details.seekTime; });
+ ms.setActionHandler('stop', function() { npClose(); });
+ npSyncMediaState();
 }
 function npLoad(track, album, src, autoplay) {
 var label = npTrackLabel() + track;
@@ -881,10 +908,10 @@ wireSeekBar(document.getElementById('np-bar-track'));
 // to the video lightbox, so videos keep the normal "stops when you
 // leave" behavior.
 if ('mediaSession' in navigator) {
-navigator.mediaSession.setActionHandler('play', function() { npToggle(); });
-navigator.mediaSession.setActionHandler('pause', function() { npToggle(); });
-npAudio.addEventListener('play', function() { navigator.mediaSession.playbackState = 'playing'; });
-npAudio.addEventListener('pause', function() { navigator.mediaSession.playbackState = 'paused'; });
+  npAudio.addEventListener('play', npSyncMediaState);
+  npAudio.addEventListener('pause', npSyncMediaState);
+  npAudio.addEventListener('loadedmetadata', npSyncMediaState);
+  npAudio.addEventListener('seeked', npSyncMediaState);
 }
 (function() {
 var fs = document.getElementById('fs-player');
@@ -1003,6 +1030,8 @@ var _swipe = null;
 var _swipeConsumed = false;
 var _fsContentEl = document.querySelector('.fs-content');
 npBar.addEventListener('pointerdown', function(e) {
+ _swipeConsumed = false;
+ if (e.pointerType === 'touch') return; // touch path below owns touch
  if (e.target.closest('button, input, a, .np-bar-track')) return;
  _swipe = { y: e.clientY, x: e.clientX, target: npBar, dir: null };
 }, { passive: true });
@@ -1028,6 +1057,45 @@ npBar.addEventListener('pointerup', function(e) {
  _swipe = null;
 }, { passive: true });
 npBar.addEventListener('pointercancel', function() { _swipe = null; }, { passive: true });
+// Touch path for the bar: the bar's touch-action allows horizontal pans,
+// so the browser can fire pointercancel and kill a pointer swipe before it
+// completes. Claim the gesture with preventDefault (mirrors the fullscreen
+// player) so left/right swipes reliably skip and swipe-up still maximizes.
+var _npBarTouch = null;
+npBar.addEventListener('touchstart', function(e) {
+ _swipeConsumed = false;
+ if (e.target.closest('button, input, a, .np-bar-track')) return;
+ var t = e.touches[0];
+ _npBarTouch = { y: t.clientY, x: t.clientX, active: false, dir: null };
+}, { passive: true });
+npBar.addEventListener('touchmove', function(e) {
+ if (!_npBarTouch) return;
+ var t = e.touches[0];
+ var dy = t.clientY - _npBarTouch.y;
+ var dx = t.clientX - _npBarTouch.x;
+ if (_npBarTouch.active) { e.preventDefault(); return; }
+ if (!_npBarTouch.dir) {
+   if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+   _npBarTouch.dir = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+ }
+ if (_npBarTouch.dir === 'x') {
+   if (Math.abs(dx) > 10) { _npBarTouch.active = true; e.preventDefault(); }
+   return;
+ }
+ if (dy < -40) { _npBarTouch = null; fsOpen(); }
+}, { passive: false });
+npBar.addEventListener('touchend', function(e) {
+ if (_npBarTouch && _npBarTouch.active && _npBarTouch.dir === 'x') {
+   var dx = e.changedTouches[0].clientX - _npBarTouch.x;
+   if (Math.abs(dx) > 60) {
+     _npBarTouch = null;
+     _swipeConsumed = true;
+     if (dx < 0) { npNext(); fsSync(); } else { npPrev(); fsSync(); }
+   }
+ }
+ _npBarTouch = null;
+}, { passive: true });
+npBar.addEventListener('touchcancel', function() { _npBarTouch = null; }, { passive: true });
 fs.addEventListener('pointerdown', function(e) {
  if (e.pointerType === 'touch') return; // touch path handles touch below
  if (e.target.closest('button, input, a, .fs-bar')) return;
@@ -1176,9 +1244,10 @@ var t = rel.tracks[0];
 _npTrackEl.dataset.label = '1. ' + t.title;
 npMarquee(_npTrackEl);
 _npAlbumEl.textContent = rel.name;
-var art = npGetArt();
-if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
-npAudio.src = t.file; _src = t.file;
+ var art = npGetArt();
+ if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
+ npAudio.src = t.file; _src = t.file;
+ npUpdateMediaSession(t.title, rel.name, art);
 }
 var _tracklistDebounce = 0;
 function onRelOverlay(e, rIdx) {
