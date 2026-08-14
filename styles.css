@@ -2487,9 +2487,9 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   background: rgb(from var(--cream) r g b / .7);
   border: 1px solid rgba(8,76,97,.25);
   border: 1px solid rgb(from var(--player-ink) r g b / .25);
-  color: rgba(8,76,97,.85); cursor: pointer; padding: .75rem 2rem;
-  min-height: 44px;
-  border-radius: 22px;
+  color: rgba(8,76,97,.85); cursor: pointer; padding: .5rem 1.25rem;
+  min-height: 40px;
+  border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
