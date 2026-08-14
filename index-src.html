@@ -1906,11 +1906,10 @@ finishReveal();
 });
 })();
 /* About-section childhood shots are grayscale at rest, color on hover -
-   touch devices have no hover, so a tap toggles each photo to color and
-   back. Only wired where the pointer is coarse, leaving desktop hover
-   behavior untouched. */
+   a click/tap toggles each photo to color and back, so touch devices
+   (which have no hover) get the same reveal. Each shot toggles only its
+   own state - the two images never affect each other. */
 (function() {
-if (window.matchMedia && !matchMedia('(pointer: coarse)').matches) return;
 var shots = document.querySelectorAll('.bio-card-media img:not(.bio-media-main)');
 for (var i = 0; i < shots.length; i++) {
 shots[i].addEventListener('click', function() { this.classList.toggle('bio-revealed'); });
