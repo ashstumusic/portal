@@ -1292,7 +1292,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   border-left: 1px solid var(--hairline);
 }
 .bio-card-media img {
-  width: 100%; height: 100%;
+  width: 100%; height: auto;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   object-position: center 20%;
@@ -1414,13 +1414,18 @@ footer {
      their own tighter touch-action rules. */
   touch-action: pan-x;
   transform: translateY(calc(100% + 16px));
-  transition: transform .4s var(--ease-spring);
+  visibility: hidden;
+  transition: transform .4s var(--ease-spring), visibility 0s linear .4s;
   font-family: var(--sans);
   /* Whole bar expands to the fullscreen player on click (controls and
      seek/volume still win - their handlers stop the expand in JS). */
   cursor: pointer;
 }
-#player-bar.show { transform: translateY(0); }
+#player-bar.show {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform .4s var(--ease-spring), visibility 0s;
+}
 body.player-active { padding-bottom: 68px; }
 /* The global focus ring is gold - invisible on the gold player surface.
    These two switch it to the player's deep-teal ink so keyboard focus
