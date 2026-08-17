@@ -2435,98 +2435,80 @@ body.player-active { padding-bottom: 68px; }
    ════════════════════════════════════════════ */
 .fs-player {
   position: fixed; top:0;right:0;bottom:0;left:0; z-index: 400;
-  background: var(--player);
+  background: #1a2744;
+  background: linear-gradient(180deg, #1a2744 0%, #0f1a2e 100%);
   contain: layout style;
   transform: translateY(100%);
   transition: transform .4s var(--ease);
   overflow: hidden;
-  /* Mobile taps/drags on controls (especially the seek bar) were
-     triggering the browser's native text-selection highlight, since
-     nothing here told it these aren't selectable text - only real
-     content (essays, bio copy, etc.) should ever highlight like that. */
   user-select: none; -webkit-user-select: none;
 }
 .fs-player.open { transform: translateY(0); }
-/* Maximized player pins the page behind it: wheel/touch/keyboard can no
-   longer scroll the document while the fullscreen player is up. */
 html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-content {
   position: relative; z-index: 1;
-  /* flex-start (not center) - on any viewport where the content
-     doesn't fill the full height, centering it as one block leaves a
-     large, unbalanced empty gap above the art with nothing below the
-     platform buttons. Anchoring from the top instead reads as an
-     intentional layout at any height, matching how a real "now
-     playing" screen (Spotify, Apple Music) is laid out. */
   display: flex; flex-direction: column; align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   height: 100%; width: 100%;
   max-width: 400px; margin: 0 auto;
-  padding: calc(env(safe-area-inset-top, 0px) + 4.5rem) 1.75rem calc(env(safe-area-inset-bottom, 0px) + 2.5rem);
+  padding: calc(env(safe-area-inset-top, 0px) + 3rem) 1.5rem calc(env(safe-area-inset-bottom, 0px) + 2rem);
   gap: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Its own scroll must never chain to the page underneath - overscroll
-     stays inside the player instead of bouncing the locked page behind it. */
   overscroll-behavior: contain;
 }
 .fs-collapse {
   position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + .5rem);
+  top: calc(env(safe-area-inset-top, 0px) + .75rem);
   left: 50%; transform: translateX(-50%);
-  background: rgba(250,252,252,.7);
-  background: rgb(from var(--cream) r g b / .7);
-  border: 1px solid rgba(8,76,97,.25);
-  border: 1px solid rgb(from var(--player-ink) r g b / .25);
-  color: rgba(8,76,97,.85); cursor: pointer; padding: .5rem 1.25rem;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.6); cursor: pointer; padding: .5rem 1.25rem;
   min-height: 40px;
   border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
   -webkit-tap-highlight-color: transparent; z-index: 2;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.fs-collapse:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); }
-.fs-collapse:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
+.fs-collapse:hover { color: #fff; background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.25); }
+.fs-collapse:active { color: #fff; background: rgba(255,255,255,.2); }
 .fs-art-wrap {
   width: 80vw;
-  width: min(80vw, 340px); aspect-ratio: 1;
-  border-radius: 16px; overflow: hidden;
-  border: 2px solid rgba(8,76,97,.45);
-  border: 2px solid rgb(from var(--player-ink) r g b / .45);
-  /* Gold halo behind the cover echoes the site's lamplight motif - the
-     cover reads as lit from behind, with the teal frame holding it. */
-  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4),
-      0 0 0 8px rgba(247,197,73,.22), 0 0 60px rgba(247,197,73,.35);
-  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4),
-      0 0 0 8px rgb(from var(--gold) r g b / .22), 0 0 60px rgb(from var(--gold) r g b / .35);
+  width: min(80vw, 300px); aspect-ratio: 1;
+  border-radius: 24px; overflow: hidden;
+  background: #243a5e;
+  box-shadow: 0 24px 70px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.3);
   flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
 }
-.fs-art { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fs-art-placeholder {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+  color: #5b8ab8;
+}
+.fs-art-placeholder svg { width: 56px; height: 56px; }
+.fs-art {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  position: absolute; top: 0; left: 0;
+}
+.fs-art-wrap:has(.fs-art) .fs-art-placeholder { display: none; }
 .fs-info {
-  text-align: center; width: 100%;
-  margin-top: 2rem;
+  text-align: left; width: 100%;
+  margin-top: 1.5rem;
+  padding: 0 .25rem;
 }
 .fs-track {
   display: block; font-family: var(--sans);
-  font-size: 1.2rem; font-weight: 700; color: var(--player-ink);
-  /* The max player sits on a darkened art blur, so pure teal can vanish -
-     a cream text-shadow lifts the copy off whatever tint is behind it. */
-  text-shadow: 0 1px 0 rgba(250,252,252,.6), 0 2px 8px rgba(250,252,252,.35);
-  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .6), 0 2px 8px rgb(from var(--cream) r g b / .35);
+  font-size: 1.15rem; font-weight: 600; color: #fff;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   line-height: 1.3;
 }
 .fs-album {
-  display: block; font-size: .58rem; letter-spacing: .22em;
-  text-transform: uppercase; color: rgba(8,76,97,.9);
-  text-transform: uppercase; color: rgb(from var(--player-ink) r g b / .9);
-  text-shadow: 0 1px 0 rgba(250,252,252,.5), 0 2px 6px rgba(250,252,252,.3);
-  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .5), 0 2px 6px rgb(from var(--cream) r g b / .3);
+  display: block; font-size: .7rem; letter-spacing: .08em;
+  color: rgba(255,255,255,.5);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  margin-top: .4rem;
+  margin-top: .3rem;
 }
-/* Long titles in the maximized player scroll so all of them is visible -
-   same marquee as the docked bar's #np-track and the tracklists. */
 .fs-track.marquee, .fs-album.marquee { text-overflow: clip; }
 .fs-track.marquee > span, .fs-album.marquee > span {
   display: inline-block;
@@ -2534,98 +2516,68 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   padding-right: 3rem;
 }
 @media (prefers-reduced-motion: reduce) { .fs-track.marquee > span, .fs-album.marquee > span { animation: none; } }
-.fs-progress { width: 100%; margin-top: 1.75rem; }
+.fs-progress { width: 100%; margin-top: 1.25rem; padding: 0 .25rem; }
 .fs-bar {
-  width: 100%; height: 6px;
-  /* Cream rail instead of a dark one: over the blurred art a teal-tinted
-     track disappears, a light one always reads. */
-  background: rgba(250,252,252,.5);
-  background: rgb(from var(--cream) r g b / .5);
-  border-radius: 6px; cursor: pointer; position: relative;
+  width: 100%; height: 4px;
+  background: rgba(255,255,255,.2);
+  border-radius: 4px; cursor: pointer; position: relative;
   touch-action: none;
 }
 .fs-fill {
-  height: 100%; background: var(--player-ink); width: 100%;
+  height: 100%; background: #fff; width: 100%;
   transform: scaleX(0); transform-origin: 0 50%;
-  border-radius: 6px; transition: transform .15s linear;
+  border-radius: 4px; transition: transform .15s linear;
   will-change: transform;
   pointer-events: none;
 }
-.fs-bar:active .fs-fill { background: rgba(8,76,97,.7); background: rgb(from var(--player-ink) r g b / .7); }
+.fs-bar:active .fs-fill { background: rgba(255,255,255,.8); }
 .fs-times {
   display: flex; justify-content: space-between;
-  font-size: .64rem; font-weight: 600; color: rgba(8,76,97,.9);
-  text-shadow: 0 1px 0 rgba(250,252,252,.55), 0 2px 6px rgba(250,252,252,.3);
-  text-shadow: 0 1px 0 rgb(from var(--cream) r g b / .55), 0 2px 6px rgb(from var(--cream) r g b / .3);
+  font-size: .68rem; font-weight: 500; color: rgba(255,255,255,.4);
   margin-top: .5rem; font-variant-numeric: tabular-nums;
   user-select: none;
 }
 .fs-controls {
-  /* Same 4-button row as the minimized player on phones: prev, play,
-     next, shuffle left-to-right in four equal cells - the two states
-     then place their transport identically. */
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center; justify-items: center;
+  display: flex;
+  align-items: center; justify-content: center;
   width: 100%;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+  gap: 1.5rem;
 }
-#fs-prev { grid-column: 1; }
-#fs-play { grid-column: 2; }
-#fs-next { grid-column: 3; }
-#fs-shuffle { grid-column: 4; }
 .fs-ctrl {
-  /* Cream chips - same legibility trick as the platform buttons below:
-     over the blurred art a translucent-teal icon goes muddy, a light
-     chip always reads. */
-  background: rgba(250,252,252,.72);
-  background: rgb(from var(--cream) r g b / .72);
-  border: 1px solid rgba(8,76,97,.3);
-  border: 1px solid rgb(from var(--player-ink) r g b / .3);
-  color: var(--player-ink); cursor: pointer;
-  width: 40px; height: 40px; border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,.6); cursor: pointer;
+  width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  transition: color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
+  transition: color .2s var(--ease), transform .2s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-ctrl:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.5); border-color: rgb(from var(--player-ink) r g b / .5); transform: scale(1.08); }
-.fs-ctrl:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); transform: scale(.92); }
-.fs-ctrl.active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
+.fs-ctrl:hover { color: #fff; transform: scale(1.1); }
+.fs-ctrl:active { transform: scale(.9); }
+.fs-ctrl.active { color: #5b8ab8; }
 .fs-play {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--player-ink); border: none; cursor: pointer;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #fff; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  color: var(--gold);
-  /* Gold ring ties the teal disc to the site's gold "press play"
-     circles, with a lamplight glow behind it; the cream halo keeps the
-     disc's edge defined when the blurred art behind it runs dark. */
-  box-shadow: 0 0 0 2px rgba(247,197,73,.7), 0 0 0 5px rgba(250,252,252,.22), 0 6px 24px rgba(8,76,97,.35), 0 0 36px rgba(247,197,73,.3);
-  box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .7), 0 0 0 5px rgb(from var(--cream) r g b / .22), 0 6px 24px rgb(from var(--player-ink) r g b / .35), 0 0 36px rgb(from var(--gold) r g b / .3);
+  color: #1a2744;
+  box-shadow: 0 4px 20px rgba(0,0,0,.3);
   transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-play:hover { box-shadow: 0 0 0 2px rgb(from var(--gold) r g b / .8), 0 0 0 5px rgb(from var(--cream) r g b / .3), 0 8px 32px rgb(from var(--player-ink) r g b / .5), 0 0 48px rgb(from var(--gold) r g b / .45); transform: scale(1.04); }
-.fs-play:active { transform: scale(.9); }
+.fs-play:hover { box-shadow: 0 6px 28px rgba(0,0,0,.4); transform: scale(1.06); }
+.fs-play:active { transform: scale(.92); }
 .fs-play svg { margin-left: 0; }
 .fs-play[aria-label="Play"] svg { margin-left: 3px; }
-/* Short portrait screens (iPhone SE, small Androids): the full-size art
-   plus every row's breathing room overflows the height once the platform
-   buttons are present - cap the art off the height and tighten the
-   vertical rhythm so the whole stack fits without scrolling. */
 @media (max-height: 750px) and (orientation: portrait) {
-  .fs-art-wrap { width: 80vw;
- width: min(80vw, 340px, 32vh); }
-  .fs-content { padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.75rem); }
-  .fs-info { margin-top: .9rem; }
-  .fs-progress { margin-top: .9rem; }
-  .fs-controls { margin-top: .6rem; }
-  .fs-vol { margin-top: .9rem; }
-  .fs-platforms { margin-top: .9rem; }
+  .fs-art-wrap { width: min(80vw, 300px, 30vh); }
+  .fs-content { padding-top: calc(env(safe-area-inset-top, 0px) + 3rem); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem); }
+  .fs-info { margin-top: 1rem; }
+  .fs-progress { margin-top: .75rem; }
+  .fs-controls { margin-top: 1rem; gap: 1.2rem; }
+  .fs-vol { margin-top: .75rem; }
+  .fs-platforms { margin-top: .75rem; }
 }
-/* Landscape phones: the portrait stack (art on top, controls below) is
-   taller than the screen - art alone can eat all 390px. Side-by-side
-   instead: art left, sized off the height, everything else in a column
-   on the right, vertically centered as one group. */
 @media (max-height: 520px) and (orientation: landscape) {
   .fs-content {
     display: grid;
@@ -2638,17 +2590,13 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
     padding: calc(env(safe-area-inset-top, 0px) + 2rem) 1.5rem 1rem;
   }
   .fs-art-wrap { grid-column: 1; grid-row: 1 / 6; align-self: center; width: 28vh;
- width: min(28vh, 220px); }
+  width: min(28vh, 220px); }
   .fs-info { grid-column: 2; grid-row: 1; margin-top: 0; }
   .fs-progress { grid-column: 2; grid-row: 2; margin-top: .75rem; }
   .fs-controls { grid-column: 2; grid-row: 3; margin-top: .5rem; }
   .fs-vol { grid-column: 2; grid-row: 4; margin-top: .5rem; }
   .fs-platforms { grid-column: 2; grid-row: 5; margin-top: .75rem; }
-  .fs-play { width: 42px; height: 42px; }
 }
-/* Narrow phones (Galaxy S9 360px, iPhone SE 375px): tighten the player's
-   side padding so the volume bar gets the full width, and supersize the
-   bar + thumb for fat-thumb dragging. */
 @media (max-width: 400px) {
   .fs-content { padding-left: 1.25rem; padding-right: 1.25rem; }
 }
