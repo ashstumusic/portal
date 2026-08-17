@@ -948,10 +948,15 @@ var fsSpotify = document.getElementById('fs-spotify');
 var _fsOpen = false;
 function fsUpdateArt() {
 var art = npGetArt();
+var ph = document.getElementById('fs-art-placeholder');
 if (art) {
 var encoded = encodeURI(art);
 fsArt.src = encoded;
 fsArt.hidden = false;
+if (ph) ph.style.display = 'none';
+} else {
+fsArt.hidden = true;
+if (ph) ph.style.display = '';
 }
 }
 function fsUpdatePlatforms() {
