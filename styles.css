@@ -1578,8 +1578,11 @@ body.player-active { padding-bottom: 68px; }
 .fs-vol {
   display: flex; align-items: center; justify-content: center; gap: .6rem;
   width: 100%; max-width: 340px;
-  margin: 1.5rem auto 0;
+  margin: 1.25rem auto 0;
+  opacity: .7;
+  transition: opacity .25s var(--ease);
 }
+.fs-vol:hover { opacity: 1; }
 /* iPhone-style volume: a wide, thick rounded bar rather than the thin
    4px line the mini-bar uses - easier to see and to grab. Fullscreen
    player only; the docked bar stays compact. */
@@ -1610,6 +1613,7 @@ body.player-active { padding-bottom: 68px; }
   display: flex; justify-content: center; gap: .6rem;
   width: 100%;
   margin: 1.25rem auto 0;
+  padding-bottom: .5rem;
 }
 /* Fixed, equal width for both - "Apple Music" and "Spotify" are
    different lengths, so content-sized (flex:none with no explicit
@@ -2429,6 +2433,12 @@ body.player-active { padding-bottom: 68px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .gilliam-flower { animation: none !important; }
+  .fs-player.open .fs-art-wrap,
+  .fs-player.open .fs-info,
+  .fs-player.open .fs-progress,
+  .fs-player.open .fs-controls,
+  .fs-player.open .fs-vol,
+  .fs-player.open .fs-platforms { animation: none !important; }
 }
 
 /* ════════════════════════════════════════════
@@ -2463,17 +2473,17 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + .75rem);
   left: 50%; transform: translateX(-50%);
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
-  color: rgba(255,255,255,.6); cursor: pointer; padding: .5rem 1.25rem;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.5); cursor: pointer; padding: .5rem 1.25rem;
   min-height: 40px;
   border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
   -webkit-tap-highlight-color: transparent; z-index: 2;
-  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
 }
-.fs-collapse:hover { color: #fff; background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.25); }
-.fs-collapse:active { color: #fff; background: rgba(255,255,255,.2); }
+.fs-collapse:hover { color: #fff; background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); transform: translateX(-50%) translateY(-1px); }
+.fs-collapse:active { color: #fff; background: rgba(255,255,255,.16); transform: translateX(-50%) scale(.97); }
 .fs-art-wrap {
   position: relative;
   width: 80vw;
@@ -2483,7 +2493,16 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   box-shadow: 0 24px 70px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.3);
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
 }
+.fs-player.open .fs-art-wrap { animation: fsArtIn .5s var(--ease) both; }
+@keyframes fsArtIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+.fs-player.open .fs-info { animation: fsFadeUp .45s var(--ease) .1s both; }
+.fs-player.open .fs-progress { animation: fsFadeUp .45s var(--ease) .15s both; }
+.fs-player.open .fs-controls { animation: fsFadeUp .45s var(--ease) .2s both; }
+.fs-player.open .fs-vol { animation: fsFadeUp .45s var(--ease) .25s both; }
+.fs-player.open .fs-platforms { animation: fsFadeUp .45s var(--ease) .3s both; }
+@keyframes fsFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .fs-art-placeholder {
   display: flex; align-items: center; justify-content: center;
   width: 100%; height: 100%;
@@ -2493,7 +2512,9 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-art {
   width: 100%; height: 100%; object-fit: cover; display: block;
   position: absolute; top: 0; left: 0;
+  transition: opacity .35s var(--ease);
 }
+.fs-art[hidden] { opacity: 0; }
 
 .fs-info {
   text-align: left; width: 100%;
@@ -2505,12 +2526,14 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
   font-size: 1.15rem; font-weight: 600; color: #fff;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   line-height: 1.3;
+  transition: opacity .2s var(--ease);
 }
 .fs-album {
   display: block; font-size: .7rem; letter-spacing: .08em;
-  color: rgba(255,255,255,.5);
+  color: rgba(255,255,255,.45);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  margin-top: .3rem;
+  margin-top: .35rem;
+  transition: opacity .2s var(--ease);
 }
 .fs-track.marquee, .fs-album.marquee { text-overflow: clip; }
 .fs-track.marquee > span, .fs-album.marquee > span {
@@ -2522,9 +2545,12 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-progress { width: 100%; margin-top: 1.25rem; padding: 0 .25rem; }
 .fs-bar {
   width: 100%; height: 4px;
-  background: rgba(255,255,255,.2);
+  background: rgba(255,255,255,.15);
   border-radius: 4px; cursor: pointer; position: relative;
   touch-action: none;
+}
+.fs-bar::before {
+  content: ''; position: absolute; top: -14px; right: 0; bottom: -14px; left: 0;
 }
 .fs-fill {
   height: 100%; background: #fff; width: 100%;
@@ -2550,26 +2576,26 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-ctrl {
   background: transparent;
   border: none;
-  color: rgba(255,255,255,.6); cursor: pointer;
-  width: 36px; height: 36px; border-radius: 50%;
+  color: rgba(255,255,255,.55); cursor: pointer;
+  width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  transition: color .2s var(--ease), transform .2s var(--ease);
+  transition: color .2s var(--ease), transform .2s var(--ease), background .2s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-ctrl:hover { color: #fff; transform: scale(1.1); }
-.fs-ctrl:active { transform: scale(.9); }
+.fs-ctrl:hover { color: #fff; background: rgba(255,255,255,.08); transform: scale(1.1); }
+.fs-ctrl:active { transform: scale(.88); background: rgba(255,255,255,.12); }
 .fs-ctrl.active { color: #5b8ab8; }
 .fs-play {
-  width: 56px; height: 56px; border-radius: 50%;
+  width: 60px; height: 60px; border-radius: 50%;
   background: #fff; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: #1a2744;
-  box-shadow: 0 4px 20px rgba(0,0,0,.3);
-  transition: transform .15s var(--ease-spring), box-shadow .25s var(--ease);
+  box-shadow: 0 4px 20px rgba(0,0,0,.25), 0 0 0 0 rgba(255,255,255,0);
+  transition: transform .18s var(--ease-spring), box-shadow .25s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.fs-play:hover { box-shadow: 0 6px 28px rgba(0,0,0,.4); transform: scale(1.06); }
-.fs-play:active { transform: scale(.92); }
+.fs-play:hover { box-shadow: 0 6px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,0); transform: scale(1.06); }
+.fs-play:active { transform: scale(.9); box-shadow: 0 2px 12px rgba(0,0,0,.3); }
 .fs-play svg { margin-left: 0; }
 .fs-play[aria-label="Play"] svg { margin-left: 3px; }
 @media (max-height: 750px) and (orientation: portrait) {

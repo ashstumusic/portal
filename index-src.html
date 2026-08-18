@@ -951,6 +951,8 @@ var art = npGetArt();
 var ph = document.getElementById('fs-art-placeholder');
 if (art) {
 var encoded = encodeURI(art);
+fsArt.style.opacity = '0';
+fsArt.onload = function() { fsArt.style.opacity = '1'; };
 fsArt.src = encoded;
 fsArt.hidden = false;
 if (ph) ph.style.display = 'none';
@@ -1353,6 +1355,8 @@ overlay.className = 'rel-play-overlay';
 overlay.innerHTML = '<div class="rel-play-circle">' + PLAY_SVG + '</div>';
 wrap.appendChild(overlay);
 _discCache[rIdx] = overlay.querySelector('svg');
+var circle = overlay.querySelector('.rel-play-circle');
+circle.addEventListener('click', function(e) { e.stopPropagation(); closeAllTracklists(); toggleRelease(rIdx); });
 wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
 wrap.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRelOverlay(e, rIdx); } });
 });
