@@ -1404,7 +1404,8 @@ footer {
   /* Opaque gold - solid fill, no frosted glass. The old translucent
      blur let whatever scrolled beneath bleed through as noise. */
   box-shadow: 0 -2px 20px rgba(8,76,97,.32);
-  display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+  display: grid; grid-template-columns: minmax(0,1fr) auto auto auto auto auto auto minmax(0,1fr);
+  grid-template-areas: "left shuf prev play next repeat vol close";
   align-items: center; gap: .5rem;
   padding: 0 .75rem;
   height: 64px;
@@ -1427,6 +1428,16 @@ footer {
   transition: transform .4s var(--ease-spring), visibility 0s;
 }
 body.player-active { padding-bottom: 68px; }
+/* Desktop grid-area assignments: order matches fullscreen player
+   shuffle | prev | play | next | repeat */
+.np-left { grid-area: left; }
+#np-shuffle { grid-area: shuf; }
+#np-prev { grid-area: prev; }
+#np-play { grid-area: play; }
+#np-next { grid-area: next; }
+#np-repeat { grid-area: repeat; }
+.np-vol { grid-area: vol; }
+#np-close { grid-area: close; justify-self: end; }
 /* The global focus ring is gold - invisible on the gold player surface.
    These two switch it to the player's deep-teal ink so keyboard focus
    stays visible wherever the player is showing. */
@@ -1513,7 +1524,7 @@ body.player-active { padding-bottom: 68px; }
   color: rgb(from var(--player-ink) r g b / .85); margin-top: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.np-right { display: flex; align-items: center; gap: .15rem; justify-self: end; }
+.np-right { display: contents; }
 /* Same look as the fullscreen player's .fs-play, scaled down */
 #np-play {
   width: 42px; height: 42px; border-radius: 50%;
