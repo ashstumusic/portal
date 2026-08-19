@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ashstumusic.github.io/portal/sitemap.xml
+Sitemap: https://ashstu.art/sitemap.xml

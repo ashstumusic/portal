@@ -310,5 +310,5 @@ setInterval(function() {
 }, 24 * 60 * 60 * 1000);
 
 app.listen(PORT, function() {
-  console.log('ashstu.com running on http://localhost:' + PORT);
+  console.log('ashstu.art running on http://localhost:' + PORT);
 });
