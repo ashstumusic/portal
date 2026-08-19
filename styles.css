@@ -1655,13 +1655,13 @@ body.player-active { padding-bottom: 68px; }
 @media (max-width: 600px) {
   #player-bar {
     height: auto;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(7, auto);
     grid-template-rows: auto auto auto auto;
     grid-template-areas:
-      "left left left close"
-      "time time time time"
-      "prev play next rep"
-      "shuf shuf vol vol";
+      "left left left close close close close"
+      "time time time time time time time"
+      "shuf prev play next repeat . ."
+      "vol vol vol vol vol vol vol";
     row-gap: .4rem;
     padding: .65rem .75rem;
     overflow: hidden;
@@ -1727,7 +1727,7 @@ body.player-active { padding-bottom: 68px; }
   #np-play { grid-area: play; justify-self: center; }
   #np-next { grid-area: next; justify-self: center; }
   #np-shuffle { grid-area: shuf; justify-self: center; }
-  #np-repeat { grid-area: rep; justify-self: center; }
+  #np-repeat { grid-area: repeat; justify-self: center; }
   .np-vol { grid-area: vol; justify-self: stretch; }
   #player-bar .np-ctrl { width: 40px; height: 40px; }
   #player-bar #np-play { width: 42px; height: 42px; }
@@ -1892,6 +1892,7 @@ body.player-active { padding-bottom: 68px; }
   color: rgba(8,76,97,.65); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease); flex-shrink: 0;
+  white-space: nowrap;
 }
 .np-ctrl:hover { color: var(--player-ink); background: rgba(8,76,97,.08); background: rgb(from var(--player-ink) r g b / .08); transform: scale(1.08); }
 .np-ctrl:active { color: var(--player-ink); transform: scale(.92); }
