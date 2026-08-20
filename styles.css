@@ -1445,10 +1445,11 @@ body.player-active { padding-bottom: 68px; }
 @media (max-width: 900px) {
   #player-bar {
     bottom: 8px; left: 8px; right: 8px;
-    border-radius: 14px; height: 60px;
+    border-radius: 14px; height: 72px;
+    padding: .5rem .75rem;
     box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(8,76,97,.3);
   }
-  body.player-active { padding-bottom: 76px; }
+  body.player-active { padding-bottom: 88px; }
 }
 #np-bar-progress {
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -1654,36 +1655,92 @@ body.player-active { padding-bottom: 68px; }
    out, and nothing needs to be hidden (volume included). */
 @media (max-width: 600px) {
   #player-bar {
-    grid-template-columns: minmax(0,1fr) auto auto auto auto auto auto auto;
-    grid-template-areas: "left shuf prev play next repeat vol close";
+    height: auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "left left left close"
+      "time time time time"
+      "prev play next rep"
+      "shuf shuf vol vol";
+    row-gap: .4rem;
+    padding: .65rem .75rem;
+    overflow: hidden;
+  }
+  /* The thin absolute-positioned desktop overlay becomes a real row
+     here, with the time labels it never had room to show. */
+  #player-bar #np-bar-progress {
+    position: static; grid-area: time;
+    height: auto; gap: .4rem;
   }
   .np-time { display: block; }
   #player-bar .np-bar-track { height: 4px; border-radius: 4px; position: relative; }
+  /* A 4px line is precise to grab with a finger - this invisible
+     pseudo-element extends the actual draggable hit area to ~18px
+     tall without changing how thin the visible track looks. */
   #player-bar .np-bar-track::before { content: ''; position: absolute; top:-7px;right:0;bottom:-7px;left:0; }
   #np-fill { border-radius: 4px; }
+  /* finger-sized dot on the phone layout's real progress row */
   #player-bar .seek-thumb::before { width: 14px; height: 14px; }
+  /* Keep the knob fully inside the track at 0% and 100% - the rail is
+     inset by half the dot, so its center never hangs past the edges into
+     the time labels (the 0:00 position used to overhang left). */
   #player-bar .seek-thumb { left: 7px; right: 7px; }
   .fs-bar .seek-thumb { left: 8px; right: 8px; }
-  .np-left { grid-area: left; }
-  #player-bar #np-close {
-    grid-area: close; justify-self: end; align-self: center;
+  /* Two-tone bar: a second background band placed on the grid's own
+     controls row, sized to that row's real rendered height (not a
+     guessed pixel split) so it stays correct however tall the row
+     ends up. Negative margins bleed it through the bar's own padding
+     out to the left/right/bottom edges; overflow:hidden above clips
+     it back to the bar's rounded corners. */
+  #player-bar::before {
+    content: '';
+    grid-row: 4; grid-column: 1 / -1;
+    margin: 0 -.75rem -.65rem;
+    background: rgba(226,165,44,.97);
+    background: rgb(from var(--player-hi) r g b / .97);
   }
+  .np-left { grid-area: left; }
+  /* align-self:start (not center) puts it near the top edge instead of
+     mid-height of the whole title row - combined with the grid area's
+     own edge (which sits at the bar's padding, same as the right edge)
+     that keeps it evenly inset from both the top and the right, not
+     just the right. A visible idle box (not just on hover/press) makes
+     it read as a real button at rest, since touch devices never see
+     :hover - and :active gets a real highlight for the same reason. */
+  #player-bar #np-close {
+    grid-area: close; justify-self: end; align-self: start;
+    margin-top: .1rem;
+    background: rgba(250,252,252,.72); border-color: rgba(8,76,97,.3);
+  }
+  #player-bar #np-close:active {
+    background: var(--player-ink); border-color: var(--player-ink); color: var(--gold);
+    transform: scale(.92);
+  }
+  /* .np-right's own box drops out of layout (its children become direct
+     grid items instead, each placed in the template above) - the only
+     way to put prev/play/next/shuffle/volume in one evenly-spaced row
+     while play stays a separate element from them in the DOM. */
   .np-right { display: contents; }
   #np-prev { grid-area: prev; justify-self: center; }
   #np-play { grid-area: play; justify-self: center; }
   #np-next { grid-area: next; justify-self: center; }
   #np-shuffle { grid-area: shuf; justify-self: center; }
-  #np-repeat { grid-area: repeat; justify-self: center; }
-  .np-vol { grid-area: vol; justify-self: center; }
-  #player-bar .np-ctrl { width: 32px; height: 32px; }
-  #player-bar #np-play { width: 36px; height: 36px; }
-  #player-bar .np-close { min-width: 32px; min-height: 32px; }
-  .np-vol { display: flex; align-items: center; gap: .2rem; }
-  .np-vol .np-ctrl { width: 28px; height: 28px; min-width: 28px; }
-  .np-vol .vol-slider { width: 60px; height: 6px; border-radius: 6px; }
-  .np-vol .vol-slider::-webkit-slider-thumb { width: 18px; height: 18px; }
-  .np-vol .vol-slider::-moz-range-thumb { width: 18px; height: 18px; }
-  body.player-active { padding-bottom: 76px; }
+  #np-repeat { grid-area: rep; justify-self: center; }
+  .np-vol { grid-area: vol; justify-self: stretch; }
+  #player-bar .np-ctrl { width: 40px; height: 40px; }
+  #player-bar #np-play { width: 42px; height: 42px; }
+  #player-bar .np-close { min-width: 40px; min-height: 40px; }
+  .np-vol { display: flex; align-items: center; gap: .4rem; }
+  .np-vol .np-ctrl { width: 36px; height: 36px; min-width: 36px; }
+  /* Volume gets the whole bottom row on phones - the slider stretches to
+     fill it (minus the mute button) so there's no narrow column left. */
+  .np-vol .vol-slider { flex: 1; min-width: 0; max-width: none; width: auto; height: 10px; border-radius: 10px; }
+  /* The docked slider inherits the thicker 8px base track; give its thumb
+     a real finger-sized target on phones too. */
+  .np-vol .vol-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
+  .np-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
+  body.player-active { padding-bottom: 190px; }
   #player-bar .np-ctrl, #player-bar #np-play, #player-bar .np-close { position: relative; }
   #player-bar .np-ctrl::before, #player-bar #np-play::before, #player-bar .np-close::before {
     content: ''; position: absolute; top:-7px;right:-7px;bottom:-7px;left:-7px;
