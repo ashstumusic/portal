@@ -1664,8 +1664,8 @@ body.player-active { padding-bottom: 68px; }
     grid-template-areas:
       "left left left close"
       "time time time time"
-      "prev play next rep"
-      "shuf shuf vol vol";
+      "shuf prev play next"
+      "rep rep vol vol";
     row-gap: .35rem;
     padding: .65rem .75rem;
     overflow: hidden;
