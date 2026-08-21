@@ -589,6 +589,7 @@ if (_heroImg) _heroImg.addEventListener('load', function() { cacheOffsets(); upd
 const npAudio = document.getElementById('np-audio');
 const npBar = document.getElementById('player-bar');
 let _src = '';
+function _safeAudioSrc(p){return p.split('/').map(encodeURIComponent).join('/');}
 // True while a finger/mouse is scrubbing a seek bar - timeupdate keeps
 // its hands off the fill/thumb then (pointer position drives them).
 var _seekDragging = false;
@@ -711,7 +712,7 @@ if (_srAnnounce) _srAnnounce.textContent = 'Now playing: ' + track + (album ? ' 
 _playIntent++;
 npAudio.pause();
 npAudio.preload = 'auto';
-npAudio.src = src; _src = src;
+npAudio.src = _safeAudioSrc(src); _src = src;
 _npFill.style.transform = 'scaleX(0)';
 if (_npThumb) _npThumb.style.transform = 'translateX(0)';
 _npCur.textContent = '0:00';
@@ -743,7 +744,7 @@ var n = pState.plIdx + 1;
 if (n >= pState.playlist.length) return;
 var item = pState.playlist[n];
 var rel = RELEASE_LIST[item.releaseIdx];
-if (rel && rel.tracks[item.trackIdx]) _preAudio.src = rel.tracks[item.trackIdx].file;
+if (rel && rel.tracks[item.trackIdx]) _preAudio.src = _safeAudioSrc(rel.tracks[item.trackIdx].file);
 }
 function npToggle() {
 var intent = ++_playIntent;
@@ -1288,7 +1289,7 @@ npMarquee(_npTrackEl);
 _npAlbumEl.textContent = rel.name;
  var art = npGetArt();
  if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
- npAudio.src = t.file; _src = t.file;
+ npAudio.src = _safeAudioSrc(t.file); _src = t.file;
  npUpdateMediaSession(t.title, rel.name, art);
 }
 var _tracklistDebounce = 0;
