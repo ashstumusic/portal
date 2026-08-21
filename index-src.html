@@ -797,17 +797,31 @@ updatePlayUI();
 }
 function npShuffleToggle() {
 pState.shuffle = !pState.shuffle;
+if (pState.shuffle && pState.repeat) { pState.repeat = false; }
 var btn = document.getElementById('np-shuffle');
 if (btn) btn.classList.toggle('active', pState.shuffle);
 var fsBtn = document.getElementById('fs-shuffle');
 if (fsBtn) fsBtn.classList.toggle('active', pState.shuffle);
+if (pState.repeat === false) {
+  var rBtn = document.getElementById('np-repeat');
+  if (rBtn) rBtn.classList.remove('active');
+  var fsRBtn = document.getElementById('fs-repeat');
+  if (fsRBtn) fsRBtn.classList.remove('active');
+}
 }
 function npRepeatToggle() {
 pState.repeat = !pState.repeat;
+if (pState.repeat && pState.shuffle) { pState.shuffle = false; }
 var btn = document.getElementById('np-repeat');
 if (btn) btn.classList.toggle('active', pState.repeat);
 var fsBtn = document.getElementById('fs-repeat');
 if (fsBtn) fsBtn.classList.toggle('active', pState.repeat);
+if (pState.shuffle === false) {
+  var sBtn = document.getElementById('np-shuffle');
+  if (sBtn) sBtn.classList.remove('active');
+  var fsSBtn = document.getElementById('fs-shuffle');
+  if (fsSBtn) fsSBtn.classList.remove('active');
+}
 }
 var VOL_ON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="none"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none"/>';
 var VOL_OFF = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="none"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
