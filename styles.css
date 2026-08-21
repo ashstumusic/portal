@@ -1659,13 +1659,13 @@ body.player-active { padding-bottom: 68px; }
 @media (max-width: 600px) {
   #player-bar {
     height: auto;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: auto auto auto auto;
     grid-template-areas:
-      "left left left close"
-      "time time time time"
-      "shuf prev play next"
-      "rep rep vol vol";
+      "left left left left close"
+      "time time time time time"
+      "shuf prev play next rep"
+      "vol vol vol vol vol";
     row-gap: .35rem;
     padding: .65rem .75rem;
     overflow: hidden;
