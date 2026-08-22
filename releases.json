@@ -1,38 +1,38 @@
 [
   {
-    "name": "My Morning Star",
+    "name": "Morning Star",
     "type": "Album",
-    "art": "Images/Releases/My Morning Star.webp",
+    "art": "Images/Releases/Morning Star.webp",
     "apple": "https://music.apple.com/us/album/my-morning-star/6803006440",
     "spotify": "https://open.spotify.com/album/0F45fBWY3BWMVn6gJnUXL0?si=COm2fqjqS-qNv5q_O-GRqQ",
     "tracks": [
       {
         "title": "Slack Your Rope",
-        "file": "Audio/My Morning Star/01. Slack Your Rope.mp3"
+        "file": "Audio/Morning Star/01. Slack Your Rope.mp3"
       },
       {
-        "title": "My Morning Star",
-        "file": "Audio/My Morning Star/02. My Morning Star.mp3"
+        "title": "Ode to My Anima",
+        "file": "Audio/Morning Star/02. Ode to My Anima.mp3"
       },
       {
         "title": "Pretty, May You Please",
-        "file": "Audio/My Morning Star/03. Pretty, May You Please.mp3"
+        "file": "Audio/Morning Star/03. Pretty, May You Please.mp3"
       },
       {
         "title": "Is This Limerence?",
-        "file": "Audio/My Morning Star/04. Is This Limerence?.mp3"
+        "file": "Audio/Morning Star/04. Is This Limerence?.mp3"
       },
       {
         "title": "Paper-God Psalm",
-        "file": "Audio/My Morning Star/05. Paper-God Psalm.mp3"
+        "file": "Audio/Morning Star/05. Paper-God Psalm.mp3"
       },
       {
         "title": "You Are What You Love",
-        "file": "Audio/My Morning Star/06. You Are What You Love.mp3"
+        "file": "Audio/Morning Star/06. You Are What You Love.mp3"
       },
       {
         "title": "Lucky to Grieve",
-        "file": "Audio/My Morning Star/07. Lucky to Grieve.mp3"
+        "file": "Audio/Morning Star/07. Lucky to Grieve.mp3"
       }
     ]
   },
