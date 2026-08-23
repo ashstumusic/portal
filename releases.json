@@ -187,5 +187,18 @@
         "file": "Audio/Waste My Time/Waste My Time.mp3"
       }
     ]
+  },
+  {
+    "name": "You're Still Sad",
+    "type": "Single",
+    "art": "Images/Releases/You're Still Sad.png",
+    "apple": null,
+    "spotify": null,
+    "tracks": [
+      {
+        "title": "You're Still Sad",
+        "file": "Audio/You're Still Sad/You're Still Sad.mp3"
+      }
+    ]
   }
 ]
