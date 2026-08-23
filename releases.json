@@ -1,42 +1,5 @@
 [
   {
-    "name": "For My Anima",
-    "type": "Album",
-    "art": "Images/Releases/Morning Star.webp",
-    "apple": "https://music.apple.com/us/album/morning-star/6804151256",
-    "spotify": "https://open.spotify.com/album/24yu0gvx90fO1TR9v7sJLd?si=BJFjLqygTquWLd6ZxZbpGw",
-    "tracks": [
-      {
-        "title": "Slack Your Rope",
-        "file": "Audio/Morning Star/01. Slack Your Rope.mp3"
-      },
-      {
-        "title": "Somewhere, Sometime (2026)",
-        "file": "Audio/Morning Star/02. Somewhere, Sometime (2026).mp3"
-      },
-      {
-        "title": "Pretty, May You Please",
-        "file": "Audio/Morning Star/03. Pretty, May You Please.mp3"
-      },
-      {
-        "title": "Is This Limerence?",
-        "file": "Audio/Morning Star/04. Is This Limerence?.mp3"
-      },
-      {
-        "title": "Paper-God Psalm",
-        "file": "Audio/Morning Star/05. Paper-God Psalm.mp3"
-      },
-      {
-        "title": "You Are What You Love",
-        "file": "Audio/Morning Star/06. You Are What You Love.mp3"
-      },
-      {
-        "title": "Lucky to Grieve",
-        "file": "Audio/Morning Star/07. Lucky to Grieve.mp3"
-      }
-    ]
-  },
-  {
     "name": "Only a Baby, Vol. 2",
     "type": "Album",
     "art": "Images/Releases/Only a Baby, Vol. 2.webp",
@@ -185,6 +148,43 @@
       {
         "title": "Waste My Time",
         "file": "Audio/Waste My Time/Waste My Time.mp3"
+      }
+    ]
+  },
+  {
+    "name": "For My Anima",
+    "type": "Album",
+    "art": "Images/Releases/For My Anima.webp",
+    "apple": "https://music.apple.com/us/album/morning-star/6804151256",
+    "spotify": "https://open.spotify.com/album/24yu0gvx90fO1TR9v7sJLd?si=VpXLXjR2QNe9FVACx1kQUQ",
+    "tracks": [
+      {
+        "title": "Slack Your Rope",
+        "file": "Audio/For My Anima/01. Slack Your Rope.mp3"
+      },
+      {
+        "title": "Somewhere, Sometime (2026)",
+        "file": "Audio/For My Anima/02. Somewhere, Sometime (2026).mp3"
+      },
+      {
+        "title": "Pretty, May You Please",
+        "file": "Audio/For My Anima/03. Pretty, May You Please.mp3"
+      },
+      {
+        "title": "Is This Limerence?",
+        "file": "Audio/For My Anima/04. Is This Limerence?.mp3"
+      },
+      {
+        "title": "Paper-God Psalm",
+        "file": "Audio/For My Anima/05. Paper-God Psalm.mp3"
+      },
+      {
+        "title": "You Are What You Love",
+        "file": "Audio/For My Anima/06. You Are What You Love.mp3"
+      },
+      {
+        "title": "Lucky to Grieve",
+        "file": "Audio/For My Anima/07. Lucky to Grieve.mp3"
       }
     ]
   }
