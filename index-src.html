@@ -1851,7 +1851,6 @@ return pool[Math.floor(Math.random()*pool.length)];
 var heroIcon = document.getElementById('hero-icon');
 var heroTrack = document.getElementById('hero-photo-track');
 if (!heroIcon || !heroTrack) return;
-var clicks = 0;
 var swapped = false;
 function randHue(near) {
 for (var t = 0; t < 64; t++) {
@@ -1920,10 +1919,9 @@ if (gridValid(grid)) return grid;
 }
 return grid;
 }
-heroIcon.addEventListener('click', function() {
-clicks++;
-if (clicks < 5) return;
-clicks = 0;
+// Warhol easter egg: triggered only from the footer logo, which first
+// scrolls the page back to the very top, then reveals. One-shot.
+function revealWarhol() {
 if (swapped) return;
 swapped = true;
 var img = heroTrack.querySelector('.hero-split-photo');
@@ -1962,7 +1960,24 @@ heroTrack.classList.remove('reveal');
 finishReveal();
 });
 }
+}
+var footerLogo = document.querySelector('.footer-logo');
+if (footerLogo) {
+footerLogo.addEventListener('click', function(e) {
+e.preventDefault();
+var reducedScroll = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+window.scrollTo({ top: 0, behavior: reducedScroll ? 'auto' : 'smooth' });
+// Reveal once the scroll home has settled (scrollend where supported,
+// timeout fallback for browsers/already-at-top cases).
+var fired = false;
+function go() { if (fired) return; fired = true; revealWarhol(); }
+window.addEventListener('scrollend', function onEnd() {
+window.removeEventListener('scrollend', onEnd);
+go();
 });
+setTimeout(go, 1200);
+});
+}
 })();
 /* About-section childhood shots are grayscale at rest, color on hover -
    a click/tap toggles each photo to color and back, so touch devices
