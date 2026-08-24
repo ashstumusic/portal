@@ -273,10 +273,14 @@ html {
 .nav-links a[aria-current]::after { opacity: .18; }
 .nav-platforms { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
 .nav-platform {
-  display: flex; align-items: center; opacity: .55;
-  transition: opacity .3s var(--ease), transform .3s var(--ease); text-decoration: none;
+  display: flex; align-items: center;
+  transition: transform .3s var(--ease), filter .3s var(--ease); text-decoration: none;
 }
-.nav-platform:hover { opacity: .9; transform: scale(1.15); }
+.nav-platform:hover, .nav-platform:focus-visible { transform: scale(1.15); }
+/* Solid brand icons at rest; they flush to the house gold when highlighted */
+.nav-platform:hover .pt, .nav-platform:focus-visible .pt {
+  filter: grayscale(1) sepia(1) saturate(5) hue-rotate(-8deg) brightness(1.02);
+}
 .nav-platform .pt { width: 26px; height: 26px; border-radius: 50%; }
 .nav-toggle {
   display: none; background: rgba(255,255,255,.06);
@@ -369,14 +373,18 @@ html {
 }
 .drawer-platforms a {
   display: flex; align-items: center; border-bottom: none !important;
-  padding: 0 !important; opacity: .45;
-  transition: opacity .3s var(--ease), transform .3s var(--ease-spring);
+  padding: 0 !important;
+  transition: transform .3s var(--ease-spring), filter .3s var(--ease);
   width: auto; margin: 0;
 }
 /* Icons keep the desktop toolbar's scale-up hover - no gold ink-bleed
-   pill behind them, that's for the text menu items only. */
+   pill behind them, that's for the text menu items only. Solid at rest,
+   gold when highlighted (same treatment as the desktop toolbar). */
 .drawer-platforms a::before, .drawer-platforms a::after { content: none; }
-.drawer-platforms a:hover { opacity: 1; transform: scale(1.15); }
+.drawer-platforms a:hover, .drawer-platforms a:focus-visible { transform: scale(1.15); }
+.drawer-platforms a:hover .pt, .drawer-platforms a:focus-visible .pt {
+  filter: grayscale(1) sepia(1) saturate(5) hue-rotate(-8deg) brightness(1.02);
+}
 .drawer-platforms .pt { width: 30px; height: 30px; border-radius: 50%; }
 
 /* ════════════════════════════════════════════
