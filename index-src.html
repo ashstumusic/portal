@@ -1606,14 +1606,18 @@ function loadDynamicContent() {
 var dataAll = readEmbedded('data-all');
 var embedded = dataAll ? [dataAll.releases, dataAll.videos, dataAll.lyrics] : [null];
 if (embedded[0]) renderAllContent(embedded, false);
-// Still revalidate against the live .json files: content added through
-// the GitHub web UI (no local rebuild) updates those without touching
-// the embedded copy. Only re-render if something actually changed.
-Promise.all([
-fetch('releases.json').then(function(r) { return r.json(); }).catch(function() { return null; }),
-fetch('videos.json').then(function(r) { return r.json(); }).catch(function() { return null; }),
-fetch('lyrics.json').then(function(r) { return r.json(); }).catch(function() { return null; })
-]).then(function(results) {
+ // Still revalidate against the live .json files: content added through
+ // the GitHub web UI (no local rebuild) updates those without touching
+ // the embedded copy. Only re-render if something actually changed.
+ // cache:'no-store' - a cached .json paired with a different-generation
+ // cached index.html desyncs the player/UI (stale-preload bug), so always
+ // take the freshest copy; the HTML itself is the only thing allowed to
+ // lag behind briefly.
+ Promise.all([
+ fetch('releases.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
+ fetch('videos.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
+ fetch('lyrics.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; })
+ ]).then(function(results) {
 if (results[0] === null) results[0] = embedded[0] ? embedded[0] : [];
 if (results[1] === null) results[1] = embedded[1] ? embedded[1] : [];
 if (results[2] === null) results[2] = embedded[2] ? embedded[2] : {};
