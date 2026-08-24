@@ -590,6 +590,12 @@ const npAudio = document.getElementById('np-audio');
 const npBar = document.getElementById('player-bar');
 let _src = '';
 function _safeAudioSrc(p){return p.split('/').map(encodeURIComponent).join('/');}
+// True once audio has actually sounded (user hit play at least once).
+// A background content refresh uses this to decide whether the idle
+// preloaded default track should be swapped to the new latest release -
+// without it, a stale preload keeps playing under a re-rendered UI.
+var _everPlayed = false;
+npAudio.addEventListener('playing', function() { _everPlayed = true; });
 // True while a finger/mouse is scrubbing a seek bar - timeupdate keeps
 // its hands off the fill/thumb then (pointer position drives them).
 var _seekDragging = false;
@@ -1584,8 +1590,11 @@ var vidGrid = document.getElementById('video-grid');
 if (vidGrid) vidGrid.innerHTML = VIDEO_LIST.map(renderVideoCard).join('');
 
 renderFeatured(RELEASE_LIST[0]);
-// A background refresh must never yank whatever's loaded in the player.
-if (!isRefresh || !_src) initDefaultTrack();
+// A background refresh must never yank whatever's loaded in the player -
+// but if nothing has actually played yet, the idle preload should track
+// the new latest release (otherwise play resumes a stale preloaded src
+// that no longer matches the re-rendered UI).
+if (!isRefresh || !_src || !_everPlayed) initDefaultTrack();
 buildTracklists();
 setupCardListeners();
 wireVideos();
