@@ -1,1 +1,2 @@
 spotify: https://open.spotify.com/album/3ouWrphmGwFKvNbQWjfxTq?si=UWmppXTZT8GTYP5PEA4OYw
+apple: https://music.apple.com/us/album/youre-still-sad-single/6804525123
