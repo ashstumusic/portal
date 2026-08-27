@@ -909,30 +909,42 @@ npAudio.addEventListener('loadedmetadata', () => { _npDur.textContent = fmtT(npA
 // off the (thin) bar - so this is real click-to-seek AND drag-to-scrub,
 // not just a jump-on-click like before.
 function wireSeekBar(el) {
-var fill = el.querySelector('#np-fill, .fs-fill');
-var thumb = el.querySelector('.seek-thumb');
-var dragging = false, pendingPct = -1, rafId = null;
-// Volume-slider feel: fill + thumb track the pointer directly, applied
-// once per frame via rAF. The media seek rides the same frame, so time
-// scrubs continuously - but the visuals never wait on the (async) seek,
-// and .seeking kills the bars' catch-up transitions during the drag.
-function apply() {
-rafId = null;
-if (pendingPct < 0) return;
-fill.style.transform = 'scaleX(' + pendingPct + ')';
-if (thumb) thumb.style.transform = 'translateX(' + (pendingPct * 100) + '%)';
-if (npAudio.duration) npAudio.currentTime = pendingPct * npAudio.duration;
-}
-function seek(e) {
-var r = el.getBoundingClientRect();
-pendingPct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-if (rafId === null) rafId = requestAnimationFrame(apply);
-}
-function end() { dragging = false; _seekDragging = false; el.classList.remove('seeking'); }
+ var fill = el.querySelector('#np-fill, .fs-fill');
+ var thumb = el.querySelector('.seek-thumb');
+ var dragging = false, pendingPct = -1, rafId = null, lastSeek = 0, rect = null;
+ // Volume-slider feel: fill + thumb track the pointer directly, applied
+ // once per frame via rAF, so the visuals never wait on media. Audio seeks
+ // are async, and writing currentTime every frame while dragging floods the
+ // element, making playback lag behind the thumb (which reads as a sticky,
+ // slow slider). So media seeks are throttled to ~6/s during the drag and
+ // one final seek lands exactly at the released position.
+ function paint() {
+ if (pendingPct < 0) return;
+ fill.style.transform = 'scaleX(' + pendingPct + ')';
+ if (thumb) thumb.style.transform = 'translateX(' + (pendingPct * 100) + '%)';
+ }
+ function apply() {
+ rafId = null;
+ paint();
+ var now = performance.now();
+ if (npAudio.duration && now - lastSeek > 160) {
+ lastSeek = now;
+ npAudio.currentTime = pendingPct * npAudio.duration;
+ }
+ }
+ function seek(e) {
+ var r = rect || el.getBoundingClientRect();
+ pendingPct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+ if (rafId === null) rafId = requestAnimationFrame(apply);
+ }
+ function end() {
+ dragging = false; _seekDragging = false; el.classList.remove('seeking');
+ if (pendingPct >= 0 && npAudio.duration) npAudio.currentTime = pendingPct * npAudio.duration;
+ }
 // Never call preventDefault (touch-action:none in CSS already blocks
 // default scroll/pan on these bars), so passive:true is safe here and
 // lets the browser skip synchronously waiting to see if it's needed.
-el.addEventListener('pointerdown', function(e) { dragging = true; _seekDragging = true; el.classList.add('seeking'); el.setPointerCapture(e.pointerId); seek(e); }, { passive: true });
+el.addEventListener('pointerdown', function(e) { dragging = true; _seekDragging = true; el.classList.add('seeking'); rect = el.getBoundingClientRect(); el.setPointerCapture(e.pointerId); seek(e); }, { passive: true });
 el.addEventListener('pointermove', function(e) { if (dragging) seek(e); }, { passive: true });
 el.addEventListener('pointerup', end, { passive: true });
 el.addEventListener('pointercancel', end, { passive: true });

@@ -1471,7 +1471,7 @@ body.player-active { padding-bottom: 68px; }
   flex: 1; height: 100%; background: rgba(8,76,97,.24);
   position: relative; cursor: pointer; touch-action: none;
 }
-#np-fill { height: 100%; background: var(--player-ink); width: 100%; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s linear; will-change: transform; pointer-events: none; }
+#np-fill { height: 100%; background: var(--player-ink); width: 100%; transform: scaleX(0); transform-origin: 0 50%; transition: transform .15s linear; will-change: transform; pointer-events: none; }
 /* Seek thumb: a visible grab dot riding the playhead. The element is a
    full-track-width rail, so translateX(n%) of its own width lands the dot
    at n% of the track - same transform-only write that drives the fill,
@@ -1491,7 +1491,7 @@ body.player-active { padding-bottom: 68px; }
   box-shadow: 0 1px 4px rgba(0,0,0,.35);
 }
 /* match each bar's fill transition so dot and fill move as one */
-#np-bar-track .seek-thumb { transition: transform .3s linear; }
+ #np-bar-track .seek-thumb { transition: transform .15s linear; }
 .fs-bar .seek-thumb { transition: transform .15s linear; }
 .fs-bar .seek-thumb::before { width: 18px; height: 18px; box-shadow: 0 0 0 2px rgba(250,252,252,.6), 0 1px 4px rgba(0,0,0,.35); box-shadow: 0 0 0 2px rgb(from var(--cream) r g b / .6), 0 1px 4px rgba(0,0,0,.35); }
 /* While scrubbing (.seeking set on pointerdown, cleared on release):
