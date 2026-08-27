@@ -1,5 +1,18 @@
 [
   {
+    "name": "Sisyphus Side",
+    "type": "Single",
+    "art": "Images/Releases/Sisyphus Side.png",
+    "apple": null,
+    "spotify": null,
+    "tracks": [
+      {
+        "title": "Sisyphus Side",
+        "file": "Audio/Sisyphus Side/Sisyphus Side.mp3"
+      }
+    ]
+  },
+  {
     "name": "You're Still Sad",
     "type": "Single",
     "art": "Images/Releases/You're Still Sad.png",
