@@ -1,18 +1,5 @@
 [
   {
-    "name": "Sisyphus Side",
-    "type": "Single",
-    "art": "Images/Releases/Sisyphus Side.png",
-    "apple": "https://music.apple.com/us/song/sisyphus-side/6805882621",
-    "spotify": "https://open.spotify.com/track/4bmKJqGwxGXPhPtkmDWX0c?si=bbe3fd9d49ae4f3f",
-    "tracks": [
-      {
-        "title": "Sisyphus Side",
-        "file": "Audio/Sisyphus Side/Sisyphus Side.mp3"
-      }
-    ]
-  },
-  {
     "name": "You're Still Sad",
     "type": "Single",
     "art": "Images/Releases/You're Still Sad.png",
