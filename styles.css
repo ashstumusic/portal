@@ -2743,6 +2743,83 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 @media (max-height: 360px) and (orientation: landscape) { .bio-section-header { padding-inline: 1rem; } }
 @media (max-aspect-ratio: 9/21) { .bio-section-header { padding-inline: .75rem; } }
 
+/* ════════════════════════════════════════════
+   iPAD / LARGE TABLET (700–900px portrait) -
+   the mobile base otherwise stretches a phone layout across the whole
+   width: the photo band eats half the screen, the featured panel reads
+   as one oversized centered column with dead space around the art, and
+   the cards balloon to twice phone size. The portrait tablet gets its
+   own treatment: the full desktop toolbar (it fits once the link chrome
+   tightens), a compact hero panel with the art beside the text instead
+   of on top, and cards tiled three-across like a record wall. Everything
+   else keeps the mobile phone rules. The width cap keeps phones
+   (≤ ~430px) fully on the old stacked layout, and the orientation guard
+   keeps square-ish short windows on the aspect-ratio layouts. */
+@media (min-width: 700px) and (max-width: 900px) and (orientation: portrait) {
+  /* Nav: the toolbar fits at tablet width, so the hamburger + drawer
+     step aside for the desktop links and platform icons. */
+  .nav { height: 52px; min-height: 52px; }
+  .nav-links, .nav-platforms { display: flex; }
+  .nav-toggle { display: none; }
+  .nav-drawer, .nav-drawer.open { display: none; }
+  .nav-links { gap: clamp(1.2rem, 2.5vw, 2rem); }
+  .nav-links a { font-size: .72rem; letter-spacing: .13em; padding: .25rem .5rem; }
+  .nav-logo .hero-icon { width: 26px; }
+  .nav-logo .hero-name { font-size: 1.4rem; top: .15em; }
+
+  /* Hero: stop force-filling a phone-height screen (that rule leaves dark
+     dead space under the panel); end where photo + panel end and flow
+     straight into the press kit. */
+  .hero-split { min-height: 0; height: auto; }
+  .hero-split-photo { object-position: 8% 18%; }
+
+  /* Featured panel: art on the left, badge/title/buttons stacked beside it.
+     Grid (not flex) so the right hand column stacks without needing a new
+     wrapper element in the markup. */
+  .hero-split-right {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: repeat(4, auto);
+    align-content: center;
+    justify-content: center;
+    justify-items: start;
+    align-items: center;
+    column-gap: clamp(1.5rem, 4vw, 2.5rem);
+    row-gap: .35rem;
+    text-align: left;
+    padding: 1.75rem 2rem 96px;
+  }
+  .hero-split-right .featured-art-hero {
+    grid-column: 1; grid-row: 1 / 5;
+    flex: none;
+    width: clamp(200px, 30cqi, 260px);
+    max-height: none; min-height: 0;
+    align-self: center;
+  }
+  .hero-split-right .featured-badge { font-size: .56rem; padding: .35rem .95rem; margin: 0; }
+  .hero-split-right .featured-kicker { font-size: .84rem; margin: 0; }
+  .hero-split-right .featured-title { font-size: 1.9rem;
+ font-size: min(4.8cqi, 1.9rem); white-space: normal; margin: 0; }
+  .hero-split-right .featured-btns { margin-top: .4rem; width: auto; justify-self: start; }
+
+  /* Cards: two phone-cards is ballooned at ~820px wide; three tiled reads
+     like a record wall and lines up 6 releases / 6 videos in two tidy rows. */
+  .releases-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+  .video-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+}
+
+/* ════════════════════════════════════════════
+   iPAD / LARGE TABLET LANDSCAPE (1101–1220px) -
+   the base 901–1199 rule drops the grids to two fat cards, and the
+   desktop 1200+ rule jumps to four tight ones. Split the difference:
+   three across, so a landscape iPad Air (1180px) reads as a wall of
+   records instead of two blown-up phone cards. Square-ish iPads
+   (≤1100px) keep their purpose-built 2-column layout above. */
+@media (min-width: 1100px) and (max-width: 1220px) and (orientation: landscape) {
+  .releases-grid { grid-template-columns: repeat(3, 1fr); }
+  .video-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
 /* ── SHORT VIEWPORTS - trim panel chrome so the (shrinkable) art keeps
    reasonable size when height is compressed ── */
 @media (max-height: 700px) {
