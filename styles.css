@@ -180,7 +180,7 @@ html {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   min-height: 56px;
   /* Safety net, not the primary responsive mechanism (that's still the
-     ≤900px hamburger-menu breakpoint below) - text-only browser zoom
+     ≤767px hamburger-menu breakpoint below) - text-only browser zoom
      (WCAG 1.4.4, distinct from full-page zoom) grows this row's content
      without changing the reported viewport width, so the width-based
      breakpoint alone can't catch it. Wrapping keeps every link/icon
@@ -340,7 +340,7 @@ html {
 }
 /* Drawer is mobile-only: if it was left open and the viewport grows past the
    breakpoint, kill it entirely so a stale .open can't show it on desktop. */
-@media (min-width: 901px) {
+@media (min-width: 768px) {
   .nav-drawer, .nav-drawer.open { display: none; }
 }
 /* Same ink-bleed highlight as the desktop toolbar and the streaming
@@ -583,7 +583,7 @@ html {
 .hero-scroll.soft:hover { opacity: 1; }
 /* keep clear of the player bar when it's docked */
 body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
-@media (max-width: 900px) {
+@media (max-width: 767px) {
   body.player-active .hero-scroll { bottom: calc(.9rem + 78px); }
 }
 @keyframes heroScrollBob {
@@ -721,7 +721,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 /* The -.75rem pull-ups assume the desktop panel's 1.25rem gap. In any
    condensed layout (narrow or short) the gap shrinks below that, so negative
    margins would stack content into an overlap - zero them out there. */
-@media (max-width: 900px), (max-height: 500px) {
+@media (max-width: 767px), (max-height: 500px) {
   .featured-badge, .featured-kicker { margin-bottom: 0; }
   .featured-kicker { margin-top: 0; }
 }
@@ -1450,7 +1450,7 @@ body.player-active { padding-bottom: 68px; }
    These two switch it to the player's deep-teal ink so keyboard focus
    stays visible wherever the player is showing. */
 #player-bar :focus-visible, .fs-player :focus-visible { outline-color: var(--player-ink); }
-@media (max-width: 900px) {
+@media (max-width: 767px) {
   #player-bar {
     bottom: 8px; left: 8px; right: 8px;
     border-radius: 14px; height: 72px;
@@ -1986,7 +1986,7 @@ body.player-active { padding-bottom: 68px; }
 /* ════════════════════════════════════════════
    MOBILE - reimagined, not scaled down
    ════════════════════════════════════════════ */
-@media (min-width: 901px) {
+@media (min-width: 768px) {
   /* face sits ~19%,16% in the source photo - keeps it in frame on any box */
   .hero-split-photo { object-position: 8% 18%; }
 }
@@ -2006,28 +2006,29 @@ body.player-active { padding-bottom: 68px; }
 }
 
 /* ════════════════════════════════════════════
-   WIDE DESKTOP (1200–1600px) - 3-col grids
+   DESKTOP GRIDS (1100–1600px) - 4/3-col record wall
    ════════════════════════════════════════════ */
-@media (min-width: 1200px) and (max-width: 1599px) {
+@media (min-width: 1100px) and (max-width: 1599px) {
   .releases-grid { grid-template-columns: repeat(4, 1fr); }
   .video-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ════════════════════════════════════════════
-   TABLET LANDSCAPE (900–1200px) - 2-col grids
+   COMPACT DESKTOP (768–1099px) - iPad portrait and
+   small landscape run the desktop layout, with the
+   grids auto-filling three across.
    ════════════════════════════════════════════ */
-@media (min-width: 901px) and (max-width: 1199px) {
-  .hero-split { grid-template-columns: 3fr 1.5fr; min-height: calc(100vw * .4525); }
-  .releases-grid { grid-template-columns: repeat(2, 1fr); }
-  .video-grid { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 768px) and (max-width: 1099px) {
+  .releases-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%,220px), 1fr)); }
+  .video-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%,220px), 1fr)); }
   .section { padding: 4rem 1.5rem;
  padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
 }
 
 /* ════════════════════════════════════════════
-   TABLET PORTRAIT (601–900px) - transitional
+   MOBILE (≤767px) - base phone layout
    ════════════════════════════════════════════ */
-@media (max-width: 900px) {
+@media (max-width: 767px) {
   .nav { height: 48px; min-height: 48px; padding: 0 1rem; }
   .nav-logo .hero-icon { width: 24px; }
   .nav-logo .hero-name { font-size: 1.038rem; top: 0.17em; }
@@ -2143,9 +2144,9 @@ body.player-active { padding-bottom: 68px; }
 }
 
 /* ════════════════════════════════════════════
-   TABLET (601–900px) - 2-col where it fits
+   SMALL TABLET (601–767px) - 2-col where it fits
    ════════════════════════════════════════════ */
-@media (min-width: 601px) and (max-width: 900px) {
+@media (min-width: 601px) and (max-width: 767px) {
   .releases-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .video-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .form-row { grid-template-columns: 1fr 1fr; }
@@ -2324,11 +2325,11 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-right { --panel-floor: 340px; padding: .75rem 1.25rem 40px; gap: .5rem; }
   .hero-split-right .featured-art-hero { min-height: 0; }
 }
-/* Square-ish tablets and short landscape phones above mobile-base's 900px
+/* Square-ish tablets and short landscape phones above mobile-base's 767px
    cutoff still need the EPK stacked, not the base 3-col desktop layout -
    the base rule hardcodes .epk-photos-top/bottom to grid-column:2/3, which
    only works against 3 columns, so this repoints them along with it. */
-@media ((min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (min-width: 901px) and (max-width: 1100px)), ((max-height: 500px) and (orientation: landscape)) {
+@media ((min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (min-width: 768px) and (max-width: 1100px)), ((max-height: 500px) and (orientation: landscape)) {
   .epk-section { grid-template-columns: 1fr; }
   .epk-photos-top { grid-column: 1; grid-row: 1; }
   .epk-body { grid-column: 1; grid-row: 2; padding: 1.5rem 1.25rem; text-align: left; display: grid; grid-template-columns: 1fr 1.5fr; grid-template-rows: auto auto; gap: .25rem 1rem; align-items: start; }
@@ -2441,10 +2442,10 @@ body.player-active { padding-bottom: 68px; }
 .gj4 { animation: gj4 var(--d,8s)   steps(6) infinite; }
 .gj5 { animation: gj5 var(--d,6.5s) steps(3) infinite; }
 .gj6 { animation: gj6 var(--d,9s)   steps(8) infinite; }
-@media (min-width: 901px) {
+@media (min-width: 768px) {
   .gilliam-flower.mob-only { display: none; }
 }
-@media (max-width: 900px) {
+@media (max-width: 767px) {
   .gilliam-flower.desk-only { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2682,7 +2683,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* Only lock the fold on true phone shapes (clearly taller than wide, with
    real vertical room). Square-ish or short windows fall back to the flowing
    mobile layout instead of clipping. */
-@media (max-width: 900px) and (orientation: portrait) and (max-aspect-ratio: 7/10) and (min-height: 700px) {
+@media (max-width: 767px) and (orientation: portrait) and (max-aspect-ratio: 7/10) and (min-height: 700px) {
   .hero-split {
     /* One phone screen when it fits; if the panel's content is taller than
        the leftover row, the section grows and scrolls instead of the
@@ -2727,7 +2728,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    (1260/855), so cover crops the sides, never the top/bottom. The panel then
    takes whatever the row leaves; when that pushes the hero past one screen it
    scrolls naturally instead of slicing the photo. */
-@media (max-width: 900px) and (orientation: portrait) {
+@media (max-width: 767px) and (orientation: portrait) {
   .hero-split { --band: calc(100vw / 1.4737); }
 }
 
@@ -2735,8 +2736,8 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    .bio-section has padding:0 (full-bleed photos), so its header carries its
    own gutter - these mirror every .section padding override, in the same
    cascade order, so "About" always lines up with the other section headers. */
-@media (min-width: 901px) and (max-width: 1199px) { .bio-section-header { padding-inline: clamp(1.5rem,4vw,3rem); } }
-@media (max-width: 900px) { .bio-section-header { padding-inline: 1.25rem; } }
+@media (min-width: 768px) and (max-width: 1099px) { .bio-section-header { padding-inline: clamp(1.5rem,4vw,3rem); } }
+@media (max-width: 767px) { .bio-section-header { padding-inline: 1.25rem; } }
 @media (max-width: 360px) { .bio-section-header { padding-inline: .75rem; } }
 @media (max-width: 520px) and (orientation: portrait) { .bio-section-header { padding-inline: 1rem; } }
 @media (max-height: 500px) and (orientation: landscape) { .bio-section-header { padding-inline: 1.25rem; } }
@@ -2744,80 +2745,50 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 @media (max-aspect-ratio: 9/21) { .bio-section-header { padding-inline: .75rem; } }
 
 /* ════════════════════════════════════════════
-   iPAD / LARGE TABLET (700–900px portrait) -
-   the mobile base otherwise stretches a phone layout across the whole
-   width: the photo band eats half the screen, the featured panel reads
-   as one oversized centered column with dead space around the art, and
-   the cards balloon to twice phone size. The portrait tablet gets its
-   own treatment: the full desktop toolbar (it fits once the link chrome
-   tightens), a compact hero panel with the art beside the text instead
-   of on top, and cards tiled three-across like a record wall. Everything
-   else keeps the mobile phone rules. The width cap keeps phones
-   (≤ ~430px) fully on the old stacked layout, and the orientation guard
-   keeps square-ish short windows on the aspect-ratio layouts. */
-@media (min-width: 700px) and (max-width: 900px) and (orientation: portrait) {
-  /* Nav: the toolbar fits at tablet width, so the hamburger + drawer
-     step aside for the desktop links and platform icons. */
-  .nav { height: 52px; min-height: 52px; }
-  .nav-links, .nav-platforms { display: flex; }
-  .nav-toggle { display: none; }
-  .nav-drawer, .nav-drawer.open { display: none; }
-  .nav-links { gap: clamp(1.2rem, 2.5vw, 2rem); }
-  .nav-links a { font-size: .72rem; letter-spacing: .13em; padding: .25rem .5rem; }
-  .nav-logo .hero-icon { width: 26px; }
-  .nav-logo .hero-name { font-size: 1.4rem; top: .15em; }
-
-  /* Hero: stop force-filling a phone-height screen (that rule leaves dark
-     dead space under the panel); end where photo + panel end and flow
-     straight into the press kit. */
-  .hero-split { min-height: 0; height: auto; }
-  .hero-split-photo { object-position: 8% 18%; }
-
-  /* Featured panel: art on the left, badge/title/buttons stacked beside it.
-     Grid (not flex) so the right hand column stacks without needing a new
-     wrapper element in the markup. */
-  .hero-split-right {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: repeat(4, auto);
-    align-content: center;
-    justify-content: center;
-    justify-items: start;
-    align-items: center;
-    column-gap: clamp(1.5rem, 4vw, 2.5rem);
-    row-gap: .35rem;
-    text-align: left;
-    padding: 1.75rem 2rem 96px;
+   TABLET DESKTOP FIT (768–1099px portrait) -
+   the desktop layout now runs at tablet widths, but the base
+   2.5fr/1fr hero leaves the featured panel too narrow on a
+   portrait iPad. Widen the panel and shrink the hero art's cap
+   so the panel never squeezes; everything else is desktop-as-is.
+   ════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1099px) and (orientation: portrait) {
+  .hero-split {
+    grid-template-columns: 1.7fr 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    /* Home fills the whole screen, and the photo starts below the fixed
+       toolbar instead of running under it. */
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 56px;
+    --nav-pad: 56px;
   }
-  .hero-split-right .featured-art-hero {
-    grid-column: 1; grid-row: 1 / 5;
-    flex: none;
-    width: clamp(200px, 30cqi, 260px);
-    max-height: none; min-height: 0;
-    align-self: center;
-  }
-  .hero-split-right .featured-badge { font-size: .56rem; padding: .35rem .95rem; margin: 0; }
-  .hero-split-right .featured-kicker { font-size: .84rem; margin: 0; }
-  .hero-split-right .featured-title { font-size: 1.9rem;
- font-size: min(4.8cqi, 1.9rem); white-space: normal; margin: 0; }
-  .hero-split-right .featured-btns { margin-top: .4rem; width: auto; justify-self: start; }
-
-  /* Cards: two phone-cards is ballooned at ~820px wide; three tiled reads
-     like a record wall and lines up 6 releases / 6 videos in two tidy rows. */
-  .releases-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
-  .video-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+  .hero-split-left { height: auto; max-height: none; }
+  .hero-split-right { padding: clamp(2rem,4vw,3rem) clamp(1.25rem,3vw,2rem) 96px; gap: .85rem; }
+  .hero-split-right .featured-art-hero { max-height: min(360px, 42dvh, 70cqw); }
+  .hero-split-right .featured-title { white-space: normal; }
 }
 
-/* ════════════════════════════════════════════
-   iPAD / LARGE TABLET LANDSCAPE (1101–1220px) -
-   the base 901–1199 rule drops the grids to two fat cards, and the
-   desktop 1200+ rule jumps to four tight ones. Split the difference:
-   three across, so a landscape iPad Air (1180px) reads as a wall of
-   records instead of two blown-up phone cards. Square-ish iPads
-   (≤1100px) keep their purpose-built 2-column layout above. */
-@media (min-width: 1100px) and (max-width: 1220px) and (orientation: landscape) {
-  .releases-grid { grid-template-columns: repeat(3, 1fr); }
-  .video-grid { grid-template-columns: repeat(3, 1fr); }
+/* Landscape tablets (iPad Air 1180x820 and friends) fill the viewport too,
+   with the same toolbar offset as portrait. Square-ish iPads (≤1100px) keep
+   their purpose-built stacked layout. */
+@media (min-width: 1101px) and (max-width: 1199px) and (orientation: landscape) {
+  .hero-split {
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 56px;
+    --nav-pad: 56px;
+  }
+  .hero-split-left { height: auto; max-height: none; }
+}
+
+/* Toolbar link chrome tightens between 768–900px so the full desktop
+   nav fits before the phone hamburger takes over at ≤767px. */
+@media (min-width: 768px) and (max-width: 900px) {
+  .nav-links { gap: clamp(.9rem, 2vw, 1.4rem); }
+  .nav-links a { font-size: .68rem; letter-spacing: .1em; padding: .25rem .5rem; }
+  .nav-platforms { gap: .5rem; }
+  .nav-platform .pt { width: 22px; height: 22px; }
 }
 
 /* ── SHORT VIEWPORTS - trim panel chrome so the (shrinkable) art keeps
@@ -2839,7 +2810,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    NOTCHED PHONES - keep fixed bars clear of the
    home indicator (safe-area-inset-bottom)
    ════════════════════════════════════════════ */
-@media (max-width: 900px) {
+@media (max-width: 767px) {
   @supports (padding: env(safe-area-inset-bottom)) {
     #player-bar { bottom: max(8px, env(safe-area-inset-bottom)); }
     body.player-active { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
