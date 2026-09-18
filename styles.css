@@ -2294,9 +2294,9 @@ body.player-active { padding-bottom: 68px; }
 }
 
 /* ════════════════════════════════════════════
-   SQUARE-ISH (iPad, foldables) - aspect ~1:1
+   SQUARE-ISH (phones ≤767px, foldables) - aspect ~1:1
    ════════════════════════════════════════════ */
-@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (max-width: 1100px) {
+@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (max-width: 767px) {
   .hero-split {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(min-content, 1fr);
@@ -2321,15 +2321,15 @@ body.player-active { padding-bottom: 68px; }
    470px panel floor can exceed what's actually left, pushing the whole hero
    past the fold (title + buttons land below the viewport). Drop the floor
    so the panel takes what's left, and trim its bottom padding to match. */
-@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (orientation: landscape) and (max-height: 850px) {
+@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (orientation: landscape) and (max-height: 850px) and (max-width: 767px) {
   .hero-split-right { --panel-floor: 340px; padding: .75rem 1.25rem 40px; gap: .5rem; }
   .hero-split-right .featured-art-hero { min-height: 0; }
 }
-/* Square-ish tablets and short landscape phones above mobile-base's 767px
-   cutoff still need the EPK stacked, not the base 3-col desktop layout -
-   the base rule hardcodes .epk-photos-top/bottom to grid-column:2/3, which
-   only works against 3 columns, so this repoints them along with it. */
-@media ((min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (min-width: 768px) and (max-width: 1100px)), ((max-height: 500px) and (orientation: landscape)) {
+/* Square-ish phones and short landscape phones still need the EPK stacked,
+   not the base 3-col desktop layout - the base rule hardcodes
+   .epk-photos-top/bottom to grid-column:2/3, which only works against
+   3 columns, so this repoints them along with it. */
+@media ((min-aspect-ratio: 3/4) and (max-aspect-ratio: 4/3) and (max-width: 767px)), ((max-height: 500px) and (orientation: landscape)) {
   .epk-section { grid-template-columns: 1fr; }
   .epk-photos-top { grid-column: 1; grid-row: 1; }
   .epk-body { grid-column: 1; grid-row: 2; padding: 1.5rem 1.25rem; text-align: left; display: grid; grid-template-columns: 1fr 1.5fr; grid-template-rows: auto auto; gap: .25rem 1rem; align-items: start; }
@@ -2745,41 +2745,31 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 @media (max-aspect-ratio: 9/21) { .bio-section-header { padding-inline: .75rem; } }
 
 /* ════════════════════════════════════════════
-   TABLET DESKTOP FIT (768–1099px portrait) -
-   the desktop layout now runs at tablet widths, but the base
-   2.5fr/1fr hero leaves the featured panel too narrow on a
-   portrait iPad. Widen the panel and shrink the hero art's cap
-   so the panel never squeezes; everything else is desktop-as-is.
-   ════════════════════════════════════════════ */
-@media (min-width: 768px) and (max-width: 1099px) and (orientation: portrait) {
+   FULL-VIEWPORT HOME (≥768px, tall enough to be a tablet/desktop) -
+   every screen that isn't a narrow phone gets the same hero: the
+   side-by-side layout, stretched to fill the whole viewport, with
+   the photo starting below the fixed toolbar instead of running
+   under it. Short landscape windows (max-height ≤500px) keep the
+   landscape-phone block's own full-screen 2-col hero. */
+@media (min-width: 768px) and (min-height: 501px) {
   .hero-split {
-    grid-template-columns: 1.7fr 1fr;
     grid-template-rows: minmax(0, 1fr);
-    /* Home fills the whole screen, and the photo starts below the fixed
-       toolbar instead of running under it. */
     min-height: 100vh;
     min-height: 100svh;
     padding-top: 56px;
     --nav-pad: 56px;
   }
   .hero-split-left { height: auto; max-height: none; }
+}
+
+/* Portrait tablets (768–1099px): the base 2.5fr/1fr hero leaves the
+   featured panel too narrow to sit beside the art, so widen it there.
+   Everything else is desktop-as-is. */
+@media (min-width: 768px) and (max-width: 1099px) and (orientation: portrait) {
+  .hero-split { grid-template-columns: 1.7fr 1fr; }
   .hero-split-right { padding: clamp(2rem,4vw,3rem) clamp(1.25rem,3vw,2rem) 96px; gap: .85rem; }
   .hero-split-right .featured-art-hero { max-height: min(360px, 42dvh, 70cqw); }
   .hero-split-right .featured-title { white-space: normal; }
-}
-
-/* Landscape tablets (iPad Air 1180x820 and friends) fill the viewport too,
-   with the same toolbar offset as portrait. Square-ish iPads (≤1100px) keep
-   their purpose-built stacked layout. */
-@media (min-width: 1101px) and (max-width: 1199px) and (orientation: landscape) {
-  .hero-split {
-    grid-template-rows: minmax(0, 1fr);
-    min-height: 100vh;
-    min-height: 100svh;
-    padding-top: 56px;
-    --nav-pad: 56px;
-  }
-  .hero-split-left { height: auto; max-height: none; }
 }
 
 /* Toolbar link chrome tightens between 768–900px so the full desktop
