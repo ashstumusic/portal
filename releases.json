@@ -1,18 +1,5 @@
 [
   {
-    "name": "You're Still Sad",
-    "type": "Single",
-    "art": "Images/Releases/You're Still Sad.png",
-    "apple": "https://music.apple.com/us/album/youre-still-sad-single/6804525123",
-    "spotify": "https://open.spotify.com/album/3ouWrphmGwFKvNbQWjfxTq?si=UWmppXTZT8GTYP5PEA4OYw",
-    "tracks": [
-      {
-        "title": "Still Sad",
-        "file": "Audio/You're Still Sad/Still Sad.mp3"
-      }
-    ]
-  },
-  {
     "name": "My Anima",
     "type": "Album",
     "art": "Images/Releases/My Anima.webp",
