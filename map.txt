@@ -42,27 +42,6 @@
   * `01. Drive Me Home.mp3`
   * `links.txt`
 
-* `Only a Baby, Vol. 1` (Folder)
-  * `01. THE COSMOS IS ALIVE.mp3`
-  * `02. the tragedy of the gifted child.mp3`
-  * `03. SOMEWHERE SOMETIME.mp3`
-  * `04. am soda.mp3`
-  * `05. THE ONE WHO STUNS THE BIRDS.mp3`
-  * `06. the raven.mp3`
-  * `07. VCR.mp3`
-  * `08. the cloud for the desert.mp3`
-  * `09. PRETEND.mp3`
-  * `10. sonnet for my delusion.mp3`
-  * `11. PICK UP THE PHONE.mp3`
-  * `12. the outdoor plant.mp3`
-  * `13. WHY HAVE EYES.mp3`
-  * `14. unanswerable questions.mp3`
-  * `15. A GRIEF PRESERVED.mp3`
-  * `16. future lives.mp3`
-  * `17. DON'T WISH YOUR LIFE AWAY.mp3`
-  * `18. the tragedy of the gifted child (reprise).mp3`
-  * `links.txt`
-
 * `Only a Baby, Vol. 2` (Folder)
   * `01. Cool Cat Can't Comprehend.mp3`
   * `02. Dirge for Ducklings.mp3`
@@ -118,7 +97,6 @@
 * `Releases` (Folder)
   * `Waste My Time.png` / `.webp`
   * `Drive Me Home.png` / `.webp`
-  * `Only a Baby, Vol. 1.png` / `.webp`
   * `Only a Baby, Vol. 2.png` / `.webp`
 * `Piano Batch` (Folder)
   * `1.png` – `4.png` / `.webp`
