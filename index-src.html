@@ -448,6 +448,15 @@
       <a href="#" id="fs-apple" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>
       <a href="#" id="fs-spotify" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>
     </div>
+    <!-- Time-synced lyrics (Apple Music style). Shown for songs that have a
+         .lrc file. The current line is highlighted and kept in view; tapping
+         a line jumps there. Keyboard: one Tab stop, arrow keys move between
+         lines, Enter jumps. Lines are not announced as they change (that
+         would talk over the music); the current one carries aria-current. -->
+    <button type="button" class="fs-lyrics-toggle" id="fs-lyrics-toggle" aria-expanded="true" aria-controls="fs-lyrics" hidden>Lyrics</button>
+    <section class="fs-lyrics" id="fs-lyrics" aria-label="Lyrics" hidden>
+      <ol class="fs-lyrics-list" id="fs-lyrics-list"></ol>
+    </section>
   </div>
 </div>
 <nav aria-label="Page sections">
@@ -973,6 +982,8 @@ if (rel && rel.apple) { fsApple.href = rel.apple; fsApple.style.display = ''; } 
 if (rel && rel.spotify) { fsSpotify.href = rel.spotify; fsSpotify.style.display = ''; } else if (fsSpotify) { fsSpotify.style.display = 'none'; }
 }
 function fsSync() {
+fsRenderLyrics();
+fsLyricsKick();
 fsTrack.textContent = _npTrackEl.dataset.label || _npTrackEl.textContent;
 npMarquee(fsTrack);
 fsAlbum.textContent = _npAlbumEl.textContent;
@@ -998,6 +1009,122 @@ fsCur.textContent = '0:00';
 fsDur.textContent = '·';
 }
 }
+// ── Synced lyrics ─────────────────────────────────────────────────
+// Data: lyrics.json, keyed by audio file, [[seconds, line], ...] (built
+// from the .lrc next to each MP3). One rAF loop runs only while the
+// full-screen player is open AND playing; it binary-searches the current
+// line and touches the DOM only when the line changes.
+var fsLyr = document.getElementById('fs-lyrics');
+var fsLyrList = document.getElementById('fs-lyrics-list');
+var fsLyrToggle = document.getElementById('fs-lyrics-toggle');
+var _lyr = { file: null, times: [], btns: [], cur: -2, holdUntil: 0, raf: 0 };
+var _lyrShow = true;
+try { _lyrShow = localStorage.getItem('fs-lyrics') !== 'off'; } catch (e) {}
+var _lyrReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+var LYRIC_LEAD = 0.2; // highlight a hair early, like reading along
+function fsCurrentFile() { var p = pState.playlist[pState.plIdx]; return p ? p.file : null; }
+function fsRenderLyrics() {
+ var file = fsCurrentFile();
+ if (file === _lyr.file) return;
+ _lyr.file = file; _lyr.cur = -2; _lyr.times = []; _lyr.btns = [];
+ fsLyrList.textContent = '';
+ var entry = file && LYRICS[file];
+ var has = !!(entry && entry.lines && entry.lines.length);
+ fsLyrToggle.hidden = !has;
+ fsLyr.hidden = !has || !_lyrShow;
+ fsLyrToggle.setAttribute('aria-expanded', String(has && _lyrShow));
+ document.querySelector('.fs-content').classList.toggle('lyrics-on', has && _lyrShow);
+ if (has) {
+   var frag = document.createDocumentFragment();
+   entry.lines.forEach(function(l, i) {
+     var li = document.createElement('li');
+     li.className = 'fs-lyric';
+     var b = document.createElement('button');
+     b.type = 'button';
+     b.textContent = l[1];
+     b.dataset.i = i;
+     b.tabIndex = i === 0 ? 0 : -1; // roving tabindex: the list is one Tab stop
+     li.appendChild(b);
+     frag.appendChild(li);
+     _lyr.times.push(l[0]); _lyr.btns.push(b);
+   });
+   fsLyrList.appendChild(frag);
+   fsLyr.scrollTop = 0;
+ }
+ if (_fsOpen) fitFsArt();
+}
+function fsLyricIndex(t) {
+ var a = _lyr.times, lo = 0, hi = a.length - 1, idx = -1;
+ while (lo <= hi) { var mid = (lo + hi) >> 1; if (a[mid] <= t) { idx = mid; lo = mid + 1; } else hi = mid - 1; }
+ return idx;
+}
+function fsSetLyric(idx) {
+ var old = _lyr.btns[_lyr.cur];
+ if (old) { old.parentNode.classList.remove('is-current'); old.removeAttribute('aria-current'); }
+ for (var i = 0; i < _lyr.btns.length; i++) _lyr.btns[i].parentNode.classList.toggle('is-past', i < idx);
+ _lyr.cur = idx;
+ var b = _lyr.btns[idx];
+ if (!b) return;
+ b.parentNode.classList.add('is-current');
+ b.setAttribute('aria-current', 'true');
+ // Keep the Tab stop on the current line unless the listener is navigating the list.
+ if (!fsLyrList.contains(document.activeElement)) {
+   _lyr.btns.forEach(function(x) { x.tabIndex = -1; });
+   b.tabIndex = 0;
+ }
+ // Follow the song, unless the listener scrolled the lyrics in the last few seconds.
+ if (Date.now() > _lyr.holdUntil) {
+   var top = b.parentNode.offsetTop - fsLyr.clientHeight * 0.32;
+   fsLyr.scrollTo({ top: Math.max(0, top), behavior: _lyrReduce.matches ? 'auto' : 'smooth' });
+ }
+}
+function fsLyricsTick() {
+ _lyr.raf = 0;
+ if (!_fsOpen || fsLyr.hidden || !_lyr.times.length) return;
+ var idx = fsLyricIndex(npAudio.currentTime + LYRIC_LEAD);
+ if (idx !== _lyr.cur) fsSetLyric(idx);
+ if (!npAudio.paused) _lyr.raf = requestAnimationFrame(fsLyricsTick);
+}
+function fsLyricsKick() { if (!_lyr.raf) _lyr.raf = requestAnimationFrame(fsLyricsTick); }
+['play', 'seeked', 'loadedmetadata'].forEach(function(ev) {
+ npAudio.addEventListener(ev, function() { if (_fsOpen) { fsRenderLyrics(); fsLyricsKick(); } });
+});
+// Manual scrolling pauses auto-follow for 4 seconds (Apple Music behavior).
+['wheel', 'touchstart', 'pointerdown'].forEach(function(ev) {
+ fsLyr.addEventListener(ev, function() { _lyr.holdUntil = Date.now() + 4000; }, { passive: true });
+});
+// Tap / Enter on a line: jump there and play.
+fsLyrList.addEventListener('click', function(e) {
+ var b = e.target.closest('button');
+ if (!b) return;
+ npAudio.currentTime = _lyr.times[+b.dataset.i];
+ _lyr.holdUntil = 0;
+ if (npAudio.paused) npToggle();
+ fsSync();
+});
+// Arrow keys move between lines; Home/End jump to first/last.
+fsLyrList.addEventListener('keydown', function(e) {
+ var i = _lyr.btns.indexOf(document.activeElement);
+ if (i < 0) return;
+ var n = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: _lyr.btns.length - 1 }[e.key];
+ if (n === undefined) return;
+ e.preventDefault();
+ n = Math.max(0, Math.min(_lyr.btns.length - 1, n));
+ _lyr.btns[i].tabIndex = -1;
+ _lyr.btns[n].tabIndex = 0;
+ _lyr.btns[n].focus();
+ _lyr.holdUntil = Date.now() + 4000;
+});
+fsLyrToggle.addEventListener('click', function() {
+ _lyrShow = fsLyr.hidden;
+ fsLyr.hidden = !_lyrShow;
+ fsLyrToggle.setAttribute('aria-expanded', String(_lyrShow));
+ document.querySelector('.fs-content').classList.toggle('lyrics-on', _lyrShow);
+ try { localStorage.setItem('fs-lyrics', _lyrShow ? 'on' : 'off'); } catch (e) {}
+ _lyr.cur = -2;
+ fitFsArt();
+ fsLyricsKick();
+});
 function fsOpen() {
  fsSync();
  fs.classList.add('open');
@@ -1036,6 +1163,12 @@ function fitFsArt() {
  }
  var c = _fsContentEl;
  wrap.style.display = '';
+ // Lyrics mode (Apple Music style): the cover is a fixed small thumbnail
+ // and the lyrics panel takes the rest of the height (CSS: .lyrics-on).
+ if (c.classList.contains('lyrics-on')) { wrap.style.width = '64px'; return; }
+ // Start from full size every time: measuring the current (possibly
+ // shrunken) size could only ever shrink the art, never grow it back.
+ wrap.style.width = Math.min(c.clientWidth, 340) + 'px';
  for (var i = 0; i < 2; i++) {
    var nonArt = c.scrollHeight - wrap.offsetHeight;
    var avail = c.clientHeight - nonArt;
@@ -1128,7 +1261,7 @@ npBar.addEventListener('touchend', function(e) {
 npBar.addEventListener('touchcancel', function() { _npBarTouch = null; }, { passive: true });
 fs.addEventListener('pointerdown', function(e) {
  if (e.pointerType === 'touch') return; // touch path handles touch below
- if (e.target.closest('button, input, a, .fs-bar')) return;
+ if (e.target.closest('button, input, a, .fs-bar, .fs-lyrics')) return; // the lyrics panel scrolls; it never closes the player
  _swipe = { y: e.clientY, x: e.clientX, target: fs, dir: null };
 }, { passive: true });
 fs.addEventListener('pointermove', function(e) {
@@ -1160,7 +1293,7 @@ fs.addEventListener('pointercancel', function() { _swipe = null; }, { passive: t
 var _fsTouch = null;
 fs.addEventListener('touchstart', function(e) {
 if (!_fsOpen) return;
-if (e.target.closest('button, input, a, .fs-bar')) return;
+if (e.target.closest('button, input, a, .fs-bar, .fs-lyrics')) return;
 var t = e.touches[0];
 _fsTouch = { y: t.clientY, x: t.clientX, active: false, dir: null };
 }, { passive: true });
@@ -1371,8 +1504,9 @@ var container = document.getElementById('tracklist-' + rIdx);
 if (!container) return;
 var frag = document.createDocumentFragment();
 rel.tracks.forEach(function(t, tIdx) {
-var lyricsKey = rIdx + '-' + tIdx;
-var hasLyrics = !!LYRICS[lyricsKey];
+// lyrics.json is keyed by the track's audio file (stable across reordering).
+var lyricsEntry = LYRICS[t.file];
+var hasLyrics = !!(lyricsEntry && lyricsEntry.lines && lyricsEntry.lines.length);
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
 var row = document.createElement('div');
@@ -1397,7 +1531,7 @@ var lDiv = document.createElement('div');
 lDiv.className = 'rel-lyrics';
 var lInner = document.createElement('div');
 lInner.className = 'rel-lyrics-inner';
-lInner.textContent = LYRICS[lyricsKey];
+lInner.textContent = lyricsEntry.lines.map(function(l) { return l[1]; }).join('\n');
 lDiv.appendChild(lInner);
 wrap.appendChild(lDiv);
 }

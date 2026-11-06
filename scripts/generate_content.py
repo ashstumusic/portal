@@ -166,6 +166,34 @@ def gen_videos():
 
 
 
+LRC_LINE = re.compile(r'^\[(\d+):(\d+(?:\.\d+)?)\](.*)$')
+
+
+def gen_lyrics(releases):
+    """Lyrics for each track, keyed by its audio file path.
+
+    Source: a .lrc file with the same name as the MP3 ("01. Song.lrc" next
+    to "01. Song.mp3"). Timestamped lines -> synced lyrics the player can
+    highlight in real time. Edit the .lrc by hand (or in any LRC editor) to
+    fix a line's timing; this script just reads it.
+    """
+    out = {}
+    for rel in releases:
+        for t in rel['tracks']:
+            lrc = os.path.join(ROOT, os.path.splitext(t['file'])[0] + '.lrc')
+            if not os.path.isfile(lrc):
+                continue
+            lines = []
+            for raw in open(lrc, encoding='utf-8').read().splitlines():
+                m = LRC_LINE.match(raw.strip())
+                if m and m.group(3).strip():
+                    lines.append([round(int(m.group(1)) * 60 + float(m.group(2)), 2), m.group(3).strip()])
+            lines.sort(key=lambda l: l[0])
+            if lines:
+                out[t['file']] = {'synced': True, 'lines': lines}
+    return out
+
+
 def write_json(name, data):
     path = os.path.join(ROOT, name)
     with open(path, 'w', encoding='utf-8') as f:
@@ -192,6 +220,8 @@ def touch_sitemap():
 
 
 if __name__ == '__main__':
-    write_json('releases.json', gen_releases())
+    releases = gen_releases()
+    write_json('releases.json', releases)
+    write_json('lyrics.json', gen_lyrics(releases))
     write_json('videos.json', gen_videos())
     touch_sitemap()
