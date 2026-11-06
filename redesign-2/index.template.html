@@ -1,0 +1,235 @@
+<!doctype html>
+<!--
+  "NIGHT RADIO": second design concept for ashstu.art.
+  Build: python3 scripts/build_redesign.py redesign-2   (do not edit index.html)
+
+  Same content pipeline as /redesign/ (releases, videos, facts, alt text,
+  JSON-LD all generated from the same data), completely different design.
+  Shared behavior: redesign/redesign.js (player, video viewer, contact
+  form, copy button). Concept behavior: redesign-2/radio.js (tuner needle,
+  signal meter). Comments are stripped from the published page.
+
+  Concept: the site is a late-night broadcast from Guthrie, Oklahoma.
+  Radio is the most intimate mass medium: one voice, in the dark, talking
+  to one listener at a time. That suits confessional outsider-folk songs,
+  and it gives every part of the page a familiar real-world model, so
+  nothing needs to be learned:
+    navigation    = a tuner dial (the needle shows where you are)
+    newest record = what's on air right now
+    discography   = the program log
+    videos        = late-night TV
+    contact       = the request line
+-->
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ash Stu: outsider-folk singer-songwriter from Guthrie, Oklahoma</title>
+<meta name="description" content="Ash Stu (formerly known as Ashton Stubblefield) is an outsider-folk singer-songwriter from Guthrie, Oklahoma. Discography with release dates and tracklists, music videos, biography, booking email, and press kit.">
+<link rel="canonical" href="https://ashstu.art/redesign-2/">
+<!-- Dark first: most listening happens at night, on phones, in bed.
+     A dark screen is easier on adapted eyes; daytime visitors get a
+     matching light "daylight broadcast" palette automatically. -->
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0D1120" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F3EFE6" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../favicon.png">
+<!-- Before first paint: mark JS support (shows JS-only controls without a
+     layout shift) and whether motion is allowed. -->
+<script>(function(c){c.add("js");if(!matchMedia("(prefers-reduced-motion: reduce)").matches)c.add("motion")})(document.documentElement.classList)</script>
+<!--@GENERATED:STYLE-->
+<!--@GENERATED:JSONLD-->
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<a class="skip-link" id="skip-player" href="#player" hidden>Skip to music player</a>
+
+<!-- MASTHEAD = THE TUNER.
+     The four section links sit on a dial scale; an amber needle glides to
+     whichever section you're reading (radio.js, transform only). It's a
+     progress bar and "you are here" marker in one familiar object, so
+     orientation costs no extra attention. Links are ordinary links; the
+     dial art is aria-hidden. -->
+<header class="masthead">
+  <a class="brand" href="#top" aria-label="Ash Stu: back to top of page">
+    <span class="on-air" aria-hidden="true"><span class="lamp"></span>On air</span>
+    <span class="brand-name" aria-hidden="true">Ash Stu</span>
+  </a>
+  <nav class="tuner" aria-label="Page sections">
+    <ul class="tuner-list">
+      <li><a href="#listen"><span class="tuner-num" aria-hidden="true">01</span>Listen</a></li>
+      <li><a href="#watch"><span class="tuner-num" aria-hidden="true">02</span>Watch</a></li>
+      <li><a href="#about"><span class="tuner-num" aria-hidden="true">03</span>About</a></li>
+      <li><a href="#book"><span class="tuner-num" aria-hidden="true">04</span>Book</a></li>
+    </ul>
+    <span class="tuner-needle" aria-hidden="true"></span>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- ON AIR (hero). Name first and huge: recognition before anything
+       else. Then exactly one question answered: "what can I hear right
+       now?" The big round Play control is the only filled amber shape on
+       the screen (isolation effect), so the first move is obvious. -->
+  <section class="hero" id="top" aria-labelledby="artist-name">
+    <header class="hero-copy">
+      <p class="eyebrow">Broadcasting from Guthrie, Oklahoma</p>
+      <h1 class="hero-title" id="artist-name">Ash Stu</h1>
+      <p class="hero-sub">Outsider-folk singer-songwriter. Formerly known as Ashton Stubblefield.</p>
+      <p class="hero-note">A figment of my own imagination.</p>
+    </header>
+    <!-- The photo sits in a "monitor": a thick bezel with a LIVE tag, the
+         way a studio shows the feed. It frames the person as the signal. -->
+    <figure class="hero-photo">
+      <!--@GENERATED:HERO_PHOTO-->
+      <span class="live-tag" aria-hidden="true">Live</span>
+    </figure>
+    <!--@GENERATED:NEWEST_RELEASE-->
+  </section>
+
+  <!-- PROGRAM LOG (discography). A log is the most scannable list format
+       there is: number, title, time. Nothing hidden, nothing to expand. -->
+  <section class="section" id="listen" aria-labelledby="listen-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">01 · Program log</p>
+      <h2 id="listen-title">Listen: discography</h2>
+      <!--@GENERATED:DISCOGRAPHY_SUMMARY-->
+    </header>
+    <!--@GENERATED:RECORDS-->
+  </section>
+
+  <!-- STATION ID: a full-bleed pause between dense sections. In Guthrie,
+       Woody Guthrie's copyright note is the station's mission statement. -->
+  <figure class="station-id">
+    <blockquote>
+      <p>“Anybody caught singin’ these songs without our permission will be mighty good friends of ourn, cause we don’t give a dern. Publish it. Write it. Sing it. Swing to it. Yodel it. We wrote it, that’s all we wanted to do.”</p>
+    </blockquote>
+    <figcaption>Woody Guthrie, American folk singer-songwriter, quoted by Ash Stu</figcaption>
+  </figure>
+
+  <!-- LATE-NIGHT TV (videos). -->
+  <section class="section" id="watch" aria-labelledby="watch-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">02 · Late-night TV</p>
+      <h2 id="watch-title">Watch: music videos</h2>
+      <!--@GENERATED:VIDEOS_SUMMARY-->
+    </header>
+    <!--@GENERATED:VIDEOS-->
+  </section>
+
+  <!-- ABOUT: photos laid out as a film contact sheet: honest, unretouched,
+       in sequence. Fits the outsider ethic better than glossy portraits. -->
+  <section class="section about" id="about" aria-labelledby="about-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">03 · Station ID</p>
+      <h2 id="about-title">About Ash Stu</h2>
+    </header>
+    <article class="about-text" aria-labelledby="about-title">
+      <!--@GENERATED:BIO-->
+    </article>
+    <figure class="snapshots">
+      <!--@GENERATED:SNAPSHOTS-->
+      <figcaption class="sr-only">Three photographs of Ash Stu: a recent portrait, as a child with a guitar, and as a teenager at a piano.</figcaption>
+    </figure>
+  </section>
+
+  <!-- THE REQUEST LINE (booking and press). Framing contact as a request
+       line makes reaching out feel invited, not like filing a form. -->
+  <section class="section book" id="book" aria-labelledby="book-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">04 · Request line</p>
+      <h2 id="book-title">Book &amp; press</h2>
+      <p class="section-lede">The request line is open. For shows, press, or anything else, email Ash Stu directly.</p>
+    </header>
+    <article class="book-card" aria-labelledby="contact-title">
+      <h3 class="kicker" id="contact-title">Booking and press email</h3>
+      <!--@GENERATED:EMAIL-->
+      <button type="button" class="btn btn-quiet js-only" id="copy-email" aria-describedby="email-address">Copy email address</button>
+      <p class="copy-status" id="copy-status" role="status"></p>
+    </article>
+    <!--@GENERATED:PRESS_KIT-->
+    <form class="book-card contact-form" id="contact-form" action="/api/contact" method="post" novalidate hidden aria-labelledby="form-title">
+      <h3 class="kicker" id="form-title">Call in a message</h3>
+      <p class="form-note">All fields are required, except that you can leave the message empty if you only want to subscribe.</p>
+      <p class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" maxlength="200" required aria-describedby="f-name-err">
+        <span class="field-error" id="f-name-err"></span>
+      </p>
+      <p class="field">
+        <label for="f-email">Your email address</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required aria-describedby="f-email-err">
+        <span class="field-error" id="f-email-err"></span>
+      </p>
+      <p class="field">
+        <label for="f-message">Message <span class="field-hint" id="f-message-hint">(up to 5,000 characters)</span></label>
+        <textarea id="f-message" name="message" rows="5" maxlength="5000" aria-describedby="f-message-hint f-message-err"></textarea>
+        <span class="field-error" id="f-message-err"></span>
+      </p>
+      <p class="field field-check">
+        <input id="f-subscribe" name="subscribe" type="checkbox">
+        <label for="f-subscribe">Send me news about new releases</label>
+      </p>
+      <p class="hp" aria-hidden="true"><label for="f-website">Leave this field empty</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></p>
+      <button type="submit" class="btn btn-primary" id="f-submit">Send message</button>
+      <p class="form-status" id="form-status" role="status"></p>
+    </form>
+    <!--@GENERATED:PRESS_PHOTOS-->
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p class="sign-off" aria-hidden="true">Signing off. Thanks for listening.</p>
+  <!--@GENERATED:FOOTER-->
+</footer>
+
+<!-- THE RECEIVER (docked player). Signal meter needle follows the music's
+     loudness (radio.js, desktop; transform only). The ON AIR lamp in the
+     masthead lights while a song plays: CSS reacts to body.is-playing, so
+     the state is shown in two places and by text, never color alone. -->
+<section class="player" id="player" aria-label="Music player" hidden>
+  <span class="meter" aria-hidden="true"><span class="meter-needle" id="meter-needle"></span></span>
+  <img class="player-art" id="player-art" src="" alt="" width="56" height="56">
+  <p class="player-meta">
+    <span class="player-onair" aria-hidden="true">On air</span>
+    <strong class="player-title" id="player-title" aria-live="polite"></strong>
+    <span class="player-release" id="player-release"></span>
+  </p>
+  <div class="player-controls" role="group" aria-label="Playback controls">
+    <button type="button" class="icon-btn" id="prev" aria-label="Previous song">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M6 5h2v14H6zM20 5v14L9 12z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="icon-btn icon-btn-main" id="toggle" aria-label="Pause">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path id="toggle-icon" d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="next" aria-label="Next song">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M16 5h2v14h-2zM4 5v14l11-7z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <div class="player-seek" role="group" aria-label="Song position">
+    <span class="time" id="time-cur">0:00</span>
+    <span class="seek-wrap"><span class="seek-fill" id="seek-fill"></span><input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="Seek within song" aria-valuetext="0:00 of 0:00"></span>
+    <span class="time" id="time-dur">0:00</span>
+  </div>
+  <button type="button" class="icon-btn player-close" id="close-player" aria-label="Stop music and close player">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  </button>
+</section>
+<audio id="audio" preload="none"></audio>
+
+<dialog class="video-dialog" id="video-dialog" aria-labelledby="video-title">
+  <header class="video-dialog-head">
+    <h2 class="video-title" id="video-title">Music video player</h2>
+    <a class="video-yt" id="video-yt" href="#">Watch on YouTube</a>
+    <button type="button" class="icon-btn" id="video-close" aria-label="Close video">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </header>
+  <video id="video" controls playsinline preload="none"></video>
+  <p class="video-error" id="video-error" role="alert" hidden></p>
+</dialog>
+<!--@GENERATED:SCRIPTS-->
+</body>
+</html>
