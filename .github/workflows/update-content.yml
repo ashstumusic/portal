@@ -1,6 +1,6 @@
 name: Update site content
 
-# Regenerates releases.json / videos.json from the Audio/,
+# Regenerates releases.json / videos.json / lyrics.json from the Audio/,
 # Images/Releases/, and Videos/ folders whenever they change, so
 # adding or removing a release/video entry never needs an HTML or
 # JS edit - just add or delete files in those folders and push (or upload
@@ -48,7 +48,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add releases.json videos.json sitemap.xml
+          git add releases.json videos.json lyrics.json sitemap.xml
           if git diff --cached --quiet; then
             echo "No content changes - nothing to commit."
           else
