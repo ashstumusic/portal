@@ -40,6 +40,9 @@
   const seek = $('#seek');
   const seekFill = $('#seek-fill');
   const toggleBtn = $('#toggle');
+  // "Skip to music player": lands on the play/pause button itself.
+  const skipPlayer = $('#skip-player');
+  skipPlayer.addEventListener('click', (e) => { e.preventDefault(); toggleBtn.focus(); });
   const PATH_PLAY = 'M7 4.5v15l12-7.5z';
   const PATH_PAUSE = 'M7 5h4v14H7zM13 5h4v14h-4z';
   let current = { r: -1, t: -1 };
@@ -59,6 +62,7 @@
     $('#player-art').alt = `Cover of ${rel.name}`;
     if (player.hidden) {
       player.hidden = false;
+      skipPlayer.hidden = false;
       document.body.classList.add('has-player');
     }
     markCurrent();
@@ -97,6 +101,7 @@
     audio.removeAttribute('src');
     audio.load();
     player.hidden = true;
+    skipPlayer.hidden = true;
     document.body.classList.remove('has-player', 'is-playing');
     current = { r: -1, t: -1 };
     markCurrent();
