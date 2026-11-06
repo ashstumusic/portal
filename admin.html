@@ -47,6 +47,7 @@ h2 { font-size: 1.1rem; margin: 2rem 0 1rem; border-bottom: 2px solid #084C61; p
 .pagination .btn { padding: .3rem .8rem; }
 .page-info { color: #666; }
 #content { display: none; }
+.hint { color: #555; font-size: .9rem; margin: -.5rem 0 1rem; }
 </style>
 </head>
 <body>
@@ -85,6 +86,10 @@ h2 { font-size: 1.1rem; margin: 2rem 0 1rem; border-bottom: 2px solid #084C61; p
       <input type="text" id="sub-search" placeholder="Search subscribers…"/>
     </div>
     <div id="subscribers"></div>
+
+    <h2>Data deletion requests</h2>
+    <p class="hint">Visitors who asked to have their data deleted. Confirm by email that the request is really theirs, then delete.</p>
+    <div id="deletion-requests"></div>
   </div>
 </div>
 
@@ -143,6 +148,7 @@ document.addEventListener('click', function(e) {
     case 'prev-page': prevPage(); break;
     case 'next-page': nextPage(); break;
     case 'load-messages': loadMessages(); break;
+    case 'delete-data': deleteData(btn.dataset.email); break;
   }
 });
 
@@ -179,6 +185,22 @@ function api(url, opts) {
 function loadAll() {
   loadMessages();
   loadSubscribers();
+  loadDeletionRequests();
+}
+
+function loadDeletionRequests() {
+  api('/api/admin/deletion-requests').then(function(data) {
+    var el = document.getElementById('deletion-requests');
+    if (!data.requests.length) { el.innerHTML = '<div class="empty">No pending requests.</div>'; return; }
+    el.innerHTML = data.requests.map(function(r) {
+      return '<div class="sub-row"><span>' + esc(r.email) + '</span><span class="card-date">' + esc(r.requested_at) + '</span>' +
+        '<button class="btn btn-sm btn-danger" data-action="delete-data" data-email="' + esc(r.email) + '">Delete all data</button></div>';
+    }).join('');
+  });
+}
+
+function deleteData(email) {
+  api('/api/admin/delete-data', { method: 'POST', body: JSON.stringify({ email: email }) }).then(loadAll);
 }
 
 function loadMessages() {
@@ -224,10 +246,10 @@ function renderMessages(data) {
     return;
   }
   el.innerHTML = data.messages.map(function(m) {
-    return '<div class="card' + (m.read ? '' : ' unread') + '" id="msg-' + m.id + '">' +
+    return '<div class="card' + (m.read ? '' : ' unread') + '" id="msg-' + Number(m.id) + '">' +
       '<div class="card-header">' +
         '<span><span class="card-name">' + esc(m.name) + '</span> <span class="card-email">&lt;' + esc(m.email) + '&gt;</span></span>' +
-        '<span class="card-date">' + m.created_at + '</span>' +
+        '<span class="card-date">' + esc(m.created_at) + '</span>' +
       '</div>' +
       '<div class="card-body">' + esc(m.message) + '</div>' +
       '<div class="card-actions" id="actions-' + m.id + '">' +
@@ -264,7 +286,7 @@ function renderSubscribers(data) {
   el.innerHTML = data.subscribers.map(function(s) {
     return '<div class="sub-row">' +
       '<span>' + esc(s.email) + (s.name ? ' - ' + esc(s.name) : '') + '</span>' +
-      '<span class="card-date">' + s.subscribed_at + '</span>' +
+      '<span class="card-date">' + esc(s.subscribed_at) + '</span>' +
     '</div>';
   }).join('');
 }
@@ -298,7 +320,7 @@ function exportCSV() {
   api('/api/admin/subscribers').then(function(data) {
     var csv = 'email,name,subscribed_at\n';
     data.subscribers.forEach(function(s) {
-      csv += '"' + s.email + '","' + (s.name || '') + '","' + s.subscribed_at + '"\n';
+      csv += [s.email, s.name, s.subscribed_at].map(csvCell).join(',') + '\n';
     });
     var blob = new Blob([csv], { type: 'text/csv' });
     var a = document.createElement('a');
@@ -308,11 +330,22 @@ function exportCSV() {
   });
 }
 
+// Escapes for BOTH text and attribute contexts. (The old version only
+// escaped < > &, so a quote in a stored "email" could break out of
+// href="mailto:..." and run script in the admin session.)
 function esc(s) {
-  if (!s) return '';
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+  if (s == null) return '';
+  return String(s).replace(/[&<>"'`]/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c];
+  });
+}
+
+// CSV cell: quote it, double inner quotes, and neutralize spreadsheet
+// formulas (a name like =HYPERLINK(...) would execute when opened in Excel).
+function csvCell(v) {
+  v = v == null ? '' : String(v);
+  if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+  return '"' + v.replace(/"/g, '""') + '"';
 }
 </script>
 </body>
