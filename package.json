@@ -4,15 +4,22 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "build": "python3 scripts/generate_content.py && python3 scripts/build_redesign.py",
+    "build:home": "python3 build-fast.py && python3 scripts/prerender.py",
+    "rebuild-native": "npm rebuild better-sqlite3"
   },
   "dependencies": {
     "better-sqlite3": "^11.7.0",
+    "compression": "1.7.5",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.0",
     "helmet": "^8.0.0"
   },
   "devDependencies": {
     "esbuild": "0.24.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
