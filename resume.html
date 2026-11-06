@@ -8,28 +8,6 @@
 <style>
   html, body { margin: 0; padding: 0; height: 100%; background: #525659; }
   iframe { display: block; width: 100vw; height: 100dvh; border: none; }
-  .linkedin-btn {
-    /* Google's viewer floats its own page/search/zoom pill near the
-       bottom of the iframe - offset well above it to avoid overlap. */
-    position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom));
-    transform: translateX(-50%); z-index: 10;
-    display: inline-flex; align-items: center; gap: .6rem;
-    background: #F7C549; color: #1a1a1a; text-decoration: none;
-    font: 700 17px/1 -apple-system, system-ui, sans-serif;
-    padding: .9rem 1.4rem; border-radius: 999px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.4);
-    animation: linkedin-pulse 2.4s ease-in-out infinite;
-    transition: background .2s ease, transform .2s ease;
-  }
-  .linkedin-btn:hover, .linkedin-btn:focus-visible { background: #fff; transform: translateX(-50%) scale(1.05); }
-  .linkedin-btn img { width: 22px; height: 22px; display: block; }
-  @keyframes linkedin-pulse {
-    0%, 60%, 100% { box-shadow: 0 2px 10px rgba(0,0,0,.35), 0 0 0 0 rgba(247,197,73,.7); }
-    75% { box-shadow: 0 2px 10px rgba(0,0,0,.35), 0 0 0 10px rgba(247,197,73,0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .linkedin-btn { animation: none; }
-  }
   .sr-only {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0,0,0,0); white-space: nowrap;
@@ -39,9 +17,6 @@
 <body>
 <main>
 <h1 class="sr-only">Ashton Stubblefield &ndash; Resume</h1>
-<a class="linkedin-btn" href="https://www.linkedin.com/in/ashton-stubblefield-0963243a4/" target="_blank" rel="noopener" aria-label="View LinkedIn profile">
-  <img src="Icons/linkedin.webp" alt=""/> LinkedIn
-</a>
 <iframe id="resume-frame" title="Resume"></iframe>
 <nav>
   <a href="index.html" class="nav-link">Home</a>
