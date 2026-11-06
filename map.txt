@@ -6,7 +6,8 @@
 * `main.<hash>.js` (built from `index-src.html`)
 * `admin.html`
 * `resume.html`
-* `Ashton.Stubblefield_Resume.pdf`
+* `Ashton_Stubblefield_Resume.pdf` (shown by `resume.html`)
+* `Ashton.Stubblefield_Resume.pdf` (identical copy so the old link keeps working; replace both when updating)
 * `ash-stu-press-kit.zip`
 * `releases.json` (generated from `Audio/`)
 * `videos.json` (generated from `Videos/`)
