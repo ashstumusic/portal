@@ -814,14 +814,25 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    ════════════════════════════════════════════ */
 .releases-section { background: transparent; overflow: hidden; }
 .releases-section .section-inner { container-type: inline-size; }
+/* Releases: a centered, wrapping row. A grid with N equal columns can't
+   center a row holding fewer than N cards (3 releases left an empty 4th
+   column on the right), so each card's width comes from --cols instead,
+   the same column count each breakpoint used before, and leftover space
+   is split evenly on both sides. */
 .releases-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-  grid-template-columns: repeat(auto-fill, minmax(min(100%,280px),1fr));
-  gap: 1rem;
-  gap: clamp(1rem,2.5vw,1.75rem);
-  align-items: start;
+  --cols: 3;
+  --gap: 1rem;
+  --gap: clamp(1rem,2.5vw,1.75rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--gap);
   contain: layout style;
+}
+.releases-grid > * {
+  flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  min-width: 0;
 }
 .rel-card {
   container-type: inline-size;
@@ -1999,7 +2010,7 @@ body.player-active { padding-bottom: 68px; }
   .epk-section { max-width: 2200px; margin: 0 auto; } /* hero stays full-bleed, unlike this */
   .hero-name { font-size: 9rem; }
   .section-h { font-size: 1.65rem; }
-  .releases-grid { grid-template-columns: repeat(4, 1fr); }
+  .releases-grid { --cols: 4; }
   .video-grid { grid-template-columns: repeat(3, 1fr); }
   .epk-body { padding: 3rem 3rem;
  padding: clamp(3rem,5vw,5rem) clamp(3rem,6vw,6rem); }
@@ -2009,7 +2020,7 @@ body.player-active { padding-bottom: 68px; }
    DESKTOP GRIDS (1100–1600px) - 4/3-col record wall
    ════════════════════════════════════════════ */
 @media (min-width: 1100px) and (max-width: 1599px) {
-  .releases-grid { grid-template-columns: repeat(4, 1fr); }
+  .releases-grid { --cols: 4; }
   .video-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
@@ -2019,7 +2030,7 @@ body.player-active { padding-bottom: 68px; }
    grids auto-filling three across.
    ════════════════════════════════════════════ */
 @media (min-width: 768px) and (max-width: 1099px) {
-  .releases-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%,220px), 1fr)); }
+  .releases-grid { --cols: 3; }
   .video-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%,220px), 1fr)); }
   .section { padding: 4rem 1.5rem;
  padding: clamp(4rem,8vw,6rem) clamp(1.5rem,4vw,3rem); }
@@ -2147,7 +2158,7 @@ body.player-active { padding-bottom: 68px; }
    SMALL TABLET (601–767px) - 2-col where it fits
    ════════════════════════════════════════════ */
 @media (min-width: 601px) and (max-width: 767px) {
-  .releases-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .releases-grid { --cols: 2; --gap: 1rem; }
   .video-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .form-row { grid-template-columns: 1fr 1fr; }
 }
@@ -2156,7 +2167,7 @@ body.player-active { padding-bottom: 68px; }
    PHONE (≤600px) - single column
    ════════════════════════════════════════════ */
 @media (max-width: 600px) {
-  .releases-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .releases-grid { --cols: 1; --gap: 1rem; }
   .video-grid { grid-template-columns: 1fr; gap: 1rem; }
   .section-h::after { left: -1.1rem; }
 }
@@ -2251,7 +2262,7 @@ body.player-active { padding-bottom: 68px; }
   .section { padding: 2rem 1.25rem; }
   .section-h { font-size: 1.9rem; margin-bottom: 1.25rem; }
 
-  .releases-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+  .releases-grid { --cols: 2; --gap: .75rem; }
   .rel-overlay { padding: .75rem; }
 
   .video-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
@@ -2313,7 +2324,7 @@ body.player-active { padding-bottom: 68px; }
  width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
   .hero-name { font-size: 1.8rem;
  font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); }
-  .releases-grid { grid-template-columns: repeat(2, 1fr); }
+  .releases-grid { --cols: 2; }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
 }
 /* Landscape square-ish screens (iPad landscape 1024x768, foldables) run out
