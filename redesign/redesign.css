@@ -145,7 +145,7 @@ main:focus { outline: none; }
 .btn-secondary:hover { background: var(--paper); }
 .btn-quiet {
   min-height: 2.75rem; padding: .5em 1.1em;
-  background: transparent; border-color: var(--line); color: var(--ink);
+  background: transparent; border-color: var(--ink-2); color: var(--ink);
   font-weight: 500; font-size: var(--step--1);
 }
 .btn-quiet:hover { border-color: currentColor; }
@@ -183,6 +183,16 @@ main:focus { outline: none; }
 /* Current section: marked by shape (stitch underline), not color alone. */
 .nav-list a[aria-current="true"] { border-bottom: var(--stitch) var(--clay); }
 @media (max-width: 26rem) { .brand-name { display: none; } }
+/* 400% zoom / 320px screens: let the masthead wrap instead of forcing
+   sideways scrolling (WCAG 1.4.10 Reflow)... */
+@media (max-width: 22rem) {
+  .masthead { flex-wrap: wrap; row-gap: 0; }
+  .masthead nav { order: 3; flex-basis: 100%; margin-left: 0; }
+  .nav-list { justify-content: space-between; }
+}
+/* ...and on very short viewports (zoomed in, or a phone held sideways)
+   don't keep it stuck to the top, where it would hide content. */
+@media (max-height: 30rem) { .masthead { position: static; } }
 
 /* ── HERO ────────────────────────────────────────────────────────────── */
 .hero {
@@ -232,6 +242,9 @@ main:focus { outline: none; }
 .new-record-meta { font-size: var(--step--1); color: var(--ink-2); }
 .new-record-actions { display: grid; gap: var(--s-2); justify-items: start; margin-top: var(--s-1); }
 .stream-links { font-size: var(--step--1); color: var(--ink-2); }
+/* Inline links get a taller hit area (padding on inline boxes doesn't
+   change line layout): ≥ 24px targets, WCAG 2.5.8. */
+.stream-links a, .video-meta a, .record-actions a:not(.btn) { padding-block: .3em; }
 
 @media (max-width: 56rem) {
   .hero { grid-template-columns: 1fr; grid-template-areas: "photo" "copy" "record"; }
@@ -453,7 +466,7 @@ main:focus { outline: none; }
 .seek-wrap::before, .seek-fill {
   content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 2px); height: 4px; border-radius: 2px;
 }
-.seek-wrap::before { background: rgb(242 235 221 / .25); }
+.seek-wrap::before { background: rgb(242 235 221 / .45); }   /* unplayed track: 3:1+ against the player */
 .seek-fill { background: var(--daffodil); transform: scaleX(0); transform-origin: left center; will-change: transform; }
 #seek { -webkit-appearance: none; appearance: none; position: relative; display: block; width: 100%; height: 2.75rem; margin: 0; background: transparent; }
 #seek::-webkit-slider-runnable-track { height: 4px; background: transparent; }
@@ -506,7 +519,7 @@ main:focus { outline: none; }
 .fx-toggle {
   display: none; place-items: center;
   width: 2.75rem; height: 2.75rem; flex: none;
-  border: 2px solid var(--line); border-radius: 50%;
+  border: 2px solid var(--ink-2); border-radius: 50%;   /* icon-only control: visible 3:1+ boundary */
   background: transparent; color: var(--ink);
 }
 .fx-toggle:hover { border-color: currentColor; }
