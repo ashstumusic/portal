@@ -1,0 +1,61 @@
+{
+  "_about": "Hand-entered facts for the redesign that cannot be derived from the Audio/, Videos/ or Images/ folders. scripts/build_redesign.py merges these with releases.json, videos.json, Audio/*/links.txt, the MP3/MP4 files and the press kit ZIP. Release dates come from Audio/*/links.txt (verified against Apple Music on 2026-11-06).",
+  "site": {
+    "url": "https://ashstu.art/",
+    "page_url": "https://ashstu.art/redesign/",
+    "language": "en-US"
+  },
+  "artist": {
+    "name": "Ash Stu",
+    "legal_name": "Ashton Stubblefield",
+    "description": "Ash Stu (formerly known as Ashton Stubblefield) is an outsider-folk singer-songwriter from Guthrie, Oklahoma, United States, who writes, performs, and self-releases original music.",
+    "genres": ["Outsider folk", "Folk", "Singer-songwriter"],
+    "city": "Guthrie",
+    "region": "Oklahoma",
+    "region_code": "OK",
+    "country": "United States",
+    "country_code": "US",
+    "email": "ashstumusic@gmail.com",
+    "tagline": "A figment of my own imagination.",
+    "logo": "Images/Icon.webp",
+    "profiles": {
+      "Apple Music": "https://music.apple.com/us/artist/ash-stu/1868592370",
+      "Spotify": "https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx",
+      "YouTube": "https://youtube.com/@ash_stu"
+    }
+  },
+  "release_extras": {
+    "Waste My Time": {
+      "full_title": "Waste My Time (feat. Trent Runyon)",
+      "featured_artists": ["Trent Runyon"]
+    }
+  },
+  "video_upload_dates": {
+    "VCR": "2026-02-15",
+    "the helpful raven": "2026-02-18",
+    "the cloud for the desert": "2026-02-19",
+    "WHY HAVE EYES": "2026-02-20",
+    "Brain Dead Corollary (Trust Me Bro)": "2026-02-21",
+    "Theory of Hope": "2026-02-24"
+  },
+  "alt": {
+    "Images/Icon.webp": "Ash Stu logo: an embroidered patch of a yellow daffodil with a green stem on a black background inside a red stitched ring",
+    "Images/embedded/hero-ash-stu-guitar.webp": "Ash Stu sitting on the ground against a brick wall in an alley at sunset, playing an electric guitar, with a guitar case under his legs",
+    "Images/Releases/Only a Baby, Vol. 2.webp": "Album cover of Only a Baby, Vol. 2: close-up photograph of Ash Stu's face in a car, with blood running from a cut on his forehead down across his nose",
+    "Images/Releases/Drive Me Home.webp": "Single cover of Drive Me Home: a painting of a woman in a hat and a man in a black hat sitting side by side at a café table, with a glass of pale green drink in front of the woman",
+    "Images/Releases/Waste My Time.webp": "Single cover of Waste My Time: a painting of two children holding flowers beneath a stone archway; the archway and the children together form the outline of a skull",
+    "Images/Profile-3.webp": "Portrait of Ash Stu outdoors in front of a black metal fire escape, wearing a white T-shirt with an orange collar and a gold chain",
+    "Images/Profile-4.webp": "Ash Stu as a child, sitting on a carpet playing an acoustic guitar and sticking out his tongue",
+    "Images/Profile-6.webp": "Ash Stu as a teenager playing an upright piano inside a café, looking at the camera",
+    "Images/embedded/epk-ash-stu-piano.webp": "Ash Stu on a dark stage singing into a microphone while playing a keyboard, lit by a blue stage light",
+    "Images/embedded/epk-ash-stu-performing.webp": "Ash Stu on a dark stage singing into a microphone behind a Casio keyboard",
+    "Images/embedded/epk-ash-stu-portrait.webp": "Ash Stu on a dark stage with eyes closed, singing into a microphone while playing a keyboard under a red stage light",
+    "Images/embedded/epk-ash-stu-studio-session.webp": "Wide shot of Ash Stu on a dark stage, seated at a keyboard and singing into a microphone",
+    "Videos/Thumbnails/Brain Dead Corollary (Trust Me Bro).webp": "Still from the Brain Dead Corollary (Trust Me Bro) video: Ash Stu in a blue sweater and white collar singing among bare trees beside a field",
+    "Videos/Thumbnails/Theory of Hope.webp": "Still from the Theory of Hope video: Ash Stu silhouetted in a brick archway at night, playing an acoustic guitar",
+    "Videos/Thumbnails/VCR.webp": "Still from the VCR video: Ash Stu in a grey hooded sweatshirt sitting at the base of a large tree, playing an acoustic guitar",
+    "Videos/Thumbnails/WHY HAVE EYES.webp": "Still from the WHY HAVE EYES video: Ash Stu sitting on a white blanket in a dry grass field at sunset, playing a ukulele",
+    "Videos/Thumbnails/the cloud for the desert.webp": "Still from the cloud for the desert video: Ash Stu leaning against a tree trunk under a blue sky, singing and playing an acoustic guitar",
+    "Videos/Thumbnails/the helpful raven.webp": "Still from the helpful raven video: Ash Stu in a blue T-shirt singing and playing an acoustic guitar in an open field"
+  }
+}
