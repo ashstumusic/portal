@@ -79,6 +79,9 @@ def img_b64(path, quality=80):
 
 # ---------- CSS ----------
 css = open("styles.css").read()
+# Shared interaction/material layer used by every page (theme, palette,
+# springs, glass header...). Appended so page rules can still override it.
+css += "\n" + open("shared/kinetic.css").read()
 for src_path, rel_path in FONT_RELPATHS.items():
     css = css.replace(f"url('{src_path}') format('truetype')", f"url('{rel_path}') format('woff2')")
     css = css.replace(f"url('{src_path}') format('opentype')", f"url('{rel_path}') format('woff2')")
@@ -91,7 +94,11 @@ def minify_css(s):
     s = re.sub(r"url\(data:[^)]+\)", keep, s)
     s = re.sub(r"/\*.*?\*/", "", s, flags=re.S)
     s = re.sub(r"\s+", " ", s)
-    s = re.sub(r"\s*([{};:,>~])\s*", r"\1", s)
+    s = re.sub(r"\s*([{};,>~])\s*", r"\1", s)
+    # Colons: only drop spaces AFTER them. A space BEFORE a colon can be a
+    # descendant combinator (".a :is(.b)", ":root[x] :where(...)"); removing
+    # it silently turned those into different, never-matching selectors.
+    s = re.sub(r":\s+", ":", s)
     s = s.replace(";}", "}")
     s = re.sub(r"\x00(\d+)\x00", lambda m: stash[int(m.group(1))], s)
     return s.strip()
@@ -200,6 +207,21 @@ if _m:
         fh.write(js_min)
     html = html.replace(_m.group(0), f'<script src="{js_out}" defer></script>')
     print(f"Wrote {js_out}: {len(js_min)//1024}KB")
+
+# Shared interaction script (shared/kinetic.js), minified by esbuild into a
+# hashed file next to main.*.js, loaded deferred at the end of <body>.
+import subprocess as _sp
+_esb = os.path.join(ROOT, "node_modules", ".bin", "esbuild")
+if os.path.exists(_esb):
+    _k = _sp.run([_esb, "--minify", "--target=es2020", "--legal-comments=none"], input=open("shared/kinetic.js").read(),
+                 capture_output=True, text=True, check=True).stdout
+else:
+    print("  (esbuild not found: shipping shared/kinetic.js unminified; run npm install)")
+    _k = open("shared/kinetic.js").read()
+k_out = f"kinetic.{__import__('hashlib').sha256(_k.encode()).hexdigest()[:8]}.js"
+open(k_out, "w").write(_k)
+html = html.replace("</body>", f'<script src="{k_out}" defer></script>\n</body>', 1)
+print(f"Wrote {k_out}: {len(_k)//1024}KB")
 
 # strip HTML comments + indentation, collapse blank lines
 html = re.sub(r"<!--(?!\[).*?-->", "", html, flags=re.S)

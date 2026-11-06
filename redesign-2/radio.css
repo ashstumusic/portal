@@ -19,8 +19,8 @@
 :root {
   color-scheme: dark;
   /* NIGHT (default) */
-  --bg:     #0D1120;  /* midnight blue-black: softer than pure black, less halation for light text */
-  --bg-2:   #171C30;  /* raised panels */
+  --bg:     #05070F;  /* OLED-deep midnight slate (not flat black: keeps a hint of night-sky blue) */
+  --bg-2:   #10142A;  /* raised panels */
   --ink:    #F2EDE3;  /* warm off-white text, 16.1:1 */
   --ink-2:  #A7AEC3;  /* secondary text and control borders, 8.5:1 */
   --amber:  #FFB547;  /* actions and highlights, 10.7:1 */
@@ -53,8 +53,8 @@
   --ease: cubic-bezier(.4, 0, .2, 1);
 }
 /* DAYLIGHT: same roles, re-tuned (amber and red darkened to keep AA on a light ground). */
-@media (prefers-color-scheme: light) {
-  :root {
+/* Daylight palette: by the theme toggle (data-theme) or, with JS off, the OS. */
+:root[data-theme="light"] {
     color-scheme: light;
     --bg: #F3EFE6; --bg-2: #E7E1D4;
     --ink: #141833; --ink-2: #4E5470;
@@ -62,6 +62,16 @@
     --line: rgb(78 84 112 / .3);
     --on-amber: #F3EFE6;
     --bezel: #141833;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+      color-scheme: light;
+      --bg: #F3EFE6; --bg-2: #E7E1D4;
+      --ink: #141833; --ink-2: #4E5470;
+      --amber: #8A4F00; --red: #B3261E; --teal: #0F6B62;
+      --line: rgb(78 84 112 / .3);
+      --on-amber: #F3EFE6;
+      --bezel: #141833;
   }
 }
 

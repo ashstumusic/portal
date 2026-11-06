@@ -59,16 +59,28 @@
   --focus: var(--clay);
   --ease: cubic-bezier(.4, 0, .2, 1);
 }
-@media (prefers-color-scheme: dark) {
-  :root {
+/* Dark palette: chosen by the theme toggle (data-theme, set before first
+   paint) or, with JavaScript off, by the OS setting. OLED-deep base. */
+:root[data-theme="dark"] {
     color-scheme: dark;
-    --paper: #16130F; --paper-2: #221E18;
+    --paper: #0B0A08; --paper-2: #18150F;
     --ink: #F2EBDD;   --ink-2: #B8AE9D;
     --clay: #F0735A;  --stem: #7BC49A;
     --line: rgb(242 235 221 / .16);
-    --on-clay: #16130F;
-    --player-bg: #2A251E;
+    --on-clay: #0B0A08;
+    --player-bg: #221E18;
     --focus: var(--daffodil);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+      color-scheme: dark;
+      --paper: #0B0A08; --paper-2: #18150F;
+      --ink: #F2EBDD;   --ink-2: #B8AE9D;
+      --clay: #F0735A;  --stem: #7BC49A;
+      --line: rgb(242 235 221 / .16);
+      --on-clay: #0B0A08;
+      --player-bg: #221E18;
+      --focus: var(--daffodil);
   }
 }
 
