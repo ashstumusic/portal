@@ -1,0 +1,336 @@
+/* ════════════════════════════════════════════════════════════════════
+   KINETIC: shared micro-interaction + material layer for every page
+   (homepage, /redesign/ "Golden Hour", /redesign-2/ "Night Radio").
+   Paired with shared/kinetic.js. Each page keeps its own palette; this
+   file reads it through fallback chains, e.g.
+     --k-accent: var(--clay, var(--amber, var(--ink)))
+   resolves to whichever token that page defines.
+
+   Principles kept from the audits:
+   • Everything decorative is off under prefers-reduced-motion.
+   • Animation uses transform/opacity; the few paint-heavy pieces (header
+     blur, card spotlight) are limited to a single element at a time.
+   • Text contrast never depends on these layers.
+   ════════════════════════════════════════════════════════════════════ */
+
+@property --k-recess { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --k-weight { syntax: "<number>"; inherits: false; initial-value: 400; }
+
+:root {
+  --k-accent: var(--clay, var(--amber, var(--ink)));
+  --k-on-accent: var(--on-clay, var(--on-amber, var(--paper)));
+  --k-surface: var(--paper-2, var(--bg-2, var(--cream)));
+  --k-page: var(--paper, var(--bg));
+  --k-text: var(--ink);
+  --k-glow: var(--daffodil, var(--amber, var(--gold)));
+  /* Spring easings: sampled from a damped spring simulation
+     (stiffness 900 / damping 38 for presses; 260 / 16 for settles),
+     encoded as CSS linear() so the motion has real overshoot and settle
+     without any JavaScript. */
+  --k-spring-press: linear(0, 0.084, 0.2708, 0.4872, 0.6873, 0.8479, 0.9617, 1.0318, 1.0665, 1.076, 1.0698, 1.0557, 1.0392, 1.024, 1.0117, 1.003, 0.9977, 0.995, 0.9942, 0.9947, 0.9957, 0.997, 0.9982, 0.9991, 0.9998, 1.0002, 1.0004, 1.0004, 1.0003, 1.0001, 1);
+  --k-spring-settle: linear(0, 0.0272, 0.099, 0.2021, 0.3246, 0.4559, 0.5873, 0.7121, 0.8251, 0.923, 1.004, 1.0675, 1.114, 1.1446, 1.1612, 1.1658, 1.1609, 1.1487, 1.1315, 1.111, 1.0892, 1.0675, 1.0468, 1.0282, 1.0121, 0.9988, 0.9884, 0.9808, 0.9758, 0.9732, 0.9725, 0.9734, 0.9754, 0.9783, 0.9817, 0.9854, 0.989, 0.9924, 0.9955, 0.9981, 1);
+  /* Multi-layer diffusion shadow (ambient light scattering). */
+  --k-shadow:
+    0 1px 2px rgb(0 0 0 / .03), 0 4px 8px rgb(0 0 0 / .04),
+    0 12px 24px rgb(0 0 0 / .05), 0 24px 48px rgb(0 0 0 / .06);
+  --k-shadow-lift:
+    0 1px 2px rgb(0 0 0 / .04), 0 6px 12px rgb(0 0 0 / .05),
+    0 18px 36px rgb(0 0 0 / .07), 0 36px 72px rgb(0 0 0 / .08);
+  --k-rim: inset 0 0 0 0 transparent;
+  font-optical-sizing: auto;
+}
+/* Dark surfaces: rim light (1px specular top edge) and an inner hairline. */
+:root[data-theme="dark"], :root.k-dark {
+  --k-rim: inset 0 1px 0 0 rgb(255 255 255 / .12), inset 0 0 0 1px rgb(255 255 255 / .03);
+  --k-shadow:
+    0 1px 2px rgb(0 0 0 / .2), 0 4px 8px rgb(0 0 0 / .22),
+    0 12px 24px rgb(0 0 0 / .24), 0 24px 48px rgb(0 0 0 / .26);
+}
+
+/* ── TYPE POLISH ─────────────────────────────────────────────────────── */
+/* Steady-width digits wherever numbers change in place. */
+.time, .np-time, #fs-cur, #fs-dur, .tracks td, .record-facts dd, .new-record-meta, .video-meta, time { font-variant-numeric: tabular-nums; }
+/* Quotes hang into the margin so the text edge stays straight (Safari today; harmless elsewhere). */
+blockquote p, .disc-quote, .pull-quote p, .station-id p, .about-lead { hanging-punctuation: first last; }
+::selection { background: var(--k-glow); color: #111; }
+::selection:window-inactive { background: color-mix(in srgb, var(--k-glow) 60%, transparent); }
+
+/* ── FOCUS: designed, separated ring ────────────────────────────────── */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--k-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+main:focus-visible { outline: none; }
+
+/* ── OPTICAL CENTERING ───────────────────────────────────────────────
+   A play triangle's visual mass sits left of its box center; nudge it
+   right (about half the gap between the box center and the centroid). */
+svg:has(> polygon[points="5,3 19,12 5,21"]) { translate: 6% 0; }
+svg:has(> path[d="M7 4.5v15l12-7.5z"]) { translate: 4% 0; }
+/* Crisp icon strokes: stroke width stays an exact pixel count at any icon size. */
+svg [stroke] { vector-effect: non-scaling-stroke; }
+
+/* ── SQUIRCLES (continuous curvature where supported) ────────────────── */
+@supports (corner-shape: squircle) {
+  .btn, .f-btn, .book-card, .new-record, .record, .rel-card, .video-link, .vid-card, .k-palette-box, .fs-lyrics-toggle {
+    corner-shape: squircle;
+  }
+}
+
+/* ── MATERIAL: layered shadows, rim light, spring lift ───────────────── */
+.rel-card, .vid-card, .record, .book-card, .new-record {
+  box-shadow: var(--k-rim), var(--k-shadow);
+  transition: box-shadow .35s ease, transform .5s var(--k-spring-settle);
+}
+@media (hover: hover) {
+  .rel-card:hover, .vid-card:hover, .book-card:hover, .new-record:hover {
+    box-shadow: var(--k-rim), var(--k-shadow-lift);
+    transform: translateY(-3px);
+  }
+}
+/* Pointer spotlight: a soft light follows the cursor across the card
+   (kinetic.js writes --mx/--my on the hovered card only). */
+.k-spot { position: relative; isolation: isolate; }
+.k-spot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
+  background: radial-gradient(28rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--k-glow) 18%, transparent), transparent 55%);
+  opacity: 0; transition: opacity .3s ease;
+}
+.k-spot.k-lit::after { opacity: 1; }
+
+/* ── BUTTON PHYSICS ─────────────────────────────────────────────────── */
+.btn, .f-btn, .icon-btn, .fs-ctrl, .fs-play, .fx-toggle, .k-tool, .fs-lyrics-toggle, .nav-platform {
+  transition: transform .45s var(--k-spring-press), background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn:active, .f-btn:active, .icon-btn:active, .fs-ctrl:active, .fs-play:active, .fx-toggle:active, .k-tool:active, .fs-lyrics-toggle:active {
+  transform: scale(.97); transition-duration: .08s;
+}
+/* Magnetic pull (kinetic.js sets --k-mx/--k-my in px). Uses the
+   individual translate property so it composes with :active scale. */
+.k-magnet { translate: var(--k-mx, 0) var(--k-my, 0); }
+
+/* Direction-aware underline on footer links: a 1px underline is always
+   there (links stay identifiable at rest); on hover a 2px bar slides in
+   from the side the pointer entered. Background layers, not pseudo-
+   elements, so it can't collide with a page's own ::before/::after. */
+.footer-links a {
+  text-decoration: none;
+  background:
+    linear-gradient(currentColor, currentColor) no-repeat var(--k-from, left) calc(100% - .2rem) / 0% 2px,
+    linear-gradient(currentColor, currentColor) no-repeat left calc(100% - .2rem) / 100% 1px;
+  transition: background-size .45s var(--k-spring-settle);
+}
+.footer-links a:hover { background-size: 100% 2px, 100% 1px; }
+
+/* Jitter-free label swaps: the longest label is laid out invisibly in the
+   same grid cell, so "Copy email address" → "Copied!" never resizes. */
+[data-k-alt] { display: inline-grid !important; }
+[data-k-alt] > .k-label, [data-k-alt]::after { grid-area: 1 / 1; }
+[data-k-alt]::after { content: attr(data-k-alt); visibility: hidden; height: 0; }
+
+/* ── HEADER: glass, recess with scroll, recede on scroll-down ────────── */
+.masthead, .nav { transition: transform .45s var(--k-spring-settle); will-change: transform; }
+.k-hide.masthead, .k-hide.nav { transform: translateY(calc(-100% - 6px)); }
+/* Masked backdrop blur on a layer *behind* the header content, so the
+   text stays sharp while content fades into blur at the lower edge. */
+.masthead::before {
+  content: ""; position: absolute; inset: 0 0 -18px 0; z-index: -1; pointer-events: none;
+  backdrop-filter: blur(calc(6px + var(--k-recess) * 10px)) saturate(1.4);
+  -webkit-backdrop-filter: blur(calc(6px + var(--k-recess) * 10px)) saturate(1.4);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+}
+/* The homepage nav already owns ::before (its scrolled overlay); only add
+   the blur and the soft lower edge to it, never replace it. */
+.nav::before {
+  backdrop-filter: blur(calc(4px + var(--k-recess) * 8px)) saturate(1.3);
+  -webkit-backdrop-filter: blur(calc(4px + var(--k-recess) * 8px)) saturate(1.3);
+  bottom: -14px !important;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 14px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 14px), transparent);
+}
+.masthead { isolation: isolate; background: color-mix(in srgb, var(--k-page) calc(78% + var(--k-recess) * 18%), transparent) !important; }
+.masthead { padding-block: calc((.6rem - var(--k-recess) * .25rem) + env(safe-area-inset-top, 0px)) calc(.6rem - var(--k-recess) * .25rem) !important; }
+.nav { isolation: isolate; }
+/* --k-recess goes 0 → 1 over the first 240px of scroll, on the
+   compositor-driven scroll timeline (no JS) where supported. */
+@supports (animation-timeline: scroll()) {
+  .masthead, .nav { animation: k-recess linear both; animation-timeline: scroll(root block); animation-range: 0 240px; }
+}
+@keyframes k-recess { to { --k-recess: 1; } }
+
+/* ── SCROLL-LINKED DEPTH ─────────────────────────────────────────────
+   Hero photos drift slower than the page (differential parallax) and
+   section headings morph weight as they arrive, both bound to the
+   native scroll timeline (off the main thread where supported). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-photo, .hero-photo-track { overflow: clip; }
+    .hero-photo img, .hero-split-photo {
+      animation: k-parallax linear both; animation-timeline: view(); animation-range: cover;
+    }
+    .section-head h2, .section-h {
+      animation: k-arrive linear both; animation-timeline: view(); animation-range: entry 0% cover 40%;
+    }
+  }
+}
+@keyframes k-parallax { from { transform: translateY(-4%) scale(1.08); } to { transform: translateY(4%) scale(1.08); } }
+/* No opacity in this animation: a heading partly in view must never be dimmed below AA contrast. */
+/* Transform only: a font-weight change here re-measured text widths and
+   caused layout shift (CLS 0.058 on Night Radio). */
+@keyframes k-arrive { from { translate: 0 .6rem; } to { translate: 0 0; } }
+
+/* ── CUSTOM CURSOR LENS (pointer devices only; native cursor stays) ──── */
+.k-lens {
+  position: fixed; left: 0; top: 0; z-index: 9000; pointer-events: none;
+  width: 4.5rem; height: 4.5rem; margin: -2.25rem 0 0 -2.25rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--k-glow); color: #111;
+  font: 700 .72rem/1 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+  opacity: 0; scale: .3; transition: opacity .2s ease, scale .45s var(--k-spring-settle);
+  will-change: transform;
+}
+.k-lens.k-on { opacity: .94; scale: 1; }
+
+/* ── GRAIN (banding mitigation) ─────────────────────────────────────── */
+.k-grain {
+  position: fixed; inset: 0; z-index: 8000; pointer-events: none; opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── OKLCH GRADIENTS (no muddy midpoint) ─────────────────────────────── */
+@supports (background: linear-gradient(in oklch, red, blue)) {
+  .seek-fill, #np-fill, .fs-fill { background: linear-gradient(90deg in oklch, var(--k-accent), var(--k-glow)); }
+}
+
+/* ── SCROLLBARS: recessed, rounded, fade when idle ───────────────────── */
+html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--k-text) 28%, transparent) transparent; }
+html.k-scrolling { scrollbar-color: color-mix(in srgb, var(--k-text) 55%, transparent) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 999px; background: color-mix(in srgb, var(--k-text) 22%, transparent) padding-box; }
+.k-scrolling::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:hover { border-width: 2px; background-color: color-mix(in srgb, var(--k-text) 50%, transparent); }
+
+/* ── MEDIA ───────────────────────────────────────────────────────────── */
+/* Lock video frames to 16:9 before metadata loads (contain, not cover:
+   cover would crop the music videos). */
+video { aspect-ratio: 16 / 9; object-fit: contain; }
+/* Dim bright photos a touch in dark mode (logos/icons excluded). */
+:root[data-theme="dark"] :is(.rel-art, .vid-card img, .hero-split-photo, .bio-card-media img, .epk-photos img, .record-art, .new-record-art, .video-link img, .snap, .press-photos img, .hero-photo img) {
+  filter: brightness(.88) contrast(1.06);
+}
+/* Blur-up: tiny inline previews (build step) sit behind images until they paint. */
+img.k-blurup { background-size: cover; background-position: center; }
+
+/* ── FORMS: floating labels, morphing checkbox, error shake ──────────── */
+.contact-form .field:not(.field-check) { position: relative; }
+.contact-form .field:not(.field-check) > label {
+  position: absolute; left: .7rem; top: 1.45rem; z-index: 1; padding: 0 .35rem; pointer-events: none;
+  background: var(--k-page); border-radius: 4px; transform-origin: left center;
+  transition: transform .4s var(--k-spring-settle), color .2s ease;
+}
+.contact-form .field:not(.field-check) > :is(input, textarea) { padding-top: 1.05rem; }
+.contact-form .field:has(:focus, :not(:placeholder-shown)):not(.field-check) > label {
+  transform: translateY(-1.55rem) scale(.82); color: var(--k-accent);
+}
+.contact-form .field-check { position: relative; }
+.contact-form .field-check input {
+  -webkit-appearance: none; appearance: none; width: 1.5rem; height: 1.5rem; margin: 0;
+  border: 2px solid var(--ink-2, var(--ink-soft, currentColor)); border-radius: 6px; background: transparent; cursor: pointer;
+  transition: background-color .25s ease, border-color .25s ease;
+}
+.contact-form .field-check input:checked { background: var(--k-accent); border-color: var(--k-accent); }
+.k-check { position: absolute; left: 0; top: 50%; width: 1.5rem; height: 1.5rem; translate: 0 -50%; pointer-events: none; }
+.k-check path { fill: none; stroke: var(--k-on-accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .35s var(--k-spring-settle) .05s; }
+.field-check input:checked ~ .k-check path { stroke-dashoffset: 0; }
+.k-shake { animation: k-shake .42s cubic-bezier(.36, .07, .19, .97); }
+@keyframes k-shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(3px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-5px, 0, 0); } 40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+/* ── TOOL BUTTONS (search + theme) ───────────────────────────────────── */
+.k-tools { display: none; align-items: center; gap: .4rem; }
+.js .k-tools { display: inline-flex; }
+.k-tool {
+  display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0;
+  border: 2px solid color-mix(in srgb, currentColor 55%, transparent); border-radius: 50%;
+  background: transparent; color: inherit; cursor: pointer;
+}
+.k-tool:hover { border-color: currentColor; }
+.k-tool svg { width: 1.15rem; height: 1.15rem; }
+.k-theme-dark { display: none; }
+:root[data-theme="dark"] .k-theme-dark { display: block; }
+:root[data-theme="dark"] .k-theme-light { display: none; }
+
+/* ── COMMAND PALETTE (⌘K / Ctrl+K) ───────────────────────────────────── */
+.k-palette { padding: 0; border: 0; background: transparent; max-width: none; max-height: none; width: 100%; height: 100%; }
+.k-palette::backdrop { background: rgb(5 8 12 / .45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.k-palette-box {
+  width: min(38rem, calc(100vw - 2rem)); margin: min(14vh, 8rem) auto 0; overflow: hidden;
+  border: 1px solid rgb(255 255 255 / .14); border-radius: 18px;
+  background: color-mix(in srgb, var(--k-surface) 86%, transparent);
+  backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .12), var(--k-shadow-lift);
+  color: var(--k-text);
+  animation: k-pop .4s var(--k-spring-settle);
+}
+@keyframes k-pop { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
+.k-palette-input {
+  display: block; width: 100%; padding: 1.05rem 1.2rem; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--k-text) 16%, transparent);
+  background: transparent; color: inherit; font: 500 1.1rem/1.3 system-ui, sans-serif;
+}
+.k-palette-input:focus-visible { outline: none; }
+.k-palette-box:focus-within { outline: 2px solid var(--k-accent); outline-offset: -2px; }
+.k-palette-list { max-height: min(60vh, 26rem); overflow-y: auto; margin: 0; padding: .4rem; list-style: none; }
+.k-palette-group { padding: .6rem .8rem .25rem; font: 700 .72rem/1 system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+.k-opt { display: flex; align-items: baseline; gap: .75rem; padding: .62rem .8rem; border-radius: 10px; cursor: pointer; }
+.k-opt-sub { margin-left: auto; font-size: .85rem; opacity: .72; white-space: nowrap; }
+.k-opt[aria-selected="true"] { background: color-mix(in srgb, var(--k-accent) 18%, transparent); box-shadow: inset 3px 0 0 var(--k-accent); }
+.k-palette-foot { display: flex; gap: 1rem; padding: .55rem 1rem; border-top: 1px solid color-mix(in srgb, var(--k-text) 12%, transparent); font: .78rem system-ui, sans-serif; opacity: .75; }
+.k-palette-foot kbd { font: inherit; padding: .05rem .35rem; border: 1px solid currentColor; border-radius: 4px; }
+.k-empty { padding: 1rem .8rem; opacity: .75; }
+
+/* Keyboard badges: crisp monospace keycaps. */
+.k-opt-sub kbd, .k-palette-foot kbd {
+  display: inline-block; min-width: 1.5em; margin-left: .25em; padding: .1em .4em; text-align: center;
+  font: 600 .75rem/1.2 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent); border-bottom-width: 2px; border-radius: 5px;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+/* Live-state dot: pulses only while music is actually playing. */
+.is-playing .on-air .lamp, .is-playing .stitch-dot { animation: k-pulse 1.6s ease-in-out infinite; }
+@keyframes k-pulse { 0%, 100% { opacity: 1; scale: 1; } 50% { opacity: .45; scale: .8; } }
+
+/* Monochrome pills for metadata (kit contents, release type). */
+.kit-list li, .record-facts dd { font-variant-numeric: tabular-nums; }
+.kit-list li { background: color-mix(in srgb, var(--k-text) 5%, transparent); border-color: color-mix(in srgb, var(--k-text) 18%, transparent); }
+
+/* Dark-first depth: OLED-deep base with a faint dot-matrix grid (static). */
+:root[data-theme="dark"] body {
+  background-image: radial-gradient(rgb(255 255 255 / .06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── THEME VIEW TRANSITION: circular reveal from the toggle ──────────── */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: k-reveal .55s cubic-bezier(.4, 0, .2, 1); }
+@keyframes k-reveal { from { clip-path: circle(0 at var(--k-vt-x, 50%) var(--k-vt-y, 0)); } to { clip-path: circle(150vmax at var(--k-vt-x, 50%) var(--k-vt-y, 0)); } }
+
+/* ── REDUCED MOTION: everything above stands still ───────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .k-lens { display: none !important; }
+  .is-playing .on-air .lamp, .is-playing .stitch-dot { animation: none !important; }
+  .k-magnet { translate: none !important; }
+  .rel-card:hover, .vid-card:hover, .book-card:hover, .new-record:hover { transform: none !important; }
+  .k-hide.masthead, .k-hide.nav { transform: none !important; }
+  .k-shake { animation: none !important; }
+  ::view-transition-new(root) { animation: none !important; }
+}
+@media (forced-colors: active) {
+  .k-spot::after, .k-grain, .k-lens { display: none; }
+  .k-opt[aria-selected="true"] { outline: 2px solid Highlight; }
+}

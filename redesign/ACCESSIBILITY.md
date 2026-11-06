@@ -185,6 +185,43 @@ Rules:
 
 ---
 
+### Shared interaction layer (shared/kinetic.js + kinetic.css, on every page)
+- **Theme toggle** (`.k-theme-btn`): its label always names the action
+  ("Switch to dark theme"). The theme is set before first paint from the
+  saved choice or the OS setting, so there's no flash. The change is
+  announced ("Dark theme on"). The circular View Transitions reveal is
+  skipped with reduced motion. Both palettes were checked with axe on all
+  three pages.
+- **Command palette** (⌘K / Ctrl+K, `/`, or the search button): a native
+  modal `<dialog>`. The input is `role="combobox"` with `aria-controls`,
+  `aria-autocomplete="list"` and `aria-activedescendant`; results are a
+  `role="listbox"` of `role="option"` rows. Arrow keys, Home/End, Enter and Esc
+  all work, and focus returns to where it was. Result counts are announced
+  politely. Section jumps move focus to the section heading.
+- **Single-key shortcuts** (`g` then a section letter, `/`): ignored while
+  typing or inside dialogs, and switchable off in the palette ("Turn off
+  single-key shortcuts", remembered), as WCAG 2.1.4 requires. The palette shows
+  each section's keys as `<kbd>` badges.
+- **Header that recedes on scroll-down**: it always returns on any upward
+  scroll, near the top, when focus moves into it, and while the palette, the
+  mobile menu or the full-screen player is open.
+- **Decoration** (magnetic buttons, cursor lens, card spotlight, grain,
+  parallax): pointer-only and `aria-hidden`. It never carries information and
+  is off under reduced motion.
+  The native cursor is never hidden.
+- **Haptics and sounds**: 6 ms vibration on touch presses (where supported).
+  Interface sounds are **off** by default and can be turned on in the palette.
+- **Optimistic copy**: the Copy button flips to "Copied!" immediately without
+  changing width, rolls back if the clipboard refuses, and the result is
+  always announced in its `role="status"` line.
+- **Forms**: floating labels keep the real `<label>` (only its position
+  animates); invalid fields shake once (not with reduced motion), plus
+  the text error and icon described above; the custom checkbox is still a
+  native `<input type="checkbox">`.
+- **Homepage tracklist**: the per-song lyrics button is a sibling of the
+  `role="button"` row, not inside it (no nested interactive controls), with
+  `aria-expanded` and a song-specific name.
+
 ## Testing checklist (run before every push)
 
 Automated (catches roughly half of issues):

@@ -215,13 +215,18 @@
   const copyBtn = $('#copy-email');
   if (copyBtn && !navigator.clipboard) copyBtn.remove();
   else if (copyBtn) {
+    // Optimistic: the label flips to "Copied!" on press (no width jump,
+    // see kinetic.swapLabel), and rolls back with a message if the
+    // clipboard refuses.
     copyBtn.addEventListener('click', async () => {
       const status = $('#copy-status');
       const address = $('#email-address').textContent.trim();
+      window.kinetic?.swapLabel(copyBtn, 'Copied!');
       try {
         await navigator.clipboard.writeText(address);
         status.textContent = `Copied ${address} to the clipboard.`;
       } catch {
+        window.kinetic?.swapLabel(copyBtn, 'Copy email address', 0);
         status.textContent = 'Could not copy automatically. Select the address above instead.';
       }
     });
@@ -268,6 +273,9 @@
         status.className = 'form-status is-error';
         status.textContent = 'Please fix the highlighted field.';
         fields[firstBad].focus();
+        // A short shake on the field itself (skipped with reduced motion, via CSS).
+        const bad = fields[firstBad];
+        bad.classList.remove('k-shake'); void bad.offsetWidth; bad.classList.add('k-shake');
         return;
       }
       sending = true;

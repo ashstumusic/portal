@@ -30,9 +30,10 @@ os.chdir(ROOT)
 # own template, stylesheet and scripts; content, facts and alt text are
 # shared (redesign/facts.json). Build one:  build_redesign.py redesign-2
 SITES = {
-    'redesign': {'css': 'redesign/redesign.css', 'js': ['redesign/redesign.js', 'redesign/effects.js'],
+    # shared/kinetic.* is the cross-site interaction layer (theme, palette, springs...).
+    'redesign': {'css': ['redesign/redesign.css', 'shared/kinetic.css'], 'js': ['redesign/redesign.js', 'redesign/effects.js', 'shared/kinetic.js'],
                  'url': 'https://ashstu.art/redesign/', 'crate': True},
-    'redesign-2': {'css': 'redesign-2/radio.css', 'js': ['redesign/redesign.js', 'redesign-2/radio.js'],
+    'redesign-2': {'css': ['redesign-2/radio.css', 'shared/kinetic.css'], 'js': ['redesign/redesign.js', 'redesign-2/radio.js', 'shared/kinetic.js'],
                    'url': 'https://ashstu.art/redesign-2/', 'crate': False},
 }
 SITE_NAME = sys.argv[1] if len(sys.argv) > 1 else 'redesign'
@@ -483,7 +484,7 @@ def minify_html(html_text):
     return re.sub(r'\x00(\d+)\x00', lambda m: keep[int(m.group(1))], html_text).strip()
 
 
-css = open(SITE_CFG['css'], encoding='utf-8').read()
+css = '\n'.join(open(f, encoding='utf-8').read() for f in SITE_CFG['css'])
 # Reserve the flythrough's scroll length from the first frame (no shift):
 # one screen per record, plus one.
 if SITE_CFG['crate']:
