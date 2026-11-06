@@ -481,3 +481,98 @@ main:focus { outline: none; }
   .track[aria-current="true"]::after { border: 1px solid CanvasText; }
   .hero-photo::after { border-color: CanvasText; }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   MOTION EFFECTS LAYER (redesign/effects.js)
+   Everything below only applies while <html class="fx"> is set, which
+   effects.js adds when motion is allowed. Without it (JS off, "Reduce
+   motion" on, or the visitor switched effects off) the page is exactly
+   the calm static design above.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Motion toggle in the masthead. A visible, persistent off switch is
+   what makes heavy motion acceptable (WCAG 2.2.2 Pause, Stop, Hide). */
+.fx-toggle {
+  display: inline-grid; place-items: center;
+  width: 2.75rem; height: 2.75rem; flex: none;
+  border: 2px solid var(--line); border-radius: 50%;
+  background: transparent; color: var(--ink);
+}
+.fx-toggle:hover { border-color: currentColor; }
+.fx-toggle[aria-pressed="true"] { background: var(--daffodil); border-color: var(--daffodil); color: #1D1A16; }
+.masthead nav { margin-left: auto; }
+
+/* 2 · RGB split on headings, driven by scroll velocity (--rgb, px).
+   Decorative and momentary: it snaps back to 0 the moment scrolling
+   stops, so it never affects reading. */
+.fx :is(h2, h3) {
+  text-shadow:
+    calc(var(--rgb, 0) * 1px) 0 rgb(230 40 70 / .55),
+    calc(var(--rgb, 0) * -1px) 0 rgb(30 190 230 / .55);
+}
+
+/* 3 · Particle headline. The real <h1> text stays in the DOM (selectable,
+   read by screen readers and crawlers); it's just painted transparent
+   while the canvas draws it as particles. */
+.fx .hero-title { position: relative; }
+/* Particles may fly past the heading; clip them at the hero's edges so
+   the page never scrolls sideways. */
+.fx .hero { overflow-x: clip; }
+.fx .hero-title.fx-particles { color: transparent; }
+.fx-particle-canvas {
+  position: absolute; pointer-events: none;
+  /* Bleed past the text box so particles can fly out of the letters. */
+  inset: -30% -12%;
+  width: 124%; height: 160%;
+}
+
+/* 5 · Kinetic type: per-letter spans whose weight follows the cursor and
+   the music. The original text is kept once, as sr-only, so screen
+   readers don't spell the heading letter by letter. */
+.fx-letters { display: inline; }
+.fx-word { white-space: nowrap; }   /* words still wrap normally; letters inside them don't */
+.fx-letter { display: inline-block; white-space: pre; }   /* weight is eased in JS */
+
+/* 1 · Liquid distortion canvas: one shared WebGL canvas that sits exactly
+   over whichever image is under the pointer. pointer-events: none lets
+   clicks fall through to the real link underneath. */
+.fx-liquid { position: fixed; z-index: 15; pointer-events: none; opacity: 0; transition: opacity .25s; }
+.fx-liquid.on { opacity: 1; }
+.fx .video-link:hover img { transform: none; }  /* the shader replaces the CSS zoom */
+
+/* 4 · Scroll-tied 3D flythrough of the discography. */
+.fx-skip {
+  display: block; width: fit-content; margin: 0 auto var(--s-2);
+  font-size: var(--step--1);
+}
+.fx-crate { position: relative; border-top: 1px solid var(--line); }
+.fx-stage {
+  position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden;
+  perspective: 900px; perspective-origin: 50% 45%;
+  background:
+    radial-gradient(ellipse at 50% 55%, color-mix(in srgb, var(--daffodil) 14%, transparent), transparent 60%),
+    var(--paper);
+}
+.fx-scene { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; will-change: transform; }
+.fx-station { position: absolute; transform-style: preserve-3d; }
+.fx-station img {
+  /* max-width: none: the station has no width of its own, so the global
+     img { max-width: 100% } would collapse the cover to 0px. */
+  max-width: none;
+  width: clamp(14rem, 30vw, 26rem); aspect-ratio: 1; object-fit: cover;
+  translate: -50% -50%; border-radius: 4px;
+  box-shadow: 0 40px 80px -30px rgb(0 0 0 / .6);
+}
+.fx-station figcaption {
+  position: absolute; left: 50%; top: calc(clamp(14rem, 30vw, 26rem) / 2 + 1rem);
+  translate: -50% 0; width: max-content; max-width: 80vw; text-align: center;
+}
+.fx-station .fx-st-title { font-family: var(--font-display); font-style: italic; font-size: var(--step-2); line-height: 1.1; }
+.fx-station .fx-st-meta { font-size: var(--step--1); color: var(--ink-2); }
+.fx-dust { position: absolute; width: 6px; height: 6px; border-radius: 1px; background: var(--daffodil); opacity: .7; }
+.fx-progress {
+  position: absolute; left: 50%; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
+  display: flex; gap: .5rem;
+}
+.fx-progress i { width: 2rem; height: 3px; border-radius: 2px; background: var(--line); }
+.fx-progress i.on { background: var(--clay); }
