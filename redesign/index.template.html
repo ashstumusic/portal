@@ -148,6 +148,38 @@
       <p class="copy-status" id="copy-status" role="status"></p>
     </article>
     <!--@GENERATED:PRESS_KIT-->
+    <!-- CONTACT FORM: only shown when the optional Node back-end answers
+         GET /api/health (static hosting has no API, so the email address
+         above stays the way to get in touch). Native labels, required and
+         maxlength attributes, per-field errors linked with
+         aria-describedby, and one polite status message. -->
+    <form class="book-card contact-form" id="contact-form" action="/api/contact" method="post" novalidate hidden aria-labelledby="form-title">
+      <h3 class="kicker" id="form-title">Send a message</h3>
+      <p class="form-note">All fields are required, except that you can leave the message empty if you only want to subscribe.</p>
+      <p class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" maxlength="200" required aria-describedby="f-name-err">
+        <span class="field-error" id="f-name-err"></span>
+      </p>
+      <p class="field">
+        <label for="f-email">Your email address</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required aria-describedby="f-email-err">
+        <span class="field-error" id="f-email-err"></span>
+      </p>
+      <p class="field">
+        <label for="f-message">Message <span class="field-hint" id="f-message-hint">(up to 5,000 characters)</span></label>
+        <textarea id="f-message" name="message" rows="5" maxlength="5000" aria-describedby="f-message-hint f-message-err"></textarea>
+        <span class="field-error" id="f-message-err"></span>
+      </p>
+      <p class="field field-check">
+        <input id="f-subscribe" name="subscribe" type="checkbox">
+        <label for="f-subscribe">Send me news about new releases</label>
+      </p>
+      <!-- Spam trap: hidden from people and screen readers; bots fill it. -->
+      <p class="hp" aria-hidden="true"><label for="f-website">Leave this field empty</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></p>
+      <button type="submit" class="btn btn-primary" id="f-submit">Send message</button>
+      <p class="form-status" id="form-status" role="status"></p>
+    </form>
     <!--@GENERATED:PRESS_PHOTOS-->
   </section>
 </main>
@@ -200,6 +232,7 @@
     </button>
   </header>
   <video id="video" controls playsinline preload="none"></video>
+  <p class="video-error" id="video-error" role="alert" hidden></p>
 </dialog>
 <!--@GENERATED:SCRIPTS-->
 </body>

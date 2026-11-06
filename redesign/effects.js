@@ -77,16 +77,20 @@
   }
   const bin = (i) => (bins && !audio.paused ? bins[2 + (i % 30)] / 255 : 0);
 
+  // Visibility tracking. Without IntersectionObserver (old browsers),
+  // treat everything as visible rather than crashing the whole layer.
   const visible = new WeakSet();
-  const io = new IntersectionObserver((entries) => {
-    for (const en of entries) en.isIntersecting ? visible.add(en.target) : visible.delete(en.target);
-  }, { rootMargin: '100px' });
+  const io = 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => {
+      for (const en of entries) en.isIntersecting ? visible.add(en.target) : visible.delete(en.target);
+    }, { rootMargin: '100px' })
+    : { observe: (el) => visible.add(el), unobserve: () => {} };
 
   // ══ 3 · PARTICLE HEADLINE ═════════════════════════════════════════
   const particles = (() => {
     const h1 = $('.hero-title');
     const textNode = h1 && [...h1.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
-    let canvas, ctx, img, buf32, W, H, dpr, N = 0, P, ink, gold, rect = null, dirty = false;
+    let canvas, ctx, img, buf32, W, H, dpr, N = 0, P, ink, gold, rect = null, dirty = false, settled = false;
 
     const rgbInt = (r, g, b) => (255 << 24) | (b << 16) | (g << 8) | r;   // little-endian ABGR
     const cssInt = (css) => { const m = css.match(/\d+/g).map(Number); return rgbInt(m[0], m[1], m[2]); };
@@ -160,13 +164,20 @@
           const { cw, ch } = build();
           canvas.width = cw; canvas.height = ch;
           img = ctx.createImageData(cw, ch); buf32 = new Uint32Array(img.data.buffer);
+          settled = false;
           return;
         }
         if (!rect) return;
         const sx = rect.width / W;
         const mx = (ptr.x - rect.left) / sx, my = (ptr.y - rect.top) / sx;
-        const R = coarse ? 70 : 110, R2 = R * R, jitter = level * 5, on = ptr.active;
+        const R = coarse ? 70 : 110, R2 = R * R, jitter = level * 5;
+        // Pointer only matters when it's near the canvas.
+        const on = ptr.active && mx > -R && my > -R && mx < W + R && my < H + R;
+        // Idle: every particle at home and nothing disturbing them. Skip the
+        // whole simulation and the 3 MB putImageData (battery, low-end GPUs).
+        if (!on && !jitter && settled) return;
         buf32.fill(0);
+        let energy = 0;
         const s = Math.max(1, Math.round((coarse ? 1.5 : 2) * dpr)), cw = canvas.width, ch = canvas.height;
         for (let k = 0, n = N * 6; k < n; k += 6) {
           let x = P[k + 2], y = P[k + 3], vx = P[k + 4], vy = P[k + 5];
@@ -182,12 +193,14 @@
           if (jitter) { vx += (Math.random() - 0.5) * jitter; vy += (Math.random() - 0.5) * jitter; }
           vx *= 0.86; vy *= 0.86; x += vx; y += vy;
           P[k + 2] = x; P[k + 3] = y; P[k + 4] = vx; P[k + 5] = vy;
+          energy += vx * vx + vy * vy + Math.abs(P[k] - x) + Math.abs(P[k + 1] - y);
           const px = (x * dpr) | 0, py = (y * dpr) | 0;
           if (px < 0 || py < 0 || px + s >= cw || py + s >= ch) continue;
           const color = vx * vx + vy * vy > 6 ? gold : ink;   // fast particles glow daffodil
           for (let a = 0; a < s; a++) { const row = (py + a) * cw + px; for (let b = 0; b < s; b++) buf32[row + b] = color; }
         }
         ctx.putImageData(img, 0, 0);
+        settled = energy < N * 0.002;
       },
     };
   })();

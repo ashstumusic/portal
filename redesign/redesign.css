@@ -132,7 +132,7 @@ main:focus { outline: none; }
 }
 
 .btn {
-  display: inline-flex; align-items: center; gap: .6em;
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: .3em .6em; max-width: 100%; text-align: left;
   min-height: 3rem; padding: .7em 1.4em;
   border-radius: 999px; border: 2px solid transparent;
   font-weight: 600; line-height: 1.2; text-decoration: none;
@@ -172,7 +172,7 @@ main:focus { outline: none; }
   font-family: var(--font-display); font-style: italic; font-size: var(--step-1);
 }
 .brand img { width: 2.75rem; height: 2.75rem; }
-.nav-list { display: flex; gap: clamp(.25rem, 2vw, 1.75rem); list-style: none; }
+.nav-list { display: flex; flex-wrap: wrap; gap: 0 clamp(.25rem, 2vw, 1.75rem); list-style: none; }   /* wraps under very large text */
 .nav-list a {
   display: block; padding: .6rem .5rem;
   color: var(--ink); text-decoration: none;
@@ -233,6 +233,7 @@ main:focus { outline: none; }
   border: var(--stitch) var(--line); border-radius: calc(var(--radius) * 2);
 }
 .new-record > :not(img) { grid-column: 2; }
+.new-record > *, .hero > *, .book > * { min-width: 0; }   /* let grid items shrink (280px, 200% text) */
 .new-record-art {
   grid-row: 1 / span 4; align-self: start;
   width: clamp(6.5rem, 10vw, 10rem); aspect-ratio: 1; object-fit: cover; border-radius: 4px;
@@ -278,6 +279,7 @@ main:focus { outline: none; }
   align-items: start;
 }
 .record > :not(img) { grid-column: 2; }
+.record > * { min-width: 0; }   /* grid items may shrink below their content (280px screens, 200% text) */
 .record-art {
   grid-row: 1 / span 5;
   width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
@@ -302,7 +304,11 @@ main:focus { outline: none; }
 .record-actions .btn { font-size: var(--step-0); }
 
 /* Tracklist: a real data table (number, title, length). */
-.tracks { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+/* Fixed layout: column widths come from the header row, so long titles
+   wrap inside their cell instead of pushing the table wider than the
+   screen (280px phones, 200% text size). */
+.tracks { width: 100%; table-layout: fixed; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.tracks tbody th { overflow-wrap: anywhere; }
 .tracks thead th {
   padding: 0 .5rem .5rem; text-align: left;
   font-family: var(--font-body); font-size: var(--step--1); font-weight: 400; color: var(--ink-2);
@@ -310,8 +316,9 @@ main:focus { outline: none; }
 }
 .tracks thead th:last-child, .tracks td:last-child { text-align: right; }
 .tracks td, .tracks tbody th { padding: 0 .5rem; border-bottom: 1px solid var(--line); text-align: left; }
-.tracks td:first-child { width: 4.5rem; color: var(--ink-2); }
-.tracks td:last-child { width: 6rem; color: var(--ink-2); }
+.tracks thead th:first-child { width: 4.5em; }
+.tracks thead th:last-child { width: 6.5em; }
+.tracks td:first-child, .tracks td:last-child { color: var(--ink-2); }
 .tracks tbody th { font-weight: 400; }
 .tracks tbody tr:hover { background: var(--paper-2); }
 .track {
@@ -333,7 +340,8 @@ main:focus { outline: none; }
   .record { grid-template-columns: 1fr; }
   .record > :not(img) { grid-column: 1; }
   .record-art { grid-row: auto; max-width: 20rem; }
-  .tracks td:first-child { width: 3rem; }
+  .tracks thead th:first-child { width: 3em; }
+  .tracks thead th:last-child { width: 5em; }
   .tracks thead th:first-child { font-size: 0; }   /* "Track number" stays in the DOM, label hidden for room */
   .tracks thead th:first-child::before { content: "No."; font-size: var(--step--1); }
 }
@@ -387,17 +395,17 @@ main:focus { outline: none; }
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--s-3); align-items: start;
 }
-@media (max-width: 48rem) { .book { grid-template-columns: 1fr; } }
-.book .section-head, .press-photos { grid-column: 1 / -1; }
+@media (max-width: 48rem) { .book { grid-template-columns: minmax(0, 1fr); } }
+.book .section-head, .press-photos, .contact-form { grid-column: 1 / -1; }
 .book .section-head { margin-bottom: var(--s-2); }
 .book-card {
-  display: grid; gap: var(--s-2); justify-items: start;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-2); justify-items: start;
   padding: clamp(1.5rem, 3vw, 2.5rem);
   background: var(--paper-2);
   border: var(--stitch) var(--line); border-radius: calc(var(--radius) * 2);
 }
 /* Break only if the address truly can't fit (very narrow phones). */
-.email { font-family: var(--font-display); font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem); overflow-wrap: break-word; }
+.email { font-family: var(--font-display); font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem); overflow-wrap: anywhere; }
 .email a { color: var(--ink); }
 .copy-status { min-height: 1.6em; font-size: var(--step--1); color: var(--stem); font-weight: 600; }
 .copy-status:empty { display: none; }
@@ -405,6 +413,29 @@ main:focus { outline: none; }
 .kit-label { font-size: var(--step--1); color: var(--ink-2); margin-bottom: -.75rem; }
 .kit-list { display: flex; flex-wrap: wrap; gap: .25rem .5rem; list-style: none; font-size: var(--step--1); }
 .kit-list li { padding: .1em .6em; border: 1px solid var(--line); border-radius: 999px; }
+/* Contact form */
+.contact-form { max-width: 44rem; }
+.form-note, .field-hint { font-size: var(--step--1); color: var(--ink-2); font-weight: 400; }
+.field { display: grid; gap: .35rem; width: 100%; }
+.field label { font-weight: 600; }
+.field input:not([type="checkbox"]), .field textarea {
+  width: 100%; min-height: 2.75rem; padding: .6rem .75rem;
+  font: inherit; color: var(--ink); background: var(--paper);
+  border: 2px solid var(--ink-2); border-radius: var(--radius);   /* 6.6:1 boundary */
+}
+.field textarea { resize: vertical; min-height: 8rem; }
+.field-check { grid-template-columns: auto 1fr; align-items: center; gap: .6rem; }
+.field-check input { width: 1.5rem; height: 1.5rem; accent-color: var(--clay); }
+/* Errors: text + icon + thicker border, never color alone. */
+.field-error { font-size: var(--step--1); font-weight: 600; color: var(--clay); }
+.field-error:not(:empty)::before { content: "⚠ "; }
+.field [aria-invalid="true"] { border-color: var(--clay); border-width: 3px; }
+.form-status { font-weight: 600; min-height: 1.6em; }
+.form-status.is-ok { color: var(--stem); }
+.form-status.is-error { color: var(--clay); }
+.contact-form[aria-busy="true"] #f-submit { opacity: .6; cursor: progress; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
 .press-photos {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2);
   margin-top: var(--s-2); list-style: none;
@@ -490,6 +521,8 @@ main:focus { outline: none; }
 .video-yt { color: var(--daffodil); font-size: var(--step--1); }
 .video-dialog :focus-visible { outline-color: var(--daffodil); }
 .video-dialog video { width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.video-error { padding: var(--s-2) var(--s-3) var(--s-3); color: var(--player-ink); }
+.video-error a { color: var(--daffodil); }
 
 /* ── USER PREFERENCES ────────────────────────────────────────────────── */
 /* Reduced motion: no smooth scroll, lifts, slide-ins, or tilted photos.

@@ -161,10 +161,26 @@
     $('#video-yt').hidden = !yt;
     if (yt) $('#video-yt').href = yt.href;
     video.poster = $('img', link).currentSrc || $('img', link).src;
+    videoError.hidden = true;
+    video.hidden = false;
     video.src = link.href;
-    dialog.showModal();
+    if (!dialog.open) dialog.showModal();   // showModal() on an open dialog throws
     video.play().catch(() => {});
   }
+  // A video that fails to load says so, and offers YouTube instead of a black box.
+  const videoError = $('#video-error');
+  video.addEventListener('error', () => {
+    if (!video.getAttribute('src')) return;
+    const yt = $('#video-yt');
+    videoError.textContent = 'This video could not be loaded. ';
+    if (!yt.hidden) {
+      const a = document.createElement('a');
+      a.href = yt.href; a.textContent = 'Watch it on YouTube instead.';
+      videoError.append(a);
+    }
+    video.hidden = true;
+    videoError.hidden = false;
+  });
   $('#video-close').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
   dialog.addEventListener('close', () => {
@@ -207,6 +223,81 @@
         status.textContent = `Copied ${address} to the clipboard.`;
       } catch {
         status.textContent = 'Could not copy automatically. Select the address above instead.';
+      }
+    });
+  }
+
+  // ── CONTACT FORM (needs the optional back-end) ────────────────────
+  // Shown only when the page was served by the Node back-end, which adds
+  // <meta name="contact-api">. On static hosting there's no API, so the
+  // form stays hidden (no request made) and the email address is the way
+  // to get in touch. Validation mirrors server.js.
+  const form = $('#contact-form');
+  const api = document.querySelector('meta[name="contact-api"]')?.content;
+  if (form && api && window.fetch) {
+    form.hidden = false;
+
+    const EMAIL_RE = /^[A-Za-z0-9.!#$%&*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/;
+    const status = $('#form-status');
+    const submit = $('#f-submit');
+    let sending = false;
+    const fields = { name: $('#f-name'), email: $('#f-email'), message: $('#f-message') };
+
+    function setError(input, msg) {
+      $('#' + input.id + '-err').textContent = msg;
+      if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    }
+    function validate() {
+      const v = { name: fields.name.value.trim(), email: fields.email.value.trim(), message: fields.message.value.trim(), subscribe: $('#f-subscribe').checked };
+      const errs = {
+        email: !v.email ? 'Enter your email address.' : !EMAIL_RE.test(v.email) || v.email.length > 254 ? 'Enter an email address like name@example.com.' : '',
+        message: !v.message && !v.subscribe ? 'Write a message, or tick "Send me news" to only subscribe.' : v.message.length > 5000 ? 'Keep the message under 5,000 characters.' : '',
+        name: v.message && !v.name ? 'Enter your name.' : '',
+      };
+      for (const k of Object.keys(fields)) setError(fields[k], errs[k]);
+      return { v, firstBad: ['name', 'email', 'message'].find((k) => errs[k]) };
+    }
+    // Re-check a field as soon as the visitor fixes it.
+    form.addEventListener('input', (e) => { if (e.target.getAttribute('aria-invalid')) validate(); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (sending) return;                       // ignore double-clicks / repeated Enter
+      const { v, firstBad } = validate();
+      if (firstBad) {
+        status.className = 'form-status is-error';
+        status.textContent = 'Please fix the highlighted field.';
+        fields[firstBad].focus();
+        return;
+      }
+      sending = true;
+      form.setAttribute('aria-busy', 'true');
+      submit.setAttribute('aria-disabled', 'true');
+      status.className = 'form-status';
+      status.textContent = 'Sending…';
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 10000);
+      try {
+        const r = await fetch(api, {
+          method: 'POST', signal: ctl.signal,
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ ...v, website: $('#f-website').value }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || 'The message could not be sent.');
+        form.reset();
+        status.className = 'form-status is-ok';
+        status.textContent = v.message ? 'Thanks, your message was sent.' : 'Thanks, you are subscribed.';
+      } catch (err) {
+        status.className = 'form-status is-error';
+        status.textContent = err.name === 'AbortError'
+          ? 'The server took too long to answer. Please try again, or email the address above.'
+          : `${err.message} You can also email the address above.`;
+      } finally {
+        clearTimeout(timer);
+        sending = false;
+        form.removeAttribute('aria-busy');
+        submit.removeAttribute('aria-disabled');
       }
     });
   }
