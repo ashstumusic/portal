@@ -1,0 +1,588 @@
+/* ════════════════════════════════════════════════════════════════════
+   ASH STU · "GOLDEN HOUR" REDESIGN
+   ────────────────────────────────────────────────────────────────────
+   Concept: the site is a set of liner notes found in a guitar case.
+   Unbleached paper, near-black ink, and two colors lifted straight
+   from the embroidered daffodil patch (the logo): its red stitched ring
+   ("clay") and its yellow petals ("daffodil"). The dashed "stitch" line
+   that recurs on cards and the hero photo is the patch's embroidery
+   carried through the whole brand.
+
+   Every text/background pair below was checked against WCAG 2.2:
+   all body text ≥ 4.5:1, most ≥ 6:1, in both light and dark mode.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── FONTS ─────────────────────────────────────────────────────────────
+   All four faces already live in /Fonts; no third-party requests, so no
+   tracking and no flash of a font server being slow. font-display: swap
+   means text is readable immediately in the fallback, then upgrades. */
+@font-face { font-family: "Playfair"; src: url("../Fonts/Header.ttf") format("truetype"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Playfair"; src: url("../Fonts/Header-Italic.ttf") format("truetype"); font-weight: 400 900; font-style: italic; font-display: swap; }
+@font-face { font-family: "Body"; src: url("../Fonts/Body.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Hand"; src: url("../Fonts/j.d.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Fritz"; src: url("../Fonts/Handmade.otf") format("opentype"); font-display: swap; }
+
+/* ── DESIGN TOKENS ───────────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  /* Color: light ("daylight on paper") */
+  --paper:    #F6F0E4;  /* page: unbleached paper, warmer than white (less glare, feels handmade) */
+  --paper-2:  #ECE3D2;  /* raised/recessed surfaces: cards, track rows on hover */
+  --ink:      #1D1A16;  /* text: warm near-black, 15.3:1 on paper */
+  --ink-2:    #5C5348;  /* secondary text: 6.6:1 on paper */
+  --clay:     #A8321F;  /* action color: the patch's red ring. 5.9:1 on paper */
+  --daffodil: #F2B53A;  /* highlight: the petals. Only ever a FILL behind ink (9.5:1), never text on paper */
+  --stem:     #2E6B4A;  /* "playing now" confirmation: the patch's stem green, 5.6:1 */
+  --line:     rgb(29 26 22 / .14);
+  --on-clay:  #F6F0E4;  /* text on clay buttons: 5.9:1 */
+
+  /* The player is always a dark surface: it reads as "the stage", a
+     separate object docked on top of the page rather than part of it. */
+  --player-bg:  #1D1A16;
+  --player-ink: #F2EBDD;
+  --player-ink-2: #B8AE9D;
+
+  /* Type */
+  --font-display: "Playfair", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-body: "Body", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-hand: "Hand", "Bradley Hand", "Segoe Print", cursive;
+  --font-label: "Fritz", "Body", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale (ratio ≈ 1.25, a major third). clamp() keeps every
+     step readable from a 320px phone to a 2560px monitor and scales
+     correctly with browser zoom because everything is in rem. */
+  --step--1: clamp(.875rem, .85rem + .1vw, .95rem);
+  --step-0:  clamp(1.0625rem, 1rem + .25vw, 1.1875rem);
+  --step-1:  clamp(1.25rem, 1.15rem + .45vw, 1.5rem);
+  --step-2:  clamp(1.5rem, 1.3rem + .9vw, 2.125rem);
+  --step-3:  clamp(2rem, 1.6rem + 1.8vw, 3.25rem);
+  --step-hero: clamp(3.75rem, 2rem + 9vw, 9.5rem);
+
+  /* Space: one 8px rhythm (as rem), so every gap on the page is a
+     multiple of the same unit. Consistent spacing is processed
+     pre-attentively as "orderly", which reads as trustworthy. */
+  --s-1: .5rem;  --s-2: 1rem;  --s-3: 1.5rem;  --s-4: 2rem;
+  --s-5: 3rem;   --s-6: 4rem;  --s-7: 6rem;
+  --section-pad: clamp(4rem, 3rem + 5vw, 8rem);
+  --gutter: clamp(1rem, .5rem + 3vw, 3rem);
+  --measure: 62ch;  /* comfortable line length for reading */
+
+  --radius: 6px;
+  --stitch: 2px dashed;  /* the embroidery line */
+  --focus: var(--clay);
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* Color: dark ("after the show"). Same roles, re-tuned so contrast holds
+   on a dark ground: clay is lifted to a coral (6.4:1), stem to a sage. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --paper:    #16130F;
+    --paper-2:  #221E18;
+    --ink:      #F2EBDD;
+    --ink-2:    #B8AE9D;
+    --clay:     #F0735A;
+    --stem:     #7BC49A;
+    --line:     rgb(242 235 221 / .16);
+    --on-clay:  #16130F;
+    --player-bg: #2A251E;
+    --focus: var(--daffodil);
+  }
+}
+
+/* ── BASE ────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Anchor jumps stop below the sticky masthead instead of under it. */
+  scroll-padding-top: 5rem;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  /* Keep the page clear of notches and the home indicator. */
+  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+}
+/* While the player is open, reserve room so it never covers the
+   last thing on the page (the footer links). */
+body.has-player { padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)); }
+
+img, video, svg { display: block; max-width: 100%; }
+img { height: auto; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.05; text-wrap: balance; }
+p { text-wrap: pretty; }
+a { color: var(--clay); text-underline-offset: .2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+[hidden] { display: none !important; }
+/* Text for screen readers only (e.g. "music video" after a title). */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Focus: thick, offset, high-contrast, and ONLY for keyboard users
+   (:focus-visible). Nobody ever loses their place on the page. */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+main:focus { outline: none; } /* target of the skip link, not a control */
+
+.skip-link {
+  position: absolute; left: var(--s-2); top: var(--s-2); z-index: 100;
+  padding: var(--s-1) var(--s-2);
+  background: var(--ink); color: var(--paper);
+  border-radius: var(--radius);
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+/* ── SHARED PIECES ───────────────────────────────────────────────────── */
+.kicker, .eyebrow, .section-num {
+  /* The hand-cut label face is decorative, so it's never used below
+     ~16px, where its rough edges start to cost legibility. */
+  font-family: var(--font-label);
+  font-size: clamp(1rem, .95rem + .2vw, 1.125rem);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.stitch-dot {
+  display: inline-block; width: .55em; height: .55em; margin-right: .5em;
+  border-radius: 50%; background: var(--clay); vertical-align: .05em;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: .6em;
+  min-height: 3rem;                 /* ≥ 44px touch target */
+  padding: .7em 1.4em;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font-weight: 600; text-decoration: none; line-height: 1.2;
+  transition: transform .2s var(--ease), background-color .2s var(--ease);
+}
+/* Primary = the single most important action on screen. Solid clay is
+   the only saturated block of color in the hero, so the eye lands on it
+   first (von Restorff / isolation effect). */
+.btn-primary { background: var(--clay); color: var(--on-clay); }
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary { border-color: currentColor; color: var(--ink); }
+.btn-secondary:hover { background: var(--paper); }
+.btn-quiet {
+  min-height: 2.75rem; padding: .5em 1.1em;
+  background: transparent; border-color: var(--line); color: var(--ink);
+  font-weight: 500; font-size: var(--step--1);
+}
+.btn-quiet:hover { border-color: currentColor; }
+.file-meta { font-weight: 400; color: var(--ink-2); }
+
+.icon-btn {
+  display: inline-grid; place-items: center;
+  width: 2.75rem; height: 2.75rem;  /* 44px: WCAG target size */
+  border: 0; border-radius: 50%;
+  background: transparent;
+}
+.icon-btn:hover { background: rgb(255 255 255 / .1); }
+
+/* ── MASTHEAD ────────────────────────────────────────────────────────── */
+.masthead {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-2);
+  padding: calc(var(--s-1) + env(safe-area-inset-top, 0px)) var(--gutter) var(--s-1);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: flex; align-items: center; gap: .6rem;
+  color: var(--ink); text-decoration: none;
+  font-family: var(--font-display); font-style: italic; font-size: var(--step-1);
+}
+.brand img { width: 2.75rem; height: 2.75rem; }
+/* No hamburger menu. Four short words fit on any phone, and visible
+   options get used; hidden ones are forgotten ("out of sight, out of
+   mind" is real: hidden navigation measurably lowers discoverability). */
+.nav-list { display: flex; gap: clamp(.25rem, 2vw, 1.75rem); padding: 0; list-style: none; }
+.nav-list a {
+  display: block; padding: .6rem .5rem;
+  color: var(--ink); text-decoration: none; font-size: var(--step--1);
+  font-weight: 600; letter-spacing: .02em;
+  border-bottom: 2px solid transparent;
+}
+.nav-list a:hover { border-bottom-color: var(--daffodil); }
+/* The section you're reading is marked with a stitch underline AND
+   aria-current, so it's shown by shape, not by color alone. */
+.nav-list a[aria-current="true"] { border-bottom: var(--stitch) var(--clay); }
+@media (max-width: 26rem) {
+  .brand-name { display: none; }
+}
+
+/* ── HERO ────────────────────────────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4.5rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem) var(--gutter) clamp(3rem, 2rem + 4vw, 5rem);
+  max-width: 100rem; margin-inline: auto;
+}
+.hero-photo { position: relative; margin: 0; }
+.hero-photo img {
+  width: 100%; aspect-ratio: 1260 / 855; object-fit: cover;
+  border-radius: var(--radius);
+}
+/* The embroidered border: a dashed daffodil "stitch" sewn just inside
+   the photo's edge, the same way the logo's ring is stitched. It turns
+   a stock-looking photo into a *patch*, an object, and ties the hero to
+   the logo without a word. */
+.hero-photo::after {
+  content: ""; position: absolute; inset: .75rem;
+  border: var(--stitch) var(--daffodil);
+  border-radius: calc(var(--radius) - 2px);
+  pointer-events: none;
+}
+.hero-copy { display: grid; gap: var(--s-2); }
+.hero-title {
+  font-size: var(--step-hero);
+  font-style: italic;
+  letter-spacing: -.02em;
+  line-height: .9;
+  margin-top: var(--s-1);
+}
+.hero-note {
+  font-family: var(--font-hand);
+  font-size: var(--step-2);
+  line-height: 1.2;
+  color: var(--clay);
+  transform: rotate(-2deg);   /* written in the margin, not typeset */
+  transform-origin: left center;
+  margin-bottom: var(--s-3);
+}
+
+.new-record {
+  display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: center;
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: var(--stitch) var(--line);
+  border-radius: calc(var(--radius) * 2);
+}
+.new-record-art {
+  width: clamp(6.5rem, 10vw, 10rem); aspect-ratio: 1; object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 var(--line), 0 12px 24px -12px rgb(0 0 0 / .45);
+}
+.new-record-body { display: grid; gap: var(--s-1); min-width: 0; }
+.new-record-title { font-size: var(--step-2); }
+.new-record-actions { display: grid; gap: var(--s-2); justify-items: start; margin-top: var(--s-1); }
+.stream-links { font-size: var(--step--1); color: var(--ink-2); }
+
+@media (max-width: 56rem) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-photo { margin-inline: calc(var(--gutter) * -1); }  /* full-bleed on phones */
+  .hero-photo img { border-radius: 0; aspect-ratio: 4 / 3; object-position: 30% center; }
+  .hero-photo::after { border-radius: 0; }
+}
+@media (max-width: 30rem) {
+  .new-record { grid-template-columns: 1fr; }
+  .new-record-art { width: 100%; max-width: 14rem; }
+}
+
+/* ── SECTIONS ────────────────────────────────────────────────────────── */
+.section {
+  padding: var(--section-pad) var(--gutter);
+  max-width: 100rem; margin-inline: auto;
+  border-top: 1px solid var(--line);
+}
+.section-head {
+  display: grid; gap: var(--s-1);
+  margin-bottom: var(--s-5);
+  max-width: var(--measure);
+}
+.section-num { color: var(--clay); }
+.section-head h2 { font-size: var(--step-3); font-style: italic; }
+.section-lede { color: var(--ink-2); font-size: var(--step-1); line-height: 1.4; }
+
+/* ── LISTEN: RECORDS ─────────────────────────────────────────────────── */
+.records { display: grid; gap: var(--s-6); }
+.loading { color: var(--ink-2); }
+.record {
+  display: grid;
+  grid-template-columns: minmax(10rem, 22rem) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+.record-art {
+  width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+  box-shadow: 0 18px 36px -20px rgb(0 0 0 / .5);
+}
+/* Sticky cover: on long tracklists, the art stays beside the songs
+   while you scroll, so you never lose track of which record you're in. */
+@media (min-width: 48rem) {
+  .record-art { position: sticky; top: 6rem; }
+}
+.record-body { display: grid; gap: var(--s-2); min-width: 0; }
+.record-title { font-size: var(--step-2); }
+.record-meta { color: var(--ink-2); font-size: var(--step--1); }
+.record-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); }
+.record-links { display: flex; gap: var(--s-2); font-size: var(--step--1); }
+
+.tracks {
+  list-style: none; padding: 0;
+  border-top: 1px solid var(--line);
+  /* Long albums split into two columns on wide screens so the whole
+     tracklist fits in one glance instead of a long scroll. */
+  columns: 2 22rem; column-gap: var(--s-4);
+}
+.tracks li { break-inside: avoid; border-bottom: 1px solid var(--line); }
+.track {
+  display: grid; grid-template-columns: 2.5rem 1fr auto; align-items: center; gap: var(--s-1);
+  width: 100%; min-height: 3rem;
+  padding: .5rem .5rem;
+  background: none; border: 0; border-radius: 4px;
+  text-align: left;
+}
+.track:hover { background: var(--paper-2); }
+.track-num {
+  font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: var(--step--1);
+}
+.track-state { display: grid; place-items: center; width: 1.5rem; height: 1.5rem; color: var(--clay); }
+.track-state svg { opacity: 0; transition: opacity .15s; }
+.track:hover .track-state svg, .track:focus-visible .track-state svg { opacity: 1; }
+
+/* Now playing: signalled four ways at once (weight, a highlight bar,
+   an animated "levels" icon, and aria-current for screen readers), so it
+   never depends on color perception. */
+.track[aria-current="true"] { font-weight: 700; background: color-mix(in srgb, var(--daffodil) 28%, transparent); }
+.track[aria-current="true"] .track-num { color: var(--ink); }
+.track[aria-current="true"] .track-state svg { display: none; }
+.levels { display: none; gap: 2px; align-items: end; height: 1rem; }
+.track[aria-current="true"] .levels { display: flex; }
+.levels i { width: 3px; background: var(--stem); border-radius: 1px; height: 40%; }
+.is-playing .track[aria-current="true"] .levels i { animation: level .9s ease-in-out infinite alternate; }
+.levels i:nth-child(2) { animation-delay: -.3s; }
+.levels i:nth-child(3) { animation-delay: -.6s; }
+@keyframes level { from { height: 20%; } to { height: 100%; } }
+
+@media (max-width: 48rem) {
+  .record { grid-template-columns: 1fr; }
+  .record-art { max-width: 20rem; }
+}
+
+/* ── PULL QUOTE ──────────────────────────────────────────────────────── */
+.pull-quote {
+  margin: var(--s-7) auto 0;
+  max-width: 48rem;
+  text-align: center;
+}
+.pull-quote blockquote p {
+  font-family: var(--font-display); font-style: italic;
+  font-size: var(--step-2); line-height: 1.3;
+}
+.pull-quote figcaption {
+  margin-top: var(--s-2);
+  font-family: var(--font-label); text-transform: uppercase; letter-spacing: .1em;
+  color: var(--clay);
+}
+.pull-quote figcaption::before { content: "— "; }
+
+/* ── WATCH ───────────────────────────────────────────────────────────── */
+.videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--s-4) var(--s-3);
+  list-style: none; padding: 0;
+}
+.video-card {
+  display: grid; gap: var(--s-1);
+  width: 100%; padding: 0;
+  background: none; border: 0; text-align: left;
+}
+.video-thumb { position: relative; border-radius: var(--radius); overflow: hidden; }
+.video-thumb img {
+  width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
+  transition: transform .4s var(--ease);
+}
+.video-card:hover .video-thumb img { transform: scale(1.03); }
+.video-play {
+  position: absolute; left: var(--s-2); bottom: var(--s-2);
+  display: inline-flex; align-items: center; gap: .4em;
+  padding: .35em .8em .35em .6em;
+  background: var(--daffodil); color: #1D1A16;
+  border-radius: 999px; font-size: var(--step--1); font-weight: 700;
+}
+.video-name { font-family: var(--font-display); font-size: var(--step-1); line-height: 1.2; }
+
+/* ── ABOUT ───────────────────────────────────────────────────────────── */
+.about-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 6vw, 6rem); align-items: center;
+}
+.about-text { display: grid; gap: var(--s-3); max-width: var(--measure); }
+.about-lead { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.25; }
+.snapshots {
+  display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto;
+  gap: var(--s-2);
+}
+.snap {
+  width: 100%; object-fit: cover;
+  /* Polaroid edge: a paper-colored mat around each print. */
+  padding: .5rem; background: #FBF8F1;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .2), 0 14px 28px -16px rgb(0 0 0 / .45);
+  border-radius: 2px;
+}
+.snap-main { grid-row: span 2; aspect-ratio: 1; transform: rotate(-1.5deg); }
+.snap:nth-child(2) { aspect-ratio: 3 / 4; transform: rotate(2deg); }
+.snap:nth-child(3) { aspect-ratio: 1; transform: rotate(-1deg); }
+@media (max-width: 48rem) {
+  .about-grid { grid-template-columns: 1fr; }
+}
+
+/* ── BOOK & PRESS ────────────────────────────────────────────────────── */
+.book-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--s-3);
+}
+.book-card {
+  display: grid; gap: var(--s-2); align-content: start; justify-items: start;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--paper-2);
+  border: var(--stitch) var(--line);
+  border-radius: calc(var(--radius) * 2);
+}
+.email { font-family: var(--font-display); font-size: var(--step-2); overflow-wrap: anywhere; }
+.email a { color: var(--ink); }
+.copy-status { min-height: 1.6em; font-size: var(--step--1); color: var(--stem); font-weight: 600; }
+.press-photos {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2);
+  margin-top: var(--s-4); padding: 0; list-style: none;
+}
+.press-photos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+@media (max-width: 40rem) {
+  .press-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── FOOTER ──────────────────────────────────────────────────────────── */
+.site-footer {
+  display: grid; justify-items: center; gap: var(--s-2);
+  padding: var(--s-6) var(--gutter) var(--s-5);
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-1) var(--s-3); padding: 0; list-style: none; }
+.footer-links a { display: inline-block; padding: .5rem .25rem; }
+.fine-print { font-size: var(--step--1); color: var(--ink-2); }
+
+/* ── PLAYER ──────────────────────────────────────────────────────────── */
+.player {
+  position: fixed; z-index: 30;
+  left: max(var(--s-1), env(safe-area-inset-left, 0px));
+  right: max(var(--s-1), env(safe-area-inset-right, 0px));
+  bottom: calc(var(--s-1) + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "art meta controls close" "seek seek seek seek";
+  align-items: center; gap: .25rem var(--s-2);
+  max-width: 64rem; margin-inline: auto;
+  padding: .75rem var(--s-2) .5rem;
+  background: var(--player-bg); color: var(--player-ink);
+  border-radius: 14px;
+  box-shadow: 0 20px 40px -12px rgb(0 0 0 / .5);
+  animation: rise .35s var(--ease);
+}
+@keyframes rise { from { transform: translateY(120%); } }
+.player-art { grid-area: art; width: 3.5rem; height: 3.5rem; border-radius: 4px; object-fit: cover; }
+.player-meta { grid-area: meta; min-width: 0; }
+.player-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-release { font-size: var(--step--1); color: var(--player-ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-controls { grid-area: controls; display: flex; align-items: center; gap: .25rem; }
+.icon-btn-main { background: var(--daffodil); color: #1D1A16; }
+.icon-btn-main:hover { background: var(--daffodil); filter: brightness(1.07); }
+.player-close { grid-area: close; color: var(--player-ink-2); }
+.player .icon-btn:focus-visible { outline-color: var(--daffodil); }
+.player-seek {
+  grid-area: seek;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s-1);
+}
+.time { font-size: .8rem; font-variant-numeric: tabular-nums; color: var(--player-ink-2); min-width: 2.5rem; }
+.time:last-child { text-align: right; }
+
+/* The seek bar: a native range input, restyled. A 44px tall hit area
+   around a 4px visible track, so it's easy to grab with a thumb. */
+#seek {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 2.75rem; background: transparent;
+  --pct: 0%;
+}
+#seek::-webkit-slider-runnable-track {
+  height: 4px; border-radius: 2px;
+  background: linear-gradient(to right, var(--daffodil) var(--pct), rgb(242 235 221 / .25) var(--pct));
+}
+#seek::-moz-range-track { height: 4px; border-radius: 2px; background: rgb(242 235 221 / .25); }
+#seek::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--daffodil); }
+#seek::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px;
+  border-radius: 50%; background: var(--player-ink); border: 0;
+}
+#seek::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--player-ink); border: 0; }
+#seek:focus-visible { outline-offset: -8px; }
+
+@media (max-width: 34rem) {
+  .player { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "art meta close" "controls controls controls" "seek seek seek"; }
+  .player-controls { justify-content: center; }
+}
+
+/* ── VIDEO DIALOG ────────────────────────────────────────────────────── */
+.video-dialog {
+  width: min(64rem, calc(100vw - 2rem));
+  padding: 0; border: 0; border-radius: 12px;
+  background: var(--player-bg); color: var(--player-ink);
+}
+.video-dialog::backdrop { background: rgb(10 8 6 / .82); }
+.video-dialog-head {
+  display: flex; align-items: center; gap: var(--s-2);
+  padding: var(--s-1) var(--s-1) var(--s-1) var(--s-3);
+}
+.video-title { font-size: var(--step-1); margin-right: auto; }
+.video-yt { color: var(--daffodil); font-size: var(--step--1); }
+.video-dialog .icon-btn:focus-visible, .video-yt:focus-visible { outline-color: var(--daffodil); }
+.video-dialog video { width: 100%; aspect-ratio: 16 / 9; background: #000; }
+
+/* ── USER PREFERENCES ────────────────────────────────────────────────── */
+/* Reduced motion (vestibular disorders, migraine, or just preference):
+   no smooth scrolling, no hover lifts, no player slide-in, no animated
+   levels, and no tilted photos. Information is never carried by motion,
+   so nothing is lost. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .snap, .hero-note { transform: none !important; }
+  .levels i { height: 70% !important; }
+}
+
+/* Windows High Contrast / forced colors: the browser replaces our
+   palette, so put real borders back on things that relied on fills. */
+@media (forced-colors: active) {
+  .btn, .icon-btn, .book-card, .new-record { border: 2px solid ButtonText; }
+  .track[aria-current="true"] { outline: 2px solid Highlight; }
+  .hero-photo::after { border-color: CanvasText; }
+}
+
+/* "On The Fritz" draws its hyphen as a wavy tilde, which reads as a
+   typo in "Outsider-folk". Borrow the hyphen from the body face. */
+.plain-glyph { font-family: var(--font-body); }
