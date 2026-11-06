@@ -415,6 +415,71 @@ def jsonld():
     return '<script type="application/ld+json">\n' + body.replace('</', '<\\/') + '\n</script>'
 
 
+# ── SINGLE-FILE BUNDLING (performance) ────────────────────────────────
+# The published page is ONE self-contained HTML file: CSS inline in <head>,
+# JS inline at the end of <body>, every image inline as base64 WebP. Zero
+# extra requests before the whole page can paint in one frame. (Songs,
+# videos and the press kit ZIP stay as links: they're not part of render.)
+import base64
+import io as _io
+from urllib.parse import unquote
+from PIL import Image
+
+ESBUILD = os.path.join(ROOT, 'node_modules', '.bin', 'esbuild')
+if not os.path.exists(ESBUILD):
+    sys.exit('esbuild not found: run `npm install` in the project folder, then build again.')
+IMAGE_SCALE = 0.90      # keep 90% of each image's pixel dimensions (brief: 88-91%)
+WEBP_QUALITY = 74
+
+
+def esbuild(source, loader):
+    out = subprocess.run([ESBUILD, f'--loader={loader}', '--minify', '--target=es2020,chrome100,safari15,firefox100',
+                          '--legal-comments=none', '--charset=utf8'],
+                         input=source, capture_output=True, text=True)
+    if out.returncode:
+        sys.exit(f'esbuild ({loader}) failed:\n{out.stderr}')
+    return out.stdout.strip()
+
+
+_inline_cache = {}
+def inline_image(path):
+    """Scale to IMAGE_SCALE, encode WebP, return a data: URI (cached per file)."""
+    if path not in _inline_cache:
+        im = Image.open(path)
+        im = im.convert('RGBA' if im.mode in ('RGBA', 'LA', 'P') else 'RGB')
+        w, h = im.size
+        im = im.resize((max(1, round(w * IMAGE_SCALE)), max(1, round(h * IMAGE_SCALE))), Image.LANCZOS)
+        buf = _io.BytesIO()
+        im.save(buf, 'WEBP', quality=WEBP_QUALITY, method=6)
+        _inline_cache[path] = 'data:image/webp;base64,' + base64.b64encode(buf.getvalue()).decode()
+    return _inline_cache[path]
+
+
+def minify_html(html_text):
+    """Collapse whitespace outside <script>/<style>; drop it next to block tags."""
+    keep = []
+    def stash(m):
+        keep.append(m.group(0))
+        return f'\x00{len(keep) - 1}\x00'
+    html_text = re.sub(r'<(script|style)\b.*?</\1>', stash, html_text, flags=re.S)
+    html_text = re.sub(r'\s+', ' ', html_text)
+    block = (r'(?:html|head|body|meta|link|title|header|footer|nav|main|section|article|aside|figure|figcaption|'
+             r'h[1-6]|p|ul|ol|li|dl|dt|dd|div|table|caption|thead|tbody|tr|th|td|dialog|audio|video|svg|path|blockquote|button|input|\x00)')
+    html_text = re.sub(r'\s*(</?' + block + r'\b[^>]*>)\s*', r'\1', html_text)
+    html_text = re.sub(r'\s*(\x00\d+\x00)\s*', r'\1', html_text)
+    return re.sub(r'\x00(\d+)\x00', lambda m: keep[int(m.group(1))], html_text).strip()
+
+
+css = open('redesign/redesign.css', encoding='utf-8').read()
+# Reserve the flythrough's scroll length from the first frame (no shift):
+# one screen per record, plus one.
+css += f'\n.fx .fx-crate{{height:{(len(releases) + 1) * 100}vh}}\n'
+js_parts = [esbuild(open(f'redesign/{n}', encoding='utf-8').read(), 'js') for n in ('redesign.js', 'effects.js')]
+FRAGMENTS_BUNDLE = {
+    'STYLE': '<style>' + esbuild(css, 'css') + '</style>',
+    'SCRIPTS': '<script>' + ';'.join(js_parts).replace('</script', '<\\/script') + '</script>',
+}
+
 # ── ASSEMBLE ──────────────────────────────────────────────────────────
 FRAGMENTS = {
     'JSONLD': jsonld(), 'HERO_PHOTO': hero_photo(), 'NEWEST_RELEASE': newest_release(),
@@ -422,6 +487,7 @@ FRAGMENTS = {
     'VIDEOS_SUMMARY': videos_summary(), 'VIDEOS': video_cards(),
     'BIO': bio(), 'SNAPSHOTS': snapshots(), 'EMAIL': email(),
     'PRESS_KIT': press_kit(), 'PRESS_PHOTOS': press_photos(), 'FOOTER': footer(),
+    **FRAGMENTS_BUNDLE,
 }
 page = open(TEMPLATE, encoding='utf-8').read()
 for key, frag in FRAGMENTS.items():
@@ -433,11 +499,26 @@ leftover = re.findall(r'<!--@GENERATED:\w+-->', page)
 if leftover:
     sys.exit(f'No generator for {leftover}')
 
-# Strip author comments: they're design notes for humans, noise for crawlers.
-page = re.sub(r'<!--.*?-->\n?', '', page, flags=re.S)
-page = re.sub(r'\n[ \t]*\n(?:[ \t]*\n)+', '\n\n', page)
+# Strip author comments: design notes for humans, noise for crawlers.
+page = re.sub(r'<!--.*?-->', '', page, flags=re.S)
+# Everything is inline and paints at once, so lazy-loading hints only delay.
+page = re.sub(r'\s(?:loading="(?:lazy|eager)"|fetchpriority="high")', '', page)
+# Inline every raster image (and the favicon) as base64 WebP.
+page = re.sub(r'(<img\b[^>]*?\bsrc=")\.\./([^"]+\.(?:webp|png|jpe?g))"',
+              lambda m: m.group(1) + inline_image(unquote(m.group(2))) + '"', page)
+page = page.replace('<link rel="icon" href="../favicon.png">',
+                    f'<link rel="icon" href="{inline_image("favicon.png")}">')
+# Compact JSON-LD (it's data for machines; whitespace is pure weight).
+page = re.sub(r'(<script type="application/ld\+json">)(.*?)(</script>)',
+              lambda m: m.group(1) + json.dumps(json.loads(m.group(2).replace('<\\/', '</')), ensure_ascii=False,
+                                                separators=(',', ':')).replace('</', '<\\/') + m.group(3),
+              page, flags=re.S)
+page = minify_html(page)
 
+external = re.findall(r'(?:src|href)="\.\./[^"]+"', page)
 with open(OUTPUT, 'w', encoding='utf-8') as f:
     f.write(page)
-print(f'Wrote {OUTPUT}: {len(releases)} releases, {sum(r["count"] for r in releases)} songs, '
-      f'{len(videos)} videos, press kit {megabytes(kit_size)}')
+print(f'Wrote {OUTPUT}: {len(page.encode()) / 1024:.0f} KB single file '
+      f'({len(_inline_cache)} images inlined; {len(releases)} releases, {sum(r["count"] for r in releases)} songs, '
+      f'{len(videos)} videos, press kit {megabytes(kit_size)})')
+print(f'Remaining links to other files (media and downloads, loaded only on click): {len(external)}')

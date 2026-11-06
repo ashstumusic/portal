@@ -25,10 +25,12 @@
 <meta name="theme-color" content="#F6F0E4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16130F" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="../favicon.png">
-<link rel="preload" as="image" href="../Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
-<link rel="stylesheet" href="redesign.css">
-<script src="redesign.js" defer></script>
-<script src="effects.js" defer></script>
+<!-- Runs before first paint (tiny, synchronous): marks JS support and
+     whether motion effects will run, so every effect-related layout
+     (Motion button, flythrough space) is in place in the very first frame.
+     Zero layout shift when effects.js starts. -->
+<script>(function(c){var s;c.add("js");try{s=localStorage.getItem("ash-motion")}catch(e){}if(s?s==="on":!matchMedia("(prefers-reduced-motion: reduce)").matches)c.add("fx")})(document.documentElement.classList)</script>
+<!--@GENERATED:STYLE-->
 <!--@GENERATED:JSONLD-->
 </head>
 <body>
@@ -50,6 +52,11 @@
       <li><a href="#book">Book</a></li>
     </ul>
   </nav>
+  <!-- Motion on/off. In the static HTML (shown only when JS runs, via
+       html.js) so it never pops in and shifts the nav. -->
+  <button type="button" class="fx-toggle" aria-label="Motion effects" aria-pressed="false" title="Motion effects on/off">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8zM19 14l.9 2.6 2.6.9-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9zM5 15l.7 1.8 1.8.7-1.8.7L5 20l-.7-1.8-1.8-.7 1.8-.7z"/></svg>
+  </button>
 </header>
 
 <main id="main" tabindex="-1">
@@ -61,15 +68,19 @@
       <!--@GENERATED:HERO_PHOTO-->
     </figure>
     <header class="hero-copy">
-      <!-- The label font draws "-" as a squiggle; the hyphen is borrowed
-           from the body face (.plain-glyph). -->
-      <p class="eyebrow">Outsider<span class="plain-glyph">-</span>folk singer<span class="plain-glyph">-</span>songwriter · Guthrie, Oklahoma, United States</p>
+      <p class="eyebrow">Outsider-folk singer-songwriter · Guthrie, Oklahoma, United States</p>
       <h1 class="hero-title" id="artist-name">Ash Stu</h1>
-      <!-- Handwriting face used exactly once, so it reads as a note. -->
+      <!-- Handwriting style used exactly once, so it reads as a note. -->
       <p class="hero-note">A figment of my own imagination.</p>
     </header>
     <!--@GENERATED:NEWEST_RELEASE-->
   </section>
+
+  <!-- Reserved space for the 3D flythrough. Its height is set in CSS only
+       under html.fx, so the page below never moves when effects.js fills
+       it in. Collapsed (display: none) without JS or with motion off. -->
+  <a class="fx-skip" href="#listen">Skip the 3D tour of the records</a>
+  <div class="fx-crate" id="fx-crate" aria-hidden="true"></div>
 
   <!-- LISTEN: liner-notes spread. Cover, facts, and the full tracklist
        visible at once: no accordions, carousels, or hidden gestures. -->
@@ -130,7 +141,7 @@
     <article class="book-card" aria-labelledby="contact-title">
       <h3 class="kicker" id="contact-title">Booking and press email</h3>
       <!--@GENERATED:EMAIL-->
-      <button type="button" class="btn btn-quiet" id="copy-email" aria-describedby="email-address" hidden>Copy email address</button>
+      <button type="button" class="btn btn-quiet js-only" id="copy-email" aria-describedby="email-address">Copy email address</button>
       <p class="copy-status" id="copy-status" role="status"></p>
     </article>
     <!--@GENERATED:PRESS_KIT-->
@@ -164,7 +175,9 @@
   </div>
   <div class="player-seek" role="group" aria-label="Song position">
     <span class="time" id="time-cur">0:00</span>
-    <input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="Seek within song" aria-valuetext="0:00 of 0:00">
+    <!-- The visible progress fill is a separate element scaled with
+         transform (compositor only), instead of repainting a gradient. -->
+    <span class="seek-wrap"><span class="seek-fill" id="seek-fill"></span><input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="Seek within song" aria-valuetext="0:00 of 0:00"></span>
     <span class="time" id="time-dur">0:00</span>
   </div>
   <button type="button" class="icon-btn player-close" id="close-player" aria-label="Stop music and close player">
@@ -185,6 +198,6 @@
   </header>
   <video id="video" controls playsinline preload="none"></video>
 </dialog>
-
+<!--@GENERATED:SCRIPTS-->
 </body>
 </html>
