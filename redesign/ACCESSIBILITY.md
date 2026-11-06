@@ -44,6 +44,8 @@ Rules:
 
 ### Type and zoom
 - All sizes are `rem`/`clamp()`, so browser zoom and OS text size scale everything.
+- Verified with Chrome's real text-size setting at 200% (desktop and a 390px
+  phone), plus 280px folding-phone screens: no sideways scroll, nothing clipped.
 - Verified: 200% zoom (no sideways scroll), 400% zoom / 320px (no sideways scroll;
   masthead wraps; masthead stops being sticky on viewports under 30rem tall so
   it can't hide content), increased text spacing (WCAG 1.4.12; nothing clips).
@@ -147,6 +149,24 @@ Rules:
 - Each video link's name says what happens and how long:
   "Play the music video for VCR (5 minutes 16 seconds)".
 - Music pauses when a video opens (never two soundtracks).
+- If the video file fails, the player is replaced by a `role="alert"` message
+  ("This video could not be loaded") with a link to the YouTube copy.
+
+### Contact form (only with the Node back-end)
+- Hidden unless the page was served by `server.js` (it adds
+  `<meta name="contact-api">`), so it never appears where it can't work.
+- Every field has a visible `<label>`; `autocomplete` and `inputmode` set so
+  phones offer the right keyboard and autofill.
+- Validation runs on submit (not while typing). Each error is text with a ⚠
+  icon and a thicker border (never color alone), linked to its field with
+  `aria-describedby`, and the field gets `aria-invalid="true"`. Focus moves to
+  the first invalid field. Errors clear as soon as the field is fixed.
+- One `role="status"` message reports Sending / Sent / failure in plain
+  language, always with the email address as a fallback.
+- Double-clicks and repeated Enter are ignored while sending
+  (`aria-busy`/`aria-disabled`); requests time out after 10 seconds.
+- Spam trap field is off-screen, `aria-hidden`, and `tabindex="-1"`, so
+  keyboard and screen-reader users never meet it.
 
 ### Copy email button
 - Shown only when JavaScript runs; removed if the browser lacks the Clipboard API.
