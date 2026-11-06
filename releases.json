@@ -135,10 +135,6 @@
       {
         "title": "Drive Me Home",
         "file": "Audio/Drive Me Home/01. Drive Me Home.mp3"
-      },
-      {
-        "title": "Drive Me Home",
-        "file": "Audio/Drive Me Home/Drive Me Home.mp3"
       }
     ]
   },
@@ -152,10 +148,6 @@
       {
         "title": "Waste My Time",
         "file": "Audio/Waste My Time/01. Waste My Time.mp3"
-      },
-      {
-        "title": "Waste My Time",
-        "file": "Audio/Waste My Time/Waste My Time.mp3"
       }
     ]
   }
