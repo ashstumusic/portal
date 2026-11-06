@@ -1,29 +1,46 @@
 **Project Root: `Ash Music`**
 
-* `musician-site.html`
+* `index-src.html` (edit this; build output is `index.html`)
+* `index.html`
+* `styles.css` (source; built to `styles.<hash>.min.css`)
+* `main.<hash>.js` (built from `index-src.html`)
+* `admin.html`
+* `resume.html`
+* `Ashton.Stubblefield_Resume.pdf`
+* `ash-stu-press-kit.zip`
+* `releases.json` (generated from `Audio/`)
+* `videos.json` (generated from `Videos/`)
+* `lyrics.json`
+* `data.json`
+* `CONTENT.md`
 * `map.txt`
-* `Ash Stu - Electronic Press Kit.zip`
+* `Track List.txt`
+* `sitemap.xml`
+* `robots.txt`
+* `CNAME`
+* `favicon.png`
+* `favicon.webp`
+* `server.js`
+* `db.js`
+* `build-fast.py`
+* `build-single.py`
+* `build-zips.sh`
 
-**`Lyrics`**
+**`scripts`**
 
-* `Only_A_Baby,_Vol._-_2.txt`
-
-**`Essays`**
-
-* `essay-silence.html`
-* `essay-unfit.html`
-* `Silence Is Not a Strength; Observations of the Inherited Quest for Wonder, Empowerment, and Belonging`
-* `Unfit for Cultivation; A True Fable of Why Short-Sighted Apes Make Losing Leaders`
+* `generate_content.py`
+* `prerender.py`
+* `buildutil.py`
 
 **`Audio`**
 
-* `Waste My Time (feat. Trent Runyon)` (Folder)
-  * `Waste My Time (feat. Trent Runyon).mp3`
-* `Waste My Time (feat. Trent Runyon).zip`
+* `Waste My Time` (Folder)
+  * `01. Waste My Time.mp3`
+  * `links.txt`
 
 * `Drive Me Home` (Folder)
-  * `Drive Me Home.mp3`
-* `Drive Me Home.zip`
+  * `01. Drive Me Home.mp3`
+  * `links.txt`
 
 * `Only a Baby, Vol. 1` (Folder)
   * `01. THE COSMOS IS ALIVE.mp3`
@@ -42,81 +59,104 @@
   * `14. unanswerable questions.mp3`
   * `15. A GRIEF PRESERVED.mp3`
   * `16. future lives.mp3`
-  * `17. DONT WISH YOUR LIFE AWAY.mp3`
+  * `17. DON'T WISH YOUR LIFE AWAY.mp3`
   * `18. the tragedy of the gifted child (reprise).mp3`
-* `Only a Baby, Vol. 1.zip`
+  * `links.txt`
 
 * `Only a Baby, Vol. 2` (Folder)
-  * `01. SummertimeEvenontheMoon.mp3`
-  * `02. CoolCatCantComprehend.mp3`
-  * `03. Peacekeepers.mp3`
-  * `04. DirgeforDucklings.mp3`
-  * `05. SaviorComplicated.mp3`
-  * `06. AnnabelLena.mp3`
-  * `07. PerformativesAnonymous.mp3`
-  * `08. TheWanderingJerk.mp3`
-  * `09. TheoryofHope.mp3`
-* `Only a Baby, Vol. 2.zip`
+  * `01. Cool Cat Can't Comprehend.mp3`
+  * `02. Dirge for Ducklings.mp3`
+  * `03. Savior Complicated.mp3`
+  * `04. Annabel Lena.mp3`
+  * `05. Summertime Even on the Moon.mp3`
+  * `06. Performatives Anonymous.mp3`
+  * `07. Theory of Hope.mp3`
+  * `08. Peacekeepers.mp3`
+  * `09. The Wandering Jerk.mp3`
+  * `links.txt`
 
 **`Videos`**
 
-* `"VCR" - Ash Stu original.mp4`
-* `"The Raven" - Ash Stu original.mp4`
-* `"The Cloud for the Desert" - Ash Stu original.mp4`
-* `"WHY HAVE EYES" - Ash Stu original.mp4`
-* `"Brain-Dead Corollary (Trust Me Bro)" - Ash Stu original.mp4`
-* `"Theory of Hope" - Ash Stu original.mp4`
+* `VCR.mp4` / `.txt`
+* `the helpful raven.mp4` / `.txt`
+* `the cloud for the desert.mp4` / `.txt`
+* `WHY HAVE EYES.mp4` / `.txt`
+* `Brain Dead Corollary (Trust Me Bro).mp4` / `.txt`
+* `Theory of Hope.mp4` / `.txt`
 * `Thumbnails` (Folder)
-  * `(Thumb) "WHY HAVE EYES" - Ash Stu original.png`
-  * `(Thumb) "Theory of Hope" - Ash Stu original.png`
-  * `(Thumb) "The Cloud for the Desert" - Ash Stu original.png`
-  * `(Thumb) "Brain-Dead Corollary (Trust Me Bro)" - Ash Stu original.png`
-  * `(Thumb) "The Raven" - Ash Stu original.png`
-  * `(Thumb) "VCR" - Ash Stu original.png`
+  * `VCR.png` / `.webp`
+  * `the helpful raven.png` / `.webp`
+  * `the cloud for the desert.png` / `.webp`
+  * `WHY HAVE EYES.png` / `.webp`
+  * `Brain Dead Corollary (Trust Me Bro).png` / `.webp`
+  * `Theory of Hope.png` / `.webp`
+
+**`Journal`**
+
+* `Essays` (Folder)
+  * `An Occurrence at Cottonwood-Creek Bridge; A True Tale of Delirium and Helplessness.txt`
+* `Entries` (Folder, empty)
+* `Lyrics` (Folder, empty)
+* `Audio` (Folder, empty)
 
 **`Images`**
 
-* `Hero.png`
-* `0_Stage_Keys.png`
-* `Icon.png`
+* `hero-bg.webp`
+* `social-card.png`
+* `Icon.png` / `.webp`
+* `Cat.png` / `.webp`
+* `Cat_pop.webp`
+* `Cat_solo.png`
+* `Guitar.png` / `.webp`
+* `Reach.png`
+* `Profile-1.png`
+* `Profile-2.png`
+* `Profile-3.png` / `.webp`
+* `Profile-4.png` / `.webp`
+* `Profile-6.png` / `.webp`
+* `Profile-7.jpg`
 * `Releases` (Folder)
-  * `Waste My Time (feat. Trent Runyon).png`
-  * `Drive Me Home.png`
-  * `Only a Baby, Vol. 1.png`
-  * `Only a Baby, Vol. 2.png`
+  * `Waste My Time.png` / `.webp`
+  * `Drive Me Home.png` / `.webp`
+  * `Only a Baby, Vol. 1.png` / `.webp`
+  * `Only a Baby, Vol. 2.png` / `.webp`
+* `Piano Batch` (Folder)
+  * `1.png` – `4.png` / `.webp`
+* `embedded` (Folder, build-optimized copies)
+  * `featured-only-a-baby-vol-2.webp`
+  * `hero-ash-stu-guitar.webp`
+  * `release-*.webp` (one per release)
+  * `thumb-*.webp` (one per video)
+  * `epk-ash-stu-*.webp` (performing, piano, portrait, studio-session)
 
 **`Fonts`**
 
-* `Header-Italic.ttf`
 * `Header.ttf`
+* `Header-Italic.ttf`
 * `Body.ttf`
+* `Handmade.otf` / `.ttf`
+* `j.d.ttf`
+* `figment.ttf`
+* `subsetted` (Folder, generated by build)
+  * `Header.woff2`
+  * `Header-Italic.woff2`
+  * `Body.woff2`
+  * `Handmade.woff2`
+  * `j.d.woff2`
+  * `Boiled-Pasta.woff2`
 * `xperimental` (Folder)
-  * `pup-big.ttf`
-  * `Boiled Pasta.ttf`
-  * `Sans Fransisco Semi Bold.ttf`
-  * `Sans Fransisco Semi Bold.otf`
-  * `Sans Fransisco Regular.otf`
-  * `Sans Fransisco Regular.ttf`
-  * `Gravity-Italic.otf`
-  * `Gravity-BoldItalic.otf`
-  * `Gravity-UltraLightItalic.otf`
-  * `Gravity-LightItalic.otf`
-  * `Gravity-BookItalic.otf`
-  * `Gravity-UltraLight.otf`
-  * `Gravity-Regular.otf`
-  * `Gravity-Light.otf`
-  * `Gravity-Book.otf`
-  * `Gravity-Bold.otf`
-  * `BabelSans-Oblique.ttf`
-  * `BabelSans.ttf`
-  * `BabelSans-Bold.ttf`
-  * `BabelSans-BoldOblique.ttf`
-  * `OldSansBlackUnderline.ttf`
-  * `OldSansBlack.ttf`
+  * `Boiled-Pasta.ttf`
+  * `1.ttf`
+  * `DOS.ttf`
+  * `Welbut.ttf`
+  * `cheri.zip`
+  * `flubber` (Folder)
 
 **`Icons`**
 
-* `Youtube.png`
-* `Substack.png`
-* `Apple_Music.png`
-* `Spotify.png`
+* `Youtube.webp`
+* `Substack.webp`
+* `Apple_Music.webp`
+* `Spotify.webp`
+* `Patreon.webp`
+* `linkedin.webp`
