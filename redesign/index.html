@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ash Stu · Outsider-folk from Guthrie, Oklahoma</title>
+<meta name="description" content="Ash Stu is an outsider-folk singer-songwriter from Guthrie, Oklahoma. Listen to the records, watch the videos, and book a show.">
+<!-- Two theme colors: the browser chrome matches the paper in light mode
+     and the "after dark" palette at night, so the page never feels like it
+     is sitting inside a frame that belongs to something else. -->
+<meta name="theme-color" content="#F6F0E4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16130F" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../favicon.png">
+<!-- Preload only what is above the fold on most screens: the hero photo
+     and the newest record's cover. Everything else loads lazily. -->
+<link rel="preload" as="image" href="../Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
+<link rel="stylesheet" href="redesign.css">
+<script src="redesign.js" defer></script>
+</head>
+<body>
+
+<!-- First focusable element on the page. Keyboard and screen-reader users
+     skip the header in one keypress instead of tabbing through it. -->
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- ═══ MASTHEAD ═══════════════════════════════════════════════════════
+     Four words, four verbs. Labels are *actions* (Listen, Watch), not
+     *categories* (Music, Videos): the visitor reads what they can do, not
+     what the site contains. That's one less translation step per glance.
+     Order follows audience size: fans (listen/watch) first, then people
+     getting to know Ash (about), then bookers and press (book). -->
+<header class="masthead">
+  <a class="brand" href="#top" aria-label="Ash Stu, back to top">
+    <img src="../Images/Icon.webp" alt="" width="44" height="44">
+    <span class="brand-name" aria-hidden="true">Ash Stu</span>
+  </a>
+  <nav aria-label="Main">
+    <ul class="nav-list">
+      <li><a href="#listen">Listen</a></li>
+      <li><a href="#watch">Watch</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#book">Book</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- ═══ HERO ═════════════════════════════════════════════════════════
+       One job: get the newest record playing. There is exactly ONE solid
+       button on this screen (Play). Hick's law says every extra equal-
+       weight choice slows the decision, so the streaming links are quieter
+       text links and the nav is visually recessive.
+       The photo is golden hour in an alley: warm, unhurried, a bit
+       lonely. The whole palette is sampled from that light. -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <figure class="hero-photo">
+      <img src="../Images/embedded/hero-ash-stu-guitar.webp"
+           alt="Ash Stu sitting against a brick wall in an alley at sunset, playing an electric guitar"
+           width="1260" height="855" fetchpriority="high">
+    </figure>
+
+    <div class="hero-copy">
+      <p class="eyebrow">Outsider<span class="plain-glyph">-</span>folk · Guthrie, Oklahoma</p>
+      <h1 class="hero-title" id="hero-title">Ash&nbsp;Stu</h1>
+      <!-- The handwritten line is the only place the "j.d." script face
+           appears. Scarcity makes it read as a personal note rather
+           than a font choice. -->
+      <p class="hero-note">A figment of my own imagination.</p>
+
+      <!-- Filled in from releases.json by redesign.js (newest release
+           first). The static fallback below is what crawlers and
+           no-JS visitors see, so the page never ships empty. -->
+      <article class="new-record" id="new-record" aria-labelledby="new-record-title">
+        <img class="new-record-art" src="../Images/Releases/Only a Baby, Vol. 2.webp"
+             alt="" width="160" height="160">
+        <div class="new-record-body">
+          <p class="kicker"><span class="stitch-dot" aria-hidden="true"></span>New album</p>
+          <h2 class="new-record-title" id="new-record-title">Only a Baby, Vol.&nbsp;2</h2>
+          <div class="new-record-actions">
+            <button type="button" class="btn btn-primary" data-play-release="0">
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+              <span>Play the album</span>
+            </button>
+            <p class="stream-links">
+              Or stream on
+              <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" data-link="apple">Apple&nbsp;Music</a>
+              /
+              <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" data-link="spotify">Spotify</a>
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══ LISTEN ═══════════════════════════════════════════════════════
+       Records are laid out like a liner-notes spread: cover, title, and
+       the full tracklist visible at once. No accordions to open, no
+       carousels to swipe: everything a visitor might want is one click
+       away and nothing is hidden behind a gesture they have to discover. -->
+  <section class="section" id="listen" aria-labelledby="listen-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">01</p>
+      <h2 id="listen-title">Listen</h2>
+      <p class="section-lede">Every record, every song. Press any title to start there.</p>
+    </header>
+
+    <div class="records" id="records">
+      <!-- Rendered by redesign.js from ../releases.json -->
+      <p class="loading">Loading the records…</p>
+    </div>
+
+    <!-- Woody Guthrie's copyright note. In Guthrie, Oklahoma, this is a
+         thesis statement: the music is meant to be shared. It sits between
+         Listen and Watch as a breather, a moment of rest after a dense
+         section (a "peak-end" moment people remember). -->
+    <figure class="pull-quote">
+      <blockquote>
+        <p>“Anybody caught singin’ these songs without our permission will be mighty good friends of ourn, cause we don’t give a dern. Publish it. Write it. Sing it. Swing to it. Yodel it. We wrote it, that’s all we wanted to do.”</p>
+      </blockquote>
+      <figcaption>Woody Guthrie</figcaption>
+    </figure>
+  </section>
+
+  <!-- ═══ WATCH ════════════════════════════════════════════════════════ -->
+  <section class="section" id="watch" aria-labelledby="watch-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">02</p>
+      <h2 id="watch-title">Watch</h2>
+      <p class="section-lede">Music videos, shot and cut by hand.</p>
+    </header>
+    <ul class="videos" id="videos" role="list">
+      <!-- Rendered by redesign.js from ../videos.json -->
+    </ul>
+  </section>
+
+  <!-- ═══ ABOUT ════════════════════════════════════════════════════════
+       Short on purpose. Three sentences and three photos do more than a
+       wall of text: people form an impression of a face in under a
+       tenth of a second, long before they finish a paragraph. -->
+  <section class="section about" id="about" aria-labelledby="about-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">03</p>
+      <h2 id="about-title">About</h2>
+    </header>
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="about-lead">Ash Stu is an outsider-folk singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
+        <p>Songs written, played, and recorded at home, then released without asking anybody’s permission.</p>
+      </div>
+      <!-- The photos are pinned like snapshots in a scrapbook: each one is
+           slightly rotated. The rotation is decorative, so it is removed
+           for people who ask for reduced motion and never affects layout
+           or reading order. -->
+      <div class="snapshots">
+        <img class="snap snap-main" src="../Images/Profile-3.webp" alt="Portrait of Ash Stu outside, in front of a fire escape" width="800" height="800" loading="lazy">
+        <img class="snap" src="../Images/Profile-4.webp" alt="Ash Stu as a kid with his first guitar" width="324" height="432" loading="lazy">
+        <img class="snap" src="../Images/Profile-6.webp" alt="Ash Stu at the piano" width="324" height="362" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ BOOK ═════════════════════════════════════════════════════════
+       Contact and press kit live together: the people who need one almost
+       always need the other. The email is shown as text, large and
+       selectable, because "mailto:" fails silently for anyone without a
+       desktop mail app, and a booker should never wonder whether the
+       click worked. The Copy button removes the last bit of friction. -->
+  <section class="section book" id="book" aria-labelledby="book-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">04</p>
+      <h2 id="book-title">Book &amp; press</h2>
+      <p class="section-lede">For shows, press, or just to say something, write directly.</p>
+    </header>
+
+    <div class="book-grid">
+      <div class="book-card">
+        <p class="kicker">Email</p>
+        <p class="email"><a href="mailto:ashstumusic@gmail.com">ashstumusic@gmail.com</a></p>
+        <button type="button" class="btn btn-quiet" id="copy-email" data-email="ashstumusic@gmail.com">Copy address</button>
+        <!-- Polite live region: screen readers hear "Copied" without the
+             focus moving or anything being interrupted. -->
+        <p class="copy-status" id="copy-status" role="status"></p>
+      </div>
+
+      <div class="book-card">
+        <p class="kicker">Press kit</p>
+        <p>Two songs, a logo, and high-resolution photos, ready for posters and press.</p>
+        <a class="btn btn-secondary" href="../ash-stu-press-kit.zip" download>
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+          Download press kit <span class="file-meta">(ZIP, 14&nbsp;MB)</span>
+        </a>
+      </div>
+    </div>
+
+    <ul class="press-photos" role="list">
+      <li><img src="../Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano" width="481" height="481" loading="lazy"></li>
+      <li><img src="../Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing" width="481" height="481" loading="lazy"></li>
+      <li><img src="../Images/embedded/epk-ash-stu-portrait.webp" alt="Portrait of Ash Stu" width="481" height="481" loading="lazy"></li>
+      <li><img src="../Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu in a studio session" width="481" height="481" loading="lazy"></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <img src="../Images/Icon.webp" alt="" width="56" height="56" loading="lazy">
+  <ul class="footer-links" role="list">
+    <li><a href="https://music.apple.com/us/artist/ash-stu/1868592370">Apple Music</a></li>
+    <li><a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx">Spotify</a></li>
+    <li><a href="https://youtube.com/@ash_stu">YouTube</a></li>
+  </ul>
+  <p class="fine-print">© <span id="year">2026</span> Ash Stu. Sing it, swing to it, yodel it.</p>
+</footer>
+
+<!-- ═══ PLAYER ═════════════════════════════════════════════════════════
+     Docked to the bottom and persistent, so music keeps going while the
+     visitor explores (the site becomes the listening room, not a menu
+     that you leave to listen somewhere else). Hidden until the first
+     play, so it never competes with the hero for attention.
+     The seek bar is a native <input type="range">: arrow keys, screen
+     readers, and touch all work with zero custom code. -->
+<section class="player" id="player" aria-label="Music player" hidden>
+  <img class="player-art" id="player-art" src="" alt="" width="56" height="56">
+  <div class="player-meta">
+    <!-- aria-live: when the song changes, a screen reader says the new
+         title once, quietly. -->
+    <p class="player-title" id="player-title" aria-live="polite"></p>
+    <p class="player-release" id="player-release"></p>
+  </div>
+  <div class="player-controls">
+    <button type="button" class="icon-btn" id="prev" aria-label="Previous song">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M6 5h2v14H6zM20 5v14L9 12z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="icon-btn icon-btn-main" id="toggle" aria-label="Pause">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path id="toggle-icon" d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="next" aria-label="Next song">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M16 5h2v14h-2zM4 5v14l11-7z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <div class="player-seek">
+    <span class="time" id="time-cur">0:00</span>
+    <input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="Seek" aria-valuetext="0:00 of 0:00">
+    <span class="time" id="time-dur">0:00</span>
+  </div>
+  <button type="button" class="icon-btn player-close" id="close-player" aria-label="Stop and close player">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  </button>
+</section>
+<audio id="audio" preload="none"></audio>
+
+<!-- ═══ VIDEO DIALOG ═══════════════════════════════════════════════════
+     Native <dialog> with showModal(): the browser traps focus inside,
+     closes on Esc, makes the page behind inert, and returns focus to the
+     video the visitor opened, without custom focus-trap code that can
+     break. -->
+<dialog class="video-dialog" id="video-dialog" aria-labelledby="video-title">
+  <div class="video-dialog-head">
+    <h2 class="video-title" id="video-title"></h2>
+    <a class="video-yt" id="video-yt" href="#">Watch on YouTube</a>
+    <button type="button" class="icon-btn" id="video-close" aria-label="Close video">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <video id="video" controls playsinline preload="none"></video>
+</dialog>
+
+</body>
+</html>
