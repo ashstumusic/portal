@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build redesign/index.html: a fully static, AI-crawler-first page.
+"""Build a redesign page (default: redesign/index.html): fully static, AI-crawler-first.
 
 Reads releases.json, videos.json, Audio/*/links.txt (release dates),
 redesign/facts.json (hand-entered facts and alt text), the MP3/MP4 files
@@ -26,8 +26,21 @@ from urllib.parse import quote
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 
-TEMPLATE = 'redesign/index.template.html'
-OUTPUT = 'redesign/index.html'
+# Several designs share one content pipeline. Each site = a folder with its
+# own template, stylesheet and scripts; content, facts and alt text are
+# shared (redesign/facts.json). Build one:  build_redesign.py redesign-2
+SITES = {
+    'redesign': {'css': 'redesign/redesign.css', 'js': ['redesign/redesign.js', 'redesign/effects.js'],
+                 'url': 'https://ashstu.art/redesign/', 'crate': True},
+    'redesign-2': {'css': 'redesign-2/radio.css', 'js': ['redesign/redesign.js', 'redesign-2/radio.js'],
+                   'url': 'https://ashstu.art/redesign-2/', 'crate': False},
+}
+SITE_NAME = sys.argv[1] if len(sys.argv) > 1 else 'redesign'
+if SITE_NAME not in SITES:
+    sys.exit(f'Unknown site {SITE_NAME!r}. Choose one of: {", ".join(SITES)}')
+SITE_CFG = SITES[SITE_NAME]
+TEMPLATE = f'{SITE_NAME}/index.template.html'
+OUTPUT = f'{SITE_NAME}/index.html'
 PRESS_KIT = 'ash-stu-press-kit.zip'
 
 if not shutil.which('ffprobe'):
@@ -37,7 +50,7 @@ facts = json.load(open('redesign/facts.json', encoding='utf-8'))
 releases = json.load(open('releases.json', encoding='utf-8'))
 videos = json.load(open('videos.json', encoding='utf-8'))
 SITE = facts['site']['url']
-PAGE = facts['site']['page_url']
+PAGE = SITE_CFG['url']
 ARTIST = facts['artist']
 ALT = facts['alt']
 
@@ -470,11 +483,12 @@ def minify_html(html_text):
     return re.sub(r'\x00(\d+)\x00', lambda m: keep[int(m.group(1))], html_text).strip()
 
 
-css = open('redesign/redesign.css', encoding='utf-8').read()
+css = open(SITE_CFG['css'], encoding='utf-8').read()
 # Reserve the flythrough's scroll length from the first frame (no shift):
 # one screen per record, plus one.
-css += f'\n.fx .fx-crate{{height:{(len(releases) + 1) * 100}vh}}\n'
-js_parts = [esbuild(open(f'redesign/{n}', encoding='utf-8').read(), 'js') for n in ('redesign.js', 'effects.js')]
+if SITE_CFG['crate']:
+    css += f'\n.fx .fx-crate{{height:{(len(releases) + 1) * 100}vh}}\n'
+js_parts = [esbuild(open(n, encoding='utf-8').read(), 'js') for n in SITE_CFG['js']]
 FRAGMENTS_BUNDLE = {
     'STYLE': '<style>' + esbuild(css, 'css') + '</style>',
     'SCRIPTS': '<script>' + ';'.join(js_parts).replace('</script', '<\\/script') + '</script>',

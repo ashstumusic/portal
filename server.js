@@ -53,7 +53,7 @@ app.use(express.json({ limit: '16kb' }));
 // ── PUBLIC FILES: allowlist, never the project root wholesale ──────────
 // Only these are web-visible. Everything else (data.db, .git, server code,
 // node_modules, scripts, package files, .env) is a 404.
-const PUBLIC_DIRS = ['Audio', 'Videos', 'Images', 'Icons', 'Fonts', 'Journal', 'redesign'];
+const PUBLIC_DIRS = ['Audio', 'Videos', 'Images', 'Icons', 'Fonts', 'Journal', 'redesign', 'redesign-2'];
 const PUBLIC_ROOT_FILE = /^\/(?:index|resume|google[\w-]+)\.html$|^\/(?:main\.[0-9a-f]+\.js|styles(?:\.[0-9a-f]+\.min)?\.css)$|^\/(?:releases|videos|lyrics)\.json$|^\/(?:favicon\.(?:png|webp)|robots\.txt|sitemap\.xml|ash-stu-press-kit\.zip|Ashton[._]Stubblefield_Resume\.pdf)$/;
 const BLOCKED_IN_DIRS = /(?:^|\/)\.|\.(?:md|py|sh)$|\/facts\.json$|\/index\.template\.html$/i;
 const staticOpts = {
@@ -70,18 +70,20 @@ const staticOpts = {
 // so the page knows the contact API exists. (On GitHub Pages there's no
 // marker, so the page never makes a doomed request to /api.)
 const fs = require('fs');
-let redesignCache = { mtime: 0, html: '' };
-app.get(['/redesign', '/redesign/', '/redesign/index.html'], (req, res, next) => {
-  if (req.path === '/redesign') return res.redirect(301, '/redesign/');
-  const file = path.join(__dirname, 'redesign', 'index.html');
-  fs.stat(file, (err, st) => {
-    if (err) return next();
-    if (st.mtimeMs !== redesignCache.mtime) {
-      redesignCache = { mtime: st.mtimeMs, html: fs.readFileSync(file, 'utf8').replace('<head>', '<head><meta name="contact-api" content="/api/contact">') };
-    }
-    res.set('Cache-Control', 'no-cache').type('html').send(redesignCache.html);
+const pageCache = {};
+for (const site of ['redesign', 'redesign-2']) {
+  app.get([`/${site}`, `/${site}/`, `/${site}/index.html`], (req, res, next) => {
+    if (req.path === `/${site}`) return res.redirect(301, `/${site}/`);
+    const file = path.join(__dirname, site, 'index.html');
+    fs.stat(file, (err, st) => {
+      if (err) return next();
+      if (pageCache[site]?.mtime !== st.mtimeMs) {
+        pageCache[site] = { mtime: st.mtimeMs, html: fs.readFileSync(file, 'utf8').replace('<head>', '<head><meta name="contact-api" content="/api/contact">') };
+      }
+      res.set('Cache-Control', 'no-cache').type('html').send(pageCache[site].html);
+    });
   });
-});
+}
 for (const dir of PUBLIC_DIRS) {
   app.use(`/${dir}`, (req, res, next) => (BLOCKED_IN_DIRS.test(req.path) ? res.status(404).end() : next()),
     express.static(path.join(__dirname, dir), staticOpts));
