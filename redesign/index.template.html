@@ -1,0 +1,189 @@
+<!doctype html>
+<!--
+  TEMPLATE for redesign/index.html. Do not edit index.html directly:
+  run `python3 scripts/build_redesign.py` to rebuild it.
+
+  Build rules (AI-first / scraper-first):
+  • Every fact is in the static HTML. JavaScript only adds the in-page
+    player and video viewer; with JS off, every link still works
+    (songs and videos open as files).
+  • Every fact in the visible page is mirrored in the JSON-LD in <head>,
+    and both are generated from the same data, so they can't disagree.
+  • Heading tree: h1 (artist) > h2 (sections) > h3 (items) > h4. No
+    skipped levels.
+  • HTML comments (like this one) are stripped from the output.
+-->
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ash Stu: outsider-folk singer-songwriter from Guthrie, Oklahoma</title>
+<meta name="description" content="Ash Stu (formerly known as Ashton Stubblefield) is an outsider-folk singer-songwriter from Guthrie, Oklahoma. Discography with release dates and tracklists, music videos, biography, booking email, and press kit.">
+<!-- Prototype URL: canonical points at itself until it replaces the
+     homepage. -->
+<link rel="canonical" href="https://ashstu.art/redesign/">
+<meta name="theme-color" content="#F6F0E4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16130F" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../favicon.png">
+<link rel="preload" as="image" href="../Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
+<link rel="stylesheet" href="redesign.css">
+<script src="redesign.js" defer></script>
+<!--@GENERATED:JSONLD-->
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- MASTHEAD: four verbs, ordered by audience size (fans first, bookers
+     last). No hamburger: visible options get used. -->
+<header class="masthead">
+  <a class="brand" href="#top" aria-label="Ash Stu: back to top of page">
+    <img src="../Images/Icon.webp" alt="" width="44" height="44">
+    <span class="brand-name" aria-hidden="true">Ash Stu</span>
+  </a>
+  <nav aria-label="Page sections">
+    <ul class="nav-list">
+      <li><a href="#listen">Listen</a></li>
+      <li><a href="#watch">Watch</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#book">Book</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- HERO: one job, one solid button (Play). Everything else is quieter
+       so the first move is obvious (Hick's law, isolation effect). -->
+  <section class="hero" id="top" aria-labelledby="artist-name">
+    <figure class="hero-photo">
+      <!--@GENERATED:HERO_PHOTO-->
+    </figure>
+    <header class="hero-copy">
+      <!-- The label font draws "-" as a squiggle; the hyphen is borrowed
+           from the body face (.plain-glyph). -->
+      <p class="eyebrow">Outsider<span class="plain-glyph">-</span>folk singer<span class="plain-glyph">-</span>songwriter · Guthrie, Oklahoma, United States</p>
+      <h1 class="hero-title" id="artist-name">Ash Stu</h1>
+      <!-- Handwriting face used exactly once, so it reads as a note. -->
+      <p class="hero-note">A figment of my own imagination.</p>
+    </header>
+    <!--@GENERATED:NEWEST_RELEASE-->
+  </section>
+
+  <!-- LISTEN: liner-notes spread. Cover, facts, and the full tracklist
+       visible at once: no accordions, carousels, or hidden gestures. -->
+  <section class="section" id="listen" aria-labelledby="listen-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">01</p>
+      <h2 id="listen-title">Listen: discography</h2>
+      <!--@GENERATED:DISCOGRAPHY_SUMMARY-->
+    </header>
+    <!--@GENERATED:RECORDS-->
+
+    <!-- Woody Guthrie's copyright note: in Guthrie, Oklahoma, it's a
+         thesis statement. A breather between dense sections. -->
+    <figure class="pull-quote">
+      <blockquote>
+        <p>“Anybody caught singin’ these songs without our permission will be mighty good friends of ourn, cause we don’t give a dern. Publish it. Write it. Sing it. Swing to it. Yodel it. We wrote it, that’s all we wanted to do.”</p>
+      </blockquote>
+      <figcaption>Woody Guthrie, American folk singer-songwriter, quoted by Ash Stu</figcaption>
+    </figure>
+  </section>
+
+  <section class="section" id="watch" aria-labelledby="watch-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">02</p>
+      <h2 id="watch-title">Watch: music videos</h2>
+      <!--@GENERATED:VIDEOS_SUMMARY-->
+    </header>
+    <!--@GENERATED:VIDEOS-->
+  </section>
+
+  <!-- ABOUT: short on purpose. Faces register in a fraction of a second;
+       paragraphs take far longer. -->
+  <section class="section about" id="about" aria-labelledby="about-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">03</p>
+      <h2 id="about-title">About Ash Stu</h2>
+    </header>
+    <article class="about-text" aria-labelledby="about-title">
+      <!--@GENERATED:BIO-->
+    </article>
+    <!-- Snapshots tilted like a scrapbook (decorative; removed with
+         reduced motion). -->
+    <figure class="snapshots">
+      <!--@GENERATED:SNAPSHOTS-->
+      <figcaption class="sr-only">Three photographs of Ash Stu: a recent portrait, as a child with a guitar, and as a teenager at a piano.</figcaption>
+    </figure>
+  </section>
+
+  <!-- BOOK: contact and press kit together; the people who need one
+       nearly always need the other. Email shown as text (mailto fails
+       silently without a mail app) with a Copy button. -->
+  <section class="section book" id="book" aria-labelledby="book-title">
+    <header class="section-head">
+      <p class="section-num" aria-hidden="true">04</p>
+      <h2 id="book-title">Book &amp; press</h2>
+      <p class="section-lede">For shows, press, or anything else, contact Ash Stu directly by email.</p>
+    </header>
+    <article class="book-card" aria-labelledby="contact-title">
+      <h3 class="kicker" id="contact-title">Booking and press email</h3>
+      <!--@GENERATED:EMAIL-->
+      <button type="button" class="btn btn-quiet" id="copy-email" aria-describedby="email-address" hidden>Copy email address</button>
+      <p class="copy-status" id="copy-status" role="status"></p>
+    </article>
+    <!--@GENERATED:PRESS_KIT-->
+    <!--@GENERATED:PRESS_PHOTOS-->
+  </section>
+</main>
+
+<footer class="site-footer">
+  <!--@GENERATED:FOOTER-->
+</footer>
+
+<!-- PLAYER: docked, persistent, hidden until first play. Native range
+     input for seeking (keyboard and screen readers work for free). The
+     wrapping divs carry role="group" so each cluster has a name. -->
+<section class="player" id="player" aria-label="Music player" hidden>
+  <img class="player-art" id="player-art" src="" alt="" width="56" height="56">
+  <p class="player-meta">
+    <strong class="player-title" id="player-title" aria-live="polite"></strong>
+    <span class="player-release" id="player-release"></span>
+  </p>
+  <div class="player-controls" role="group" aria-label="Playback controls">
+    <button type="button" class="icon-btn" id="prev" aria-label="Previous song">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M6 5h2v14H6zM20 5v14L9 12z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="icon-btn icon-btn-main" id="toggle" aria-label="Pause">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path id="toggle-icon" d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="next" aria-label="Next song">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M16 5h2v14h-2zM4 5v14l11-7z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <div class="player-seek" role="group" aria-label="Song position">
+    <span class="time" id="time-cur">0:00</span>
+    <input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="Seek within song" aria-valuetext="0:00 of 0:00">
+    <span class="time" id="time-dur">0:00</span>
+  </div>
+  <button type="button" class="icon-btn player-close" id="close-player" aria-label="Stop music and close player">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  </button>
+</section>
+<audio id="audio" preload="none"></audio>
+
+<!-- VIDEO VIEWER: native <dialog> (focus trap, Esc, inert background,
+     focus return, all built in). -->
+<dialog class="video-dialog" id="video-dialog" aria-labelledby="video-title">
+  <header class="video-dialog-head">
+    <h2 class="video-title" id="video-title">Music video player</h2>
+    <a class="video-yt" id="video-yt" href="#">Watch on YouTube</a>
+    <button type="button" class="icon-btn" id="video-close" aria-label="Close video">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </header>
+  <video id="video" controls playsinline preload="none"></video>
+</dialog>
+
+</body>
+</html>
