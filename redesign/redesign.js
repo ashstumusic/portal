@@ -38,6 +38,7 @@
   const audio = $('#audio');
   const player = $('#player');
   const seek = $('#seek');
+  const seekFill = $('#seek-fill');
   const toggleBtn = $('#toggle');
   const PATH_PLAY = 'M7 4.5v15l12-7.5z';
   const PATH_PAUSE = 'M7 5h4v14H7zM13 5h4v14h-4z';
@@ -102,8 +103,9 @@
     (lastTrigger && document.contains(lastTrigger) ? lastTrigger : $('#main')).focus();
   }
 
+  // Writes only (no layout reads): fill is a compositor-only scaleX.
   function updateSeekUI(time) {
-    seek.style.setProperty('--pct', `${seek.value}%`);
+    seekFill.style.transform = `scaleX(${seek.value / 100})`;
     $('#time-cur').textContent = fmt(time);
     seek.setAttribute('aria-valuetext', `${fmt(time)} of ${fmt(audio.duration)}`);
   }
@@ -187,9 +189,11 @@
   });
 
   // ── COPY EMAIL (button only exists when JS can make it work) ──────
+  // The button is visible whenever JS runs (CSS: .js .js-only); hide it
+  // again only on the rare browser without the Clipboard API.
   const copyBtn = $('#copy-email');
-  if (copyBtn && navigator.clipboard) {
-    copyBtn.hidden = false;
+  if (copyBtn && !navigator.clipboard) copyBtn.remove();
+  else if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
       const status = $('#copy-status');
       const address = $('#email-address').textContent.trim();
