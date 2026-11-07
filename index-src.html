@@ -101,19 +101,6 @@
     },
     {
       "@type": "MusicAlbum",
-      "@id": "https://ashstu.art/#single-drive-me-home",
-      "name": "Drive Me Home",
-      "albumProductionType": "SelfReleasedAlbum",
-      "albumReleaseType": "SingleRelease",
-      "datePublished": "2025-01-01",
-      "byArtist": { "@id": "https://ashstu.art/#artist" },
-      "image": "https://ashstu.art/Images/Releases/Drive%20Me%20Home.webp",
-      "numTracks": 1,
-      "url": "https://music.apple.com/us/album/drive-me-home-single/1888200397",
-      "track": [{"@type":"MusicRecording","name":"Drive Me Home","position":1,"byArtist":{"@id":"https://ashstu.art/#artist"}}]
-    },
-    {
-      "@type": "MusicAlbum",
       "@id": "https://ashstu.art/#single-waste-my-time",
       "name": "Waste My Time",
       "albumProductionType": "SelfReleasedAlbum",
@@ -1470,7 +1457,11 @@ _tracklistDebounce = now;
 setTracklist(rIdx, false);
 }
 }
+var _partyPlayingIdx = -1;
 function updatePlayUI() {
+var _nowIdx = !npAudio.paused ? pState.releaseIdx : -1;
+if (_nowIdx >= 0 && _nowIdx !== _partyPlayingIdx && window.partyCardBurst) window.partyCardBurst(_nowIdx);
+_partyPlayingIdx = _nowIdx;
 document.querySelectorAll('.rel-card.now-playing').forEach(function(c) { c.classList.remove('now-playing'); });
 Object.keys(_discCache).forEach(function(rIdx) {
 var svg = _discCache[rIdx];
@@ -2018,6 +2009,107 @@ function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); raf
 start();
 if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
+})();
+(function() {
+/* Release cards get the same party kit as the hero: a record tucked in the
+   sleeve (peeks out on hover, slides out spinning while that release plays),
+   a glare, a now-playing chip, a lean toward the pointer, and a confetti pop
+   on play. Decor is aria-hidden and added here (not in the prerendered HTML)
+   so there is one copy of it; re-applied whenever the grid re-renders. */
+var grid = document.getElementById('releases-grid');
+if (!grid) return;
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function decorate() {
+grid.querySelectorAll('.rel-card').forEach(function(card) {
+var wrap = card.querySelector('.rel-art-wrap'), img = wrap && wrap.querySelector('.rel-art');
+if (!wrap || !img || wrap.querySelector('.rel-vinyl')) return;
+var v = document.createElement('div'); v.className = 'party-vinyl rel-vinyl'; v.setAttribute('aria-hidden', 'true');
+var l = document.createElement('span'); l.className = 'party-vinyl-label'; l.style.backgroundImage = 'url("' + img.getAttribute('src') + '")';
+v.appendChild(l); wrap.insertBefore(v, img);
+var g = document.createElement('span'); g.className = 'party-glare'; g.setAttribute('aria-hidden', 'true'); wrap.appendChild(g);
+var e = document.createElement('span'); e.className = 'party-eq rel-eq'; e.setAttribute('aria-hidden', 'true');
+e.innerHTML = '<i></i><i></i><i></i><i></i> Now playing'; wrap.appendChild(e);
+});
+}
+decorate();
+new MutationObserver(decorate).observe(grid, { childList: true, subtree: false });
+/* Confetti pop from a card when its release starts (skips release 0 while
+   the hero panel, which pops its own, is on screen). One fixed canvas,
+   created on first use, drawn only while pieces are alive. */
+var cv = null, cx = null, pieces = [], raf = 0, last = 0;
+var COLORS = ['#F7C549', '#DF2B2C', '#4E97AD', '#FFFFFF', '#FF5FA2', '#7AE7FF'];
+function frame(t) {
+var dt = last ? Math.min(t - last, 50) / 16.667 : 1; last = t;
+var dpr = cv.width / innerWidth;
+cx.setTransform(1, 0, 0, 1, 0, 0); cx.clearRect(0, 0, cv.width, cv.height);
+for (var i = pieces.length - 1; i >= 0; i--) {
+var b = pieces[i];
+b.vy += .3 * dt; b.vx *= Math.pow(.985, dt); b.vy *= Math.pow(.985, dt);
+b.x += b.vx * dt; b.y += b.vy * dt; b.rot += b.dr * dt; b.flex += .12 * dt; b.life -= .009 * dt;
+if (b.life <= 0 || b.y > innerHeight + 30) { pieces.splice(i, 1); continue; }
+var c = Math.cos(b.rot), s = Math.sin(b.rot), sx = .35 + Math.abs(Math.sin(b.flex)) * .65;
+cx.globalAlpha = Math.min(1, b.life * 1.6); cx.fillStyle = b.color;
+cx.setTransform(sx * c * dpr, sx * s * dpr, -s * dpr, c * dpr, b.x * dpr, b.y * dpr);
+if (b.round) { cx.beginPath(); cx.arc(0, 0, b.w * .6, 0, Math.PI * 2); cx.fill(); } else cx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+}
+if (pieces.length) raf = requestAnimationFrame(frame);
+else { raf = 0; last = 0; cv.hidden = true; }
+}
+window.partyCardBurst = function(idx) {
+if (reduce) return;
+var party = document.getElementById('party');
+if (idx === 0 && party && !party.classList.contains('party-off')) return;
+var card = grid.querySelector('.rel-card[data-release="' + idx + '"]') || grid.querySelectorAll('.rel-card')[idx];
+if (!card) return;
+var r = card.querySelector('.rel-art-wrap').getBoundingClientRect();
+if (r.bottom < 0 || r.top > innerHeight) return;
+if (!cv) {
+cv = document.createElement('canvas'); cv.className = 'party-overlay'; cv.setAttribute('aria-hidden', 'true');
+document.body.appendChild(cv); cx = cv.getContext('2d');
+}
+var dpr = Math.min(devicePixelRatio || 1, 2);
+cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cv.hidden = false;
+for (var i = 0; i < 70; i++) {
+var ang = -Math.PI / 2 + (Math.random() - .5) * Math.PI * .95, sp = 6 + Math.random() * 8;
+pieces.push({ x: r.left + r.width * (.15 + Math.random() * .7), y: r.top + r.height * .5, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, w: 4 + Math.random() * 4, h: 7 + Math.random() * 9, rot: Math.random() * 6.28, dr: (Math.random() - .5) * .3, flex: Math.random() * 6.28, color: COLORS[i % COLORS.length], life: 1, round: Math.random() < .3 });
+}
+if (!raf) raf = requestAnimationFrame(frame);
+};
+if (reduce || !matchMedia('(pointer: fine)').matches) return;
+/* Lean toward the pointer on a spring (real frame time), per card. */
+var springs = new WeakMap();
+function spring(card) {
+var st = springs.get(card);
+if (!st) { st = { tx: 0, ty: 0, x: 0, y: 0, vx: 0, vy: 0, raf: 0, last: 0 }; springs.set(card, st); }
+return st;
+}
+function run(card, st) {
+function step(t) {
+var dt = st.last ? Math.min(t - st.last, 50) / 1000 : 1 / 60; st.last = t;
+st.vx += ((st.tx - st.x) * 170 - st.vx * 16) * dt; st.vy += ((st.ty - st.y) * 170 - st.vy * 16) * dt;
+st.x += st.vx * dt; st.y += st.vy * dt;
+card.style.setProperty('--rx', (-st.y * 6).toFixed(2) + 'deg');
+card.style.setProperty('--ry', (st.x * 8).toFixed(2) + 'deg');
+card.style.setProperty('--gx', (50 + st.x * 60).toFixed(1) + '%');
+card.style.setProperty('--gy', (50 + st.y * 60).toFixed(1) + '%');
+if (Math.abs(st.tx - st.x) + Math.abs(st.ty - st.y) + Math.abs(st.vx) + Math.abs(st.vy) > .002) st.raf = requestAnimationFrame(step);
+else { st.raf = 0; st.last = 0; }
+}
+if (!st.raf) st.raf = requestAnimationFrame(step);
+}
+grid.addEventListener('pointermove', function(e) {
+var card = e.target.closest && e.target.closest('.rel-card'); if (!card) return;
+var wrap = card.querySelector('.rel-art-wrap'), r = wrap.getBoundingClientRect(), st = spring(card);
+var over = e.clientY <= r.bottom;   /* lean only while over the art, not the tracklist */
+st.tx = over ? Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (r.width / 2))) * .5 : 0;
+st.ty = over ? Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (r.height / 2))) * .5 : 0;
+card.classList.toggle('party-hot', over); run(card, st);
+});
+grid.addEventListener('pointerout', function(e) {
+var card = e.target.closest && e.target.closest('.rel-card');
+if (!card || card.contains(e.relatedTarget)) return;
+var st = spring(card); st.tx = 0; st.ty = 0; card.classList.remove('party-hot'); run(card, st);
+});
 })();
 (function() {
 /* Featured "party" panel: the cover leans toward the pointer on a spring

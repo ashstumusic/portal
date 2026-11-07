@@ -3184,3 +3184,99 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* "Distributing Soon" pills: gold in both themes, so the text stays the
    dark teal in both (var(--ink) turns light in dark mode: 1.34:1). */
 .f-btn.f-btn--label, .rel-btn.rel-btn--label { color: #084C61; }
+
+/* ── Release cards: the party kit (see the decorate() script) ──────────
+   Same pieces as the hero panel, fitted inside the card: the sleeve slides
+   left inside the art frame to show the record tucked behind it. */
+.rel-card {
+  transform: translateY(var(--k-lift, 0px)) perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.rel-card:hover { --k-lift: -4px; transform: translateY(var(--k-lift, 0px)) perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+.rel-art-wrap .rel-art { z-index: 1; }
+.rel-art-wrap .rel-vinyl { top: 7%; left: auto; right: 3%; width: 86%; height: 86%; z-index: 0; transform: none; transition: none; }
+.rel-card:hover .rel-art { transform: translateX(-11%); }
+.rel-card.now-playing .rel-art { transform: translateX(-30%); }
+.rel-card.now-playing .rel-vinyl .party-vinyl-label { animation-play-state: running; }
+.rel-art-wrap .party-glare { border-radius: 0; z-index: 2; }
+.rel-card.party-hot .party-glare { opacity: 1; }
+.rel-art-wrap .rel-eq { left: .7rem; right: auto; top: .7rem; bottom: auto; z-index: 4; }
+.rel-card.now-playing .rel-eq { opacity: 1; translate: 0 0; }
+.rel-card.now-playing .rel-eq i { animation-play-state: running; }
+.rel-art { transition: filter .5s var(--ease), transform .7s cubic-bezier(.34,1.56,.64,1); }
+.party-overlay { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 600; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+  .rel-card, .rel-card:hover { transform: none; }
+  .rel-art { transition: none; }
+}
+.rel-art-wrap { background: #0d1114; }   /* inside of the sleeve, shown as the cover slides */
+
+/* ════════════════════════════════════════════
+   PSYCHEDELIC TYPE - one family everywhere
+   Boiled Pasta (the wordmark's face, 'Logo') now sets every role the old
+   mix of system sans / Playfair / Grit / Figment used to. Glyphs it lacks
+   (’ – — ·) fall back to a rounded system face. Clocks stay in a
+   fixed-width face so the digits don't jitter while a song plays.
+   ════════════════════════════════════════════ */
+:root {
+  --psy: 'Logo', ui-rounded, 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif;
+  --sans: var(--psy); --body: var(--psy); --display: var(--psy); --grit: var(--psy);
+}
+body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote cite { font-family: var(--psy); }
+.disc-quote, .bio-tagline { font-style: normal; }
+.np-time, .fs-times, .fs-times * { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+
+/* Small caps-style labels: this face clogs when tiny and widely tracked. */
+.f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .74rem; letter-spacing: .04em; }
+.vid-yt { font-size: .7rem; letter-spacing: .04em; }
+.featured-badge, .btn-epk, .rel-cat, .featured-kicker, .disc-quote cite, .footer-copy, .party-eq { letter-spacing: .06em; }
+.featured-badge { font-size: .72rem; }
+.btn-epk { font-size: .82rem; }
+.nav-links a { letter-spacing: .08em; }
+
+/* Section headings: a groovy gradient with a retro offset shadow. Every
+   stop clears 4.5:1 on the light page (and the bright set on dark), so
+   the text passes contrast at any point along the gradient. */
+.section-h {
+  background: linear-gradient(100deg, #084C61 0%, #8E1B6E 38%, #B4361A 66%, #5B2A9E 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: #084C61;
+  text-shadow: none;
+  filter: drop-shadow(3px 3px 0 rgb(247 197 73 / .55));
+  letter-spacing: .01em; font-weight: normal; padding-bottom: .08em;
+}
+:root[data-theme="dark"] .section-h {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%);
+  color: #F7C549;
+  filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55));
+}
+@media (forced-colors: active) {
+  .section-h { -webkit-text-fill-color: currentColor; background: none; filter: none; }
+}
+/* Boiled Pasta's curly quotes are odd shapes; borrow a classic serif's
+   (installed system fonts) for just those characters (unicode-range keeps it out of everything else). */
+@font-face {
+  font-family: 'PsyPunct';
+  src: local('Georgia'), local('DejaVu Serif'), local('Times New Roman'), local('Liberation Serif');
+  unicode-range: U+2018-2019, U+201C-201D;
+  font-display: swap;
+}
+:root { --psy: 'PsyPunct', 'Logo', ui-rounded, 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif; }
+/* The gradient only paints inside the heading's box: size the box to
+   the text so no letters fall outside it (was clipping "Press Kit"). */
+.section-h { width: max-content; max-width: 100%; }
+/* nowrap + text-wrap: balance makes Chrome size the box as if balanced
+   onto two lines ("Press" wide) while painting one line. */
+.epk-body .section-h { text-wrap: nowrap; }
+@media (min-width: 1024px) {
+  /* The text column was 352px with 96px padding each side: a 160px text
+     box, so "Press Kit" overflowed it. Left edge on the shared column,
+     a slimmer gap toward the photos. */
+  .epk-section { --epk-pad: max(var(--gut), calc((100vw - var(--col)) / 2)); grid-template-columns: minmax(calc(var(--epk-pad) + 19rem), 1fr) minmax(0, auto) minmax(0, auto); }
+  .epk-body { padding-left: var(--epk-pad); padding-right: 2.5rem; }
+}
+/* An old ultra-wide rule shrank section headings to 1.65rem above 1600px;
+   keep the same scale as every other desktop width. */
+@media (min-width: 1600px) { .section-h { font-size: 3.2rem; } }
+/* Boiled Pasta runs wider than the old italic serif: re-fit the hand-set
+   lines to the column (desktop; phones reflow as one paragraph). */
+@media (min-width: 641px) { .disc-quote { font-size: clamp(.57rem, 2.7cqi, 3.4rem); } }
