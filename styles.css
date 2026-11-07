@@ -2936,3 +2936,89 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 @media (forced-colors: active) {
   .fs-lyric.is-current button::before { background: Highlight; }
 }
+
+/* ════════════════════════════════════════════
+   DESIGN PASS (Nov 2026) - one column, readable labels, quieter chrome
+   Kept as one block at the end so it wins the cascade over the older
+   per-breakpoint rules above, and is easy to review as a unit.
+   ════════════════════════════════════════════ */
+/* One content column for every section: each heading's left edge is the
+   left edge of the content under it. --gut is the minimum side margin;
+   on wide screens the column (--col) centers and the margin grows. */
+:root { --col: 78rem; --gut: clamp(1.25rem, 5vw, 4.5rem); }
+.section {
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+  padding-inline: max(var(--gut), calc((100% - var(--col)) / 2));
+}
+.section-inner, .releases-section .section-inner { max-width: none; }
+/* Releases: three across exactly fill the 78rem column (3 x 25rem + 2
+   gaps of 1.25rem), still centered when fewer fit. The lyrics panel's
+   indent is trimmed so the widest lyric line still fits on one line at
+   the 25rem card width (verified by script). */
+.releases-grid { --gap: 1.25rem; }
+.releases-grid > * { flex: 0 0 min(100%, 25rem); }
+.rel-lyrics-inner { padding-left: 1.4rem; padding-right: .6rem; }
+@media (min-width: 1024px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
+/* About: heading and card share one centered measure. */
+.bio-section-header, .bio-body {
+  max-width: calc(62rem + 2 * var(--gut));
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+.bio-section-header { padding-top: clamp(3.5rem, 7vw, 6rem); }
+/* Body copy follows the theme (was hard-coded black: invisible in dark). */
+.bio-desc { color: var(--ink); }
+
+/* Press kit band (desktop): give the heading column room for "Press Kit"
+   on one line; the four photos shrink to fit instead. */
+@media (min-width: 1024px) {
+  .epk-section { grid-template-columns: minmax(22rem, 1fr) minmax(0, auto) minmax(0, auto); }
+  .epk-body .section-h { white-space: nowrap; }
+}
+.epk-text { font-size: .95rem; }
+
+/* Labels: nothing under 10px. The old .44-.52rem chips were unreadable. */
+.f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .64rem; letter-spacing: .08em; }
+.vid-yt { font-size: .6rem; letter-spacing: .08em; padding: .35rem .7rem; }
+.btn-epk { font-size: .74rem; letter-spacing: .18em; }
+
+/* Contact: readable intro, and the email button in the brand teal
+   instead of a grey slab (gold on hover, as before). */
+.contact-intro { font-size: 1rem; }
+.contact-email-link {
+  font-size: .9rem; letter-spacing: .02em;
+  background: #084C61; border-color: transparent;
+  box-shadow: 0 2px 12px rgba(8,76,97,.25);
+}
+
+/* Quote: on phones, let it flow as one balanced paragraph at a real
+   reading size instead of shrinking hand-set lines to ~9px. */
+@media (max-width: 640px) {
+  .disc-quote { white-space: normal; font-size: 1.05rem; line-height: 1.7; text-wrap: balance; }
+  .disc-quote br { display: none; }
+}
+
+/* Footer: one quiet line beside the mark. */
+.footer-copy { font-size: .72rem; letter-spacing: .06em; }
+
+/* Phones: on the hero the header logo is hidden, which left the tool
+   divider standing alone; show it only once the logo is. */
+@media (max-width: 767px) {
+  .nav .k-tools::before { transition: opacity .4s var(--ease); }
+  .nav:not(.scrolled) .k-tools::before { opacity: 0; }
+}
+/* Phones: stack the footer mark over its line so the text stays clear of
+   the floating play button in the bottom-right corner. */
+@media (max-width: 640px) {
+  footer { flex-direction: column; gap: .5rem; padding-block: 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px)); }
+  .footer-copy { border-left: 0; padding-left: 0; }
+}
+/* Hero (desktop): the latest-release cover was capped at ~226px in a 410px
+   panel; slimmer side padding and a 90% cap give it ~300px. */
+@media (min-width: 1100px) {
+  .hero-split-right { padding-inline: 2.5rem; }
+  .hero-split-right .featured-art-hero {
+    flex-basis: min(400px, 45dvh, 90cqw);
+    max-height: min(400px, 45dvh, 90cqw);
+  }
+}

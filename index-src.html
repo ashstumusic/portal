@@ -328,7 +328,7 @@
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
     <blockquote class="disc-quote">
-      "Anybody caught singin' these songs without our permission, will be<br/>mighty good friends of ourn, cause we don't give a dern.<br/>Publish it. Write it. Sing it. Swing to it. Yodel it.<br/>We wrote it, that's all we wanted to do."
+      “Anybody caught singin’ these songs without our permission, will be <br/>mighty good friends of ourn, cause we don’t give a dern. <br/>Publish it. Write it. Sing it. Swing to it. Yodel it. <br/>We wrote it, that’s all we wanted to do.”
       <cite>Woody Guthrie</cite>
     </blockquote>
   </div>
@@ -365,6 +365,7 @@
 </main>
 <footer role="contentinfo">
   <a href="#" class="footer-logo" aria-label="Ash Stu · back to top" title="Back to top"><img width="330" height="330" src="Images/Icon.webp" alt="Ash Stu"/></a>
+  <p class="footer-copy">© 2026 Ash Stu · Guthrie, Oklahoma</p>
 </footer>
 <div id="player-bar" role="region" aria-label="Now playing">
   <div id="np-bar-progress">
@@ -1828,6 +1829,13 @@ Array.from(dotsEl.children).forEach((d,i) => d.classList.toggle('active', i===id
 }
 document.getElementById('lb-prev').disabled = (idx === 0);
 document.getElementById('lb-next').disabled = (idx === VIDEO_LIST.length - 1);
+Array.from(vid.querySelectorAll('track')).forEach(function(t) { t.remove(); });
+if (v.captions) {
+var tr = document.createElement('track');
+tr.kind = 'captions'; tr.srclang = 'en'; tr.label = 'English'; tr.default = true;
+tr.src = encPath(v.captions);
+vid.appendChild(tr);
+}
 vid.src = encPath(v.file);
 vid.play().catch(function(err) { if (err.name !== 'NotAllowedError') console.warn('[video]', err); });
 }
@@ -1891,7 +1899,9 @@ var _lastHref = '';
 function updateArrow() {
 var atBottom = innerHeight + scrollY >= document.body.scrollHeight - 40;
 var t = nextTarget();
-if (!t || atBottom) {
+/* A hint for the first screen only: past the hero it just sat on top of
+   cards and buttons, and the nav already jumps between sections. */
+if (!t || atBottom || scrollY > innerHeight * .5) {
 arrow.classList.add('hidden');
 return;
 }
