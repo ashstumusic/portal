@@ -190,8 +190,8 @@ def newest_release():
         f'<a href="{esc(u)}">{n}</a>' for n, u in (('Apple Music', r.get('apple')), ('Spotify', r.get('spotify'))) if u)
     return f'''<article class="new-record" aria-labelledby="newest-title">
       <img class="new-record-art" src="{rel_url(r['art'])}" alt="{esc(alt_for(r['art']))}" width="160" height="160">
-      <p class="kicker"><span class="stitch-dot" aria-hidden="true"></span>Newest release: {esc(r['type'])}</p>
-      <h2 class="new-record-title" id="newest-title"><span class="sr-only">Newest release: </span>{esc(r['full_title'])}</h2>
+      <p class="kicker"><span class="stitch-dot" aria-hidden="true"></span>Featured release: {esc(r['type'])}</p>
+      <h2 class="new-record-title" id="newest-title"><span class="sr-only">Featured release: </span>{esc(r['full_title'])}</h2>
       <p class="new-record-meta">Released <time datetime="{r['date']}">{long_date(r['date'])}</time> · {r['songs']} · <time datetime="{iso_dur(r['seconds'])}">{words_dur(r['seconds'])}</time></p>
       <footer class="new-record-actions">
         <a class="btn btn-primary" href="{rel_url(first['file'])}" data-play="0:0" aria-label="{esc(label)}: {esc(r['full_title'])}, starting with track 1, {esc(first['title'])}">
@@ -208,7 +208,7 @@ def discography_summary():
     singles = sum(1 for r in releases if r['type'] == 'Single')
     songs = sum(r['count'] for r in releases)
     return (f'<p class="section-lede">{len(releases)} releases ({albums} album{"s" if albums != 1 else ""}, '
-            f'{singles} single{"s" if singles != 1 else ""}), {songs} songs in total, newest first. '
+            f'{singles} single{"s" if singles != 1 else ""}), {songs} songs in total, featured release first. '
             'Select any song title to play it.</p>')
 
 
@@ -250,7 +250,7 @@ def records():
           </tbody>
         </table>
       </article></li>''')
-    return '<ol class="records" role="list" aria-label="Releases, newest first">\n    ' + '\n    '.join(items) + '\n    </ol>'
+    return '<ol class="records" role="list" aria-label="Releases, featured release first">\n    ' + '\n    '.join(items) + '\n    </ol>'
 
 
 def videos_summary():
