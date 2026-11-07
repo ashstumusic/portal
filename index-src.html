@@ -850,8 +850,8 @@ document.getElementById('np-repeat').addEventListener('click', npRepeatToggle);
 if (_fabMusic) _fabMusic.addEventListener('click', fabClick);
 var _featuredPlay = document.getElementById('featured-play');
 if (_featuredPlay) {
-_featuredPlay.addEventListener('click', function() { toggleRelease(0); });
-_featuredPlay.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleRelease(0); } });
+_featuredPlay.addEventListener('click', function() { toggleRelease(FEATURED_IDX); });
+_featuredPlay.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleRelease(FEATURED_IDX); } });
 }
 var _npArt = document.createElement('img');
 _npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = 'Now playing'; _npArt.hidden = true;
@@ -1411,6 +1411,9 @@ return (s == null ? '' : String(s))
 .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 var RELEASE_LIST = [];
+// The hero features the release links.txt marks as featured (generator sets
+// r.featured); the discography keeps its own order around it.
+var FEATURED_IDX = 0;
 // Scroll-cue dodge targets (see the hero-scroll IIFE below). Cached here so
 // renderAllContent can invalidate it when cards/entries are re-injected -
 // the alternative was an 8-selector querySelectorAll on every scroll frame.
@@ -1424,10 +1427,10 @@ releaseIdx: -1
 };
 var _discCache = {};
 function initDefaultTrack() {
-var rel = RELEASE_LIST[0];
+var rel = RELEASE_LIST[FEATURED_IDX];
 if (!rel) return;
-pState.releaseIdx = 0;
-pState.playlist = rel.tracks.map(function(t,i) { return { title: t.title, file: t.file, releaseIdx: 0, trackIdx: i }; });
+pState.releaseIdx = FEATURED_IDX;
+pState.playlist = rel.tracks.map(function(t,i) { return { title: t.title, file: t.file, releaseIdx: FEATURED_IDX, trackIdx: i }; });
 pState.plIdx = 0;
 var t = rel.tracks[0];
 _npTrackEl.dataset.label = '1. ' + t.title;
@@ -1474,7 +1477,7 @@ if (card) card.classList.add('now-playing');
 });
 var fp = document.querySelector('#featured-play .rel-play-circle svg');
 if (fp) {
-var fpPlaying = pState.releaseIdx === 0 && !npAudio.paused;
+var fpPlaying = pState.releaseIdx === FEATURED_IDX && !npAudio.paused;
 var party = document.getElementById('party');
 if (party) {
 if (fpPlaying && !party.classList.contains('is-playing') && window.partyBurst) window.partyBurst();
@@ -1627,10 +1630,10 @@ recalcTracklistHeight(tl);
 }
 function fabClick() {
 if (!_src) {
-var rel = RELEASE_LIST[0];
+var rel = RELEASE_LIST[FEATURED_IDX];
 var t = rel.tracks[0];
-pState.releaseIdx = 0;
-pState.playlist = rel.tracks.map(function(tk,i) { return { title: tk.title, file: tk.file, releaseIdx: 0, trackIdx: i }; });
+pState.releaseIdx = FEATURED_IDX;
+pState.playlist = rel.tracks.map(function(tk,i) { return { title: tk.title, file: tk.file, releaseIdx: FEATURED_IDX, trackIdx: i }; });
 pState.plIdx = 0;
 npLoad(t.title, rel.name, t.file, false);
 return;
@@ -1747,6 +1750,7 @@ try { return JSON.parse(el.textContent); } catch(e) { return null; }
 function renderAllContent(results, isRefresh) {
 _dodgeEls = null; // cards/entries below are about to be replaced
 RELEASE_LIST = results[0] || [];
+FEATURED_IDX = Math.max(0, RELEASE_LIST.findIndex(function(r) { return r.featured; }));
 VIDEO_LIST = results[1] || [];
 LYRICS = results[2] || {};
 
@@ -1756,7 +1760,7 @@ if (relGrid) relGrid.innerHTML = RELEASE_LIST.map(renderReleaseCard).join('');
 var vidGrid = document.getElementById('video-grid');
 if (vidGrid) vidGrid.innerHTML = VIDEO_LIST.map(renderVideoCard).join('');
 
-renderFeatured(RELEASE_LIST[0]);
+renderFeatured(RELEASE_LIST[FEATURED_IDX]);
 // A background refresh must never yank whatever's loaded in the player -
 // but if nothing has actually played yet, the idle preload should track
 // the new latest release (otherwise play resumes a stale preloaded src
@@ -2057,7 +2061,7 @@ else { raf = 0; last = 0; cv.hidden = true; }
 window.partyCardBurst = function(idx) {
 if (reduce) return;
 var party = document.getElementById('party');
-if (idx === 0 && party && !party.classList.contains('party-off')) return;
+if (idx === FEATURED_IDX && party && !party.classList.contains('party-off')) return;
 var card = grid.querySelector('.rel-card[data-release="' + idx + '"]') || grid.querySelectorAll('.rel-card')[idx];
 if (!card) return;
 var r = card.querySelector('.rel-art-wrap').getBoundingClientRect();

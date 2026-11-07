@@ -3320,3 +3320,21 @@ body, button, input, select, textarea { font-family: var(--plain-sans); }
 .bio-section .section-h { font-family: var(--psy); font-weight: normal; letter-spacing: .01em; }
 /* Video titles match the release titles: plain bold sans. */
 h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; letter-spacing: -.01em; }
+/* Toolbar (and the phone menu) in the standard sans. */
+.nav-links a, .nav-drawer a { font-family: var(--plain-sans); font-weight: 600; letter-spacing: .1em; }
+@media (min-width: 768px) and (max-width: 900px) { .nav-links a { letter-spacing: .06em; } }
+
+/* Release and video titles: Righteous (OFL) - 60s poster curves that
+   still read like a plain sans. */
+@font-face {
+  font-family: 'Release';
+  src: url('Fonts/righteous/Righteous-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+.rel-name, .featured-title, h3.vid-title, .vid-title {
+  font-family: 'Release', var(--plain-sans);
+  font-weight: normal; letter-spacing: .01em;
+}
+/* Toolbar: Righteous (Google Fonts, sans) - a touch of 60s curve, still
+   plainly readable; matches the release titles. */
+.nav-links a, .nav-drawer a { font-family: 'Release', var(--plain-sans); font-weight: normal; letter-spacing: .1em; }
