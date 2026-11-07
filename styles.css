@@ -3022,3 +3022,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
     max-height: min(400px, 45dvh, 90cqw);
   }
 }
+/* Dark mode: dim photos a touch like the rest (see shared/kinetic.css)
+   while keeping the black-and-white shots black and white. Same function
+   list in every state (grayscale 1 -> 0) so the hover fade interpolates. */
+:root[data-theme="dark"] .epk-photos img { filter: grayscale(1) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img.bio-media-main { filter: brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main) { filter: grayscale(1) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main):hover,
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main).bio-revealed { filter: grayscale(0) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(1.23) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:last-child:hover,
+:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(1.23) contrast(1.06); }
