@@ -62,14 +62,14 @@
 * `the helpful raven.mp4` / `.txt`
 * `the cloud for the desert.mp4` / `.txt`
 * `WHY HAVE EYES.mp4` / `.txt`
-* `Brain Dead Corollary (Trust Me Bro).mp4` / `.txt`
+* `Brain Dead Corollary.mp4` / `.txt`
 * `Theory of Hope.mp4` / `.txt`
 * `Thumbnails` (Folder)
   * `VCR.png` / `.webp`
   * `the helpful raven.png` / `.webp`
   * `the cloud for the desert.png` / `.webp`
   * `WHY HAVE EYES.png` / `.webp`
-  * `Brain Dead Corollary (Trust Me Bro).png` / `.webp`
+  * `Brain Dead Corollary.png` / `.webp`
   * `Theory of Hope.png` / `.webp`
 
 **`Journal`**
