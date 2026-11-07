@@ -1,30 +1,5 @@
 [
   {
-    "name": "My Anima",
-    "type": "Album",
-    "art": "Images/Releases/My Anima.webp",
-    "apple": null,
-    "spotify": null,
-    "tracks": [
-      {
-        "title": "Still Sad",
-        "file": "Audio/My Anima/04. Still Sad.mp3"
-      },
-      {
-        "title": "Worship Song",
-        "file": "Audio/My Anima/06. Worship Song.mp3"
-      },
-      {
-        "title": "You Are What You Love",
-        "file": "Audio/My Anima/08. You Are What You Love.mp3"
-      },
-      {
-        "title": "Somewhere, Sometime (2026 Version)",
-        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3"
-      }
-    ]
-  },
-  {
     "name": "Only a Baby, Vol. 2",
     "type": "Album",
     "art": "Images/Releases/Only a Baby, Vol. 2.webp",
@@ -70,15 +45,27 @@
     ]
   },
   {
-    "name": "Drive Me Home",
-    "type": "Single",
-    "art": "Images/Releases/Drive Me Home.webp",
-    "apple": "https://music.apple.com/us/album/drive-me-home-single/1888200397",
-    "spotify": "https://open.spotify.com/album/5wCuSFCPemL7sHXNtv6wRg",
+    "name": "My Anima",
+    "type": "Album",
+    "art": "Images/Releases/My Anima.webp",
+    "apple": null,
+    "spotify": null,
     "tracks": [
       {
-        "title": "Drive Me Home",
-        "file": "Audio/Drive Me Home/01. Drive Me Home.mp3"
+        "title": "Still Sad",
+        "file": "Audio/My Anima/04. Still Sad.mp3"
+      },
+      {
+        "title": "Worship Song",
+        "file": "Audio/My Anima/06. Worship Song.mp3"
+      },
+      {
+        "title": "You Are What You Love",
+        "file": "Audio/My Anima/08. You Are What You Love.mp3"
+      },
+      {
+        "title": "Somewhere, Sometime (2026 Version)",
+        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3"
       }
     ]
   },

@@ -136,10 +136,17 @@ def gen_releases():
             'spotify': links.get('spotify'),
             'tracks': tracks,
             '_sort': sort_val,
+            '_lead': links.get('featured', 'yes').strip().lower() not in ('no', 'false', '0'),
         })
     releases.sort(key=lambda r: r['_sort'], reverse=True)
+    # The first release is the featured "Latest release". links.txt
+    # "featured: no" keeps a release out of that spot: the newest release
+    # that may lead moves to the front; everything else keeps date order.
+    lead = next((i for i, r in enumerate(releases) if r['_lead']), 0)
+    if lead:
+        releases.insert(0, releases.pop(lead))
     for r in releases:
-        del r['_sort']
+        del r['_sort'], r['_lead']
     return releases
 
 
