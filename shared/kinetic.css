@@ -204,8 +204,11 @@ html.k-scrolling { scrollbar-color: color-mix(in srgb, var(--k-text) 55%, transp
 /* Lock video frames to 16:9 before metadata loads (contain, not cover:
    cover would crop the music videos). */
 video { aspect-ratio: 16 / 9; object-fit: contain; }
-/* Dim bright photos a touch in dark mode (logos/icons excluded). */
-:root[data-theme="dark"] :is(.rel-art, .vid-card img, .hero-split-photo, .bio-card-media img, .epk-photos img, .record-art, .new-record-art, .video-link img, .snap, .press-photos img, .hero-photo img) {
+/* Dim bright photos a touch in dark mode (logos/icons excluded). Photos
+   with their own filter (the homepage's black-and-white press-kit and
+   About shots) compose the dimming in styles.css instead, since a filter
+   here would replace their grayscale. */
+:root[data-theme="dark"] :is(.rel-art, .vid-card img, .hero-split-photo, .record-art, .new-record-art, .video-link img, .snap, .press-photos img, .hero-photo img) {
   filter: brightness(.88) contrast(1.06);
 }
 /* Blur-up: tiny inline previews (build step) sit behind images until they paint. */
