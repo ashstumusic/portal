@@ -3299,3 +3299,10 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
    onto balanced lines instead of running out of the hero panel or card. */
 .featured-title, .hero-split-right .featured-title { white-space: normal; text-wrap: balance; line-height: 1.15; max-width: 100%; }
 .rel-name { white-space: normal; text-wrap: balance; line-height: 1.2; }
+/* Release titles (cards + hero) and their ALBUM/SINGLE labels in the
+   plain sans: easier to read than the bubbly display face at title size. */
+.rel-name, .featured-title, .rel-cat, .featured-kicker {
+  font-family: var(--plain-sans);
+}
+.rel-name, .featured-title { font-weight: 700; letter-spacing: -.015em; }
+.rel-cat, .featured-kicker { font-weight: 700; letter-spacing: .14em; }
