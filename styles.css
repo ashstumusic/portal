@@ -2892,12 +2892,13 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   font: 700 .85rem/1 var(--body); letter-spacing: .06em; text-transform: uppercase;
 }
 .fs-lyrics-toggle[aria-expanded="true"] { background: var(--player-ink); color: var(--player); }
-/* Lyrics mode: small fixed cover, platform links in one compact row, and
-   the lyrics panel grows into all remaining height. */
+/* Lyrics mode: full-size cover, platform links in one compact row, and a
+   fixed-height lyrics panel below the controls (the player scrolls). */
 .fs-content.lyrics-on .fs-art-wrap { flex: none; }
 .fs-content.lyrics-on .fs-platforms { flex-wrap: nowrap; }
 .fs-content.lyrics-on .fs-platforms .f-btn { flex: 1 1 0; width: auto; min-width: 0; }
-.fs-content.lyrics-on .fs-lyrics { flex: 1 1 0; height: auto; min-height: 7.5rem; }
+.fs-content.lyrics-on .fs-lyrics { flex: none; height: clamp(12rem, 42vh, 22rem); }   /* own scroller; the player scrolls to reach it */
+.fs-content.lyrics-on > :last-child { margin-bottom: 0; }
 .fs-lyrics {
   flex: none; position: relative; width: 100%;
   height: clamp(7.5rem, 30vh, 18rem);

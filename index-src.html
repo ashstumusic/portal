@@ -218,7 +218,6 @@
 <a href="#main" class="skip">Skip to content</a>
 <header>
 <nav class="nav" aria-label="Main navigation">
-    <a href="index.html" class="nav-link">Home</a>
   <a href="#" class="nav-logo" aria-label="Ash Stu · home">
     <div class="hero-brand">
       <img width="330" height="330" src="Images/Icon.webp" alt="" class="hero-icon"/>
@@ -252,7 +251,6 @@
   </button>
 </nav>
 <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile menu" aria-hidden="true">
-    <a href="index.html" class="nav-link">Home</a>
   <div class="drawer-platforms">
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span></a>
@@ -470,7 +468,7 @@
   </div>
 </div>
 <nav aria-label="Page sections">
-    <a href="index.html" class="nav-link">Home</a><a href="#epk" class="hero-scroll" id="hero-scroll" aria-label="Scroll to next section" title="Next section"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></a></nav>
+    <a href="#epk" class="hero-scroll" id="hero-scroll" aria-label="Scroll to next section" title="Next section"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></a></nav>
 <button type="button" class="fab-music" id="fab-music" aria-label="Open music player" title="Open music player">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
 </button>
@@ -1173,9 +1171,10 @@ function fitFsArt() {
  }
  var c = _fsContentEl;
  wrap.style.display = '';
- // Lyrics mode (Apple Music style): the cover is a fixed small thumbnail
- // and the lyrics panel takes the rest of the height (CSS: .lyrics-on).
- if (c.classList.contains('lyrics-on')) { wrap.style.width = '64px'; return; }
+ // Lyrics mode: the cover stays FULL size (up to 340px, never shrunk to a
+ // thumbnail); the lyrics panel sits below the controls and the player
+ // scrolls down to it (CSS: .lyrics-on).
+ if (c.classList.contains('lyrics-on')) { wrap.style.width = Math.min(c.clientWidth, 340) + 'px'; return; }
  // Start from full size every time: measuring the current (possibly
  // shrunken) size could only ever shrink the art, never grow it back.
  wrap.style.width = Math.min(c.clientWidth, 340) + 'px';
