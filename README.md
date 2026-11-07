@@ -38,7 +38,7 @@ npm start                       # → http://localhost:3000  (redesign: /redesig
 
 Each song's lyrics are a standard `.lrc` file beside its MP3, one line per
 lyric with its start time, for example `[01:14.25]A line of the song`.
-The current *The Tragedy of the Gifted Child, Vol. 2* timings were matched to the recordings
+The current *Ash Stu, Vol. II* timings were matched to the recordings
 automatically; if a line highlights too early or late, change its
 timestamp (any LRC editor works, or a text editor), then run
 `python3 scripts/generate_content.py` to rebuild `lyrics.json` (or just push: the GitHub Action rebuilds it).
