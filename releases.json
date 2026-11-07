@@ -1,5 +1,77 @@
 [
   {
+    "name": "My Anima",
+    "type": "Album",
+    "art": "Images/Releases/My Anima.webp",
+    "apple": null,
+    "spotify": null,
+    "tracks": [
+      {
+        "title": "Still Sad",
+        "file": "Audio/My Anima/04. Still Sad.mp3"
+      },
+      {
+        "title": "Worship Song",
+        "file": "Audio/My Anima/06. Worship Song.mp3"
+      },
+      {
+        "title": "You Are What You Love",
+        "file": "Audio/My Anima/08. You Are What You Love.mp3"
+      },
+      {
+        "title": "Somewhere, Sometime (2026 Version)",
+        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3"
+      }
+    ],
+    "featured": false
+  },
+  {
+    "name": "Ash Stu, Vol. II",
+    "type": "Album",
+    "art": "Images/Releases/Ash Stu, Vol. II.webp",
+    "apple": "https://music.apple.com/us/album/only-a-baby-vol-2/6779983161",
+    "spotify": "https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P",
+    "tracks": [
+      {
+        "title": "Cool Cat Can't Comprehend",
+        "file": "Audio/Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3"
+      },
+      {
+        "title": "Dirge for Ducklings",
+        "file": "Audio/Ash Stu, Vol. II/02. Dirge for Ducklings.mp3"
+      },
+      {
+        "title": "Savior Complicated",
+        "file": "Audio/Ash Stu, Vol. II/03. Savior Complicated.mp3"
+      },
+      {
+        "title": "Annabel Lena",
+        "file": "Audio/Ash Stu, Vol. II/04. Annabel Lena.mp3"
+      },
+      {
+        "title": "Summertime Even on the Moon",
+        "file": "Audio/Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3"
+      },
+      {
+        "title": "Performatives Anonymous",
+        "file": "Audio/Ash Stu, Vol. II/06. Performatives Anonymous.mp3"
+      },
+      {
+        "title": "Theory of Hope",
+        "file": "Audio/Ash Stu, Vol. II/07. Theory of Hope.mp3"
+      },
+      {
+        "title": "Peacekeepers",
+        "file": "Audio/Ash Stu, Vol. II/08. Peacekeepers.mp3"
+      },
+      {
+        "title": "The Wandering Jerk",
+        "file": "Audio/Ash Stu, Vol. II/09. The Wandering Jerk.mp3"
+      }
+    ],
+    "featured": true
+  },
+  {
     "name": "Ash Stu, Vol. 1",
     "type": "Album",
     "art": "Images/Releases/Ash Stu, Vol. 1.webp",
@@ -78,77 +150,8 @@
         "title": "Anybody Still Awake?",
         "file": "Audio/Ash Stu, Vol. 1/18. Anybody Still Awake?.mp3"
       }
-    ]
-  },
-  {
-    "name": "My Anima",
-    "type": "Album",
-    "art": "Images/Releases/My Anima.webp",
-    "apple": null,
-    "spotify": null,
-    "tracks": [
-      {
-        "title": "Still Sad",
-        "file": "Audio/My Anima/04. Still Sad.mp3"
-      },
-      {
-        "title": "Worship Song",
-        "file": "Audio/My Anima/06. Worship Song.mp3"
-      },
-      {
-        "title": "You Are What You Love",
-        "file": "Audio/My Anima/08. You Are What You Love.mp3"
-      },
-      {
-        "title": "Somewhere, Sometime (2026 Version)",
-        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3"
-      }
-    ]
-  },
-  {
-    "name": "Ash Stu, Vol. II",
-    "type": "Album",
-    "art": "Images/Releases/Ash Stu, Vol. II.webp",
-    "apple": "https://music.apple.com/us/album/only-a-baby-vol-2/6779983161",
-    "spotify": "https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P",
-    "tracks": [
-      {
-        "title": "Cool Cat Can't Comprehend",
-        "file": "Audio/Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3"
-      },
-      {
-        "title": "Dirge for Ducklings",
-        "file": "Audio/Ash Stu, Vol. II/02. Dirge for Ducklings.mp3"
-      },
-      {
-        "title": "Savior Complicated",
-        "file": "Audio/Ash Stu, Vol. II/03. Savior Complicated.mp3"
-      },
-      {
-        "title": "Annabel Lena",
-        "file": "Audio/Ash Stu, Vol. II/04. Annabel Lena.mp3"
-      },
-      {
-        "title": "Summertime Even on the Moon",
-        "file": "Audio/Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3"
-      },
-      {
-        "title": "Performatives Anonymous",
-        "file": "Audio/Ash Stu, Vol. II/06. Performatives Anonymous.mp3"
-      },
-      {
-        "title": "Theory of Hope",
-        "file": "Audio/Ash Stu, Vol. II/07. Theory of Hope.mp3"
-      },
-      {
-        "title": "Peacekeepers",
-        "file": "Audio/Ash Stu, Vol. II/08. Peacekeepers.mp3"
-      },
-      {
-        "title": "The Wandering Jerk",
-        "file": "Audio/Ash Stu, Vol. II/09. The Wandering Jerk.mp3"
-      }
-    ]
+    ],
+    "featured": false
   },
   {
     "name": "Waste My Time",
@@ -161,6 +164,7 @@
         "title": "Waste My Time",
         "file": "Audio/Waste My Time/01. Waste My Time.mp3"
       }
-    ]
+    ],
+    "featured": false
   }
 ]
