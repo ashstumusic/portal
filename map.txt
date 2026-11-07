@@ -39,8 +39,9 @@
   * `01. Waste My Time.mp3`
   * `links.txt`
 
-* `Drive Me Home` (Folder)
-  * `01. Drive Me Home.mp3`
+* `My Anima` (Folder)
+  * `04. Still Sad.mp3`, `06. Worship Song.mp3`, `08. You Are What You Love.mp3`, `10. Somewhere, Sometime (2026 Version).mp3` (+ `.lrc` synced lyrics)
+  * `lyrics.txt`
   * `links.txt`
 
 * `Only a Baby, Vol. 2` (Folder)
@@ -97,7 +98,7 @@
 * `Profile-7.jpg`
 * `Releases` (Folder)
   * `Waste My Time.png` / `.webp`
-  * `Drive Me Home.png` / `.webp`
+  * `My Anima.png` / `.webp`
   * `Only a Baby, Vol. 2.png` / `.webp`
 * `Piano Batch` (Folder)
   * `1.png` – `4.png` / `.webp`

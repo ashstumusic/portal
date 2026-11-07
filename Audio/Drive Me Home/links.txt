@@ -1,3 +1,0 @@
-apple: https://music.apple.com/us/album/drive-me-home-single/1888200397
-spotify: https://open.spotify.com/album/5wCuSFCPemL7sHXNtv6wRg
-date: 2026-03-25
