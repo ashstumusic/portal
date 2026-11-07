@@ -44,7 +44,7 @@
   * `lyrics.txt`
   * `links.txt`
 
-* `Only a Baby, Vol. 2` (Folder)
+* `The Tragedy of the Gifted Child, Vol. 2` (Folder)
   * `01. Cool Cat Can't Comprehend.mp3`
   * `02. Dirge for Ducklings.mp3`
   * `03. Savior Complicated.mp3`
@@ -99,7 +99,7 @@
 * `Releases` (Folder)
   * `Waste My Time.png` / `.webp`
   * `My Anima.png` / `.webp`
-  * `Only a Baby, Vol. 2.png` / `.webp`
+  * `The Tragedy of the Gifted Child, Vol. 2.png` / `.webp`
 * `Piano Batch` (Folder)
   * `1.png` – `4.png` / `.webp`
 * `embedded` (Folder, build-optimized copies)
