@@ -222,6 +222,24 @@ Rules:
   `role="button"` row, not inside it (no nested interactive controls), with
   `aria-expanded` and a song-specific name.
 
+### Homepage fixes (2026-11-06 compliance sweep)
+- **Focus rings everywhere**: the global `:focus { outline: none }` became
+  `:focus:not(:focus-visible)`, so keyboard focus always shows a ring (all
+  58 Tab stops verified). Cover buttons draw their ring *inside* the image
+  (gold over a teal band) because the card's rounded corners clip anything
+  outside.
+- **Full-screen player is keyboard-operable**: the bar's art/title area is
+  a real button ("Open full-screen player", Enter/Space). Opening moves
+  focus inside; the rest of the page becomes `inert` (true modal: Tab
+  can't reach content behind it, screen readers don't read it); Esc
+  closes and focus returns to the bar.
+- **Album name in the full-screen player**: contrast raised from 2.8:1 to
+  4.97:1.
+- **Video titles wrap** instead of truncating, so nothing is lost with
+  increased text spacing (WCAG 1.4.12).
+- **"Home" text links removed**: the logo link is the single home control,
+  labelled "Ash Stu · home".
+
 ## Testing checklist (run before every push)
 
 Automated (catches roughly half of issues):
@@ -252,7 +270,7 @@ Screen reader (not yet done on real NVDA/VoiceOver, see gaps):
 
 | Gap | Why it matters | What's needed |
 |---|---|---|
-| **Music videos have no captions** | WCAG 1.2.2: Deaf and hard-of-hearing visitors can't follow the lyrics | Caption files (WebVTT) for each video; YouTube's caption editor can export them. `lyrics.json` is currently empty. |
+| **Music videos have no captions** | WCAG 1.2.2: Deaf and hard-of-hearing visitors can't follow the lyrics | Caption files (WebVTT) per video, wired with `<track>`. The lyrics exist (the lyric archive) and can be time-aligned with the same pipeline used for the synced lyrics, pending the artist's OK to publish those songs' lyrics. |
 | No test on a real screen reader yet | The accessibility tree was checked by script, which can't judge the listening experience | Run step 10 with VoiceOver and NVDA |
 | No testing with disabled users | Co-creation catches problems no checklist does | Ask a few listeners who use assistive tech to try the page and say what's hard |
 | Real-device testing | Only desktop Chrome was tested | Check Safari (iOS/macOS) and Firefox |

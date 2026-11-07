@@ -372,7 +372,7 @@
     <div class="np-bar-track" id="np-bar-track"><div id="np-fill"></div><div class="seek-thumb" id="np-thumb"></div></div>
     <span id="np-dur" class="np-time">&middot;</span>
   </div>
-    <div class="np-left" id="np-expand">
+    <div class="np-left" id="np-expand" role="button" tabindex="0" aria-label="Open full-screen player">
       <div class="np-info">
       <span id="np-track" aria-live="polite">·</span>
       <span id="np-album" aria-hidden="true"></span>
@@ -1133,17 +1133,29 @@ fsLyrToggle.addEventListener('click', function() {
  fitFsArt();
  fsLyricsKick();
 });
+var _fsOpener = null, _fsInerted = [];
 function fsOpen() {
+ _fsOpener = document.activeElement;
  fsSync();
  fs.classList.add('open');
  fs.setAttribute('aria-hidden', 'false');
  fs.inert = false;
  npBar.inert = true; // can't keyboard-tab behind the maximized player
+ // Real modal: everything else on the page becomes inert too (not just
+ // the bar), so Tab can't wander behind the player and screen readers
+ // don't read the page underneath. Only elements we change are restored.
+ _fsInerted = [].filter.call(document.body.children, function(el) {
+   return el !== fs && !el.contains(fs) && !el.inert && el.getAttribute('aria-live') == null && el.tagName !== 'SCRIPT';
+ });
+ _fsInerted.forEach(function(el) { el.inert = true; });
  _fsOpen = true;
  // Pin the page: nothing behind the maximized player scrolls (wheel,
  // touch, or keys) until it's collapsed again.
  document.documentElement.classList.add('fs-locked');
  fitFsArt();
+ // Modal dialog: move focus inside so keyboard and screen-reader users
+ // land in the player, not on the (now inert) bar behind it.
+ setTimeout(function() { document.getElementById('fs-collapse').focus({ preventScroll: true }); }, 60);
 }
 function fsClose() {
  fs.classList.remove('open');
@@ -1154,8 +1166,13 @@ function fsClose() {
  // it out of the tab order and hides it from the accessibility tree.
  fs.inert = true;
  npBar.inert = false;
+ _fsInerted.forEach(function(el) { el.inert = false; });
+ _fsInerted = [];
  _fsOpen = false;
  document.documentElement.classList.remove('fs-locked');
+ // Return focus to whatever opened the player (the bar), not to <body>.
+ var back = (_fsOpener && _fsOpener.isConnected && !fs.contains(_fsOpener)) ? _fsOpener : document.getElementById('np-expand');
+ if (back) back.focus({ preventScroll: true });
 }
 // The maximized player must fit on one screen, never scrolling: shrink the
 // square art to whatever height the rest of the stack leaves over, and hide
@@ -1359,6 +1376,11 @@ npBar.addEventListener('click', function(e) {
 if (_swipeConsumed) { _swipeConsumed = false; return; }
 if (e.target.closest('button, input, a, .np-bar-track')) return;
 fsOpen();
+});
+// Keyboard: the art/title area is a real button (role, tabindex, label in
+// the markup), so Enter or Space opens the full-screen player too.
+document.getElementById('np-expand').addEventListener('keydown', function(e) {
+if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fsOpen(); }
 });
 document.getElementById('fs-collapse').addEventListener('click', fsClose);
 document.getElementById('fs-play').addEventListener('click', function() { npToggle(); fsSync(); });
