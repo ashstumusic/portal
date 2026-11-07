@@ -3338,3 +3338,11 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 /* Toolbar: Righteous (Google Fonts, sans) - a touch of 60s curve, still
    plainly readable; matches the release titles. */
 .nav-links a, .nav-drawer a { font-family: 'Release', var(--plain-sans); font-weight: normal; letter-spacing: .1em; }
+/* Release and video titles: Playfair Display bold - a newspaper-headline
+   serif (already self-hosted as 'Display'). */
+.rel-name, .featured-title, h3.vid-title, .vid-title {
+  font-family: 'Display', Georgia, 'Times New Roman', serif;
+  font-weight: 700; letter-spacing: -.005em;
+}
+.rel-name, .featured-title { line-height: 1.15; }
+.rel-name, .featured-title, h3.vid-title, .vid-title { font-variant-numeric: lining-nums; }   /* "Vol. 1" at full height */
