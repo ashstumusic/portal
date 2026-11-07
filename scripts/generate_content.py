@@ -119,9 +119,18 @@ def gen_releases():
             except ValueError:
                 print(f'  WARNING: "{name}" links.txt has an unparseable date '
                       f'"{links["date"]}" (want YYYY-MM-DD) - using file history instead', file=sys.stderr)
+        # links.txt "type: Album" (or EP / Single) overrides the track-count
+        # guess - e.g. an album with only some of its songs on the site.
+        rtype = classify_release(len(tracks))
+        if links.get('type'):
+            t = links['type'].strip().lower()
+            if t in ('album', 'ep', 'single'):
+                rtype = {'album': 'Album', 'ep': 'EP', 'single': 'Single'}[t]
+            else:
+                print(f'  WARNING: "{name}" links.txt type "{links["type"]}" is not Album, EP or Single - ignoring', file=sys.stderr)
         releases.append({
             'name': name,
-            'type': classify_release(len(tracks)),
+            'type': rtype,
             'art': art,
             'apple': links.get('apple'),
             'spotify': links.get('spotify'),
