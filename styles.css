@@ -3295,7 +3295,7 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 .vid-yt { font-size: .64rem; letter-spacing: .1em; }
 .btn-epk { font-size: .76rem; letter-spacing: .18em; }
 .np-time, .fs-times, .fs-times * { font-variant-numeric: tabular-nums; }
-/* Long release titles ("The Tragedy of the Gifted Child, Vol. 2") wrap
+/* Long release titles (e.g. "The Tragedy of the Gifted Child, Vol. 1") wrap
    onto balanced lines instead of running out of the hero panel or card. */
 .featured-title, .hero-split-right .featured-title { white-space: normal; text-wrap: balance; line-height: 1.15; max-width: 100%; }
 .rel-name { white-space: normal; text-wrap: balance; line-height: 1.2; }
@@ -3306,3 +3306,17 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 }
 .rel-name, .featured-title { font-weight: 700; letter-spacing: -.015em; }
 .rel-cat, .featured-kicker { font-weight: 700; letter-spacing: .14em; }
+
+/* Body copy in a standard sans ("Songs and photos for booking and press.",
+   the contact intro, footer, tracklists, forms...). The psychedelic face
+   stays on the display pieces only: section headings, toolbar links, the
+   Latest Release badge, video titles and the wordmark. */
+:root { --sans: var(--plain-sans); --body: var(--plain-sans); }
+body, button, input, select, textarea { font-family: var(--plain-sans); }
+.section-h, .nav-links a, .nav-drawer a, .featured-badge, .vid-title { font-family: var(--psy); }
+.epk-text, .contact-intro { font-size: 1rem; line-height: 1.7; }
+/* About heading matches the other section headings (the About body copy
+   keeps its original faces). */
+.bio-section .section-h { font-family: var(--psy); font-weight: normal; letter-spacing: .01em; }
+/* Video titles match the release titles: plain bold sans. */
+h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; letter-spacing: -.01em; }
