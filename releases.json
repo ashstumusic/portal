@@ -81,5 +81,86 @@
         "file": "Audio/Waste My Time/01. Waste My Time.mp3"
       }
     ]
+  },
+  {
+    "name": "The Tragedy of the Gifted Child, Vol. 1",
+    "type": "Album",
+    "art": "Images/Releases/The Tragedy of the Gifted Child, Vol. 1.webp",
+    "apple": "https://music.apple.com/us/album/only-a-baby-vol-1/1879176371",
+    "spotify": "https://open.spotify.com/album/7C9HCW6rKsXW2zXFR7QPf1",
+    "tracks": [
+      {
+        "title": "the cosmos is alive",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/01. the cosmos is alive.mp3"
+      },
+      {
+        "title": "there used to be a brighter boy",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/02. there used to be a brighter boy.mp3"
+      },
+      {
+        "title": "somewhere sometime",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/03. somewhere sometime.mp3"
+      },
+      {
+        "title": "am soda",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/04. am soda.mp3"
+      },
+      {
+        "title": "the one who stuns the birds",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/05. the one who stuns the birds.mp3"
+      },
+      {
+        "title": "the raven",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/06. the raven.mp3"
+      },
+      {
+        "title": "vcr",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/07. vcr.mp3"
+      },
+      {
+        "title": "the cloud for the desert",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/08. the cloud for the desert.mp3"
+      },
+      {
+        "title": "pretend",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/09. pretend.mp3"
+      },
+      {
+        "title": "sonnet for my delusion",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/10. sonnet for my delusion.mp3"
+      },
+      {
+        "title": "pick up the phone",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/11. pick up the phone.mp3"
+      },
+      {
+        "title": "the outdoor plant",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/12. the outdoor plant.mp3"
+      },
+      {
+        "title": "why have eyes",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/13. why have eyes.mp3"
+      },
+      {
+        "title": "unanswerable questions",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/14. unanswerable questions.mp3"
+      },
+      {
+        "title": "a grief preserved",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/15. a grief preserved.mp3"
+      },
+      {
+        "title": "future lives",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/16. future lives.mp3"
+      },
+      {
+        "title": "don't wish your life away",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/17. don't wish your life away.mp3"
+      },
+      {
+        "title": "anybody still awake?",
+        "file": "Audio/The Tragedy of the Gifted Child, Vol. 1/18. anybody still awake?.mp3"
+      }
+    ]
   }
 ]

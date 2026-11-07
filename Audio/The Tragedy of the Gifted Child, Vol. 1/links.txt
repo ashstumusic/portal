@@ -1,0 +1,3 @@
+apple: https://music.apple.com/us/album/only-a-baby-vol-1/1879176371
+spotify: https://open.spotify.com/album/7C9HCW6rKsXW2zXFR7QPf1
+date: 2025-01-03
