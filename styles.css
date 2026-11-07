@@ -195,7 +195,7 @@ html {
 }
 .skip:focus { top: 1rem; }
 ::selection { background: rgba(8,76,97,.15); background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
-:focus { outline: none; }
+:focus:not(:focus-visible) { outline: none; }   /* hide rings only for mouse/touch focus; keyboard focus always shows one */
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
 
 /* ════════════════════════════════════════════
@@ -1060,6 +1060,11 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .vid-card { cursor: pointer; }
 .vid-card:focus-visible { box-shadow: var(--focus); outline: none; }
 .rel-card:focus-visible { box-shadow: var(--focus); outline: none; }
+/* The cover is the card's play button. Its ring sits INSIDE the image (the
+   card's rounded corners clip anything outside): gold over a teal band so
+   it's visible on light and dark artwork alike. */
+.rel-art-wrap:focus-visible { outline: 3px solid var(--gold); outline-offset: -7px; box-shadow: inset 0 0 0 4px #084C61; }
+#np-expand:focus-visible { outline: 2px solid var(--player-ink); outline-offset: 2px; border-radius: 6px; }
 .vid-thumb {
   position: relative; width: 100%; padding-top: 56.25%;
   background: var(--ink); overflow: hidden;
@@ -1093,7 +1098,7 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   gap: .75rem; padding: .75rem 1rem;
   border-top: 1px solid var(--hairline);
 }
-.vid-title { font-family: var(--grit); font-style: normal; font-size: 1.15rem; font-weight: 600; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.01em; }
+.vid-title { font-family: var(--grit); font-style: normal; font-size: 1.15rem; font-weight: 600; color: var(--ink); flex: 1; min-width: 0; overflow-wrap: anywhere; letter-spacing: -.01em; }   /* wraps instead of truncating: no text lost with larger spacing (WCAG 1.4.12) */
 .vid-yt {
   position: relative; overflow: hidden;
   display: inline-flex; align-items: center; gap: .3rem;
@@ -2591,7 +2596,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 }
 .fs-album {
   display: block; font-size: .7rem; letter-spacing: .08em;
-  color: rgba(8,76,97,.6);
+  color: rgba(8,76,97,.9);   /* was .6 (2.8:1 on the gold player); .9 = 4.97:1, AA */
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   margin-top: .35rem;
   transition: opacity .2s var(--ease);
