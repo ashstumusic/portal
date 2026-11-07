@@ -181,18 +181,6 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
    caused layout shift (CLS 0.058 on Night Radio). */
 @keyframes k-arrive { from { translate: 0 .6rem; } to { translate: 0 0; } }
 
-/* ── CUSTOM CURSOR LENS (pointer devices only; native cursor stays) ──── */
-.k-lens {
-  position: fixed; left: 0; top: 0; z-index: 9000; pointer-events: none;
-  width: 4.5rem; height: 4.5rem; margin: -2.25rem 0 0 -2.25rem; border-radius: 50%;
-  display: grid; place-items: center;
-  background: var(--k-glow); color: #111;
-  font: 700 .72rem/1 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
-  opacity: 0; scale: .3; transition: opacity .2s ease, scale .45s var(--k-spring-settle);
-  will-change: transform;
-}
-.k-lens.k-on { opacity: .94; scale: 1; }
-
 /* ── GRAIN (banding mitigation) ─────────────────────────────────────── */
 .k-grain {
   position: fixed; inset: 0; z-index: 8000; pointer-events: none; opacity: .035;
@@ -341,7 +329,6 @@ img.k-blurup { background-size: cover; background-position: center; }
 
 /* ── REDUCED MOTION: everything above stands still ───────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .k-lens { display: none !important; }
   .is-playing .on-air .lamp, .is-playing .stitch-dot { animation: none !important; }
   .k-magnet { translate: none !important; }
   .rel-card:hover, .vid-card:hover, .book-card:hover, .new-record:hover { transform: none !important; }
@@ -350,6 +337,6 @@ img.k-blurup { background-size: cover; background-position: center; }
   ::view-transition-new(root) { animation: none !important; }
 }
 @media (forced-colors: active) {
-  .k-spot::after, .k-grain, .k-lens { display: none; }
+  .k-spot::after, .k-grain { display: none; }
   .k-opt[aria-selected="true"] { outline: 2px solid Highlight; }
 }

@@ -8,7 +8,6 @@
      palette    ⌘K / Ctrl+K command palette (ARIA combobox + listbox)
      magnets    spring-physics magnetic pull on primary buttons
      spotlight  cursor-tracked light across cards
-     lens       contextual cursor ("Play" / "Watch") over media
      links      direction-aware underlines, hover-intent prefetch
      misc       idle-fading scrollbars, grain overlay, announcements
 
@@ -124,25 +123,9 @@
     }, { passive: true });
   }
 
-  // ── CURSOR LENS ───────────────────────────────────────────────────
-  const LENS = [['a.video-link, .vid-card', 'Watch'], ['.featured-play-overlay, .rel-play-circle, .rel-art-wrap', 'Play']];
-  let lens = null, lensOn = false;
-  const L = { x: -100, y: -100, vx: 0, vy: 0 };
-  if (finePointer) {
-    lens = doc.createElement('div');
-    lens.className = 'k-lens';
-    lens.setAttribute('aria-hidden', 'true');
-    doc.body.append(lens);
-    doc.addEventListener('pointerover', (e) => {
-      let label = null;
-      for (const [sel, text] of LENS) if (e.target.closest?.(sel)) { label = text; break; }
-      if (e.target.closest?.('[data-k-lens]')) label = e.target.closest('[data-k-lens]').dataset.kLens;
-      lensOn = !!label && motionOK();
-      if (label && lens.textContent !== label) lens.textContent = label;
-      lens.classList.toggle('k-on', lensOn);
-      if (lensOn && L.x < 0) { L.x = ptr.x; L.y = ptr.y; }
-    }, { passive: true });
-  }
+  // (A cursor-following "Play / Watch" lens used to live here. Removed: a
+  // circle chasing the pointer over the content was disorienting, and the
+  // covers and videos already show their own play buttons.)
 
   // ── DIRECTION-AWARE UNDERLINES ───────────────────────────────────
   doc.addEventListener('pointerover', (e) => {
@@ -159,11 +142,15 @@
   }, { passive: true });
 
   // ── MAIN LOOP (runs only while something is moving) ──────────────
-  let raf = 0;
+  let raf = 0, lastT = 0;
   function kick() { if (!raf) raf = requestAnimationFrame(frame); }
-  function frame() {
+  function frame(now) {
     raf = 0;
     let moving = false;
+    // Real elapsed time (capped), so springs behave the same at 60, 120 or
+    // 144 Hz. A fixed 1/60 s step ran them twice as fast on 120 Hz screens.
+    const dt = Math.min(1 / 30, Math.max(1 / 240, lastT ? (now - lastT) / 1000 : 1 / 60));
+    lastT = now;
     // READ
     const y = scrollY, dy = y - lastY;
     for (const m of magnets) if (m.el.isConnected) m.rect = m.el.getBoundingClientRect();
@@ -183,7 +170,6 @@
       const near = ptr.active && motionOK() && Math.abs(dx) < reach && Math.abs(dyp) < reach;
       m.tx = near ? Math.max(-6, Math.min(6, dx * 0.18)) : 0;
       m.ty = near ? Math.max(-6, Math.min(6, dyp * 0.18)) : 0;
-      const dt = 1 / 60;
       m.vx += ((m.tx - m.x) * 240 - m.vx * 17) * dt; m.x += m.vx * dt;
       m.vy += ((m.ty - m.y) * 240 - m.vy * 17) * dt; m.y += m.vy * dt;
       if (Math.abs(m.x - m.tx) > 0.05 || Math.abs(m.vx) > 0.05 || Math.abs(m.y - m.ty) > 0.05 || Math.abs(m.vy) > 0.05) moving = true;
@@ -195,13 +181,6 @@
       litCard.style.setProperty('--mx', `${(ptr.x - litRect.left).toFixed(0)}px`);
       litCard.style.setProperty('--my', `${(ptr.y - litRect.top).toFixed(0)}px`);
       litRect = null;   // re-measure next frame (cards can scroll)
-    }
-    if (lens && lensOn) {
-      const dt = 1 / 60;
-      L.vx += ((ptr.x - L.x) * 520 - L.vx * 34) * dt; L.x += L.vx * dt;   // critically-damped-ish follow
-      L.vy += ((ptr.y - L.y) * 520 - L.vy * 34) * dt; L.y += L.vy * dt;
-      lens.style.transform = `translate3d(${L.x.toFixed(1)}px, ${L.y.toFixed(1)}px, 0)`;
-      if (Math.abs(ptr.x - L.x) > 0.2 || Math.abs(ptr.y - L.y) > 0.2) moving = true;
     }
     if (moving) kick();
   }
