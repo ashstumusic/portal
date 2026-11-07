@@ -1,5 +1,30 @@
 [
   {
+    "name": "My Anima",
+    "type": "Album",
+    "art": "Images/Releases/My Anima.webp",
+    "apple": null,
+    "spotify": null,
+    "tracks": [
+      {
+        "title": "Still Sad",
+        "file": "Audio/My Anima/04. Still Sad.mp3"
+      },
+      {
+        "title": "Worship Song",
+        "file": "Audio/My Anima/06. Worship Song.mp3"
+      },
+      {
+        "title": "You Are What You Love",
+        "file": "Audio/My Anima/08. You Are What You Love.mp3"
+      },
+      {
+        "title": "Somewhere, Sometime (2026 Version)",
+        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3"
+      }
+    ]
+  },
+  {
     "name": "Only a Baby, Vol. 2",
     "type": "Album",
     "art": "Images/Releases/Only a Baby, Vol. 2.webp",
