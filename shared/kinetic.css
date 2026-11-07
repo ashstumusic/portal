@@ -252,15 +252,34 @@ img.k-blurup { background-size: cover; background-position: center; }
 }
 
 /* ── TOOL BUTTONS (search + theme) ───────────────────────────────────── */
-.k-tools { display: none; align-items: center; gap: .4rem; }
+/* Spaced from neighbouring links/icons by a margin and a thin divider, and
+   from each other by a wider gap. A solid border in the header's own text
+   colour (same contrast as its links, in every theme) plus a light tinted
+   fill makes them read as controls rather than decoration. */
+.k-tools { display: none; align-items: center; gap: .75rem; margin-left: 1.25rem; padding-left: 1.25rem; position: relative; }
+.k-tools::before {
+  content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 1.75rem; translate: 0 -50%;
+  background: color-mix(in srgb, currentColor 35%, transparent);
+}
 .js .k-tools { display: inline-flex; }
+/* Homepage nav: draw the buttons in the same near-white as its links (the
+   nav's own text colour is the gold-surface teal, invisible on the teal bar). */
+.nav .k-tools { color: rgb(240 245 246 / .92); color: rgb(from var(--paper) r g b / .92); }
 .k-tool {
   display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0;
-  border: 2px solid color-mix(in srgb, currentColor 55%, transparent); border-radius: 50%;
-  background: transparent; color: inherit; cursor: pointer;
+  border: 2px solid currentColor; border-radius: 50%;
+  background: color-mix(in srgb, currentColor 12%, transparent); color: inherit; cursor: pointer;
 }
-.k-tool:hover { border-color: currentColor; }
-.k-tool svg { width: 1.15rem; height: 1.15rem; }
+.k-tool:hover { background: color-mix(in srgb, currentColor 22%, transparent); translate: 0 -1px; }
+.k-tool svg { width: 1.3rem; height: 1.3rem; }
+@media (max-width: 34rem) {
+  .k-tools { margin-left: .5rem; padding-left: .75rem; gap: .5rem; }   /* phones: tighter, still clearly separate */
+  /* Where the menu wraps to its own full-width row (Night Radio's tuner),
+     keep the buttons up on the first row, right-aligned beside the brand. */
+  .masthead > .k-tools { order: 2; margin-left: auto; padding-left: 0; }
+  .masthead > .k-tools::before { display: none; }
+  .masthead > .tuner { order: 3; }
+}
 .k-theme-dark { display: none; }
 :root[data-theme="dark"] .k-theme-dark { display: block; }
 :root[data-theme="dark"] .k-theme-light { display: none; }

@@ -855,10 +855,18 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   gap: var(--gap);
   contain: layout style;
 }
+/* Card width is set by the lyrics: the widest lyric line in the catalog
+   is about 31.9em at the tracklist lyrics size (.72rem), i.e. ~23rem, plus
+   the panel's 3.15rem horizontal padding, so 27rem fits every line on one
+   line with a little slack. In rem so it still fits at larger text sizes.
+   Narrower than 27rem available (phones): the card fills the width and
+   only the longest lines wrap. Re-check if longer lyrics are added. */
 .releases-grid > * {
-  flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  flex: 0 0 min(100%, 27rem);
   min-width: 0;
 }
+/* Room for three 27rem cards side by side on wide screens. */
+.releases-section .section-inner { max-width: min(86rem, 100%); }
 .rel-card {
   container-type: inline-size;
   /* Raised a half-step above stage black, like gear cases at the lip of the
