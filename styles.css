@@ -3038,7 +3038,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    FEATURED "PARTY" PANEL - latest release in the hero
    Aurora light + dot grid behind, a cover that leans toward the pointer
    with a glare, a record that slides out and spins while the album plays,
-   a spinning "out now" sticker, a live-dot badge with a shimmer, a
+   a live-dot badge with a shimmer, a
    now-playing chip, and a confetti pop on play (see index-src.html).
    Decorative layers are aria-hidden; reduced motion keeps it all still;
    .party-off (panel off screen) pauses every loop.
@@ -3139,18 +3139,6 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   #party.is-playing .party-vinyl { transform: translateX(18%); }
 }
 
-/* Spinning sticker on the sleeve's top-right corner. */
-.party-sticker {
-  position: absolute; z-index: 4; top: -7%; right: -7%; width: 26%; min-width: 64px; max-width: 104px;
-  pointer-events: none; overflow: visible;
-  filter: drop-shadow(0 4px 10px rgb(0 0 0 / .3));
-  animation: partySpin 14s linear infinite;
-  transform: translateZ(40px);
-}
-.party-sticker circle { fill: var(--gold, #F7C549); }
-.party-sticker text { font: 800 10.5px/1 var(--sans, system-ui), sans-serif; letter-spacing: .9px; fill: #084C61; }
-.party-sticker-star { fill: #DF2B2C; }
-#party.is-soon .party-sticker { display: none; }
 
 /* Now-playing chip on the sleeve. */
 .party-eq {
@@ -3174,7 +3162,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    still slides out to show what's playing, without spinning). */
 #party.party-off *, #party.party-off *::before, #party.party-off *::after { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
-  .party-aurora, .featured-badge::after, .party-dot, .party-sticker, .party-vinyl-label, .party-eq i { animation: none !important; }
+  .party-aurora, .featured-badge::after, .party-dot, .party-vinyl-label, .party-eq i { animation: none !important; }
   .party-vinyl, .featured-art-hero { transition: none !important; }
 }
 /* Player bar album line: solid ink (the 85% tint fell to 4.33:1 when the
@@ -3280,3 +3268,34 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 /* Boiled Pasta runs wider than the old italic serif: re-fit the hand-set
    lines to the column (desktop; phones reflow as one paragraph). */
 @media (min-width: 641px) { .disc-quote { font-size: clamp(.57rem, 2.7cqi, 3.4rem); } }
+
+/* ── Readable exceptions to the psychedelic type ─────────────────────────
+   The Guthrie quote goes back to its italic serif, lyrics read in a plain
+   sans, and the About section keeps its original faces. */
+:root { --plain-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+.disc-quote { font-family: 'Body', Georgia, serif; font-style: italic; }
+.disc-quote cite { font-family: var(--plain-sans); font-style: normal; letter-spacing: .12em; }
+@media (min-width: 641px) { .disc-quote { font-size: clamp(.57rem, 3.28cqi, 4.15rem); } }
+.rel-lyrics-inner, .fs-lyric button, .fs-lyrics, .fs-lyrics-list { font-family: var(--plain-sans); }
+.bio-section .section-h { font-family: var(--plain-sans); font-weight: 700; letter-spacing: -.01em; }
+.bio-desc, .bio-text { font-family: var(--plain-sans); }
+.bio-tagline { font-family: 'Figment', 'Logo', cursive; transform: rotate(-1.4deg); }
+/* Toolbar labels: bigger (was .78rem). Tighter tracking keeps the row
+   within the bar at the narrow end of the desktop layout. */
+.nav-links a { font-size: 1rem; letter-spacing: .07em; }
+@media (min-width: 768px) and (max-width: 900px) { .nav-links a { font-size: .86rem; letter-spacing: .05em; padding: .25rem .45rem; } }
+/* Link buttons (streaming, YouTube, email, press-kit download, status
+   pills) and the music player (bar + full screen) in the plain sans:
+   these are controls and readouts, so legibility wins. */
+.f-btn, .rel-btn, .rel-btn.rel-btn--label, .vid-yt, .contact-email-link, .btn-epk, .btn-epk-dl,
+#player-bar, #player-bar *, .fs-player, .fs-player *, .party-eq {
+  font-family: var(--plain-sans);
+}
+.f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .7rem; letter-spacing: .1em; font-weight: 600; }
+.vid-yt { font-size: .64rem; letter-spacing: .1em; }
+.btn-epk { font-size: .76rem; letter-spacing: .18em; }
+.np-time, .fs-times, .fs-times * { font-variant-numeric: tabular-nums; }
+/* Long release titles ("The Tragedy of the Gifted Child, Vol. 2") wrap
+   onto balanced lines instead of running out of the hero panel or card. */
+.featured-title, .hero-split-right .featured-title { white-space: normal; text-wrap: balance; line-height: 1.15; max-width: 100%; }
+.rel-name { white-space: normal; text-wrap: balance; line-height: 1.2; }
