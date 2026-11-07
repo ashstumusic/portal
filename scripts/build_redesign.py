@@ -258,6 +258,10 @@ def videos_summary():
             'each also published on YouTube.</p>')
 
 
+def cap_attr(v):
+    return f' data-captions="{rel_url(v["captions"])}"' if v.get('captions') else ''
+
+
 def video_cards():
     items = []
     for vi, v in enumerate(videos):
@@ -265,7 +269,7 @@ def video_cards():
                 if v['date'] else '')
         yt = f' · <a class="video-yt-link" href="{esc(v["youtube"])}">Watch “{esc(v["title"])}” on YouTube</a>' if v.get('youtube') else ''
         items.append(f'''<li><article class="video" id="{v['slug']}" aria-labelledby="{v['slug']}-title">
-        <a class="video-link" href="{rel_url(v['file'])}" data-video="{vi}" aria-label="Play the music video for {esc(v['title'])} ({words_dur(v['seconds'])})">
+        <a class="video-link" href="{rel_url(v['file'])}" data-video="{vi}"{cap_attr(v)} aria-label="Play the music video for {esc(v['title'])} ({words_dur(v['seconds'])})">
           <img src="{rel_url(v['thumb'])}" alt="{esc(alt_for(v['thumb']))}" width="640" height="360" loading="lazy">
           <span class="video-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>Play</span>
         </a>
