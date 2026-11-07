@@ -277,10 +277,16 @@
       </div>
     </div>
   </div>
-  <div class="hero-split-right">
+  <div class="hero-split-right" id="party">
+    <div class="party-aurora" aria-hidden="true"></div>
+    <div class="party-grid" aria-hidden="true"></div>
     <canvas class="confetti-canvas" id="confetti-canvas"></canvas>
-    <span class="featured-badge" id="featured-badge"><span aria-hidden="true">★</span> Latest Release</span>
+    <span class="featured-badge" id="featured-badge"><span class="party-dot" aria-hidden="true"></span> Latest Release</span>
     <div class="featured-art-wrap featured-art-hero">
+      <div class="party-vinyl" aria-hidden="true"><span class="party-vinyl-label" style="background-image:url('Images/embedded/featured-only-a-baby-vol-2.webp')"></span></div>
+      <svg class="party-sticker" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="party-ring" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0"/></defs><circle cx="50" cy="50" r="48"/><text><textPath href="#party-ring">OUT NOW ✦ OUT NOW ✦ OUT NOW ✦</textPath></text><path class="party-sticker-star" d="M50 38 L53.5 46.5 L62 50 L53.5 53.5 L50 62 L46.5 53.5 L38 50 L46.5 46.5 Z"/></svg>
+      <span class="party-eq" aria-hidden="true"><i></i><i></i><i></i><i></i> Now playing</span>
+      <span class="party-glare" aria-hidden="true"></span>
       <img src="Images/embedded/featured-only-a-baby-vol-2.webp" alt="Only a Baby, Vol. 2" class="featured-art featured-art-rounded" width="498" height="498" fetchpriority="high"/>
       <div class="featured-play-overlay" id="featured-play" role="button" tabindex="0" aria-label="Play Only a Baby, Vol. 2" title="Play Only a Baby, Vol. 2"><div class="rel-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></div></div>
     </div>
@@ -1479,6 +1485,11 @@ if (card) card.classList.add('now-playing');
 var fp = document.querySelector('#featured-play .rel-play-circle svg');
 if (fp) {
 var fpPlaying = pState.releaseIdx === 0 && !npAudio.paused;
+var party = document.getElementById('party');
+if (party) {
+if (fpPlaying && !party.classList.contains('is-playing') && window.partyBurst) window.partyBurst();
+party.classList.toggle('is-playing', fpPlaying);
+}
 fp.innerHTML = fpPlaying ? PAUSE : PLAY;
 fp.style.marginLeft = fpPlaying ? '0' : '3px';
 }
@@ -1711,6 +1722,8 @@ function renderFeatured(rel) {
 if (!rel) return;
 var img = document.querySelector('.featured-art-hero .featured-art');
 if (img) { img.src = rel.art; img.alt = rel.name; }
+var vl = document.querySelector('.party-vinyl-label');
+if (vl) vl.style.backgroundImage = 'url("' + encodeURI(rel.art) + '")';
 var play = document.getElementById('featured-play');
 if (play) { play.setAttribute('aria-label', 'Play ' + rel.name); play.setAttribute('title', 'Play ' + rel.name); }
 var kicker = document.querySelector('.featured-kicker');
@@ -1729,9 +1742,11 @@ btnsEl.innerHTML = h;
 var badgeEl = document.getElementById('featured-badge');
 if (badgeEl) {
 var hasLinks = !!(rel.apple || rel.spotify);
-badgeEl.innerHTML = hasLinks ? '<span aria-hidden="true">★</span> Latest Release' : 'Distributing Soon';
+badgeEl.innerHTML = hasLinks ? '<span class="party-dot" aria-hidden="true"></span> Latest Release' : 'Distributing Soon';
 // .soon flips the badge gold (announcement voice) vs red (release pop)
 badgeEl.classList.toggle('soon', !hasLinks);
+var partyEl = document.getElementById('party');
+if (partyEl) partyEl.classList.toggle('is-soon', !hasLinks);
 }
 }
 function readEmbedded(id) {
@@ -1948,6 +1963,18 @@ resize();
 let resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); }, { passive: true });
 for (let i = 0; i < COUNT; i++) pieces.push({ x: Math.random()*cw, y: Math.random()*ch, w: 3+Math.random()*4, h: 8+Math.random()*14, rot: Math.random()*TWO_PI, dx: (Math.random()-.5)*.5, dy: .5+Math.random()*1.2, dr: (Math.random()-.5)*3*DEG2RAD, wobble: Math.random()*TWO_PI, wobbleSpeed: .02+Math.random()*.03, flex: Math.random()*TWO_PI, flexSpeed: .03+Math.random()*.04, color: COLORS[Math.floor(Math.random()*COLORS.length)], opacity: .2+Math.random()*.35 });
+const bursts = [];
+window.partyBurst = function() {
+if (!running) return;
+const art = document.querySelector('.featured-art-hero'), pr = cvs.getBoundingClientRect();
+if (!art) return;
+const a = art.getBoundingClientRect(), ox = a.left + a.width / 2 - pr.left, oy = a.top + 4 - pr.top;   /* from the sleeve's top edge: the canvas sits behind the cover */
+const N = window.matchMedia('(min-width: 601px)').matches ? 90 : 50;
+for (let i = 0; i < N; i++) {
+const ang = -Math.PI / 2 + (Math.random() - .5) * Math.PI * .95, sp = 6 + Math.random() * 8;
+bursts.push({ x: ox + (Math.random() - .5) * a.width * .7, y: oy, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, w: 4 + Math.random() * 4, h: 7 + Math.random() * 9, rot: Math.random() * TWO_PI, dr: (Math.random() - .5) * 18 * DEG2RAD, flex: Math.random() * TWO_PI, color: COLORS[i % COLORS.length], life: 1, round: Math.random() < .3 });
+}
+};
 let running = false, lastT = null, rafId = null;
 function draw(t) {
 if (!running) { lastT = null; rafId = null; return; }
@@ -1969,6 +1996,19 @@ ctx.fillStyle = p.color;
 ctx.setTransform(sx * c, sx * s, -s, c, p.x, p.y);
 ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
 }
+for (let i = bursts.length - 1; i >= 0; i--) {
+const b = bursts[i];
+b.vy += .32 * dt; b.vx *= Math.pow(.985, dt); b.vy *= Math.pow(.985, dt);
+b.x += b.vx * dt; b.y += b.vy * dt; b.rot += b.dr * dt; b.flex += .12 * dt;
+b.life -= .008 * dt;
+if (b.life <= 0 || b.y > ch + 30) { bursts.splice(i, 1); continue; }
+const c = Math.cos(b.rot), s = Math.sin(b.rot), sx = .35 + Math.abs(Math.sin(b.flex)) * .65;
+ctx.globalAlpha = Math.min(1, b.life * 1.6);
+ctx.fillStyle = b.color;
+ctx.setTransform(sx * c, sx * s, -s, c, b.x, b.y);
+if (b.round) { ctx.beginPath(); ctx.arc(0, 0, b.w * .6, 0, TWO_PI); ctx.fill(); }
+else ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+}
 ctx.setTransform(1, 0, 0, 1, 0, 0);
 ctx.globalAlpha = 1;
 rafId = requestAnimationFrame(draw);
@@ -1978,6 +2018,36 @@ function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); raf
 start();
 if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
+})();
+(function() {
+/* Featured "party" panel: the cover leans toward the pointer on a spring
+   (real frame time), with a glare that tracks it. Fine pointers only, off
+   for reduced motion; animations pause while the panel is off screen. */
+var party = document.getElementById('party');
+if (!party) return;
+if ('IntersectionObserver' in window) new IntersectionObserver(function(e) { party.classList.toggle('party-off', !e[0].isIntersecting); }).observe(party);
+var art = party.querySelector('.featured-art-hero');
+if (!art || !matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+var tx = 0, ty = 0, x = 0, y = 0, vx = 0, vy = 0, raf = 0, last = 0;
+function step(t) {
+var dt = last ? Math.min(t - last, 50) / 1000 : 1 / 60; last = t;
+var k = 170, d = 16;
+vx += ((tx - x) * k - vx * d) * dt; vy += ((ty - y) * k - vy * d) * dt;
+x += vx * dt; y += vy * dt;
+art.style.setProperty('--rx', (-y * 9).toFixed(2) + 'deg');
+art.style.setProperty('--ry', (x * 11).toFixed(2) + 'deg');
+art.style.setProperty('--gx', (50 + x * 60).toFixed(1) + '%');
+art.style.setProperty('--gy', (50 + y * 60).toFixed(1) + '%');
+if (Math.abs(tx - x) + Math.abs(ty - y) + Math.abs(vx) + Math.abs(vy) > .002) raf = requestAnimationFrame(step); else { raf = 0; last = 0; }
+}
+function kick() { if (!raf) raf = requestAnimationFrame(step); }
+party.addEventListener('pointermove', function(e) {
+var r = art.getBoundingClientRect();
+tx = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (r.width / 2))) * .5;
+ty = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (r.height / 2))) * .5;
+art.classList.add('party-hot'); kick();
+});
+party.addEventListener('pointerleave', function() { tx = 0; ty = 0; art.classList.remove('party-hot'); kick(); });
 })();
 (function() {
 var WARHOL_BG = ['#FF0055','#00B8D9','#FFE600','#FF5400','#E7000B','#0055FF','#7FFF00','#9B5CFF','#00E5FF','#00C853','#FF0080','#FF9F00','#FFD500','#1E40FF','#00FF9D','#FF3D5A'];
