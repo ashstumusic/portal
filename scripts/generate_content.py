@@ -78,6 +78,13 @@ def find_thumb(name):
     return None
 
 
+def _int_or_none(v):
+    try:
+        return int(str(v).strip())
+    except (TypeError, ValueError):
+        return None
+
+
 def gen_releases():
     audio_dir = 'Audio'
     if not os.path.isdir(audio_dir):
@@ -137,16 +144,17 @@ def gen_releases():
             'tracks': tracks,
             '_sort': sort_val,
             '_lead': links.get('featured', 'yes').strip().lower() not in ('no', 'false', '0'),
+            '_order': _int_or_none(links.get('order')),
         })
-    releases.sort(key=lambda r: r['_sort'], reverse=True)
-    # The first release is the featured "Latest release". links.txt
-    # "featured: no" keeps a release out of that spot: the newest release
-    # that may lead moves to the front; everything else keeps date order.
-    lead = next((i for i, r in enumerate(releases) if r['_lead']), 0)
-    if lead:
-        releases.insert(0, releases.pop(lead))
+    # Discography order: links.txt "order: N" first (1 = top), then newest
+    # date first. The featured "Latest release" (r['featured']) is the first
+    # release in that order without "featured: no"; it no longer has to sit
+    # at the top of the list.
+    releases.sort(key=lambda r: (r['_order'] is None, r['_order'] or 0, -r['_sort']))
+    lead = next((r for r in releases if r['_lead']), releases[0] if releases else None)
     for r in releases:
-        del r['_sort'], r['_lead']
+        r['featured'] = r is lead
+        del r['_sort'], r['_lead'], r['_order']
     return releases
 
 

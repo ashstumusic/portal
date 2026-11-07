@@ -136,7 +136,8 @@ for r in releases:
     r['slug'] = slug(r['name'])
     extra = facts.get('release_extras', {}).get(r['name'], {})
     r['full_title'] = extra.get('full_title', r['name'])
-    r['featured'] = extra.get('featured_artists', [])
+    r['lead'] = r.get('featured') is True            # featured release flag from releases.json
+    r['featured'] = extra.get('featured_artists', [])  # (this key means featured artists from here on)
     for t in r['tracks']:
         t['seconds'] = seconds(t['file'])
     r['seconds'] = sum(t['seconds'] for t in r['tracks'])
@@ -155,7 +156,7 @@ with zipfile.ZipFile(PRESS_KIT) as z:
 kit_songs = sorted(os.path.splitext(os.path.basename(i.filename))[0] for i in kit_files if i.filename.lower().endswith('.mp3'))
 kit_images = sorted(os.path.basename(i.filename) for i in kit_files if not i.filename.lower().endswith('.mp3'))
 
-newest = releases[0]
+newest = next((r for r in releases if r.get('lead')), releases[0])   # the featured release
 profiles = ARTIST['profiles']
 
 
@@ -208,7 +209,7 @@ def discography_summary():
     singles = sum(1 for r in releases if r['type'] == 'Single')
     songs = sum(r['count'] for r in releases)
     return (f'<p class="section-lede">{len(releases)} releases ({albums} album{"s" if albums != 1 else ""}, '
-            f'{singles} single{"s" if singles != 1 else ""}), {songs} songs in total, featured release first. '
+            f'{singles} single{"s" if singles != 1 else ""}), {songs} songs in total. '
             'Select any song title to play it.</p>')
 
 
@@ -250,7 +251,7 @@ def records():
           </tbody>
         </table>
       </article></li>''')
-    return '<ol class="records" role="list" aria-label="Releases, featured release first">\n    ' + '\n    '.join(items) + '\n    </ol>'
+    return '<ol class="records" role="list" aria-label="Releases">\n    ' + '\n    '.join(items) + '\n    </ol>'
 
 
 def videos_summary():

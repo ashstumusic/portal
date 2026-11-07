@@ -188,7 +188,7 @@ def main():
 
     page = inject_container(page, 'releases-grid', 'releases-grid', releases_html)
     page = inject_container(page, 'video-grid', 'video-grid', videos_html)
-    page = inject_featured(page, releases[0] if releases else None)
+    page = inject_featured(page, next((r for r in releases if r.get('featured')), releases[0] if releases else None))
 
     # Embed the content JSON directly in the page so the runtime JS can
     # render instantly with zero fetches on first paint. The JS still
