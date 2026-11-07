@@ -163,6 +163,13 @@
     video.poster = $('img', link).currentSrc || $('img', link).src;
     videoError.hidden = true;
     video.hidden = false;
+    video.querySelectorAll('track').forEach(t => t.remove());
+    if (link.dataset.captions) {
+      // Lyric captions (WCAG 1.2.2), on by default; the player's CC menu turns them off.
+      const tr = Object.assign(document.createElement('track'),
+        { kind: 'captions', srclang: 'en', label: 'English', default: true, src: link.dataset.captions });
+      video.append(tr);
+    }
     video.src = link.href;
     if (!dialog.open) dialog.showModal();   // showModal() on an open dialog throws
     video.play().catch(() => {});

@@ -43,6 +43,16 @@ automatically; if a line highlights too early or late, change its
 timestamp (any LRC editor works, or a text editor), then run
 `python3 scripts/generate_content.py` to rebuild `lyrics.json` (or just push: the GitHub Action rebuilds it).
 
+### Video captions
+
+Each music video's captions are a WebVTT file in `Videos/Captions/` with the
+same name as the video (`VCR.mp4` → `Videos/Captions/VCR.vtt`). They're picked
+up automatically (`captions` in `videos.json`) and shown by default in every
+video player; viewers can switch them off with the player's CC button. The
+lyric text they were made from is in `Videos/Captions/lyrics.txt`. To fix a
+cue that's early or late, edit its `00:01:14.250 --> 00:01:17.900` line, then
+run `npm run build` and `npm run build:home`.
+
 ## Publishing
 
 Push to `main`. GitHub Pages publishes the repository as-is (it does not run

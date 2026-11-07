@@ -151,10 +151,12 @@ def gen_videos():
         if os.path.isfile(txt_path):
             with open(txt_path, encoding='utf-8') as fh:
                 youtube = fh.read().strip() or None
+        cap = os.path.join(video_dir, 'Captions', base + '.vtt')
         videos.append({
             'title': base,
             'file': path.replace(os.sep, '/'),
             'youtube': youtube,
+            'captions': cap.replace(os.sep, '/') if os.path.isfile(cap) else None,
             'thumb': find_thumb(base),
             '_sort': git_first_added_epoch(path),
         })

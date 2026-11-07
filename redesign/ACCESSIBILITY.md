@@ -270,7 +270,7 @@ Screen reader (not yet done on real NVDA/VoiceOver, see gaps):
 
 | Gap | Why it matters | What's needed |
 |---|---|---|
-| **Music videos have no captions** | WCAG 1.2.2: Deaf and hard-of-hearing visitors can't follow the lyrics | Caption files (WebVTT) per video, wired with `<track>`. The lyrics exist (the lyric archive) and can be time-aligned with the same pipeline used for the synced lyrics, pending the artist's OK to publish those songs' lyrics. |
 | No test on a real screen reader yet | The accessibility tree was checked by script, which can't judge the listening experience | Run step 10 with VoiceOver and NVDA |
 | No testing with disabled users | Co-creation catches problems no checklist does | Ask a few listeners who use assistive tech to try the page and say what's hard |
+| Caption timing is machine-made | Captions were time-aligned automatically (Demucs + MMS forced alignment, cross-checked with Whisper); a few cues in repeated choruses may sit a second early or late | Watch each video once with captions on and nudge any off cue in `Videos/Captions/*.vtt` |
 | Real-device testing | Only desktop Chrome was tested | Check Safari (iOS/macOS) and Firefox |
