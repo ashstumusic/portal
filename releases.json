@@ -72,83 +72,83 @@
     "featured": true
   },
   {
-    "name": "Ash Stu, Vol. 1",
+    "name": "Ash Stu, Vol. I",
     "type": "Album",
-    "art": "Images/Releases/Ash Stu, Vol. 1.webp",
+    "art": "Images/Releases/Ash Stu, Vol. I.webp",
     "apple": null,
     "spotify": "https://open.spotify.com/album/7C9HCW6rKsXW2zXFR7QPf1",
     "tracks": [
       {
         "title": "The Cosmos Is Alive",
-        "file": "Audio/Ash Stu, Vol. 1/01. The Cosmos Is Alive.mp3"
+        "file": "Audio/Ash Stu, Vol. I/01. The Cosmos Is Alive.mp3"
       },
       {
         "title": "There Used To Be a Brighter Boy",
-        "file": "Audio/Ash Stu, Vol. 1/02. There Used To Be a Brighter Boy.mp3"
+        "file": "Audio/Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3"
       },
       {
         "title": "Somewhere, Sometime",
-        "file": "Audio/Ash Stu, Vol. 1/03. Somewhere, Sometime.mp3"
+        "file": "Audio/Ash Stu, Vol. I/03. Somewhere, Sometime.mp3"
       },
       {
         "title": "AM Soda",
-        "file": "Audio/Ash Stu, Vol. 1/04. AM Soda.mp3"
+        "file": "Audio/Ash Stu, Vol. I/04. AM Soda.mp3"
       },
       {
         "title": "Who Stuns the Birds",
-        "file": "Audio/Ash Stu, Vol. 1/05. Who Stuns the Birds.mp3"
+        "file": "Audio/Ash Stu, Vol. I/05. Who Stuns the Birds.mp3"
       },
       {
         "title": "The Helpful Raven",
-        "file": "Audio/Ash Stu, Vol. 1/06. The Helpful Raven.mp3"
+        "file": "Audio/Ash Stu, Vol. I/06. The Helpful Raven.mp3"
       },
       {
         "title": "VCR",
-        "file": "Audio/Ash Stu, Vol. 1/07. VCR.mp3"
+        "file": "Audio/Ash Stu, Vol. I/07. VCR.mp3"
       },
       {
         "title": "Drive Me Home",
-        "file": "Audio/Ash Stu, Vol. 1/08. Drive Me Home.mp3"
+        "file": "Audio/Ash Stu, Vol. I/08. Drive Me Home.mp3"
       },
       {
         "title": "Pretend",
-        "file": "Audio/Ash Stu, Vol. 1/09. Pretend.mp3"
+        "file": "Audio/Ash Stu, Vol. I/09. Pretend.mp3"
       },
       {
         "title": "Relapse Sonnet",
-        "file": "Audio/Ash Stu, Vol. 1/10. Relapse Sonnet.mp3"
+        "file": "Audio/Ash Stu, Vol. I/10. Relapse Sonnet.mp3"
       },
       {
         "title": "Pick Up the Phone",
-        "file": "Audio/Ash Stu, Vol. 1/11. Pick Up the Phone.mp3"
+        "file": "Audio/Ash Stu, Vol. I/11. Pick Up the Phone.mp3"
       },
       {
         "title": "Outdoor Plant",
-        "file": "Audio/Ash Stu, Vol. 1/12. Outdoor Plant.mp3"
+        "file": "Audio/Ash Stu, Vol. I/12. Outdoor Plant.mp3"
       },
       {
         "title": "Why Have Eyes",
-        "file": "Audio/Ash Stu, Vol. 1/13. Why Have Eyes.mp3"
+        "file": "Audio/Ash Stu, Vol. I/13. Why Have Eyes.mp3"
       },
       {
         "title": "Unanswerable Questions",
-        "file": "Audio/Ash Stu, Vol. 1/14. Unanswerable Questions.mp3"
+        "file": "Audio/Ash Stu, Vol. I/14. Unanswerable Questions.mp3"
       },
       {
         "title": "A Grief Preserved",
-        "file": "Audio/Ash Stu, Vol. 1/15. A Grief Preserved.mp3"
+        "file": "Audio/Ash Stu, Vol. I/15. A Grief Preserved.mp3"
       },
       {
         "title": "Future Lives",
-        "file": "Audio/Ash Stu, Vol. 1/16. Future Lives.mp3"
+        "file": "Audio/Ash Stu, Vol. I/16. Future Lives.mp3"
       },
       {
         "title": "Don't Wish Your Life Away",
-        "file": "Audio/Ash Stu, Vol. 1/17. Don't Wish Your Life Away.mp3"
+        "file": "Audio/Ash Stu, Vol. I/17. Don't Wish Your Life Away.mp3"
       },
       {
         "title": "Anybody Still Awake?",
-        "file": "Audio/Ash Stu, Vol. 1/18. Anybody Still Awake?.mp3"
+        "file": "Audio/Ash Stu, Vol. I/18. Anybody Still Awake?.mp3"
       }
     ],
     "featured": false
