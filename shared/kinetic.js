@@ -85,7 +85,7 @@
   // to the pointer's distance from its center (capped), and back to 0
   // when the pointer leaves. Semi-implicit Euler, stiffness 240 /
   // damping 17 (slightly underdamped: a small, natural settle).
-  const MAGNET_SEL = '.btn-primary, .f-btn, .icon-btn-main, .fs-play, .featured-play-overlay .rel-play-circle, .video-play';
+  const MAGNET_SEL = '.btn-primary, .f-btn:not(:has(.pt)), .icon-btn-main, .fs-play, .featured-play-overlay .rel-play-circle, .video-play';
   const magnets = (finePointer ? $$(MAGNET_SEL) : []).map((el) => {
     el.classList.add('k-magnet');
     return { el, x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, rect: null, shown: '' };

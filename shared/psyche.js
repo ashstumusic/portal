@@ -153,19 +153,21 @@
   // blips, and the music run through a bit-crusher.
   // Five more taps (or the search palette entry) switch it back.
   const nes = (() => {
-    // A slice of the NES's 54-colour master palette.
-    const PAL = ['000000', 'fcfcfc', 'bcbcbc', '7c7c7c', '0000fc', '0078f8', '3cbcfc', 'a4e4fc', '940084', 'd800cc', 'f878f8',
-      'a81000', 'f83800', 'f87858', 'f8b800', 'fce0a8', 'ac7c00', '00b800', 'b8f818', '005800', '008888', '00e8d8', '503000', 'e45c10']
+    // The NES's master palette (the 54 distinct colours).
+    const PAL = ['7c7c7c', '0000fc', '0000bc', '4428bc', '940084', 'a80020', 'a81000', '881400', '503000', '007800', '006800', '005800', '004058', '000000',
+      'bcbcbc', '0078f8', '0058f8', '6844fc', 'd800cc', 'e40058', 'f83800', 'e45c10', 'ac7c00', '00b800', '00a800', '00a844', '008888',
+      'f8f8f8', '3cbcfc', '6888fc', '9878f8', 'f878f8', 'f85898', 'f87858', 'fca044', 'f8b800', 'b8f818', '58d854', '58f898', '00e8d8', '787878',
+      'fcfcfc', 'a4e4fc', 'b8b8f8', 'd8b8f8', 'f8b8f8', 'f8a4c0', 'f0d0b0', 'fce0a8', 'f8d878', 'd8f878', 'b8f8b8', 'b8f8d8', '00fcfc', 'd8d8d8']
       .map((h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]);
     const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-    let on = false, taps = [], actx = null, crushNode = null, worklet = null, imgObs = null;
+    let on = false, taps = [], actx = null, crushNode = null, worklet = null, imgObs = null, textObs = null, textT = 0;
     const routed = new Map();   // media element -> its MediaElementSource
 
     // ── pixel art: downscale, ordered-dither, snap to the palette ──
     function pixelate(img) {
       if (!img.complete || !img.naturalWidth || img.dataset.nesOut === img.currentSrc) return;
       if (img.closest('.k-palette')) return;
-      const LONG = img.classList.contains('hero-split-photo') ? 120 : 64;
+      const LONG = img.classList.contains('hero-split-photo') ? 160 : 96;   // pixel art, but still recognisable
       const k = LONG / Math.max(img.naturalWidth, img.naturalHeight);
       const w = Math.max(8, Math.round(img.naturalWidth * k)), h = Math.max(8, Math.round(img.naturalHeight * k));
       const c = doc.createElement('canvas'); c.width = w; c.height = h;
@@ -174,7 +176,7 @@
         x.drawImage(img, 0, 0, w, h);
         const d = x.getImageData(0, 0, w, h), px = d.data;
         for (let i = 0; i < px.length; i += 4) {
-          const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 48;
+          const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 28;
           const r = px[i] + t, g = px[i + 1] + t, b = px[i + 2] + t;
           let best = 0, bd = Infinity;
           for (let j = 0; j < PAL.length; j++) { const q = PAL[j], dd = (r - q[0]) ** 2 * 0.3 + (g - q[1]) ** 2 * 0.59 + (b - q[2]) ** 2 * 0.11; if (dd < bd) { bd = dd; best = j; } }
@@ -276,22 +278,40 @@
       else tone([[1760, 35]], 'square', 0.04);   // menu blip
     }, { passive: true, capture: true });
 
+    // Big text (22px+) gets the chunky mosaic; everything smaller keeps full
+    // resolution with hard pixel edges, so it all stays readable.
+    function tagText() {
+      for (const el of $$('body *:not(script):not(style):not(svg *)')) {
+        if (el.dataset.nesText || el.closest('#nes-svg')) continue;
+        const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.nodeValue.trim());
+        if (!hasText) continue;
+        el.dataset.nesText = parseFloat(getComputedStyle(el).fontSize) >= 22 ? 'big' : 'small';
+      }
+    }
     async function set(next) {
       on = next;
       if (on) {
         if (!$('#nes-svg')) {
-          // Mosaic filter: sample one pixel per 3x3 block, then grow it to
-          // fill the block - the page's own fonts and colours, at NES resolution.
+          // nes-px: 3x3 mosaic (big text). nes-crisp: hard pixel edges, full
+          // resolution (small text and icons stay readable). nes-poster:
+          // a limited retro colour range for whole regions.
           const box = doc.createElement('div');
           box.innerHTML = '<svg id="nes-svg" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;width:0;height:0">'
             + '<filter id="nes-px" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">'
             + '<feFlood x="1" y="1" width="1" height="1" flood-color="#000"/>'
             + '<feComposite width="3" height="3"/><feTile result="grid"/>'
             + '<feComposite in="SourceGraphic" in2="grid" operator="in"/>'
-            + '<feMorphology operator="dilate" radius="1"/></filter></svg>';
+            + '<feMorphology operator="dilate" radius="1"/></filter>'
+            + '<filter id="nes-crisp" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 1 1 1 1 1 1 1"/></feComponentTransfer></filter>'
+            + '<filter id="nes-poster" color-interpolation-filters="sRGB"><feComponentTransfer>'
+            + '<feFuncR type="discrete" tableValues="0 .125 .25 .375 .5 .625 .75 .875 1"/><feFuncG type="discrete" tableValues="0 .125 .25 .375 .5 .625 .75 .875 1"/><feFuncB type="discrete" tableValues="0 .125 .25 .375 .5 .625 .75 .875 1"/>'
+            + '</feComponentTransfer></filter></svg>';
           doc.body.append(box.firstChild);
         }
         root.classList.add('nes');
+        tagText();
+        textObs = new MutationObserver(() => { clearTimeout(textT); textT = setTimeout(() => on && tagText(), 150); });
+        textObs.observe(doc.body, { subtree: true, childList: true });
         pixelateAll();
         imgObs = new MutationObserver((ms) => { for (const m of ms) if (m.target.tagName === 'IMG' && m.target.src !== m.target.dataset.nesOut) { delete m.target.dataset.nesOrig; m.target.complete ? pixelate(m.target) : m.target.addEventListener('load', () => on && pixelate(m.target), { once: true }); } });
         imgObs.observe(doc.body, { subtree: true, attributes: true, attributeFilter: ['src'] });
@@ -299,7 +319,9 @@
         announce('8-bit mode on. Tap the logo five times to switch back.');
       } else {
         imgObs?.disconnect(); imgObs = null;
+        textObs?.disconnect(); textObs = null; clearTimeout(textT);
         root.classList.remove('nes');
+        for (const el of $$('[data-nes-text]')) delete el.dataset.nesText;
         restoreAll();
         tone([[784, 70], [523, 70], [392, 70], [262, 200]]);
         announce('8-bit mode off.');
@@ -310,7 +332,8 @@
     const brand = $('#hero-brand');
     brand?.addEventListener('click', () => {
       const now = performance.now();
-      taps = taps.filter((t) => now - t < 2000); taps.push(now);
+      if (taps.length && now - taps[taps.length - 1] > 1000) taps = [];   // five in a row, each within a second
+      taps.push(now);
       if (taps.length >= 5) { taps = []; set(!on); }
     });
     return { get on() { return on; }, toggle: () => set(!on) };
