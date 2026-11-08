@@ -21,24 +21,24 @@
     "thumb": "Videos/Thumbnails/VCR.webp"
   },
   {
-    "title": "WHY HAVE EYES",
-    "file": "Videos/WHY HAVE EYES.mp4",
+    "title": "Why Have Eyes",
+    "file": "Videos/Why Have Eyes.mp4",
     "youtube": "https://youtu.be/YB-GkZ3C-6U",
-    "captions": "Videos/Captions/WHY HAVE EYES.vtt",
-    "thumb": "Videos/Thumbnails/WHY HAVE EYES.webp"
+    "captions": "Videos/Captions/Why Have Eyes.vtt",
+    "thumb": "Videos/Thumbnails/Why Have Eyes.webp"
   },
   {
-    "title": "the cloud for the desert",
-    "file": "Videos/the cloud for the desert.mp4",
+    "title": "The Cloud for the Desert",
+    "file": "Videos/The Cloud for the Desert.mp4",
     "youtube": "https://youtu.be/hyWst3-CvFo",
-    "captions": "Videos/Captions/the cloud for the desert.vtt",
-    "thumb": "Videos/Thumbnails/the cloud for the desert.webp"
+    "captions": "Videos/Captions/The Cloud for the Desert.vtt",
+    "thumb": "Videos/Thumbnails/The Cloud for the Desert.webp"
   },
   {
-    "title": "the helpful raven",
-    "file": "Videos/the helpful raven.mp4",
+    "title": "The Helpful Raven",
+    "file": "Videos/The Helpful Raven.mp4",
     "youtube": "https://youtu.be/hhjA5XBQCOU",
-    "captions": "Videos/Captions/the helpful raven.vtt",
-    "thumb": "Videos/Thumbnails/the helpful raven.webp"
+    "captions": "Videos/Captions/The Helpful Raven.vtt",
+    "thumb": "Videos/Thumbnails/The Helpful Raven.webp"
   }
 ]

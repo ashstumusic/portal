@@ -43,6 +43,11 @@ automatically; if a line highlights too early or late, change its
 timestamp (any LRC editor works, or a text editor), then run
 `python3 scripts/generate_content.py` to rebuild `lyrics.json` (or just push: the GitHub Action rebuilds it).
 
+### Video order
+Videos are listed newest first. To set the order yourself, list the video
+titles in `Videos/order.txt`, one per line, top first; any video not listed
+follows the listed ones.
+
 ### Video captions
 
 Each music video's captions are a WebVTT file in `Videos/Captions/` with the

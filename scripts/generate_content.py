@@ -184,7 +184,16 @@ def gen_videos():
             'thumb': find_thumb(base),
             '_sort': git_first_added_epoch(path),
         })
-    videos.sort(key=lambda v: v['_sort'], reverse=True)
+    # Optional Videos/order.txt: one video title per line, top first.
+    # Listed videos come first in that order; the rest follow, newest first.
+    order_path = os.path.join(video_dir, 'order.txt')
+    order = []
+    if os.path.isfile(order_path):
+        with open(order_path, encoding='utf-8') as fh:
+            order = [l.strip() for l in fh if l.strip()]
+    rank = {t: i for i, t in enumerate(order)}
+    videos.sort(key=lambda v: -v['_sort'])
+    videos.sort(key=lambda v: rank.get(v['title'], len(order)))
     for v in videos:
         del v['_sort']
     return videos
