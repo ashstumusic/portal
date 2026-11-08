@@ -223,9 +223,6 @@
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Watch on YouTube" title="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span></a>
   </div>
   <div class="k-tools">
-    <button type="button" class="k-tool psy-map-btn" aria-label="Open site map" aria-haspopup="dialog" title="Site map">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7l7-3 7 4-2 9-8 2-4-6z" opacity=".55"/><path d="M12 4l-3 15M5 7l12 10M19 8L5 13"/><circle cx="5" cy="7" r="1.6" fill="currentColor"/><circle cx="12" cy="4" r="1.6" fill="currentColor"/><circle cx="19" cy="8" r="1.6" fill="currentColor"/><circle cx="17" cy="17" r="1.6" fill="currentColor"/><circle cx="9" cy="19" r="1.6" fill="currentColor"/><circle cx="5" cy="13" r="1.6" fill="currentColor"/></svg>
-    </button>
     <button type="button" class="k-tool k-search-btn" aria-label="Search songs, videos, sections and actions">
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     </button>
@@ -1034,7 +1031,16 @@ function fsRenderLyrics() {
  fsLyr.hidden = !has || !_lyrShow;
  fsLyrToggle.setAttribute('aria-expanded', String(has && _lyrShow));
  document.querySelector('.fs-content').classList.toggle('lyrics-on', has && _lyrShow);
- if (has) {
+ fsLyrList.classList.toggle('is-plain', has && entry.synced === false);
+ // Plain lyrics have no buttons, so the scrolling panel itself takes focus (keyboard scrolling).
+ if (has && entry.synced === false) fsLyr.setAttribute('tabindex', '0'); else fsLyr.removeAttribute('tabindex');
+ if (has && entry.synced === false) {
+   // Words only (timing not verified): plain lines, no highlight or seeking.
+   var pf = document.createDocumentFragment();
+   entry.lines.forEach(function(l) { var li = document.createElement('li'); li.className = 'fs-lyric fs-lyric--plain'; li.textContent = l[1]; pf.appendChild(li); });
+   fsLyrList.appendChild(pf);
+   fsLyr.scrollTop = 0;
+ } else if (has) {
    var frag = document.createDocumentFragment();
    entry.lines.forEach(function(l, i) {
      var li = document.createElement('li');
