@@ -20,7 +20,10 @@ FONT_FILES = [
     "Fonts/Header.ttf", "Fonts/Header-Italic.ttf",
     "Fonts/j.d.ttf", "Fonts/Handmade.otf",
     "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/Body.ttf",
-    "Fonts/righteous/Righteous-Regular.ttf",   # toolbar (OFL, see Fonts/righteous/OFL.txt)
+    "Fonts/unbounded/Unbounded-Medium.ttf",    # toolbar (OFL, see Fonts/unbounded/OFL.txt)
+    "Fonts/outfit/Outfit-VF.ttf",              # body text (OFL)
+    "Fonts/archivonarrow/ArchivoNarrow-VF.ttf",  # small labels (OFL)
+    "Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf",  # quote (OFL)
     "Fonts/youngserif/YoungSerif-Regular.ttf",   # release/video titles (OFL, see Fonts/youngserif/OFL.txt)
 ]
 FONT_RELPATHS = {}
@@ -84,6 +87,7 @@ css = open("styles.css").read()
 # Shared interaction/material layer used by every page (theme, palette,
 # springs, glass header...). Appended so page rules can still override it.
 css += "\n" + open("shared/kinetic.css").read()
+css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
 for src_path, rel_path in FONT_RELPATHS.items():
     css = css.replace(f"url('{src_path}') format('truetype')", f"url('{rel_path}') format('woff2')")
     css = css.replace(f"url('{src_path}') format('opentype')", f"url('{rel_path}') format('woff2')")
@@ -128,7 +132,7 @@ html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 # fold and load lazily on first use via font-display: swap - preloading
 # them all just burns ~90KB of rural-cell-tower bandwidth on a race the
 # first paint never waits on.
-_PRELOAD_FONTS = {"Fonts/youngserif/YoungSerif-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/righteous/Righteous-Regular.ttf"}
+_PRELOAD_FONTS = {"Fonts/youngserif/YoungSerif-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/unbounded/Unbounded-Medium.ttf", "Fonts/outfit/Outfit-VF.ttf"}
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS
@@ -224,6 +228,17 @@ k_out = f"kinetic.{__import__('hashlib').sha256(_k.encode()).hexdigest()[:8]}.js
 open(k_out, "w").write(_k)
 html = html.replace("</body>", f'<script src="{k_out}" defer></script>\n</body>', 1)
 print(f"Wrote {k_out}: {len(_k)//1024}KB")
+
+# Homepage-only psychedelic layer (shared/psyche.js), same treatment.
+if os.path.exists(_esb):
+    _p = _sp.run([_esb, "--minify", "--target=es2020", "--legal-comments=none"], input=open("shared/psyche.js").read(),
+                 capture_output=True, text=True, check=True).stdout
+else:
+    _p = open("shared/psyche.js").read()
+p_out = f"psyche.{__import__('hashlib').sha256(_p.encode()).hexdigest()[:8]}.js"
+open(p_out, "w").write(_p)
+html = html.replace("</body>", f'<script src="{p_out}" defer></script>\n</body>', 1)
+print(f"Wrote {p_out}: {len(_p)//1024}KB")
 
 # strip HTML comments + indentation, collapse blank lines
 html = re.sub(r"<!--(?!\[).*?-->", "", html, flags=re.S)
