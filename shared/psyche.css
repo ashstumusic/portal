@@ -44,9 +44,9 @@
 }
 
 /* ── 4. TRAIL + RIPPLE ──────────────────────────────────────────────── */
-.psy-trail { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1100; pointer-events: none; }
+.psy-trail { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
 .psy-ripple {
-  position: fixed; inset: 0; z-index: 1050; pointer-events: none; --r: 0px;
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; --r: 0px;
   -webkit-backdrop-filter: saturate(1.6) hue-rotate(40deg) blur(1.5px);
           backdrop-filter: saturate(1.6) hue-rotate(40deg) blur(1.5px);
   background: conic-gradient(from 0deg at var(--x) var(--y), rgb(91 33 255 / .12), rgb(255 31 168 / .12), rgb(198 255 0 / .12), rgb(236 232 255 / .12), rgb(91 33 255 / .12));
@@ -66,3 +66,7 @@
 .psy .disc-quote, .psy .disc-quote cite { color: var(--ink); }
 .psy-field { opacity: .13; }
 :root[data-theme="dark"] .psy-field { opacity: .18; }
+
+/* Background only: every effect lives on the z-index -1 layer behind the
+   page (field first, then trail and ripple, in DOM order), so content is
+   always on top and the effects only show through open space and glass. */
