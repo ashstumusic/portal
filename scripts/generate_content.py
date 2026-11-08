@@ -204,6 +204,20 @@ def gen_videos():
 LRC_LINE = re.compile(r'^\[(\d+):(\d+(?:\.\d+)?)\](.*)$')
 
 
+def parse_lyrics_txt(path):
+    """{track number: [lines]} from an album's lyrics.txt ("TRACK N: Title"
+    headings, one lyric line per line, blank lines ignored)."""
+    if not os.path.isfile(path):
+        return {}
+    src = open(path, encoding='utf-8').read()
+    out = {}
+    for m in re.finditer(r'^TRACK (\d+):[^\n]*\n(.*?)(?=^TRACK \d+:|\Z)', src, re.S | re.M):
+        lines = [l.strip() for l in m.group(2).splitlines() if l.strip()]
+        if lines:
+            out[int(m.group(1))] = lines
+    return out
+
+
 def gen_lyrics(releases):
     """Lyrics for each track, keyed by its audio file path.
 
@@ -213,10 +227,21 @@ def gen_lyrics(releases):
     fix a line's timing; this script just reads it.
     """
     out = {}
+    album_txt = {}
     for rel in releases:
         for t in rel['tracks']:
             lrc = os.path.join(ROOT, os.path.splitext(t['file'])[0] + '.lrc')
             if not os.path.isfile(lrc):
+                # No timing file: fall back to the album's lyrics.txt
+                # ("TRACK N: Title" sections, N = the file's number prefix)
+                # and show the words without line-by-line highlighting.
+                folder = os.path.dirname(os.path.join(ROOT, t['file']))
+                if folder not in album_txt:
+                    album_txt[folder] = parse_lyrics_txt(os.path.join(folder, 'lyrics.txt'))
+                m = re.match(r'(\d+)\.', os.path.basename(t['file']))
+                plain = album_txt[folder].get(int(m.group(1))) if m else None
+                if plain:
+                    out[t['file']] = {'synced': False, 'lines': [[None, l] for l in plain]}
                 continue
             lines = []
             for raw in open(lrc, encoding='utf-8').read().splitlines():
