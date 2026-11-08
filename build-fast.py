@@ -21,7 +21,7 @@ FONT_FILES = [
     "Fonts/j.d.ttf", "Fonts/Handmade.otf",
     "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/Body.ttf",
     "Fonts/righteous/Righteous-Regular.ttf",   # toolbar (OFL, see Fonts/righteous/OFL.txt)
-    "Fonts/dmserif/DMSerifDisplay-Regular.ttf",   # release/video titles (OFL, see Fonts/dmserif/OFL.txt)
+    "Fonts/gloock/Gloock-Regular.ttf",   # release/video titles (OFL, see Fonts/gloock/OFL.txt)
 ]
 FONT_RELPATHS = {}
 
@@ -128,7 +128,7 @@ html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 # fold and load lazily on first use via font-display: swap - preloading
 # them all just burns ~90KB of rural-cell-tower bandwidth on a race the
 # first paint never waits on.
-_PRELOAD_FONTS = {"Fonts/dmserif/DMSerifDisplay-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/righteous/Righteous-Regular.ttf"}
+_PRELOAD_FONTS = {"Fonts/gloock/Gloock-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/righteous/Righteous-Regular.ttf"}
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS

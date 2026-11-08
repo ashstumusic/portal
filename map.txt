@@ -59,16 +59,16 @@
 **`Videos`**
 
 * `VCR.mp4` / `.txt`
-* `the helpful raven.mp4` / `.txt`
-* `the cloud for the desert.mp4` / `.txt`
-* `WHY HAVE EYES.mp4` / `.txt`
+* `The Helpful Raven.mp4` / `.txt`
+* `The Cloud for the Desert.mp4` / `.txt`
+* `Why Have Eyes.mp4` / `.txt`
 * `Brain Dead Corollary.mp4` / `.txt`
 * `Theory of Hope.mp4` / `.txt`
 * `Thumbnails` (Folder)
   * `VCR.png` / `.webp`
-  * `the helpful raven.png` / `.webp`
-  * `the cloud for the desert.png` / `.webp`
-  * `WHY HAVE EYES.png` / `.webp`
+  * `The Helpful Raven.png` / `.webp`
+  * `The Cloud for the Desert.png` / `.webp`
+  * `Why Have Eyes.png` / `.webp`
   * `Brain Dead Corollary.png` / `.webp`
   * `Theory of Hope.png` / `.webp`
 
