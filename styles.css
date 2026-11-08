@@ -3593,3 +3593,16 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 /* Footer: a plain link to the static lyrics pages. */
 .footer-nav a { color: inherit; font: 600 .85rem var(--plain-sans); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; opacity: .85; }
 .footer-nav a:hover, .footer-nav a:focus-visible { text-decoration: underline; opacity: 1; }
+
+/* Album-card Lyrics pill: at least a 24px tap target on every screen size. */
+.rel-lyrics-toggle { min-height: 24px; }
+@media (pointer: coarse) { .rel-lyrics-toggle { min-height: 32px; } }
+.footer-nav a { display: inline-block; padding: .45rem .6rem; }   /* 24px+ tap target */
+
+/* Below the hero, sections skip layout and paint until they near the
+   viewport (the browser remembers each one's real size once seen). This
+   took the ~150-200ms full-page layout off the startup path. */
+main > section:not(:first-child) { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+/* Closed dialogs skip rendering entirely (they're inert and off-screen);
+   opening them renders as before. */
+.fs-player:not(.open) .fs-content, .vid-lightbox:not(.open) .lb-inner { content-visibility: hidden; }
