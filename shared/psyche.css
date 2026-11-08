@@ -43,8 +43,7 @@
   border-bottom: 1px solid rgb(255 255 255 / .16);
 }
 
-/* ── 4. TRAIL + RIPPLE ──────────────────────────────────────────────── */
-.psy-trail { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+/* ── 4. RIPPLE ──────────────────────────────────────────────── */
 .psy-ripple {
   position: fixed; inset: 0; z-index: -1; pointer-events: none; --r: 0px;
   -webkit-backdrop-filter: saturate(1.6) hue-rotate(40deg) blur(1.5px);
@@ -55,9 +54,9 @@
 }
 
 /* ── CALM: effects off (setting) or reduced motion ──────────────────── */
-.psy-calm .psy-trail, .psy-calm .psy-ripple { display: none; }
+.psy-calm .psy-ripple { display: none; }
 @media (forced-colors: active) {
-  .psy-field, .psy-trail, .psy-ripple { display: none; }
+  .psy-field, .psy-ripple { display: none; }
 }
 
 /* Readability over the field: the quote and its credit drop their 78%
@@ -68,5 +67,5 @@
 :root[data-theme="dark"] .psy-field { opacity: .18; }
 
 /* Background only: every effect lives on the z-index -1 layer behind the
-   page (field first, then trail and ripple, in DOM order), so content is
+   page (field first, then the ripple, in DOM order), so content is
    always on top and the effects only show through open space and glass. */

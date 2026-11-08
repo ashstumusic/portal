@@ -4,7 +4,6 @@
      field      liquid-chrome / acid-wash gradient behind the page, warped
                 by scroll velocity and pointer acceleration (the frosted
                 glass panels in psyche.css refract it)
-     trail      iridescent ribbon behind the cursor (mouse/trackpad only)
      ripple     a refraction ring across the viewport on button presses
 
    Everything decorative stops under prefers-reduced-motion and can be
@@ -39,7 +38,6 @@
     const acc = Math.hypot(vx - ptr.vx, vy - ptr.vy);   // px/ms change: "acceleration"
     ptr.energy = Math.min(0.8, ptr.energy + acc * 0.12);
     ptr.x = e.clientX; ptr.y = e.clientY; ptr.vx = vx; ptr.vy = vy; ptr.t = now;
-    if (e.pointerType === 'mouse' || e.pointerType === 'pen') trail.add(e.clientX, e.clientY);
     field.wake();
   }, { passive: true });
   let scrollVel = 0, lastScrollY = scrollY, lastScrollT = performance.now();
@@ -129,52 +127,6 @@
     return { wake, redraw() { if (fxOn()) wake(); else { cancelAnimationFrame(raf); raf = 0; paint(); } }, get idle() { return idleUntil; } };
   })();
 
-  // ── TRAIL: iridescent ribbon behind the cursor ───────────────────
-  const trail = (() => {
-    if (!finePointer) return { add() {} };
-    const cv = doc.createElement('canvas');
-    cv.className = 'psy-trail'; cv.setAttribute('aria-hidden', 'true');
-    doc.body.append(cv);
-    const ctx = cv.getContext('2d');
-    let dpr = 1, raf = 0;
-    const pts = [], dust = [];
-    const size = () => { dpr = Math.min(1.5, devicePixelRatio || 1); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; };
-    size(); addEventListener('resize', size, { passive: true });
-    const LIFE = 160;
-    function frame(now) {
-      raf = 0;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-      while (pts.length && now - pts[0].t > LIFE) pts.shift();
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      for (let i = 1; i < pts.length; i++) {
-        const a = pts[i - 1], b = pts[i], age = (now - b.t) / LIFE, k = i / pts.length;
-        ctx.strokeStyle = `hsla(${(b.t * 0.25 + i * 9) % 360}, 100%, 66%, ${(1 - age) * 0.3 * k})`;
-        ctx.lineWidth = 1 + 2.5 * k * (1 - age);
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-      }
-      for (let i = dust.length - 1; i >= 0; i--) {
-        const d = dust[i]; d.life -= 0.035; d.x += d.vx; d.y += d.vy; d.vx *= 0.94; d.vy *= 0.94;
-        if (d.life <= 0) { dust.splice(i, 1); continue; }
-        ctx.fillStyle = `hsla(${d.h}, 100%, 72%, ${d.life * 0.7})`;
-        ctx.fillRect(d.x - 1, d.y - 1, 2, 2);
-      }
-      if (pts.length > 1 || dust.length) raf = requestAnimationFrame(frame);
-      else ctx.clearRect(0, 0, innerWidth, innerHeight);
-    }
-    return {
-      add(x, y) {
-        if (!fxOn()) return;
-        const now = performance.now();
-        pts.push({ x, y, t: now });
-        if (pts.length > 40) pts.shift();
-        const sp = Math.hypot(ptr.vx, ptr.vy);
-        if (false) dust.push({ x, y, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2, life: 1, h: (now * 0.25) % 360 });
-        if (!raf) raf = requestAnimationFrame(frame);
-      },
-    };
-  })();
-
   // ── RIPPLE: a refraction ring across the viewport ────────────────
   doc.addEventListener('click', (e) => {
     if (!fxOn() || e.detail === 0) return;   // detail 0 = keyboard "click": no ripple from nowhere
@@ -195,7 +147,7 @@
   }, { capture: true, passive: true });
 
   // Palette setting to switch the effects off (kinetic.js picks this up).
-  window.kineticItems = () => [{ group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Liquid background, cursor trail, ripples', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } }];
+  window.kineticItems = () => [{ group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Liquid background and click ripples', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } }];
 
   syncFx();
   }

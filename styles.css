@@ -2241,7 +2241,6 @@ body.player-active { padding-bottom: 68px; }
   .rel-overlay { padding: .75rem; }
   .rel-btn { font-size: .44rem; height: 38px; }
   .rel-track { padding: .5rem .5rem; font-size: .72rem; }
-  .rel-lyrics-toggle { width: 28px; height: 28px; }
   /* Two-column press-kit row can't fit - stack it. */
   .epk-body { grid-template-columns: 1fr; }
   .epk-body .section-h { grid-column: 1; grid-row: auto; }
@@ -3377,16 +3376,20 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 }
 .disc-quote, .disc-quote blockquote, .disc-quote p { font-family: 'Quote', Georgia, serif; font-style: italic; font-weight: 400; }
 
-/* Singles: a "Lyrics" toggle under the streaming buttons opens the song's
-   lyrics in the same panel the album tracklists use. */
-.rel-single-lyrics { display: block; border-bottom: 0; border-top: 1px solid var(--hairline); }
-.rel-lyrics-toggle--single {
-  width: 100%; height: 40px; gap: .45rem; border-radius: 0;
-  font-family: 'Labels', var(--plain-sans); font-size: .78rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+/* One lyrics button on every release: a "Lyrics" pill with a chevron that
+   flips when open. Album tracks carry it at the end of the row; a single
+   carries it centred under its streaming buttons. */
+.rel-lyrics-toggle, .rel-lyrics-toggle:hover {
+  width: auto; height: 26px; gap: .3rem; padding: 0 .6rem; margin-right: .4rem;
+  border: 1px solid var(--hairline); border-radius: 999px;
+  font-family: 'Labels', var(--plain-sans); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
 }
-.rel-lyrics-toggle--single.open { transform: none; }
-.rel-lyrics-toggle--single svg { transition: transform .25s var(--ease); }
-.rel-lyrics-toggle--single.open svg { transform: rotate(180deg); }
+.rel-lyrics-toggle.open { transform: none; }
+.rel-lyrics-toggle svg { transition: transform .25s var(--ease); }
+.rel-lyrics-toggle.open svg { transform: rotate(180deg); }
+.rel-single-lyrics { display: flex; flex-wrap: wrap; justify-content: center; padding-top: .6rem; border-bottom: 0; border-top: 1px solid var(--hairline); }
+.rel-single-lyrics > .rel-lyrics-toggle { margin: 0 0 .6rem; }
+.rel-single-lyrics > .rel-lyrics { flex-basis: 100%; }
 .rel-single-lyrics .rel-lyrics-inner { padding: .25rem 1.25rem 1rem; }
 
 /* Lyrics without verified timing: plain read-along text, no highlight. */

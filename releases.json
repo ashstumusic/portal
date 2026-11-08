@@ -87,8 +87,8 @@
         "file": "Audio/Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3"
       },
       {
-        "title": "Somewhere, Sometime",
-        "file": "Audio/Ash Stu, Vol. I/03. Somewhere, Sometime.mp3"
+        "title": "Waste My Time",
+        "file": "Audio/Ash Stu, Vol. I/03. Waste My Time.mp3"
       },
       {
         "title": "AM Soda",
@@ -149,20 +149,6 @@
       {
         "title": "Anybody Still Awake?",
         "file": "Audio/Ash Stu, Vol. I/18. Anybody Still Awake?.mp3"
-      }
-    ],
-    "featured": false
-  },
-  {
-    "name": "Waste My Time",
-    "type": "Single",
-    "art": "Images/Releases/Waste My Time.webp",
-    "apple": "https://music.apple.com/us/album/waste-my-time-feat-trent-runyon-single/1877338128",
-    "spotify": "https://open.spotify.com/album/02nDb7FH0IlNP9biBE5DPT",
-    "tracks": [
-      {
-        "title": "Waste My Time",
-        "file": "Audio/Waste My Time/01. Waste My Time.mp3"
       }
     ],
     "featured": false

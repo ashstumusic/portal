@@ -35,8 +35,9 @@
 
 **`Audio`**
 
-* `Waste My Time` (Folder)
-  * `01. Waste My Time.mp3`
+* `Ash Stu, Vol. I` (Folder)
+  * `01. The Cosmos Is Alive.mp3` – `18. Anybody Still Awake?.mp3` (track 3 is `Waste My Time`, formerly a single; `.lrc` synced lyrics on verified tracks)
+  * `lyrics.txt`
   * `links.txt`
 
 * `My Anima` (Folder)
