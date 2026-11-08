@@ -1579,7 +1579,7 @@ var lDiv = document.createElement('div');
 lDiv.className = 'rel-lyrics';
 var lInner = document.createElement('div');
 lInner.className = 'rel-lyrics-inner';
-lInner.textContent = entry.lines.map(function(l) { return l[1]; }).join('\n');
+fillCardLyrics(lInner, entry, t.file);
 lDiv.appendChild(lInner);
 wrap.appendChild(btn);
 wrap.appendChild(lDiv);
@@ -1625,7 +1625,7 @@ var lDiv = document.createElement('div');
 lDiv.className = 'rel-lyrics';
 var lInner = document.createElement('div');
 lInner.className = 'rel-lyrics-inner';
-lInner.textContent = lyricsEntry.lines.map(function(l) { return l[1]; }).join('\n');
+fillCardLyrics(lInner, lyricsEntry, t.file);
 lDiv.appendChild(lInner);
 wrap.appendChild(lDiv);
 }
@@ -1658,6 +1658,41 @@ setTimeout(initMarquees, 50);
 });
 }).observe(_relGrid, { attributes: true, subtree: true, attributeFilter: ['class'] });
 }
+// Card lyrics: one line per element, so the line being sung can be
+// highlighted while that song plays (synced lyrics only).
+function fillCardLyrics(inner, entry, file) {
+inner.textContent = '';
+inner.dataset.file = file;
+entry.lines.forEach(function(l) {
+var sp = document.createElement('span');
+sp.className = 'rel-lyric-line';
+sp.textContent = l[1] || '\u00a0';
+if (entry.synced !== false && typeof l[0] === 'number') sp.dataset.t = l[0];
+inner.appendChild(sp);
+});
+}
+var _cardLyrRaf = 0;
+function cardLyricsTick() {
+_cardLyrRaf = 0;
+var pl = pState.playlist[pState.plIdx], file = pl ? pl.file : null, live = false;
+document.querySelectorAll('.rel-lyrics-inner[data-file]').forEach(function(inner) {
+var open = inner.parentNode.style.maxHeight && inner.parentNode.style.maxHeight !== '0px' && inner.parentNode.style.maxHeight !== '0';
+var cur = inner.querySelector('.rel-lyric-line.is-current');
+var want = null;
+if (open && inner.dataset.file === file && npAudio.src) {
+var t = npAudio.currentTime + 0.2;   // a hair early, like the full-screen lyrics
+inner.querySelectorAll('.rel-lyric-line[data-t]').forEach(function(sp) { if (parseFloat(sp.dataset.t) <= t) want = sp; });
+live = true;
+}
+if (cur !== want) {
+if (cur) { cur.classList.remove('is-current'); cur.removeAttribute('aria-current'); }
+if (want) { want.classList.add('is-current'); want.setAttribute('aria-current', 'true'); }
+}
+});
+if (live && !npAudio.paused) _cardLyrRaf = requestAnimationFrame(cardLyricsTick);
+}
+function cardLyricsKick() { if (!_cardLyrRaf) _cardLyrRaf = requestAnimationFrame(cardLyricsTick); }
+['play', 'seeked', 'loadedmetadata', 'pause', 'emptied'].forEach(function(ev) { npAudio.addEventListener(ev, cardLyricsKick); });
 function recalcTracklistHeight(tl) {
 if (tl) tl.style.maxHeight = 'none';
 }
@@ -1674,6 +1709,7 @@ btn.setAttribute('aria-label', (opening ? 'Hide lyrics for ' : 'Show lyrics for 
 btn.setAttribute('aria-expanded', String(opening));
 lyrics.style.maxHeight = opening ? 'none' : '0';
 recalcTracklistHeight(tl);
+cardLyricsKick();
 }
 function fabClick() {
 if (!_src) {
