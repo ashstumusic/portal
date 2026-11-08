@@ -107,11 +107,17 @@ const adminLimiter = limiter(60);
 const EMAIL_RE = /^[A-Za-z0-9.!#$%&*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/;
 const isEmail = (s) => typeof s === 'string' && s.length <= 254 && EMAIL_RE.test(s);
 // Trim, cap length, and strip control characters (keeps newlines in messages).
+// Strips control characters and invisible text-direction overrides
+// (U+202A-202E, U+2066-2069), which could make a name or email display
+// misleadingly in the admin list.
+const BIDI = /[\u202A-\u202E\u2066-\u2069]/g;
 const clean = (v, max, { multiline = false } = {}) => {
   if (typeof v !== 'string') return '';
   const re = multiline ? /[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F]/g : /[\u0000-\u001F\u007F]/g;
-  return v.replace(re, '').trim().slice(0, max);
+  return v.replace(re, '').replace(BIDI, '').trim().slice(0, max);
 };
+// Over-limit text is rejected with a clear message, never silently cut.
+const tooLong = (v, max) => typeof v === 'string' && v.trim().length > max;
 const LIMITS = { name: 200, email: 254, message: 5000 };
 const sendError = (res, status, error) => res.status(status).json({ error });
 const isId = (v) => /^\d{1,12}$/.test(v);
@@ -150,6 +156,8 @@ app.post('/api/contact', formLimiter, (req, res) => {
   const body = req.body || {};
   // Honeypot: a hidden field real visitors never fill. Pretend success.
   if (clean(body.website, 200)) return res.json({ ok: true });
+  if (tooLong(body.message, LIMITS.message)) return sendError(res, 400, `Please keep your message under ${LIMITS.message.toLocaleString('en-US')} characters (it's ${body.message.trim().length.toLocaleString('en-US')}).`);
+  if (tooLong(body.name, LIMITS.name)) return sendError(res, 400, `Please keep your name under ${LIMITS.name} characters.`);
   const name = clean(body.name, LIMITS.name);
   const email = clean(body.email, LIMITS.email).toLowerCase();
   const message = clean(body.message, LIMITS.message, { multiline: true });

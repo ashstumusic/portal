@@ -49,10 +49,10 @@
   }, { passive: true });
 
   // ── FIELD: liquid chrome + acid wash ─────────────────────────────
-  // A low-resolution canvas (1/10 of the viewport) painted per pixel with a
+  // A low-resolution canvas (1/20 of the viewport) painted per pixel with a
   // domain-warped sine field, mapped through an ultraviolet / magenta /
   // chrome / lime palette with specular "metal" bands, then stretched
-  // smooth by the browser. ~15k pixels a frame at 30 fps: cheap.
+  // smooth by the browser. ~4k pixels a frame at 20 fps: cheap.
   const field = (() => {
     const cv = doc.createElement('canvas');
     cv.className = 'psy-field'; cv.setAttribute('aria-hidden', 'true');
@@ -67,8 +67,10 @@
     }
     let img = null, w = 0, h = 0, t = Math.random() * 100, phase = 0, mx = 0.5, my = 0.5, raf = 0, last = 0, idleUntil = 0;
     function size() {
-      w = Math.max(32, Math.min(220, Math.ceil(innerWidth / 10)));
-      h = Math.max(32, Math.min(160, Math.ceil(innerHeight / 10)));
+      // 1/20 of the viewport: the field sits faint and blurred behind the page,
+      // so a quarter of the old pixel count looks identical and costs far less.
+      w = Math.max(24, Math.min(110, Math.ceil(innerWidth / 20)));
+      h = Math.max(24, Math.min(80, Math.ceil(innerHeight / 20)));
       cv.width = w; cv.height = h; img = ctx.createImageData(w, h);
     }
     function paint() {
@@ -99,7 +101,7 @@
     function frame(now) {
       raf = 0;
       if (doc.hidden) return;
-      if (now - last >= 33) {   // ~30 fps is plenty for a slow liquid
+      if (now - last >= 50) {   // 20 fps is plenty for a slow, blurred liquid
         const dt = Math.min(0.1, (now - (last || now)) / 1000);
         last = now;
         const v = Math.min(3, Math.abs(scrollVel));

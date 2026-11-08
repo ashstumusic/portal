@@ -2017,7 +2017,9 @@ requestAnimationFrame(function() { updateArrow(); _arrowTick = false; });
 }, { passive: true });
 window.addEventListener('resize', function() { setTimeout(updateArrow, 160); }, { passive: true });
 new MutationObserver(function() { setTimeout(updateArrow, 420); setTimeout(updateArrow, 900); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-updateArrow();
+// First check after first paint, in idle time: reading scrollHeight and
+// element rects before then forced a full-page layout (~200ms) on load.
+(window.requestIdleCallback || function(f) { setTimeout(f, 200); })(function() { requestAnimationFrame(updateArrow); }, { timeout: 1000 });
 })();
 document.getElementById('vid-lightbox').addEventListener('keydown', function(e) {
 if (e.key !== 'Tab') return;
