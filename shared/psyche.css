@@ -94,3 +94,36 @@
           backdrop-filter: blur(22px);
 }
 .psy .nav { -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+
+/* ── 8-BIT MODE (easter egg; see shared/psyche.js) ──────────────────────
+   The site keeps its own fonts, colours and layout, rendered at NES
+   resolution: an SVG mosaic filter (#nes-px, injected by the script) turns
+   each region into chunky pixels, photos become palette-limited pixel art,
+   corners go square, motion steps, and the cursor is a pixel arrow. */
+html.nes {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h3v3H0zM3 3h3v3H3zM6 6h3v3H6zM9 9h3v3H9zM0 3h3v15H0zM3 15h3v3H3zM6 12h3v3H6zM9 12h6v3H9z' fill='%23000'/%3E%3Cpath d='M3 6h3v9H3zM6 9h3v3H6z' fill='%23fcfcfc'/%3E%3C/svg%3E") 0 0, auto;
+}
+html.nes *, html.nes *::before, html.nes *::after {
+  border-radius: 0 !important; corner-shape: square;
+  box-shadow: none !important; text-shadow: none !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  -webkit-font-smoothing: none; font-smooth: never;
+  transition-timing-function: steps(2, end) !important;
+  animation-timing-function: steps(4, end) !important;
+}
+/* Low resolution everywhere: each top-level region goes through the mosaic.
+   (Regions, not <body>, so fixed bars keep working.) */
+html.nes :is(.nav, .nav-drawer, main > *, footer, #player-bar, .fs-player, .k-palette-box, .lb-inner, .fab-music, .hero-scroll) {
+  filter: url(#nes-px);
+}
+html.nes :is(img.nes-px, canvas) { image-rendering: pixelated; }
+html.nes .psy-ripple { display: none !important; }
+/* No blur in 8-bit mode, so the glass panels go solid (same light/dark colour). */
+html.nes :is(.fs-player, #player-bar, .k-palette-box) { background: rgb(250 252 252) !important; }
+html.nes .nav { background: rgb(8 76 97) !important; }
+html.nes[data-theme="dark"] :is(.fs-player, #player-bar, .k-palette-box) { background: rgb(8 18 23) !important; }
+html.nes :is(.rel-card, .vid-card-wrap, .contact-inner, .bio-card) { background: var(--cream) !important; }
+/* Hairline outlines vanish at 3px pixels: give outlined controls a one-pixel (3px) frame. */
+html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-collapse, .rel-lyrics-toggle, .nav-toggle, .vid-yt) {
+  border: 3px solid currentColor !important;
+}

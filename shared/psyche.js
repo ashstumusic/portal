@@ -146,8 +146,181 @@
     })(t0);
   }, { capture: true, passive: true });
 
-  // Palette setting to switch the effects off (kinetic.js picks this up).
-  window.kineticItems = () => [{ group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Liquid background and click ripples', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } }];
+  // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
+  // The page turns into an NES game: everything (its own fonts and colours
+  // included) rendered at low resolution, photos redrawn as tiny
+  // palette-limited pixel art, square corners, stepped motion, square-wave
+  // blips, and the music run through a bit-crusher.
+  // Five more taps (or the search palette entry) switch it back.
+  const nes = (() => {
+    // A slice of the NES's 54-colour master palette.
+    const PAL = ['000000', 'fcfcfc', 'bcbcbc', '7c7c7c', '0000fc', '0078f8', '3cbcfc', 'a4e4fc', '940084', 'd800cc', 'f878f8',
+      'a81000', 'f83800', 'f87858', 'f8b800', 'fce0a8', 'ac7c00', '00b800', 'b8f818', '005800', '008888', '00e8d8', '503000', 'e45c10']
+      .map((h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]);
+    const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    let on = false, taps = [], actx = null, crushNode = null, worklet = null, imgObs = null;
+    const routed = new Map();   // media element -> its MediaElementSource
+
+    // ── pixel art: downscale, ordered-dither, snap to the palette ──
+    function pixelate(img) {
+      if (!img.complete || !img.naturalWidth || img.dataset.nesOut === img.currentSrc) return;
+      if (img.closest('.k-palette')) return;
+      const LONG = img.classList.contains('hero-split-photo') ? 120 : 64;
+      const k = LONG / Math.max(img.naturalWidth, img.naturalHeight);
+      const w = Math.max(8, Math.round(img.naturalWidth * k)), h = Math.max(8, Math.round(img.naturalHeight * k));
+      const c = doc.createElement('canvas'); c.width = w; c.height = h;
+      const x = c.getContext('2d', { willReadFrequently: true });
+      try {
+        x.drawImage(img, 0, 0, w, h);
+        const d = x.getImageData(0, 0, w, h), px = d.data;
+        for (let i = 0; i < px.length; i += 4) {
+          const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 48;
+          const r = px[i] + t, g = px[i + 1] + t, b = px[i + 2] + t;
+          let best = 0, bd = Infinity;
+          for (let j = 0; j < PAL.length; j++) { const q = PAL[j], dd = (r - q[0]) ** 2 * 0.3 + (g - q[1]) ** 2 * 0.59 + (b - q[2]) ** 2 * 0.11; if (dd < bd) { bd = dd; best = j; } }
+          px[i] = PAL[best][0]; px[i + 1] = PAL[best][1]; px[i + 2] = PAL[best][2];
+        }
+        x.putImageData(d, 0, 0);
+        const out = c.toDataURL('image/png');
+        if (!img.dataset.nesOrig) { img.dataset.nesOrig = img.getAttribute('src') || ''; if (img.srcset) { img.dataset.nesSrcset = img.srcset; img.removeAttribute('srcset'); } }
+        img.dataset.nesOut = out;
+        img.src = out;
+        img.classList.add('nes-px');
+      } catch { /* a cross-origin image can't be read back; leave it */ }
+    }
+    function pixelateAll() {
+      for (const img of $$('img')) {
+        if (img.complete) pixelate(img); else img.addEventListener('load', () => on && pixelate(img), { once: true });
+      }
+    }
+    function restoreAll() {
+      for (const img of $$('img[data-nes-orig]')) {
+        img.src = img.dataset.nesOrig;
+        if (img.dataset.nesSrcset) img.srcset = img.dataset.nesSrcset;
+        delete img.dataset.nesOrig; delete img.dataset.nesOut; delete img.dataset.nesSrcset;
+        img.classList.remove('nes-px');
+      }
+    }
+
+    // ── sound: square-wave blips and an NES-style bit-crusher ──
+    function ctx() {
+      if (!actx) { try { actx = new AudioContext(); } catch { return null; } }
+      if (actx.state === 'suspended') actx.resume().catch(() => {});
+      return actx;
+    }
+    function tone(seq, type = 'square', vol = 0.06) {   // seq: [[freq, ms], ...]
+      const a = ctx(); if (!a) return;
+      let t = a.currentTime + 0.01;
+      for (const [f, ms] of seq) {
+        const o = a.createOscillator(), g = a.createGain();
+        o.type = type; o.frequency.value = f;
+        g.gain.setValueAtTime(vol, t); g.gain.setValueAtTime(0, t + ms / 1000 - 0.005);
+        o.connect(g).connect(a.destination); o.start(t); o.stop(t + ms / 1000);
+        t += ms / 1000;
+      }
+    }
+    const WORKLET = `class NesCrush extends AudioWorkletProcessor {
+      constructor() { super(); this.ph = 0; this.last = []; }
+      process(ins, outs) {
+        const inp = ins[0], out = outs[0];
+        if (!inp || !inp.length) return true;
+        const HOLD = 4, STEP = 32;   // ~11 kHz sample rate, 6-bit samples
+        let ph = this.ph;
+        for (let c = 0; c < out.length; c++) {
+          const x = inp[c] || inp[0], y = out[c];
+          let l = this.last[c] || 0; ph = this.ph;
+          for (let n = 0; n < y.length; n++) { if (ph++ % HOLD === 0) l = Math.round(x[n] * STEP) / STEP; y[n] = l; }
+          this.last[c] = l;
+        }
+        this.ph = ph % HOLD;
+        return true;
+      }
+    }
+    registerProcessor('nes-crush', NesCrush);`;
+    async function crusher() {
+      const a = ctx(); if (!a) return null;
+      if (crushNode) return crushNode;
+      const hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 90;
+      let crush;
+      try {
+        if (!worklet) { const url = URL.createObjectURL(new Blob([WORKLET], { type: 'text/javascript' })); worklet = a.audioWorklet.addModule(url); }
+        await worklet;
+        crush = new AudioWorkletNode(a, 'nes-crush', { outputChannelCount: [2] });
+      } catch {
+        crush = a.createWaveShaper();   // fallback: bit depth only
+        const curve = new Float32Array(4096);
+        for (let i = 0; i < curve.length; i++) { const v = i / 2047.5 - 1; curve[i] = Math.round(v * 32) / 32; }
+        crush.curve = curve;
+      }
+      hp.connect(crush).connect(a.destination);
+      crushNode = hp;
+      return crushNode;
+    }
+    // Routing a media element through Web Audio is one-way (it can never be
+    // un-routed), so it only happens once someone turns 8-bit mode on; when
+    // it's switched off the element goes straight to the speakers again.
+    async function route(el) {
+      const a = ctx(); if (!a || !el) return;
+      let src = routed.get(el);
+      if (!src) { try { src = a.createMediaElementSource(el); routed.set(el, src); } catch { return; } }
+      src.disconnect();
+      if (on) src.connect(await crusher()); else src.connect(a.destination);
+    }
+    const routeAll = () => { route($('#np-audio')); for (const v of $$('video')) if (!v.paused || routed.has(v)) route(v); };
+    doc.addEventListener('play', (e) => { if (on && e.target instanceof HTMLMediaElement) route(e.target); }, true);
+    doc.addEventListener('pointerdown', (e) => {
+      if (!on) return;
+      const b = e.target.closest?.('button, a, [role="button"], input[type="range"]');
+      if (!b) return;
+      if (b.matches('#featured-play, #np-play, .fs-play, .rel-play-circle, .rel-art-wrap')) tone([[988, 70], [1319, 260]]);   // coin
+      else tone([[1760, 35]], 'square', 0.04);   // menu blip
+    }, { passive: true, capture: true });
+
+    async function set(next) {
+      on = next;
+      if (on) {
+        if (!$('#nes-svg')) {
+          // Mosaic filter: sample one pixel per 3x3 block, then grow it to
+          // fill the block - the page's own fonts and colours, at NES resolution.
+          const box = doc.createElement('div');
+          box.innerHTML = '<svg id="nes-svg" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;width:0;height:0">'
+            + '<filter id="nes-px" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">'
+            + '<feFlood x="1" y="1" width="1" height="1" flood-color="#000"/>'
+            + '<feComposite width="3" height="3"/><feTile result="grid"/>'
+            + '<feComposite in="SourceGraphic" in2="grid" operator="in"/>'
+            + '<feMorphology operator="dilate" radius="1"/></filter></svg>';
+          doc.body.append(box.firstChild);
+        }
+        root.classList.add('nes');
+        pixelateAll();
+        imgObs = new MutationObserver((ms) => { for (const m of ms) if (m.target.tagName === 'IMG' && m.target.src !== m.target.dataset.nesOut) { delete m.target.dataset.nesOrig; m.target.complete ? pixelate(m.target) : m.target.addEventListener('load', () => on && pixelate(m.target), { once: true }); } });
+        imgObs.observe(doc.body, { subtree: true, attributes: true, attributeFilter: ['src'] });
+        tone([[523, 70], [659, 70], [784, 70], [1047, 70], [784, 70], [1047, 220]]);   // power-on jingle
+        announce('8-bit mode on. Tap the logo five times to switch back.');
+      } else {
+        imgObs?.disconnect(); imgObs = null;
+        root.classList.remove('nes');
+        restoreAll();
+        tone([[784, 70], [523, 70], [392, 70], [262, 200]]);
+        announce('8-bit mode off.');
+      }
+      routeAll();
+      field.redraw();
+    }
+    const brand = $('#hero-brand');
+    brand?.addEventListener('click', () => {
+      const now = performance.now();
+      taps = taps.filter((t) => now - t < 2000); taps.push(now);
+      if (taps.length >= 5) { taps = []; set(!on); }
+    });
+    return { get on() { return on; }, toggle: () => set(!on) };
+  })();
+
+  // Palette settings (kinetic.js picks these up).
+  window.kineticItems = () => [
+    { group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Liquid background and click ripples', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } },
+    { group: 'Settings', title: nes.on ? 'Turn 8-bit mode off' : 'Turn 8-bit mode on', sub: 'NES look and sound (or tap the logo five times)', run: () => nes.toggle() },
+  ];
 
   syncFx();
   }
