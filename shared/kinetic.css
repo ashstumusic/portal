@@ -73,7 +73,7 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
 
 /* ── SQUIRCLES (continuous curvature where supported) ────────────────── */
 @supports (corner-shape: squircle) {
-  .btn, .f-btn, .book-card, .new-record, .record, .rel-card, .video-link, .vid-card, .k-palette-box, .fs-lyrics-toggle {
+  .btn, .f-btn, .book-card, .new-record, .record, .rel-card, .video-link, .vid-card, .k-palette-box {
     corner-shape: squircle;
   }
 }

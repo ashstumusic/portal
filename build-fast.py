@@ -24,6 +24,7 @@ FONT_FILES = [
     "Fonts/archivonarrow/ArchivoNarrow-VF.ttf",  # small labels (OFL)
     "Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf",  # quote (OFL)
     "Fonts/youngserif/YoungSerif-Regular.ttf",   # release/video titles (OFL, see Fonts/youngserif/OFL.txt)
+    "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # lyrics (OFL, see Fonts/fraunces/OFL.txt)
 ]
 FONT_RELPATHS = {}
 
