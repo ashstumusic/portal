@@ -402,6 +402,11 @@
     const items = _gather();
     items.push({ group: 'Settings', title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then L / W / A / B, and /', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
     items.push({ group: 'Settings', title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(); } });
+    // Page-specific entries (the homepage's psyche.js adds the oracle's
+    // suggestions up top and its own settings at the end).
+    if (typeof window.kineticItems === 'function') {
+      try { const extra = window.kineticItems(); items.unshift(...extra.filter((it) => it.group !== 'Settings')); items.push(...extra.filter((it) => it.group === 'Settings')); } catch {}
+    }
     // Shortcut hints for section jumps.
     for (const it of items) if (it.group === 'Go to' && keysOn) it.kbd = ['G', it.title.trim()[0]?.toUpperCase()];
     return items;

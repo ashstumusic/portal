@@ -223,6 +223,9 @@
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Watch on YouTube" title="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span></a>
   </div>
   <div class="k-tools">
+    <button type="button" class="k-tool psy-map-btn" aria-label="Open site map" aria-haspopup="dialog" title="Site map">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7l7-3 7 4-2 9-8 2-4-6z" opacity=".55"/><path d="M12 4l-3 15M5 7l12 10M19 8L5 13"/><circle cx="5" cy="7" r="1.6" fill="currentColor"/><circle cx="12" cy="4" r="1.6" fill="currentColor"/><circle cx="19" cy="8" r="1.6" fill="currentColor"/><circle cx="17" cy="17" r="1.6" fill="currentColor"/><circle cx="9" cy="19" r="1.6" fill="currentColor"/><circle cx="5" cy="13" r="1.6" fill="currentColor"/></svg>
+    </button>
     <button type="button" class="k-tool k-search-btn" aria-label="Search songs, videos, sections and actions">
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     </button>
@@ -1530,8 +1533,36 @@ wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
 wrap.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRelOverlay(e, rIdx); } });
 });
 }
+// Singles have no tracklist; when their one song has lyrics, the card gets
+// a "Lyrics" toggle under its streaming buttons that opens the same panel.
+function buildSingleLyrics(rel, rIdx) {
+var card = document.querySelectorAll('.rel-card')[rIdx];
+var t = rel.tracks[0];
+var entry = t && LYRICS[t.file];
+if (!card || card.querySelector('.rel-single-lyrics') || !(entry && entry.lines && entry.lines.length)) return;
+var wrap = document.createElement('div');
+wrap.className = 'rel-track-wrap rel-single-lyrics';
+var btn = document.createElement('button');
+btn.type = 'button';
+btn.className = 'rel-lyrics-toggle rel-lyrics-toggle--single';
+btn.setAttribute('aria-label', 'Show lyrics for ' + t.title);
+btn.setAttribute('aria-expanded', 'false');
+btn.innerHTML = '<span>Lyrics</span><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+btn.addEventListener('click', function(e) { e.stopPropagation(); toggleTrackLyrics(this); });
+var lDiv = document.createElement('div');
+lDiv.className = 'rel-lyrics';
+var lInner = document.createElement('div');
+lInner.className = 'rel-lyrics-inner';
+lInner.textContent = entry.lines.map(function(l) { return l[1]; }).join('\n');
+lDiv.appendChild(lInner);
+wrap.appendChild(btn);
+wrap.appendChild(lDiv);
+var btns = card.querySelector('.rel-btns');
+if (btns) btns.after(wrap); else card.appendChild(wrap);
+}
 function buildTracklists() {
 RELEASE_LIST.forEach(function(rel, rIdx) {
+if (rel.tracks.length === 1) { buildSingleLyrics(rel, rIdx); return; }
 var container = document.getElementById('tracklist-' + rIdx);
 if (!container) return;
 var frag = document.createDocumentFragment();
