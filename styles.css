@@ -3347,11 +3347,11 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 .rel-name, .featured-title { line-height: 1.15; }
 .rel-name, .featured-title, h3.vid-title, .vid-title { font-variant-numeric: lining-nums; }   /* "Vol. 1" at full height */
 
-/* Release and video titles: Gloock (OFL) - a high-contrast
+/* Release and video titles: Young Serif (OFL) - a sturdy, warm 1970s
    newspaper-headline serif. */
 @font-face {
   font-family: 'Headline';
-  src: url('Fonts/gloock/Gloock-Regular.ttf') format('truetype');
+  src: url('Fonts/youngserif/YoungSerif-Regular.ttf') format('truetype');
   font-display: swap;
 }
 .rel-name, .featured-title, h3.vid-title, .vid-title {
