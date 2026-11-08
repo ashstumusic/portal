@@ -111,11 +111,14 @@ html.nes *, html.nes *::before, html.nes *::after {
   transition-timing-function: steps(2, end) !important;
   animation-timing-function: steps(4, end) !important;
 }
-/* Low resolution everywhere: each top-level region goes through the mosaic.
-   (Regions, not <body>, so fixed bars keep working.) */
+/* Pixel art, but readable: whole regions get a limited retro colour range;
+   big text (tagged by the script) gets the chunky 3px mosaic; smaller text
+   and icons keep full resolution with hard pixel edges. */
 html.nes :is(.nav, .nav-drawer, main > *, footer, #player-bar, .fs-player, .k-palette-box, .lb-inner, .fab-music, .hero-scroll) {
-  filter: url(#nes-px);
+  filter: url(#nes-poster);
 }
+html.nes [data-nes-text="big"] { filter: url(#nes-px); }
+html.nes :is([data-nes-text="small"], svg:not(#nes-svg)) { filter: url(#nes-crisp); }
 html.nes :is(img.nes-px, canvas) { image-rendering: pixelated; }
 html.nes .psy-ripple { display: none !important; }
 /* No blur in 8-bit mode, so the glass panels go solid (same light/dark colour). */

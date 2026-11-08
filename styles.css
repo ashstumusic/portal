@@ -3575,3 +3575,11 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 .rel-lyric-line.is-current { background: var(--gold); color: #084C61; }
 :root[data-theme="dark"] .rel-lyric-line.is-current { color: #08141A; }
 @media (forced-colors: active) { .rel-lyric-line.is-current { background: Highlight; color: HighlightText; } }
+
+/* Streaming buttons (Apple Music / Spotify, hero and album cards): a calm
+   hover. They still turn gold, as a quick fade, but no ink-bleed bloom,
+   no lift, no icon pop, no magnetic pull (kinetic.js skips them). */
+:is(.f-btn, .rel-btn):has(.pt)::before { display: none; }
+:is(.f-btn, .rel-btn):has(.pt)::after { transition: opacity .15s ease; }
+:is(.f-btn, .rel-btn):has(.pt):hover { transform: none; translate: none; }
+:is(.f-btn, .rel-btn):has(.pt):hover .pt { transform: none; }
