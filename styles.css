@@ -3346,3 +3346,15 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 }
 .rel-name, .featured-title { line-height: 1.15; }
 .rel-name, .featured-title, h3.vid-title, .vid-title { font-variant-numeric: lining-nums; }   /* "Vol. 1" at full height */
+
+/* Release and video titles: DM Serif Display (OFL) - a bold, compact
+   newspaper-headline serif. */
+@font-face {
+  font-family: 'Headline';
+  src: url('Fonts/dmserif/DMSerifDisplay-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+.rel-name, .featured-title, h3.vid-title, .vid-title {
+  font-family: 'Headline', Georgia, 'Times New Roman', serif;
+  font-weight: normal; letter-spacing: 0;
+}

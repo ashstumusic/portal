@@ -271,9 +271,6 @@ img.k-blurup { background-size: cover; background-position: center; }
   .masthead > .k-tools::before { display: none; }
   .masthead > .tuner { order: 3; }
 }
-.k-theme-dark { display: none; }
-:root[data-theme="dark"] .k-theme-dark { display: block; }
-:root[data-theme="dark"] .k-theme-light { display: none; }
 
 /* ── COMMAND PALETTE (⌘K / Ctrl+K) ───────────────────────────────────── */
 .k-palette { padding: 0; border: 0; background: transparent; max-width: none; max-height: none; width: 100%; height: 100%; }
