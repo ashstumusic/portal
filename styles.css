@@ -3408,7 +3408,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
    (dark mode, which follows the device setting). The gold stays on the
    play button and active controls. */
 .fs-player {
-  background: rgb(250 252 252 / .72);
+  background: rgb(250 252 252 / .82);   /* .72 let darker page areas drop lyric lines to 4.2:1 */
   -webkit-backdrop-filter: blur(28px) saturate(1.2);
           backdrop-filter: blur(28px) saturate(1.2);
 }
@@ -3454,3 +3454,35 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
   background: var(--gold); border-color: var(--gold); color: #084C61;
   box-shadow: 0 2px 12px rgba(247,197,73,.4); box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
 }
+
+/* Full-screen player: the Lyrics toggle sits in the same row as the
+   streaming buttons, same height (it stretches to the row) and shape. The
+   streaming buttons share the remaining width; Lyrics keeps its own size. */
+.fs-platforms { align-items: stretch; flex-wrap: nowrap; }
+.fs-platforms .f-btn { flex: 1 1 0; width: auto; min-width: 0; max-width: 148px; }
+.fs-platforms .fs-lyrics-toggle {
+  flex: none; margin-top: 0; height: auto; min-height: 36px; padding: 0 .9rem;
+  border-width: 1px; border-radius: 12px; font-size: .7rem;
+}
+@media (max-width: 400px) {
+  .fs-platforms.fs-platforms { flex-wrap: nowrap; gap: .45rem; }
+  .fs-platforms .f-btn.f-btn { flex: 1 1 0; width: auto; max-width: none; padding: 0 .4rem; }
+}
+/* Fold covers: the streaming buttons drop to icons (their aria-labels
+   still name them) so all three stay on one line. */
+@media (max-width: 340px) {
+  .fs-platforms .f-btn.f-btn { font-size: 0; gap: 0; }
+}
+
+/* A collapsed tracklist is hidden from Tab and screen readers too, not
+   just clipped to zero height (it held 60+ invisible tab stops). */
+.rel-card:not(.tracks-open) .rel-tracklist { visibility: hidden; }
+/* Volume sliders: a 24px-tall hit area (WCAG 2.5.8) with the same thin
+   bar drawn in the middle. */
+.vol-slider, .fs-vol .vol-slider, .np-vol .vol-slider {
+  box-sizing: border-box; height: 24px; padding-block: 7px; background-clip: content-box;
+}
+/* "Next section" arrow: fully visible when focused, and out of the tab
+   order (not just transparent) while it's faded away. */
+.hero-scroll:focus-visible { opacity: 1; }
+.hero-scroll.hidden { visibility: hidden; transition: opacity .3s var(--ease), visibility 0s linear .3s; }
