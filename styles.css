@@ -3394,3 +3394,42 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 /* Lyrics without verified timing: plain read-along text, no highlight. */
 .fs-lyric--plain { padding: .4rem .5rem .4rem 1rem; color: var(--player-ink); font: 600 1.12rem/1.32 var(--body); }
 .fs-lyrics-list.is-plain { padding-bottom: 1rem; }
+
+/* Full-screen player streaming buttons: a quiet hover - a slightly
+   stronger border and a faint ink tint, no gold fill, glow, ink-bleed,
+   lift or icon pop (those were loud against the gold player). */
+.fs-platforms .f-btn::before, .fs-platforms .f-btn::after { display: none; }
+.fs-platforms .f-btn:hover { transform: none; background: rgb(236 240 240); background: color-mix(in srgb, var(--cream) 88%, var(--player-ink)); border-color: var(--player-ink); }
+.fs-platforms .f-btn:hover .pt { transform: none; }
+.fs-platforms .f-btn { transition: background-color .2s var(--ease), border-color .2s var(--ease); }
+
+/* Full-screen player: frosted glass instead of solid gold. The page
+   shows through, softened, in a light tint (light mode) or a dark tint
+   (dark mode, which follows the device setting). The gold stays on the
+   play button and active controls. */
+.fs-player {
+  background: rgb(250 252 252 / .72);
+  -webkit-backdrop-filter: blur(28px) saturate(1.2);
+          backdrop-filter: blur(28px) saturate(1.2);
+}
+/* By id: outranks the dark-theme "keep light tokens" rule near the top
+   (its selector list contains #player-bar, so it carries id weight). */
+:root[data-theme="dark"] #fs-player.fs-player {
+  --player-ink: #DCEEF2; --ink: #DCEEF2; --ink-soft: #9DB7C0;
+  --cream: #13232A; --paper: #0D1A1F; --paper-deep: #08141A;
+  --hairline: rgba(220,238,242,.12);
+  background: rgb(8 18 23 / .72);
+}
+/* Dark glass: the teal-tinted bits become light-tinted. */
+:root[data-theme="dark"] .fs-player .fs-collapse { background: rgb(220 238 242 / .08); border-color: rgb(220 238 242 / .18); color: rgb(220 238 242 / .7); }
+:root[data-theme="dark"] .fs-player .fs-collapse:hover { background: rgb(220 238 242 / .14); border-color: rgb(220 238 242 / .3); color: var(--player-ink); }
+:root[data-theme="dark"] .fs-player .fs-ctrl:hover { background: rgb(220 238 242 / .12); }
+:root[data-theme="dark"] .fs-player .fs-ctrl:is(.active, :active) { color: #08141A; background: var(--gold); border-color: var(--gold); }
+:root[data-theme="dark"] .fs-player .fs-play { background: var(--gold); color: #08141A; }
+:root[data-theme="dark"] .fs-player .fs-lyric button:hover { background: rgb(220 238 242 / .08); }
+:root[data-theme="dark"] .fs-player .fs-album { color: rgb(220 238 242 / .8); }
+:root[data-theme="dark"] .fs-player .fs-lyrics-toggle[aria-expanded="true"] { color: #08141A; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .fs-player { background: rgb(250 252 252 / .97); }
+  :root[data-theme="dark"] .fs-player { background: rgb(8 18 23 / .97); }
+}
