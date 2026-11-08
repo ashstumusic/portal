@@ -3564,3 +3564,14 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 /* The current line scales up 6%; narrow it so the band ends flush instead of clipping. */
 .fs-lyric.is-current button { width: calc(100% / 1.06); }
 @media (prefers-reduced-motion: reduce) { .fs-lyric.is-current button { width: 100%; } }
+
+/* Music-section lyrics: one line per row, and the line being sung (while
+   that song plays) gets the same gold highlighter as the full-screen player. */
+.rel-lyric-line {
+  display: block; white-space: normal; border-radius: 6px;
+  margin-inline: -.4rem; padding-inline: .4rem;
+  transition: background-color .2s var(--ease), color .2s var(--ease);
+}
+.rel-lyric-line.is-current { background: var(--gold); color: #084C61; }
+:root[data-theme="dark"] .rel-lyric-line.is-current { color: #08141A; }
+@media (forced-colors: active) { .rel-lyric-line.is-current { background: Highlight; color: HighlightText; } }
