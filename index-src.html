@@ -422,15 +422,13 @@
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </button>
     </div>
-    <div class="fs-vol">
-      <button type="button" class="fs-ctrl fs-ctrl-vol" id="fs-mute" aria-label="Mute">
-        <svg aria-hidden="true" id="fs-vol-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="none"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none"/></svg>
-      </button>
-      <input type="range" id="fs-vol-slider" class="vol-slider" min="0" max="1" step="0.01" value="1" aria-label="Volume"/>
-    </div>
-    <div class="fs-platforms" id="fs-platforms">
-      <a href="#" id="fs-apple" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>
-      <a href="#" id="fs-spotify" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>
+    <div class="fs-vol-row">
+      <div class="fs-vol">
+        <button type="button" class="fs-ctrl fs-ctrl-vol" id="fs-mute" aria-label="Mute">
+          <svg aria-hidden="true" id="fs-vol-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="none"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none"/></svg>
+        </button>
+        <input type="range" id="fs-vol-slider" class="vol-slider" min="0" max="1" step="0.01" value="1" aria-label="Volume"/>
+      </div>
       <button type="button" class="fs-lyrics-toggle" id="fs-lyrics-toggle" aria-expanded="true" aria-controls="fs-lyrics" hidden>Lyrics</button>
     </div>
     <!-- Time-synced lyrics (Apple Music style). Shown for songs that have a
@@ -441,6 +439,11 @@
     <section class="fs-lyrics" id="fs-lyrics" aria-label="Lyrics" hidden>
       <ol class="fs-lyrics-list" id="fs-lyrics-list"></ol>
     </section>
+    <!-- Streaming links sit at the bottom, after the lyrics. -->
+    <div class="fs-platforms" id="fs-platforms">
+      <a href="#" id="fs-apple" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>
+      <a href="#" id="fs-spotify" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>
+    </div>
   </div>
 </div>
 <nav aria-label="Page sections">
@@ -967,18 +970,10 @@ fsArt.hidden = true;
 if (ph) ph.style.display = '';
 }
 }
-// The row holds the streaming links and the Lyrics toggle; it shows when
-// either has something to offer.
-function fsSyncPlatformRow(hasLinks) {
- if (!fsPlatforms) return;
- if (hasLinks === undefined) { var r = RELEASE_LIST[pState.releaseIdx]; hasLinks = !!(r && (r.apple || r.spotify)); }
- var lt = document.getElementById('fs-lyrics-toggle');
- fsPlatforms.style.display = (hasLinks || (lt && !lt.hidden)) ? 'flex' : 'none';
-}
 function fsUpdatePlatforms() {
 var rel = RELEASE_LIST[pState.releaseIdx];
 var hasLinks = !!(rel && (rel.apple || rel.spotify));
-fsSyncPlatformRow(hasLinks);
+if (fsPlatforms) fsPlatforms.style.display = hasLinks ? 'flex' : 'none';
 if (rel && rel.apple) { fsApple.href = rel.apple; fsApple.style.display = ''; } else if (fsApple) { fsApple.style.display = 'none'; }
 if (rel && rel.spotify) { fsSpotify.href = rel.spotify; fsSpotify.style.display = ''; } else if (fsSpotify) { fsSpotify.style.display = 'none'; }
 }
@@ -1032,7 +1027,6 @@ function fsRenderLyrics() {
  var entry = file && LYRICS[file];
  var has = !!(entry && entry.lines && entry.lines.length);
  fsLyrToggle.hidden = !has;
- fsSyncPlatformRow();
  fsLyr.hidden = !has || !_lyrShow;
  fsLyrToggle.setAttribute('aria-expanded', String(has && _lyrShow));
  document.querySelector('.fs-content').classList.toggle('lyrics-on', has && _lyrShow);
