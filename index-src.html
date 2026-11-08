@@ -431,13 +431,13 @@
     <div class="fs-platforms" id="fs-platforms">
       <a href="#" id="fs-apple" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>
       <a href="#" id="fs-spotify" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>
+      <button type="button" class="fs-lyrics-toggle" id="fs-lyrics-toggle" aria-expanded="true" aria-controls="fs-lyrics" hidden>Lyrics</button>
     </div>
     <!-- Time-synced lyrics (Apple Music style). Shown for songs that have a
          .lrc file. The current line is highlighted and kept in view; tapping
          a line jumps there. Keyboard: one Tab stop, arrow keys move between
          lines, Enter jumps. Lines are not announced as they change (that
          would talk over the music); the current one carries aria-current. -->
-    <button type="button" class="fs-lyrics-toggle" id="fs-lyrics-toggle" aria-expanded="true" aria-controls="fs-lyrics" hidden>Lyrics</button>
     <section class="fs-lyrics" id="fs-lyrics" aria-label="Lyrics" hidden>
       <ol class="fs-lyrics-list" id="fs-lyrics-list"></ol>
     </section>
@@ -560,6 +560,15 @@ function _safeAudioSrc(p){return p.split('/').map(encodeURIComponent).join('/');
 // without it, a stale preload keeps playing under a re-rendered UI.
 var _everPlayed = false;
 npAudio.addEventListener('playing', function() { _everPlayed = true; });
+// A song that can't load (offline, blocked, missing file) is announced and
+// shown in the bar instead of failing silently.
+npAudio.addEventListener('error', function() {
+ if (!npAudio.src || !npAudio.error) return;
+ var msg = "Couldn't load this song. Check your connection and try again.";
+ _npTrackEl.dataset.label = msg; _npTrackEl.textContent = msg;
+ if (_srAnnounce) _srAnnounce.textContent = msg;
+ if (typeof npSetPlaying === 'function') npSetPlaying(false);
+});
 // True while a finger/mouse is scrubbing a seek bar - timeupdate keeps
 // its hands off the fill/thumb then (pointer position drives them).
 var _seekDragging = false;
@@ -958,10 +967,18 @@ fsArt.hidden = true;
 if (ph) ph.style.display = '';
 }
 }
+// The row holds the streaming links and the Lyrics toggle; it shows when
+// either has something to offer.
+function fsSyncPlatformRow(hasLinks) {
+ if (!fsPlatforms) return;
+ if (hasLinks === undefined) { var r = RELEASE_LIST[pState.releaseIdx]; hasLinks = !!(r && (r.apple || r.spotify)); }
+ var lt = document.getElementById('fs-lyrics-toggle');
+ fsPlatforms.style.display = (hasLinks || (lt && !lt.hidden)) ? 'flex' : 'none';
+}
 function fsUpdatePlatforms() {
 var rel = RELEASE_LIST[pState.releaseIdx];
 var hasLinks = !!(rel && (rel.apple || rel.spotify));
-if (fsPlatforms) fsPlatforms.style.display = hasLinks ? 'flex' : 'none';
+fsSyncPlatformRow(hasLinks);
 if (rel && rel.apple) { fsApple.href = rel.apple; fsApple.style.display = ''; } else if (fsApple) { fsApple.style.display = 'none'; }
 if (rel && rel.spotify) { fsSpotify.href = rel.spotify; fsSpotify.style.display = ''; } else if (fsSpotify) { fsSpotify.style.display = 'none'; }
 }
@@ -1015,6 +1032,7 @@ function fsRenderLyrics() {
  var entry = file && LYRICS[file];
  var has = !!(entry && entry.lines && entry.lines.length);
  fsLyrToggle.hidden = !has;
+ fsSyncPlatformRow();
  fsLyr.hidden = !has || !_lyrShow;
  fsLyrToggle.setAttribute('aria-expanded', String(has && _lyrShow));
  document.querySelector('.fs-content').classList.toggle('lyrics-on', has && _lyrShow);
@@ -1120,6 +1138,7 @@ fsLyrToggle.addEventListener('click', function() {
 });
 var _fsOpener = null, _fsInerted = [];
 function fsOpen() {
+ if (_fsOpen) return;   // two gestures can both fire; a second open would lose the inert list
  _fsOpener = document.activeElement;
  fsSync();
  fs.classList.add('open');
@@ -1143,6 +1162,7 @@ function fsOpen() {
  setTimeout(function() { document.getElementById('fs-collapse').focus({ preventScroll: true }); }, 60);
 }
 function fsClose() {
+ if (!_fsOpen) return;
  fs.classList.remove('open');
  fs.setAttribute('aria-hidden', 'true');
  // aria-hidden alone doesn't remove buttons/links/the seek bar from the
@@ -1494,8 +1514,10 @@ c.classList.remove('tracks-open');
 var otl = c.querySelector('.rel-tracklist');
 if (otl) otl.style.maxHeight = '0';
 });
+syncTracklistExpanded();
 if (!wasOpen) {
 targetCard.classList.add('tracks-open');
+var tw = targetCard.querySelector('.rel-art-wrap[aria-expanded]'); if (tw) tw.setAttribute('aria-expanded', 'true');
 recalcTracklistHeight(tl);
 if (autoPlay) playRelease(rIdx);
 }
@@ -1507,6 +1529,12 @@ c.classList.remove('tracks-open');
 var otl = c.querySelector('.rel-tracklist');
 if (otl) otl.style.maxHeight = '0';
 });
+syncTracklistExpanded();
+}
+function syncTracklistExpanded() {
+document.querySelectorAll('.rel-card .rel-art-wrap[aria-expanded]').forEach(function(w) {
+w.setAttribute('aria-expanded', String(w.closest('.rel-card').classList.contains('tracks-open')));
+});
 }
 function setupCardListeners() {
 document.querySelectorAll('.rel-card').forEach(function(card, rIdx) {
@@ -1515,6 +1543,11 @@ var wrap = card.querySelector('.rel-art-wrap');
 if (!wrap) return;
 wrap.setAttribute('role', 'button');
 wrap.setAttribute('tabindex', '0');
+// A clear name (not the image alt + hidden badge text) and, for albums,
+// whether its tracklist is showing.
+var relName = RELEASE_LIST[rIdx] ? RELEASE_LIST[rIdx].name : '';
+if (RELEASE_LIST[rIdx] && RELEASE_LIST[rIdx].type === 'Single') { wrap.setAttribute('aria-label', 'Play ' + relName); }
+else { wrap.setAttribute('aria-label', 'Show tracks for ' + relName); wrap.setAttribute('aria-expanded', 'false'); wrap.setAttribute('aria-controls', 'tracklist-' + rIdx); }
 var overlay = document.createElement('div');
 overlay.className = 'rel-play-overlay';
 overlay.innerHTML = '<div class="rel-play-circle">' + PLAY_SVG + '</div>';
@@ -1690,7 +1723,7 @@ if (p && p.then) p.then(function() { thumbVideo.pause(); }).catch(function() {})
    auto-regenerated by the update-content GitHub Action) rather than
    hardcoded here, so adding/removing a project needs no code edit. ── */
 function renderReleaseCard(rel, rIdx) {
-var kindWord = rel.type === 'Single' ? 'Single artwork for ' : rel.type === 'EP' ? 'EP artwork for ' : 'Album cover for ';
+var kindWord = rel.type === 'Single' ? 'Single cover: ' : rel.type === 'EP' ? 'EP cover: ' : 'Album cover: ';
 var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
@@ -1700,7 +1733,7 @@ var tracklist = rel.tracks.length > 1
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ' - ' + escHtml(rel.type) + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
 '<div class="rel-art-wrap">' +
-'<img src="' + escHtml(rel.art) + '" alt="Album artwork: ' + escHtml(kindWord + rel.name + ' by Ash Stu') + '" class="rel-art" width="560" height="560" itemprop="image"/>' +
+'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '" class="rel-art" width="560" height="560" itemprop="image"/>' +
 '<div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">' + escHtml(rel.type) + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div></div>' +
 '</div>' +
 '<div class="rel-btns">' + btns + '</div>' +

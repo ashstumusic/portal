@@ -42,9 +42,9 @@ def enc_path(p):
 
 
 def render_release_card(rel, r_idx):
-    kind_word = ('Single artwork for ' if rel['type'] == 'Single'
-                 else 'EP artwork for ' if rel['type'] == 'EP'
-                 else 'Album cover for ')
+    kind_word = ('Single cover: ' if rel['type'] == 'Single'
+                 else 'EP cover: ' if rel['type'] == 'EP'
+                 else 'Album cover: ')
     btns = ''
     if rel.get('apple'):
         btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
@@ -64,7 +64,7 @@ def render_release_card(rel, r_idx):
     return (f'<article class="rel-card" aria-label="{esc(rel["name"])} - {esc(rel["type"])} by Ash Stu" '
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-art-wrap">'
-            f'<img src="{esc(rel["art"])}" alt="Album artwork: {esc(kind_word + rel["name"] + " by Ash Stu")}" '
+            f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
             f'class="rel-art" width="560" height="560" itemprop="image"/>'
             f'<div class="rel-overlay"><div class="rel-overlay-inner">'
             f'<p class="rel-cat">{esc(rel["type"])}</p>'
