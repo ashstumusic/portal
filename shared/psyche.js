@@ -73,7 +73,7 @@
     }
     function paint() {
       const d = img.data, sin = Math.sin, cos = Math.cos, ar = w / h;
-      const warp = 0.85 + ptr.energy * 0.4, px = (mx - 0.5) * 2.2, py = (my - 0.5) * 2.2;
+      const warp = 0.85 + ptr.energy * 0.15, px = (mx - 0.5) * 2.2, py = (my - 0.5) * 2.2;
       let o = 0;
       for (let j = 0; j < h; j++) {
         const y = (j / h) * 3;
@@ -103,8 +103,8 @@
         const dt = Math.min(0.1, (now - (last || now)) / 1000);
         last = now;
         const v = Math.min(3, Math.abs(scrollVel));
-        t += dt * (0.08 + v * 0.3);                 // fast scrolling stirs the liquid
-        phase += scrollVel * dt * 0.8;              // ...and rolls the colour bands with it
+        t += dt * (0.04 + v * 0.12);                 // fast scrolling stirs the liquid
+        phase += scrollVel * dt * 0.3;              // ...and rolls the colour bands with it
         scrollVel *= 0.9;
         ptr.energy *= 0.94;                         // pointer acceleration decays
         mx += (ptr.x / innerWidth - mx) * 0.05;
@@ -141,7 +141,7 @@
     (function step(now) {
       const p = Math.min(1, (now - t0) / D), ease = 1 - Math.pow(1 - p, 3);
       rp.style.setProperty('--r', (ease * max).toFixed(1) + 'px');
-      rp.style.opacity = String(0.5 * (1 - p * p));
+      rp.style.opacity = String(0.3 * (1 - p * p));
       if (p < 1) requestAnimationFrame(step); else rp.remove();
     })(t0);
   }, { capture: true, passive: true });

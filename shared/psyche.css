@@ -83,3 +83,14 @@
   -webkit-backdrop-filter: saturate(1.2) hue-rotate(15deg) blur(1px);
           backdrop-filter: saturate(1.2) hue-rotate(15deg) blur(1px);
 }
+
+/* Further back (Nov 2026): the field is a soft, desaturated wash - blurred
+   so the colour bands melt together, and faint enough to sit well behind
+   the content. Glass no longer boosts it at all. */
+.psy-field { opacity: .045; filter: blur(24px) saturate(.6); }
+:root[data-theme="dark"] .psy-field { opacity: .07; }
+.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
+  -webkit-backdrop-filter: blur(22px);
+          backdrop-filter: blur(22px);
+}
+.psy .nav { -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
