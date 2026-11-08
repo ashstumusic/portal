@@ -49,32 +49,14 @@
   }
 
   // ── THEME ─────────────────────────────────────────────────────────
-  // The inline <head> script already set data-theme before first paint
-  // (saved choice, else the OS setting), so there's never a flash.
+  // Always the system setting (no toggle): the inline <head> script set
+  // data-theme before first paint; this keeps it in step if the OS
+  // switches (e.g. sunset auto dark mode) while the page is open.
   const sysDark = matchMedia('(prefers-color-scheme: dark)');
-  const themeBtns = $$('.k-theme-btn');
-  const theme = () => root.getAttribute('data-theme') || (sysDark.matches ? 'dark' : 'light');
-  function labelTheme() {
-    const next = theme() === 'dark' ? 'light' : 'dark';
-    for (const b of themeBtns) { b.setAttribute('aria-label', `Switch to ${next} theme`); b.title = `Switch to ${next} theme`; }
-    root.classList.toggle('k-dark', theme() === 'dark');
-  }
-  function setTheme(next, origin) {
-    const apply = () => { root.setAttribute('data-theme', next); labelTheme(); };
-    store.set('k-theme', next);
-    if (origin) {
-      const r = origin.getBoundingClientRect();
-      root.style.setProperty('--k-vt-x', `${r.left + r.width / 2}px`);
-      root.style.setProperty('--k-vt-y', `${r.top + r.height / 2}px`);
-    }
-    if (doc.startViewTransition && motionOK()) doc.startViewTransition(apply);
-    else apply();
-    announce(`${next === 'dark' ? 'Dark' : 'Light'} theme on`);
-  }
-  const toggleTheme = (origin) => setTheme(theme() === 'dark' ? 'light' : 'dark', origin);
-  for (const b of themeBtns) b.addEventListener('click', () => toggleTheme(b));
-  sysDark.addEventListener?.('change', (e) => { if (!store.get('k-theme')) { root.setAttribute('data-theme', e.matches ? 'dark' : 'light'); labelTheme(); } });
-  labelTheme();
+  const theme = () => (sysDark.matches ? 'dark' : 'light');
+  function syncTheme() { root.setAttribute('data-theme', theme()); root.classList.toggle('k-dark', theme() === 'dark'); }
+  sysDark.addEventListener?.('change', syncTheme);
+  syncTheme();
 
   // ── FRAME STATE ───────────────────────────────────────────────────
   const ptr = { x: -1e4, y: -1e4, active: false };
@@ -256,7 +238,6 @@
     }
     for (const v of $$('a.video-link')) items.push({ group: 'Watch a video', title: textOf(v.closest('.video')?.querySelector('.video-name')), run: () => v.click() });
     for (const v of $$('.vid-card')) items.push({ group: 'Watch a video', title: (v.getAttribute('aria-label') || '').replace(/^Play\s*/, '').replace(/^["“]|["”]$/g, ''), run: () => v.click() });
-    items.push({ group: 'Actions', title: theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme', run: () => toggleTheme(themeBtns[0]) });
     const fx = $('.fx-toggle');
     if (fx) items.push({ group: 'Actions', title: fx.getAttribute('aria-pressed') === 'true' ? 'Turn motion effects off' : 'Turn motion effects on', run: () => fx.click() });
     const mail = $('a[href^="mailto:"]');
@@ -412,7 +393,7 @@
     const b = e.target.closest?.('button, .btn, [role="button"]');
     if (!b) return;
     if (e.pointerType === 'touch' && navigator.vibrate && motionOK()) navigator.vibrate(6);
-    blip(b.matches('.k-theme-btn, .fx-toggle, .fs-lyrics-toggle') ? 660 : 880);
+    blip(b.matches('.fx-toggle, .fs-lyrics-toggle') ? 660 : 880);
   }, { passive: true });
 
   // Extra palette entries for these settings.
@@ -433,6 +414,6 @@
     b.title = `Search (${mac ? '⌘K' : 'Ctrl+K'})`;
   }
 
-  window.kinetic = { announce, swapLabel, openPalette, setTheme };
+  window.kinetic = { announce, swapLabel, openPalette };
   }
 })();
