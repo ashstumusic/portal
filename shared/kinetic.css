@@ -340,3 +340,6 @@ img.k-blurup { background-size: cover; background-position: center; }
   .k-spot::after, .k-grain { display: none; }
   .k-opt[aria-selected="true"] { outline: 2px solid Highlight; }
 }
+
+/* Touch-only devices (no keyboard detected): no key hints in the palette. */
+.k-nokeys .k-palette-foot { display: none; }

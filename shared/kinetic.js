@@ -351,6 +351,24 @@
   // WCAG 2.1.4: single-character shortcuts must be switchable off, so the
   // palette has "Turn off single-key shortcuts" (remembered).
   let keysOn = store.get('k-keys') !== 'off', gPending = 0;
+  // Keyboard hints only where there's likely a keyboard: devices with a
+  // mouse or trackpad (any fine pointer). Touch-only phones and tablets
+  // hide them, until a hardware keyboard shows itself (Tab, an arrow, Esc
+  // or a Cmd/Ctrl combo - keys an on-screen keyboard doesn't send).
+  let hasKeys = matchMedia('(any-pointer: fine)').matches;
+  const syncKeys = () => {
+    root.classList.toggle('k-nokeys', !hasKeys);
+    const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    for (const b of $$('.k-search-btn')) {
+      if (hasKeys) { b.setAttribute('aria-keyshortcuts', mac ? 'Meta+K' : 'Control+K'); b.title = `Search (${mac ? '⌘K' : 'Ctrl+K'})`; }
+      else { b.removeAttribute('aria-keyshortcuts'); b.title = 'Search'; }
+    }
+  };
+  doc.addEventListener('keydown', (e) => {
+    if (hasKeys || !(e.key === 'Tab' || e.key === 'Escape' || e.key?.startsWith('Arrow') || e.metaKey || e.ctrlKey)) return;
+    hasKeys = true; syncKeys();
+    if (dlg.open) { all = gatherItems(); render(); }
+  }, true);
   const sectionKeys = () => {
     const map = { h: doc.getElementById('top') || doc.body };
     for (const a of $$('nav a[href^="#"]')) {
@@ -400,7 +418,7 @@
   const _gather = gatherItems;
   gatherItems = function () {   // eslint-disable-line no-func-assign
     const items = _gather();
-    items.push({ group: 'Settings', title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then L / W / A / B, and /', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
+    if (hasKeys) items.push({ group: 'Settings', title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then L / W / A / B, and /', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
     items.push({ group: 'Settings', title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(); } });
     // Page-specific entries (the homepage's psyche.js adds the oracle's
     // suggestions up top and its own settings at the end).
@@ -408,16 +426,13 @@
       try { const extra = window.kineticItems(); items.unshift(...extra.filter((it) => it.group !== 'Settings')); items.push(...extra.filter((it) => it.group === 'Settings')); } catch {}
     }
     // Shortcut hints for section jumps.
-    for (const it of items) if (it.group === 'Go to' && keysOn) it.kbd = ['G', it.title.trim()[0]?.toUpperCase()];
+    for (const it of items) if (it.group === 'Go to' && keysOn && hasKeys) it.kbd = ['G', it.title.trim()[0]?.toUpperCase()];
     return items;
   };
 
-  // Keyboard badges on search buttons: "⌘K" on Apple platforms, "Ctrl K" elsewhere.
-  const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
-  for (const b of $$('.k-search-btn')) {
-    b.setAttribute('aria-keyshortcuts', mac ? 'Meta+K' : 'Control+K');
-    b.title = `Search (${mac ? '⌘K' : 'Ctrl+K'})`;
-  }
+  // Search button tooltips: "⌘K" on Apple platforms, "Ctrl+K" elsewhere,
+  // and no shortcut at all on touch-only devices (see hasKeys).
+  syncKeys();
 
   window.kinetic = { announce, swapLabel, openPalette };
   }
