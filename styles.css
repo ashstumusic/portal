@@ -3489,3 +3489,15 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
    order (not just transparent) while it's faded away. */
 .hero-scroll:focus-visible { opacity: 1; }
 .hero-scroll.hidden { visibility: hidden; transition: opacity .3s var(--ease), visibility 0s linear .3s; }
+
+/* Volume sliders: the unfilled part of the bar gets a visible tint of the
+   player's ink (it was a half-transparent white that vanished on the light
+   glass player). Works on the gold bar and in both glass themes. */
+.vol-slider, .fs-vol .vol-slider, .np-vol .vol-slider {
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgba(8,76,97,.22) var(--vol, 100%));
+  background: linear-gradient(to right, var(--player-ink) var(--vol, 100%), rgb(from var(--player-ink) r g b / .22) var(--vol, 100%));
+  background-clip: content-box;
+}
+/* Same for the full-screen seek bar's empty track (its fixed teal tint
+   disappeared on the dark glass). */
+.fs-bar { background: rgba(8,76,97,.2); background: rgb(from var(--player-ink) r g b / .22); }
