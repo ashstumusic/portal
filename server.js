@@ -53,7 +53,7 @@ app.use(express.json({ limit: '16kb' }));
 // ── PUBLIC FILES: allowlist, never the project root wholesale ──────────
 // Only these are web-visible. Everything else (data.db, .git, server code,
 // node_modules, scripts, package files, .env) is a 404.
-const PUBLIC_DIRS = ['Audio', 'Videos', 'Images', 'Icons', 'Fonts', 'Journal', 'redesign', 'redesign-2'];
+const PUBLIC_DIRS = ['Audio', 'Videos', 'Images', 'Icons', 'Fonts', 'Journal', 'redesign', 'redesign-2', 'lyrics'];
 const PUBLIC_ROOT_FILE = /^\/(?:index|resume|google[\w-]+)\.html$|^\/(?:(?:main|kinetic|psyche)\.[0-9a-f]+\.js|styles(?:\.[0-9a-f]+\.min)?\.css)$|^\/(?:releases|videos|lyrics)\.json$|^\/(?:favicon\.(?:png|webp)|robots\.txt|sitemap\.xml|ash-stu-press-kit\.zip|Ashton[._]Stubblefield_Resume\.pdf)$/;
 const BLOCKED_IN_DIRS = /(?:^|\/)\.|\.(?:md|py|sh)$|\/facts\.json$|\/index\.template\.html$/i;
 const staticOpts = {

@@ -44,11 +44,14 @@ jobs:
       - name: Generate releases.json / videos.json
         run: python3 scripts/generate_content.py
 
+      - name: Build static lyric pages, sitemap entries and robots.txt
+        run: python3 scripts/build_lyrics_pages.py
+
       - name: Commit and push if anything changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add releases.json videos.json lyrics.json sitemap.xml
+          git add releases.json videos.json lyrics.json sitemap.xml robots.txt lyrics
           if git diff --cached --quiet; then
             echo "No content changes - nothing to commit."
           else

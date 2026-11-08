@@ -3583,3 +3583,13 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 :is(.f-btn, .rel-btn):has(.pt)::after { transition: opacity .15s ease; }
 :is(.f-btn, .rel-btn):has(.pt):hover { transform: none; translate: none; }
 :is(.f-btn, .rel-btn):has(.pt):hover .pt { transform: none; }
+
+/* "Latest Release" badge in the device's standard system font. */
+.featured-badge {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 700; font-style: normal; letter-spacing: .08em;
+}
+
+/* Footer: a plain link to the static lyrics pages. */
+.footer-nav a { color: inherit; font: 600 .85rem var(--plain-sans); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; opacity: .85; }
+.footer-nav a:hover, .footer-nav a:focus-visible { text-decoration: underline; opacity: 1; }
