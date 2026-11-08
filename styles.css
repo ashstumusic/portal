@@ -3360,17 +3360,16 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 
 /* ── FONT SUITE (Nov 2026) ───────────────────────────────────────────
    All Google Fonts (OFL), self-hosted; licences sit beside each file.
-     toolbar        Unbounded (static 500 instance)
+     toolbar        Outfit, same as the body text (plain and standard)
      body text      Outfit (variable weight) - via --plain-sans, so buttons,
                     player, lyrics and About copy follow
      small labels   Archivo Narrow (variable weight)
      quote          Crimson Pro Italic (variable weight) */
-@font-face { font-family: 'Toolbar'; src: url('Fonts/unbounded/Unbounded-Medium.ttf') format('truetype'); font-weight: 500; font-display: swap; }
 @font-face { font-family: 'Text'; src: url('Fonts/outfit/Outfit-VF.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Labels'; src: url('Fonts/archivonarrow/ArchivoNarrow-VF.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
 @font-face { font-family: 'Quote'; src: url('Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf') format('truetype'); font-weight: 200 900; font-style: italic; font-display: swap; }
 :root { --plain-sans: 'Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-.nav-links a, .nav-drawer a { font-family: 'Toolbar', var(--plain-sans); font-weight: 500; letter-spacing: .04em; }
+.nav-links a, .nav-drawer a { font-family: var(--plain-sans); font-weight: 600; letter-spacing: .06em; }
 .featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label {
   font-family: 'Labels', 'Arial Narrow', var(--plain-sans); font-weight: 600;
 }
