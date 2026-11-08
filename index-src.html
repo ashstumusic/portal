@@ -100,19 +100,6 @@
       ]
     },
     {
-      "@type": "MusicAlbum",
-      "@id": "https://ashstu.art/#single-waste-my-time",
-      "name": "Waste My Time",
-      "albumProductionType": "SelfReleasedAlbum",
-      "albumReleaseType": "SingleRelease",
-      "datePublished": "2025-01-01",
-      "byArtist": { "@id": "https://ashstu.art/#artist" },
-      "image": "https://ashstu.art/Images/Releases/Waste%20My%20Time.webp",
-      "numTracks": 1,
-      "url": "https://music.apple.com/us/album/waste-my-time-feat-trent-runyon-single/1877338128",
-      "track": [{"@type":"MusicRecording","name":"Waste My Time","position":1,"byArtist":{"@id":"https://ashstu.art/#artist"}}]
-    },
-    {
       "@type": "ContactPage",
       "@id": "https://ashstu.art/#contact",
       "name": "Contact Ash Stu - Booking and Press",
@@ -1539,6 +1526,18 @@ wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
 wrap.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRelOverlay(e, rIdx); } });
 });
 }
+// One lyrics button for every release: a "Lyrics" pill with a chevron,
+// used on each album track and under a single's streaming buttons.
+function makeLyricsBtn(title) {
+var b = document.createElement('button');
+b.type = 'button';
+b.className = 'rel-lyrics-toggle';
+b.setAttribute('aria-label', 'Show lyrics for ' + title);
+b.setAttribute('aria-expanded', 'false');
+b.innerHTML = '<span aria-hidden="true">Lyrics</span><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+b.addEventListener('click', function(e) { e.stopPropagation(); toggleTrackLyrics(this); });
+return b;
+}
 // Singles have no tracklist; when their one song has lyrics, the card gets
 // a "Lyrics" toggle under its streaming buttons that opens the same panel.
 function buildSingleLyrics(rel, rIdx) {
@@ -1548,13 +1547,7 @@ var entry = t && LYRICS[t.file];
 if (!card || card.querySelector('.rel-single-lyrics') || !(entry && entry.lines && entry.lines.length)) return;
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap rel-single-lyrics';
-var btn = document.createElement('button');
-btn.type = 'button';
-btn.className = 'rel-lyrics-toggle rel-lyrics-toggle--single';
-btn.setAttribute('aria-label', 'Show lyrics for ' + t.title);
-btn.setAttribute('aria-expanded', 'false');
-btn.innerHTML = '<span>Lyrics</span><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
-btn.addEventListener('click', function(e) { e.stopPropagation(); toggleTrackLyrics(this); });
+var btn = makeLyricsBtn(t.title);
 var lDiv = document.createElement('div');
 lDiv.className = 'rel-lyrics';
 var lInner = document.createElement('div');
@@ -1594,14 +1587,8 @@ row.innerHTML =
 // screen readers can't operate reliably (axe: nested-interactive).
 var lyrBtn = null;
 if (hasLyrics) {
-lyrBtn = document.createElement('button');
-lyrBtn.type = 'button';
-lyrBtn.className = 'rel-lyrics-toggle';
-lyrBtn.setAttribute('aria-label', 'Show lyrics for ' + t.title);
-lyrBtn.setAttribute('aria-expanded', 'false');
-lyrBtn.innerHTML = '<svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+lyrBtn = makeLyricsBtn(t.title);
 }
-if (lyrBtn) { lyrBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleTrackLyrics(this); }); }
 row.addEventListener('click', function() { playTrack(rIdx, tIdx); });
 row.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); playTrack(rIdx, tIdx); } });
 wrap.appendChild(row);
