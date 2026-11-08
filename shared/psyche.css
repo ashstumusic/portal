@@ -69,3 +69,17 @@
 /* Background only: every effect lives on the z-index -1 layer behind the
    page (field first, then the ripple, in DOM order), so content is
    always on top and the effects only show through open space and glass. */
+
+/* Quieter (Nov 2026): the liquid field is a faint tint, the glass barely
+   saturates it, and the click ripple is a soft shimmer. */
+.psy-field { opacity: .07; }
+:root[data-theme="dark"] .psy-field { opacity: .1; }
+.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+          backdrop-filter: blur(22px) saturate(1.15);
+}
+.psy .nav { -webkit-backdrop-filter: blur(18px) saturate(1.15); backdrop-filter: blur(18px) saturate(1.15); }
+.psy-ripple {
+  -webkit-backdrop-filter: saturate(1.2) hue-rotate(15deg) blur(1px);
+          backdrop-filter: saturate(1.2) hue-rotate(15deg) blur(1px);
+}

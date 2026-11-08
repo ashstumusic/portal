@@ -141,7 +141,7 @@
     (function step(now) {
       const p = Math.min(1, (now - t0) / D), ease = 1 - Math.pow(1 - p, 3);
       rp.style.setProperty('--r', (ease * max).toFixed(1) + 'px');
-      rp.style.opacity = String(1 - p * p);
+      rp.style.opacity = String(0.5 * (1 - p * p));
       if (p < 1) requestAnimationFrame(step); else rp.remove();
     })(t0);
   }, { capture: true, passive: true });
