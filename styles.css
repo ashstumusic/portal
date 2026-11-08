@@ -3551,3 +3551,16 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 .fs-lyric button, .fs-lyric--plain, .rel-lyrics-inner, .fs-lyric.is-current button {
   font-family: 'Lyrics', Georgia, 'Times New Roman', serif; font-weight: 400; font-synthesis: none; font-optical-sizing: auto;
 }
+
+/* The line being sung gets a gold highlighter band (dark text on gold
+   reads in both themes; gold text alone would be 1.6:1 on the light glass). */
+.fs-lyric.is-current button, .fs-lyric.is-current button:hover {
+  background: var(--gold); color: #084C61; opacity: 1;
+}
+.fs-lyric.is-current button::before { background: #084C61; }
+.fs-lyric button { transition: transform .25s var(--ease), opacity .25s var(--ease), background-color .2s var(--ease), color .2s var(--ease); }
+:root[data-theme="dark"] .fs-player .fs-lyric.is-current button { color: #08141A; }
+:root[data-theme="dark"] .fs-player .fs-lyric.is-current button::before { background: #08141A; }
+/* The current line scales up 6%; narrow it so the band ends flush instead of clipping. */
+.fs-lyric.is-current button { width: calc(100% / 1.06); }
+@media (prefers-reduced-motion: reduce) { .fs-lyric.is-current button { width: 100%; } }
