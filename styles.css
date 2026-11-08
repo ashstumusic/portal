@@ -3455,23 +3455,26 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
   box-shadow: 0 2px 12px rgba(247,197,73,.4); box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
 }
 
-/* Full-screen player: the Lyrics toggle sits in the same row as the
-   streaming buttons, same height (it stretches to the row) and shape. The
-   streaming buttons share the remaining width; Lyrics keeps its own size. */
-.fs-platforms { align-items: stretch; flex-wrap: nowrap; }
-.fs-platforms .f-btn { flex: 1 1 0; width: auto; min-width: 0; max-width: 148px; }
-.fs-platforms .fs-lyrics-toggle {
-  flex: none; margin-top: 0; height: auto; min-height: 36px; padding: 0 .9rem;
+/* Full-screen player: Lyrics sits at the end of the volume row; the
+   streaming buttons live at the bottom, under the lyrics. */
+.fs-vol-row { display: flex; align-items: center; justify-content: center; gap: .75rem; width: 100%; margin: 1.25rem auto 0; }
+.fs-vol-row .fs-vol { margin: 0; flex: 1 1 auto; min-width: 0; max-width: 340px; }
+.fs-vol-row .fs-lyrics-toggle {
+  flex: none; margin-top: 0; height: 36px; min-height: 36px; padding: 0 .9rem;
   border-width: 1px; border-radius: 12px; font-size: .7rem;
 }
+.fs-platforms { flex-wrap: nowrap; }
+.fs-platforms .f-btn { flex: 1 1 0; width: auto; min-width: 0; max-width: 148px; }
+.fs-content.lyrics-on .fs-platforms { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--hairline); }
 @media (max-width: 400px) {
   .fs-platforms.fs-platforms { flex-wrap: nowrap; gap: .45rem; }
   .fs-platforms .f-btn.f-btn { flex: 1 1 0; width: auto; max-width: none; padding: 0 .4rem; }
 }
-/* Fold covers: the streaming buttons drop to icons (their aria-labels
-   still name them) so all three stay on one line. */
-@media (max-width: 340px) {
-  .fs-platforms .f-btn.f-btn { font-size: 0; gap: 0; }
+/* Short landscape phones: the side-by-side grid gets the new row order. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .fs-vol-row { grid-column: 2; grid-row: 4; margin-top: .5rem; }
+  .fs-lyrics { grid-column: 1 / -1; }
+  .fs-platforms { grid-column: 1 / -1; grid-row: auto; }
 }
 
 /* A collapsed tracklist is hidden from Tab and screen readers too, not
