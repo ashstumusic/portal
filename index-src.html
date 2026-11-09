@@ -250,7 +250,6 @@
   </div>
   <div class="hero-split-right" id="party">
     <div class="party-aurora" aria-hidden="true"></div>
-    <div class="party-grid" aria-hidden="true"></div>
     <canvas class="confetti-canvas" id="confetti-canvas"></canvas>
     <span class="featured-badge" id="featured-badge"><span class="party-dot" aria-hidden="true"></span> Latest Release</span>
     <div class="featured-art-wrap featured-art-hero">
@@ -2038,7 +2037,11 @@ const ctx = cvs.getContext('2d', { desynchronized: true, alpha: true });
 const TWO_PI = Math.PI * 2, DEG2RAD = Math.PI / 180;
 const pieces = [];
 let cw, ch;
-function resize() { const r = cvs.parentElement.getBoundingClientRect(); cw = cvs.width = r.width; ch = cvs.height = r.height; }
+/* 8-bit mode (html.nes, see shared/psyche.js): drawn at 1/4 resolution,
+   shown with square pixels (psyche.js also drops every animation to 12 fps). */
+const NES_Q = .25;
+let Q = 1;
+function resize() { const r = cvs.parentElement.getBoundingClientRect(); cw = r.width; ch = r.height; cvs.width = Math.max(1, Math.round(cw * Q)); cvs.height = Math.max(1, Math.round(ch * Q)); }
 resize();
 let resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); }, { passive: true });
@@ -2059,9 +2062,12 @@ let running = false, lastT = null, rafId = null;
 function draw(t) {
 if (!running) { lastT = null; rafId = null; return; }
 if (lastT === null) { lastT = t; rafId = requestAnimationFrame(draw); return; }
-const dt = Math.min(t - lastT, 50) / 16.667;
+const nes = document.documentElement.classList.contains('nes');
+if ((nes ? NES_Q : 1) !== Q) { Q = nes ? NES_Q : 1; resize(); }
+const dt = Math.min(t - lastT, nes ? 120 : 50) / 16.667;
 lastT = t;
-ctx.clearRect(0, 0, cw, ch);
+ctx.setTransform(1, 0, 0, 1, 0, 0);
+ctx.clearRect(0, 0, cvs.width, cvs.height);
 for (let i = 0; i < pieces.length; i++) {
 const p = pieces[i];
 p.x += (p.dx + Math.sin(p.wobble) * .5) * dt;
@@ -2073,7 +2079,7 @@ if (p.y > ch + 20) { p.y = -20; p.x = Math.random() * cw; }
 const c = Math.cos(p.rot), s = Math.sin(p.rot), sx = .4 + Math.abs(Math.sin(p.flex)) * .6;
 ctx.globalAlpha = p.opacity;
 ctx.fillStyle = p.color;
-ctx.setTransform(sx * c, sx * s, -s, c, p.x, p.y);
+ctx.setTransform(sx * c * Q, sx * s * Q, -s * Q, c * Q, p.x * Q, p.y * Q);
 ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
 }
 for (let i = bursts.length - 1; i >= 0; i--) {
@@ -2085,7 +2091,7 @@ if (b.life <= 0 || b.y > ch + 30) { bursts.splice(i, 1); continue; }
 const c = Math.cos(b.rot), s = Math.sin(b.rot), sx = .35 + Math.abs(Math.sin(b.flex)) * .65;
 ctx.globalAlpha = Math.min(1, b.life * 1.6);
 ctx.fillStyle = b.color;
-ctx.setTransform(sx * c, sx * s, -s, c, b.x, b.y);
+ctx.setTransform(sx * c * Q, sx * s * Q, -s * Q, c * Q, b.x * Q, b.y * Q);
 if (b.round) { ctx.beginPath(); ctx.arc(0, 0, b.w * .6, 0, TWO_PI); ctx.fill(); }
 else ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
 }

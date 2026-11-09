@@ -166,32 +166,42 @@
     const routed = new Map();   // media element -> its MediaElementSource
 
     // ── pixel art: downscale, ordered-dither, snap to the palette ──
+    // Sprites (logo, streaming icons) get hard on/off transparency too.
+    function toPixels(src, sw, sh, LONG) {
+      const k = LONG / Math.max(sw, sh);
+      const w = Math.max(8, Math.round(sw * k)), h = Math.max(8, Math.round(sh * k));
+      const c = doc.createElement('canvas'); c.width = w; c.height = h;
+      const x = c.getContext('2d', { willReadFrequently: true });
+      x.imageSmoothingQuality = 'high';
+      x.drawImage(src, 0, 0, w, h);
+      const d = x.getImageData(0, 0, w, h), px = d.data;
+      for (let i = 0; i < px.length; i += 4) {
+        const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 28;
+        const r = px[i] + t, g = px[i + 1] + t, b = px[i + 2] + t;
+        let best = 0, bd = Infinity;
+        for (let j = 0; j < PAL.length; j++) { const q = PAL[j], dd = (r - q[0]) ** 2 * 0.3 + (g - q[1]) ** 2 * 0.59 + (b - q[2]) ** 2 * 0.11; if (dd < bd) { bd = dd; best = j; } }
+        px[i] = PAL[best][0]; px[i + 1] = PAL[best][1]; px[i + 2] = PAL[best][2];
+        px[i + 3] = px[i + 3] > 110 ? 255 : 0;
+      }
+      x.putImageData(d, 0, 0);
+      return c;
+    }
+    const SPRITE = 16;   // the logo: a 16×16 sprite
     function pixelate(img) {
       if (!img.complete || !img.naturalWidth || img.dataset.nesOut === img.currentSrc) return;
       if (img.closest('.k-palette')) return;
-      const LONG = img.classList.contains('hero-split-photo') ? 160 : 96;   // pixel art, but still recognisable
-      const k = LONG / Math.max(img.naturalWidth, img.naturalHeight);
-      const w = Math.max(8, Math.round(img.naturalWidth * k)), h = Math.max(8, Math.round(img.naturalHeight * k));
-      const c = doc.createElement('canvas'); c.width = w; c.height = h;
-      const x = c.getContext('2d', { willReadFrequently: true });
+      const LONG = img.matches('.hero-icon, .footer-logo img') ? SPRITE
+        : img.classList.contains('hero-split-photo') ? 160 : 96;   // pixel art, but still recognisable
       try {
-        x.drawImage(img, 0, 0, w, h);
-        const d = x.getImageData(0, 0, w, h), px = d.data;
-        for (let i = 0; i < px.length; i += 4) {
-          const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 28;
-          const r = px[i] + t, g = px[i + 1] + t, b = px[i + 2] + t;
-          let best = 0, bd = Infinity;
-          for (let j = 0; j < PAL.length; j++) { const q = PAL[j], dd = (r - q[0]) ** 2 * 0.3 + (g - q[1]) ** 2 * 0.59 + (b - q[2]) ** 2 * 0.11; if (dd < bd) { bd = dd; best = j; } }
-          px[i] = PAL[best][0]; px[i + 1] = PAL[best][1]; px[i + 2] = PAL[best][2];
-        }
-        x.putImageData(d, 0, 0);
+        const c = toPixels(img, img.naturalWidth, img.naturalHeight, LONG);
         // Blow the pixel art back up to the photo's own dimensions (hard
         // square pixels, no smoothing): layouts that size an image from
         // its natural pixels (like the press kit photo columns) would
         // otherwise shrink to the tiny copy.
-        const k2 = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+        // Sprites scale by a whole number so every pixel is the same size.
         const up = doc.createElement('canvas');
-        up.width = Math.round(img.naturalWidth * k2); up.height = Math.round(img.naturalHeight * k2);
+        if (LONG === SPRITE) { const n = Math.ceil(Math.max(img.naturalWidth, img.naturalHeight) / Math.max(c.width, c.height)); up.width = c.width * n; up.height = c.height * n; }
+        else { const k2 = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)); up.width = Math.round(img.naturalWidth * k2); up.height = Math.round(img.naturalHeight * k2); }
         const ux = up.getContext('2d'); ux.imageSmoothingEnabled = false;
         ux.drawImage(c, 0, 0, up.width, up.height);
         const out = up.toDataURL('image/png');
@@ -201,7 +211,29 @@
         img.classList.add('nes-px');
       } catch { /* a cross-origin image can't be read back; leave it */ }
     }
+    // Streaming icons are CSS backgrounds (.pt--apple etc.), not <img>s:
+    // redraw each as a 12×12 sprite and swap it in with one style sheet.
+    let ptCss = '';
+    async function pixelIcons() {
+      if (!ptCss) {
+        const rules = [];
+        for (const name of ['apple', 'spotify', 'youtube']) {
+          const probe = doc.createElement('span'); probe.className = 'pt pt--' + name; probe.hidden = true;
+          doc.body.append(probe);
+          const url = (getComputedStyle(probe).backgroundImage.match(/url\(["']?(.*?)["']?\)/) || [])[1];
+          probe.remove();
+          if (!url) continue;
+          try {
+            const im = new Image(); im.src = url; await im.decode();
+            rules.push(`html.nes .pt--${name}{background-image:url(${toPixels(im, im.naturalWidth, im.naturalHeight, 12).toDataURL('image/png')})!important}`);
+          } catch { /* leave the normal icon */ }
+        }
+        ptCss = rules.join('') + 'html.nes .pt{image-rendering:pixelated}';
+      }
+      if (on && !$('#nes-pt')) { const st = doc.createElement('style'); st.id = 'nes-pt'; st.textContent = ptCss; doc.head.append(st); }
+    }
     function pixelateAll() {
+      pixelIcons();
       for (const img of $$('img')) {
         if (img.complete) pixelate(img); else img.addEventListener('load', () => on && pixelate(img), { once: true });
       }
@@ -215,6 +247,127 @@
       }
     }
 
+    // ── one NES frame rate (12 fps) for everything that moves ──
+    // Scripted animation (confetti, the field, the players, the video
+    // canvases) all runs off requestAnimationFrame: in 8-bit mode its
+    // callbacks are held and released together 12 times a second. CSS
+    // animations and transitions are paused and stepped forward by hand on
+    // the same beat, then finished normally so their end events still fire.
+    const FPS = 12, STEP = 1000 / FPS;
+    const nativeRaf = window.requestAnimationFrame.bind(window), nativeCaf = window.cancelAnimationFrame.bind(window);
+    const held = new Map(), stepped = new Set();
+    let heldId = 1e9, beat = 0, lastBeat = 0;
+    window.requestAnimationFrame = (cb) => { if (!on) return nativeRaf(cb); const id = ++heldId; held.set(id, cb); if (!beat) beat = nativeRaf(tick); return id; };
+    window.cancelAnimationFrame = (id) => { if (!held.delete(id)) nativeCaf(id); };
+    function tick(t) {
+      beat = 0;
+      if (!on) return;
+      if (t - lastBeat < STEP - 4) { beat = nativeRaf(tick); return; }
+      const dt = lastBeat ? Math.min(t - lastBeat, 250) : STEP;
+      lastBeat = t;
+      // CSS animations and transitions: catch new ones, step the rest.
+      // (Scroll-driven animations follow the scroll, not the clock: left alone.)
+      if (doc.getAnimations) for (const a of doc.getAnimations()) if (a.playState === 'running' && a.timeline === doc.timeline && typeof a.currentTime === 'number') { a.pause(); stepped.add(a); }
+      for (const a of stepped) {
+        try {
+          if (a.playState === 'idle' || a.playState === 'finished' || typeof a.currentTime !== 'number') { stepped.delete(a); continue; }
+          const now = a.currentTime + dt * a.playbackRate, end = a.effect?.getComputedTiming().endTime;
+          if (typeof end === 'number' && now >= end) { stepped.delete(a); a.finish(); } else a.currentTime = now;
+        } catch { stepped.delete(a); }
+      }
+      const cbs = [...held.values()]; held.clear();
+      for (const cb of cbs) { try { cb(t); } catch (e) { console.error(e); } }
+      beat = nativeRaf(tick);   // keep beating while CSS animations are being stepped or callbacks wait
+    }
+    function frameOn() { lastBeat = 0; if (!beat) beat = nativeRaf(tick); }
+    function frameOff() {
+      nativeCaf(beat); beat = 0;
+      for (const a of stepped) { try { a.play(); } catch { /* gone */ } }
+      stepped.clear();
+      const cbs = [...held.values()]; held.clear();
+      for (const cb of cbs) nativeRaf(cb);   // hand waiting callbacks back to the normal frame rate
+    }
+
+    // ── videos as pixel art ──
+    // A canvas laid over each video redraws every frame at 128 pixels
+    // across, dithered and snapped to the NES palette, and shown with
+    // square pixels. It ignores the pointer, and lifts off the bottom strip
+    // (the player's controls) while the video is paused or being pointed at.
+    // (Full screen shows the video itself: the canvas can't follow it there.)
+    const VW = 128;
+    const palCache = new Int16Array(32768).fill(-1);   // 5-bit RGB -> palette index
+    function nearest(r, g, b) {
+      const key = ((r < 0 ? 0 : r > 255 ? 255 : r) >> 3) << 10 | ((g < 0 ? 0 : g > 255 ? 255 : g) >> 3) << 5 | ((b < 0 ? 0 : b > 255 ? 255 : b) >> 3);
+      let best = palCache[key];
+      if (best < 0) {
+        let bd = Infinity;
+        for (let j = 0; j < PAL.length; j++) { const q = PAL[j], dd = (r - q[0]) ** 2 * 0.3 + (g - q[1]) ** 2 * 0.59 + (b - q[2]) ** 2 * 0.11; if (dd < bd) { bd = dd; best = j; } }
+        palCache[key] = best;
+      }
+      return PAL[best];
+    }
+    const vids = new Map();   // video -> { cv, x, last, poke }
+    let vidRaf = 0;
+    function vidAttach(v) {
+      if (vids.has(v)) return;
+      const cv = doc.createElement('canvas');
+      cv.className = 'nes-vid'; cv.setAttribute('aria-hidden', 'true');
+      v.after(cv);
+      const st = { cv, x: cv.getContext('2d', { willReadFrequently: true }), last: -1, poke: 0, key: '' };
+      const host = v.parentElement;
+      st.move = () => { st.poke = performance.now(); };
+      host.addEventListener('pointermove', st.move, { passive: true });
+      host.addEventListener('pointerdown', st.move, { passive: true });
+      st.host = host;
+      vids.set(v, st);
+    }
+    function vidFrame() {
+      if (!on) return;
+      vidRaf = requestAnimationFrame(vidFrame);
+      for (const v of $$('video')) vidAttach(v);
+      for (const [v, st] of vids) {
+        if (!v.isConnected) { st.cv.remove(); vids.delete(v); continue; }
+        const cv = st.cv;
+        const vw = v.videoWidth, vh = v.videoHeight;
+        if (v.readyState < 2 || !vw || !v.offsetWidth || doc.fullscreenElement === v) { cv.style.display = 'none'; continue; }
+        // The picture's own box inside the element (object-fit: contain letterboxing).
+        const ew = v.offsetWidth, eh = v.offsetHeight, k = (getComputedStyle(v).objectFit === 'cover' ? Math.max : Math.min)(ew / vw, eh / vh);
+        const pw = vw * k, ph = vh * k, pl = v.offsetLeft + (ew - pw) / 2, pt = v.offsetTop + (eh - ph) / 2;
+        const key = `${pl}|${pt}|${pw}|${ph}`;
+        if (key !== st.key) {
+          st.key = key;
+          Object.assign(cv.style, { position: 'absolute', left: pl + 'px', top: pt + 'px', width: pw + 'px', height: ph + 'px', pointerEvents: 'none', imageRendering: 'pixelated', zIndex: '1' });
+        }
+        cv.style.display = '';
+        // Controls: show the real video along the bottom strip when they're up.
+        const ctl = v.controls && (v.paused || performance.now() - st.poke < 2500);
+        const strip = Math.max(0, (eh - 56) - (pt - v.offsetTop));   // controls sit in the element's bottom 56px
+        cv.style.clipPath = ctl ? `inset(0 0 ${Math.max(0, ph - strip)}px 0)` : '';
+        if (v.currentTime === st.last && cv.width) continue;
+        st.last = v.currentTime;
+        const w = VW, h = Math.max(8, Math.round(VW * vh / vw));
+        if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+        const x = st.x;
+        try {
+          x.imageSmoothingQuality = 'high';
+          x.drawImage(v, 0, 0, w, h);
+          const d = x.getImageData(0, 0, w, h), px = d.data;
+          for (let i = 0; i < px.length; i += 4) {
+            const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 28;
+            const q = nearest(px[i] + t, px[i + 1] + t, px[i + 2] + t);
+            px[i] = q[0]; px[i + 1] = q[1]; px[i + 2] = q[2];
+          }
+          x.putImageData(d, 0, 0);
+        } catch { cv.style.display = 'none'; }   // a cross-origin video can't be read back
+      }
+    }
+    function vidOn() { cancelAnimationFrame(vidRaf); vidFrame(); }
+    function vidOff() {
+      cancelAnimationFrame(vidRaf);
+      for (const [, st] of vids) { st.cv.remove(); st.host.removeEventListener('pointermove', st.move); st.host.removeEventListener('pointerdown', st.move); }
+      vids.clear();
+    }
+
     // ── the name as pixel art ──
     // A mosaic filter on big text drops tiles on the GPU (parts of the
     // name vanished), so the name is redrawn instead: painted at full size
@@ -223,44 +376,54 @@
     // of the live text. The text itself stays in the page, invisible, for
     // screen readers, search and copying.
     let nameObs = null, nameRaf = 0;
+    // Draws every line of an element's own text (not its child elements',
+    // which are redrawn separately), word by word at the positions the
+    // browser laid them out, so multi-line text like the quote works too.
     function pixelName(el) {
-      const tn = [...el.childNodes].find((n) => n.nodeType === 3 && n.nodeValue.trim());
-      if (!tn) return;
-      el.classList.remove('nes-name');            // measure and read colour from the real text
+      const tns = [...el.childNodes].filter((n) => n.nodeType === 3 && n.nodeValue.trim());
+      if (!tns.length) return;
       const box = el.getBoundingClientRect();
       if (box.width < 4 || box.height < 4) return;
       const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize);
-      const rg = doc.createRange(); rg.selectNodeContents(tn);
-      const tr = rg.getBoundingClientRect();
-      // Baseline: where a zero-size inline-block placed after the text sits.
-      const probe = doc.createElement('span');
-      probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
-      el.insertBefore(probe, tn.nextSibling);
-      const base = probe.getBoundingClientRect().top - box.top;
-      el.removeChild(probe);
-      const B = Math.max(3, Math.round(fs / 22));  // block size in screen pixels
+      const B = Math.max(2, Math.round(fs / 11));  // block size in screen pixels: chunky, NES-title sized
       const W = Math.ceil(box.width), H = Math.ceil(box.height);
       const big = doc.createElement('canvas'); big.width = W; big.height = H;
       const g = big.getContext('2d');
       g.font = `${cs.fontStyle} ${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
       if ('letterSpacing' in g) g.letterSpacing = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
       g.fillStyle = cs.color; g.textBaseline = 'alphabetic';
-      g.fillText(tn.nodeValue.trim(), tr.left - box.left, base);
+      const m = g.measureText('Hg'), asc = m.fontBoundingBoxAscent ?? fs * 0.8, desc = m.fontBoundingBoxDescent ?? fs * 0.2;
+      const tt = (t) => cs.textTransform === 'uppercase' ? t.toUpperCase() : cs.textTransform === 'lowercase' ? t.toLowerCase() : t;
+      const rg = doc.createRange();
+      for (const tn of tns) {
+        for (const w of tn.nodeValue.matchAll(/\S+/g)) {
+          rg.setStart(tn, w.index); rg.setEnd(tn, w.index + w[0].length);
+          const r = rg.getBoundingClientRect();
+          if (!r.width) continue;
+          g.fillText(tt(w[0]), r.left - box.left, r.top - box.top + (r.height - asc - desc) / 2 + asc);
+        }
+      }
       const w = Math.ceil(W / B), h = Math.ceil(H / B);
       const sm = doc.createElement('canvas'); sm.width = w; sm.height = h;
       const x = sm.getContext('2d', { willReadFrequently: true });
       x.imageSmoothingQuality = 'high';
       x.drawImage(big, 0, 0, w, h);
       const d = x.getImageData(0, 0, w, h), px = d.data;
-      for (let i = 3; i < px.length; i += 4) px[i] = px[i] > 96 ? 255 : 0;   // hard edges, no anti-aliasing
+      let top = 0; for (let i = 3; i < px.length; i += 4) if (px[i] > top) top = px[i];   // the text colour's own opacity
+      for (let i = 3; i < px.length; i += 4) px[i] = px[i] > top * 0.4 ? top : 0;   // hard edges, no anti-aliasing
       x.putImageData(d, 0, 0);
-      el.style.setProperty('--nes-name', `url(${sm.toDataURL('image/png')})`);
-      el.style.setProperty('--nes-name-size', `${w * B}px ${h * B}px`);
-      el.classList.add('nes-name');
+      return () => {
+        el.style.setProperty('--nes-name', `url(${sm.toDataURL('image/png')})`);
+        el.style.setProperty('--nes-name-size', `${w * B}px ${h * B}px`);
+        el.classList.add('nes-name');
+      };
     }
-    const names = () => $$('.hero-name');
+    const names = () => $$('.hero-name, .disc-quote, .disc-quote cite');
     function nameOn() {
-      const run = () => { cancelAnimationFrame(nameRaf); nameRaf = requestAnimationFrame(() => on && names().forEach(pixelName)); };
+      // Measure everything with the live text showing (a child like the
+      // quote's credit would otherwise inherit the hidden colour), then swap.
+      const all = () => { const els = names(); els.forEach((el) => el.classList.remove('nes-name')); els.map(pixelName).forEach((f) => f?.()); };
+      const run = () => { cancelAnimationFrame(nameRaf); nameRaf = requestAnimationFrame(() => on && all()); };
       (doc.fonts?.ready || Promise.resolve()).then(() => {
         if (!on) return;
         run();
@@ -380,6 +543,8 @@
         textObs.observe(doc.body, { subtree: true, childList: true });
         pixelateAll();
         nameOn();
+        vidOn();
+        frameOn();
         imgObs = new MutationObserver((ms) => { for (const m of ms) if (m.target.tagName === 'IMG' && m.target.src !== m.target.dataset.nesOut) { delete m.target.dataset.nesOrig; m.target.complete ? pixelate(m.target) : m.target.addEventListener('load', () => on && pixelate(m.target), { once: true }); } });
         imgObs.observe(doc.body, { subtree: true, attributes: true, attributeFilter: ['src'] });
         tone([[523, 70], [659, 70], [784, 70], [1047, 70], [784, 70], [1047, 220]]);   // power-on jingle
@@ -391,6 +556,8 @@
         for (const el of $$('[data-nes-text]')) delete el.dataset.nesText;
         restoreAll();
         nameOff();
+        frameOff();
+        vidOff();
         tone([[784, 70], [523, 70], [392, 70], [262, 200]]);
         announce('8-bit mode off.');
       }
