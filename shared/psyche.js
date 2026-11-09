@@ -280,8 +280,8 @@
       else tone([[1760, 35]], 'square', 0.04);   // menu blip
     }, { passive: true, capture: true });
 
-    // Big text (22px+) gets the chunky mosaic; everything smaller keeps full
-    // resolution with hard pixel edges, so it all stays readable.
+    // Every element with its own text gets hard pixel edges at full
+    // resolution, so it all stays readable.
     function tagText() {
       for (const el of $$('body *:not(script):not(style):not(svg *)')) {
         if (el.dataset.nesText || el.closest('#nes-svg')) continue;
@@ -294,16 +294,11 @@
       on = next;
       if (on) {
         if (!$('#nes-svg')) {
-          // nes-px: 3x3 mosaic (big text). nes-crisp: hard pixel edges, full
-          // resolution (small text and icons stay readable). nes-poster:
+          // nes-crisp: hard pixel edges at full resolution (text and icons
+          // stay readable and render reliably on the GPU). nes-poster:
           // a limited retro colour range for whole regions.
           const box = doc.createElement('div');
           box.innerHTML = '<svg id="nes-svg" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;width:0;height:0">'
-            + '<filter id="nes-px" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">'
-            + '<feFlood x="1" y="1" width="1" height="1" flood-color="#000"/>'
-            + '<feComposite width="3" height="3"/><feTile result="grid"/>'
-            + '<feComposite in="SourceGraphic" in2="grid" operator="in"/>'
-            + '<feMorphology operator="dilate" radius="1"/></filter>'
             + '<filter id="nes-crisp" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 1 1 1 1 1 1 1"/></feComponentTransfer></filter>'
             + '<filter id="nes-poster" color-interpolation-filters="sRGB"><feComponentTransfer>'
             + '<feFuncR type="discrete" tableValues="0 .125 .25 .375 .5 .625 .75 .875 1"/><feFuncG type="discrete" tableValues="0 .125 .25 .375 .5 .625 .75 .875 1"/><feFuncB type="discrete" tableValues="0 .125 .25 .375 .5 .625 .75 .875 1"/>'
