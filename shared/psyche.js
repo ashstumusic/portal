@@ -212,7 +212,7 @@
       } catch { /* a cross-origin image can't be read back; leave it */ }
     }
     // Streaming icons are CSS backgrounds (.pt--apple etc.), not <img>s:
-    // redraw each as a 12×12 sprite and swap it in with one style sheet.
+    // redraw each as a 16×16 sprite and swap it in with one style sheet.
     let ptCss = '';
     async function pixelIcons() {
       if (!ptCss) {
@@ -225,7 +225,7 @@
           if (!url) continue;
           try {
             const im = new Image(); im.src = url; await im.decode();
-            rules.push(`html.nes .pt--${name}{background-image:url(${toPixels(im, im.naturalWidth, im.naturalHeight, 12).toDataURL('image/png')})!important}`);
+            rules.push(`html.nes .pt--${name}{background-image:url(${toPixels(im, im.naturalWidth, im.naturalHeight, 16).toDataURL('image/png')})!important}`);
           } catch { /* leave the normal icon */ }
         }
         ptCss = rules.join('') + 'html.nes .pt{image-rendering:pixelated}';
@@ -385,7 +385,8 @@
       const box = el.getBoundingClientRect();
       if (box.width < 4 || box.height < 4) return;
       const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize);
-      const B = Math.max(2, Math.round(fs / 11));  // block size in screen pixels: chunky, NES-title sized
+      // Block size in screen pixels: chunky, NES-title sized (the name a touch finer than the quote).
+      const B = Math.max(2, Math.round(fs / (el.classList.contains('hero-name') ? 14 : 11)));
       const W = Math.ceil(box.width), H = Math.ceil(box.height);
       const big = doc.createElement('canvas'); big.width = W; big.height = H;
       const g = big.getContext('2d');
