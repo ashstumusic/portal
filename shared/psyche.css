@@ -122,6 +122,12 @@ html.nes :is(.nav, .nav-drawer, main > *, footer, #player-bar, .fs-player, .k-pa
    tiles: half a quote, or the name, would vanish.) */
 html.nes :is([data-nes-text], svg:not(#nes-svg)) { filter: url(#nes-crisp); }
 html.nes :is(img.nes-px, canvas) { image-rendering: pixelated; }
+/* The name, redrawn as pixel art by the script (see pixelName). */
+html.nes .nes-name {
+  color: transparent !important; -webkit-text-fill-color: transparent !important;
+  background: var(--nes-name) 0 0 / var(--nes-name-size) no-repeat border-box !important;
+  image-rendering: pixelated; filter: none !important;
+}
 html.nes .psy-ripple { display: none !important; }
 /* No blur in 8-bit mode, so the glass panels go solid (same light/dark colour). */
 html.nes :is(.fs-player, #player-bar, .k-palette-box) { background: rgb(250 252 252) !important; }

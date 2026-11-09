@@ -185,7 +185,16 @@
           px[i] = PAL[best][0]; px[i + 1] = PAL[best][1]; px[i + 2] = PAL[best][2];
         }
         x.putImageData(d, 0, 0);
-        const out = c.toDataURL('image/png');
+        // Blow the pixel art back up to the photo's own dimensions (hard
+        // square pixels, no smoothing): layouts that size an image from
+        // its natural pixels (like the press kit photo columns) would
+        // otherwise shrink to the tiny copy.
+        const k2 = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+        const up = doc.createElement('canvas');
+        up.width = Math.round(img.naturalWidth * k2); up.height = Math.round(img.naturalHeight * k2);
+        const ux = up.getContext('2d'); ux.imageSmoothingEnabled = false;
+        ux.drawImage(c, 0, 0, up.width, up.height);
+        const out = up.toDataURL('image/png');
         if (!img.dataset.nesOrig) { img.dataset.nesOrig = img.getAttribute('src') || ''; if (img.srcset) { img.dataset.nesSrcset = img.srcset; img.removeAttribute('srcset'); } }
         img.dataset.nesOut = out;
         img.src = out;
@@ -204,6 +213,66 @@
         delete img.dataset.nesOrig; delete img.dataset.nesOut; delete img.dataset.nesSrcset;
         img.classList.remove('nes-px');
       }
+    }
+
+    // ── the name as pixel art ──
+    // A mosaic filter on big text drops tiles on the GPU (parts of the
+    // name vanished), so the name is redrawn instead: painted at full size
+    // into a canvas, shrunk to one pixel per ~6 screen pixels with hard
+    // (thresholded) edges, then shown scaled up with square pixels in place
+    // of the live text. The text itself stays in the page, invisible, for
+    // screen readers, search and copying.
+    let nameObs = null, nameRaf = 0;
+    function pixelName(el) {
+      const tn = [...el.childNodes].find((n) => n.nodeType === 3 && n.nodeValue.trim());
+      if (!tn) return;
+      el.classList.remove('nes-name');            // measure and read colour from the real text
+      const box = el.getBoundingClientRect();
+      if (box.width < 4 || box.height < 4) return;
+      const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize);
+      const rg = doc.createRange(); rg.selectNodeContents(tn);
+      const tr = rg.getBoundingClientRect();
+      // Baseline: where a zero-size inline-block placed after the text sits.
+      const probe = doc.createElement('span');
+      probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+      el.insertBefore(probe, tn.nextSibling);
+      const base = probe.getBoundingClientRect().top - box.top;
+      el.removeChild(probe);
+      const B = Math.max(3, Math.round(fs / 22));  // block size in screen pixels
+      const W = Math.ceil(box.width), H = Math.ceil(box.height);
+      const big = doc.createElement('canvas'); big.width = W; big.height = H;
+      const g = big.getContext('2d');
+      g.font = `${cs.fontStyle} ${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+      if ('letterSpacing' in g) g.letterSpacing = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
+      g.fillStyle = cs.color; g.textBaseline = 'alphabetic';
+      g.fillText(tn.nodeValue.trim(), tr.left - box.left, base);
+      const w = Math.ceil(W / B), h = Math.ceil(H / B);
+      const sm = doc.createElement('canvas'); sm.width = w; sm.height = h;
+      const x = sm.getContext('2d', { willReadFrequently: true });
+      x.imageSmoothingQuality = 'high';
+      x.drawImage(big, 0, 0, w, h);
+      const d = x.getImageData(0, 0, w, h), px = d.data;
+      for (let i = 3; i < px.length; i += 4) px[i] = px[i] > 96 ? 255 : 0;   // hard edges, no anti-aliasing
+      x.putImageData(d, 0, 0);
+      el.style.setProperty('--nes-name', `url(${sm.toDataURL('image/png')})`);
+      el.style.setProperty('--nes-name-size', `${w * B}px ${h * B}px`);
+      el.classList.add('nes-name');
+    }
+    const names = () => $$('.hero-name');
+    function nameOn() {
+      const run = () => { cancelAnimationFrame(nameRaf); nameRaf = requestAnimationFrame(() => on && names().forEach(pixelName)); };
+      (doc.fonts?.ready || Promise.resolve()).then(() => {
+        if (!on) return;
+        run();
+        // Re-draw when a name changes size (window resize) or first
+        // appears (the nav logo is hidden until you scroll).
+        nameObs = new ResizeObserver(run);
+        names().forEach((el) => nameObs.observe(el));
+      });
+    }
+    function nameOff() {
+      nameObs?.disconnect(); nameObs = null; cancelAnimationFrame(nameRaf);
+      for (const el of names()) { el.classList.toggle('nes-name', false); el.style.removeProperty('--nes-name'); el.style.removeProperty('--nes-name-size'); }
     }
 
     // ── sound: square-wave blips and an NES-style bit-crusher ──
@@ -310,6 +379,7 @@
         textObs = new MutationObserver(() => { clearTimeout(textT); textT = setTimeout(() => on && tagText(), 150); });
         textObs.observe(doc.body, { subtree: true, childList: true });
         pixelateAll();
+        nameOn();
         imgObs = new MutationObserver((ms) => { for (const m of ms) if (m.target.tagName === 'IMG' && m.target.src !== m.target.dataset.nesOut) { delete m.target.dataset.nesOrig; m.target.complete ? pixelate(m.target) : m.target.addEventListener('load', () => on && pixelate(m.target), { once: true }); } });
         imgObs.observe(doc.body, { subtree: true, attributes: true, attributeFilter: ['src'] });
         tone([[523, 70], [659, 70], [784, 70], [1047, 70], [784, 70], [1047, 220]]);   // power-on jingle
@@ -320,6 +390,7 @@
         root.classList.remove('nes');
         for (const el of $$('[data-nes-text]')) delete el.dataset.nesText;
         restoreAll();
+        nameOff();
         tone([[784, 70], [523, 70], [392, 70], [262, 200]]);
         announce('8-bit mode off.');
       }
