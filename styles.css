@@ -3035,14 +3035,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 
 /* ════════════════════════════════════════════
    FEATURED "PARTY" PANEL - latest release in the hero
-   Aurora light + dot grid behind, a cover that leans toward the pointer
+   Aurora light behind, a cover that leans toward the pointer
    with a glare, a record that slides out and spins while the album plays,
    a live-dot badge with a shimmer, a
    now-playing chip, and a confetti pop on play (see index-src.html).
    Decorative layers are aria-hidden; reduced motion keeps it all still;
    .party-off (panel off screen) pauses every loop.
    ════════════════════════════════════════════ */
-.hero-split-right > .party-aurora, .hero-split-right > .party-grid {
+.hero-split-right > .party-aurora {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
 }
 .party-aurora {
@@ -3061,12 +3061,6 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   0%   { transform: translate3d(-4%, -2%, 0) rotate(0deg) scale(1); }
   50%  { transform: translate3d(5%, 3%, 0) rotate(14deg) scale(1.08); }
   100% { transform: translate3d(-2%, 5%, 0) rotate(-10deg) scale(1.02); }
-}
-.party-grid {
-  background-image: radial-gradient(rgb(255 255 255 / .11) 1px, transparent 1.6px);
-  background-size: 18px 18px;
-  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 42%, #000 30%, transparent 75%);
-          mask-image: radial-gradient(ellipse 75% 65% at 50% 42%, #000 30%, transparent 75%);
 }
 
 /* Badge: live dot + one shimmer sweep every few seconds (replaces the
