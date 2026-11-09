@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "build": "python3 scripts/generate_content.py && python3 scripts/build_lyrics_pages.py && python3 scripts/build_redesign.py && python3 scripts/build_redesign.py redesign-2",
+    "build": "python3 scripts/generate_content.py && python3 scripts/build_lyrics_pages.py && python3 scripts/build_redesign.py && python3 scripts/build_redesign.py redesign-2 && python3 scripts/build_redesign.py redesign-3",
     "build:home": "python3 build-fast.py && python3 scripts/prerender.py",
     "rebuild-native": "npm rebuild better-sqlite3"
   },

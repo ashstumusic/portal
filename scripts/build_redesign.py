@@ -35,6 +35,8 @@ SITES = {
                  'url': 'https://ashstu.art/redesign/', 'crate': True},
     'redesign-2': {'css': ['redesign-2/radio.css', 'shared/kinetic.css'], 'js': ['redesign/redesign.js', 'redesign-2/radio.js', 'shared/kinetic.js'],
                    'url': 'https://ashstu.art/redesign-2/', 'crate': False},
+    'redesign-3': {'css': ['redesign-3/patch.css'], 'js': ['redesign/redesign.js', 'redesign-3/patch.js'],
+                   'url': 'https://ashstu.art/redesign-3/', 'crate': False},
 }
 SITE_NAME = sys.argv[1] if len(sys.argv) > 1 else 'redesign'
 if SITE_NAME not in SITES:

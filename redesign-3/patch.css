@@ -1,0 +1,541 @@
+/* ════════════════════════════════════════════════════════════════════
+   THE PATCH: design system
+   Layout concept: one column of felt, with objects "sewn on" to it
+   (patches, labels, a sampler). Wide screens get a two-column record
+   layout; everything else stacks. One accent color, used for one job.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── TOKENS ────────────────────────────────────────────────────────── */
+/* Dark first: the logo is a patch on black felt, and most listening
+   happens at night on phones. Light mode is unbleached muslin.
+   Every text color below is at least 4.5:1 on both --felt and --felt-2. */
+:root {
+  color-scheme: dark;
+  --felt:      #16120F;  /* page: warm black felt (not #000, which looks like a void) */
+  --felt-2:    #221C17;  /* raised felt: cards, labels, the player */
+  --thread:    #F2EADB;  /* text: undyed cotton thread, 15.6:1 */
+  --thread-2:  #B9AD99;  /* secondary text, 8.4:1 */
+  --daffodil:  #F4C430;  /* THE accent: the daffodil's satin stitch. Fill for the
+                            one primary action and the playing state only. */
+  --accent-ink: #F4C430; /* accent used as text (links, current track), 11.3:1 */
+  --on-daffodil: #16120F;/* text on yellow, 11.3:1 */
+  --ring:      #E8604A;  /* the patch's red ring: stitches and errors, 5.5:1 */
+  --stem:      #7DB65F;  /* the stem: success messages only, 7.7:1 */
+  --seam:      rgb(242 234 219 / .14);  /* hairlines */
+
+  /* Type: three faces, three jobs.
+     Gloock: a sharp, high-contrast display serif. Used only for names
+       (artist, records, sections): big type with real character.
+     Fraunces: a warm, soft text serif for reading (bio, lyrics, titles
+       in lists). Serifs here read as "a person wrote this".
+     Archivo Narrow: a condensed utility face for labels, numbers and
+       controls; its plainness keeps the tools from competing with the
+       content. */
+  --f-display: 'Gloock', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --f-text:    'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --f-ui:      'Archivo Narrow', 'Arial Narrow', 'Roboto Condensed', system-ui, sans-serif;
+
+  /* Type scale: fluid, ratio ~1.333 (perfect fourth). */
+  --t-xs:  0.8125rem;
+  --t-sm:  0.9375rem;
+  --t-md:  1.0625rem;
+  --t-lg:  clamp(1.25rem, 1.1rem + .6vw, 1.5rem);
+  --t-xl:  clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+  --t-2xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+  --t-hero: clamp(4.5rem, 1rem + 15vw, 13rem);
+
+  /* Space: 4px base; each step about 1.5x the last. Generous space is
+     the cheapest way to lower cognitive load: grouping by proximity
+     (Gestalt) means fewer borders and labels are needed. */
+  --s1: .25rem; --s2: .5rem; --s3: .75rem; --s4: 1rem; --s5: 1.5rem;
+  --s6: 2.25rem; --s7: 3.5rem; --s8: 5rem; --s9: 8rem;
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --measure: 62ch;
+  --page: 76rem;
+
+  /* The running stitch: a dashed line drawn as a gradient so the dash
+     length and gap are exact (CSS dashed borders vary by browser). */
+  --stitch-color: var(--ring);
+  --radius: 14px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --felt: #F3ECDE; --felt-2: #E8DECB;
+  --thread: #1E1915; --thread-2: #5B5046;
+  --accent-ink: #7A5500;  /* yellow can't be text on muslin; deep ochre, 5.7:1 */
+  --ring: #A3301E; --stem: #2F6A28;
+  --seam: rgb(30 25 21 / .16);
+}
+/* No JS (no data-theme): follow the system. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --felt: #F3ECDE; --felt-2: #E8DECB;
+    --thread: #1E1915; --thread-2: #5B5046;
+    --accent-ink: #7A5500; --ring: #A3301E; --stem: #2F6A28;
+    --seam: rgb(30 25 21 / .16);
+  }
+}
+
+@font-face { font-family: 'Gloock'; src: url('../Fonts/subsetted/Gloock-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Archivo Narrow'; src: url('../Fonts/subsetted/ArchivoNarrow-VF.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('../Fonts/subsetted/Fraunces-Regular-opsz.woff2') format('woff2'); font-display: swap; }
+
+/* ── BASE ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 5rem; }
+.motion { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--felt);
+  color: var(--thread);
+  font: 400 var(--t-md)/1.6 var(--f-text);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+/* Felt texture: two layers of faint noise-like dots, pure CSS, no image
+   request. Texture makes a dark page feel like a material instead of a
+   screen; kept below 4% so it never touches text contrast. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(circle at 25% 35%, rgb(255 255 255 / .035) 0 1px, transparent 1.5px) 0 0 / 7px 7px,
+    radial-gradient(circle at 70% 80%, rgb(0 0 0 / .18) 0 1px, transparent 1.5px) 0 0 / 5px 5px;
+}
+:root[data-theme="light"] body::before { opacity: .3; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a:hover { color: var(--accent-ink); }
+h1, h2, h3, h4 { margin: 0; font-weight: 400; text-wrap: balance; }
+p { margin: 0; }
+ol, ul { margin: 0; padding: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 3px; border-radius: 4px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.js-only { display: none !important; }
+.js .js-only { display: inline-flex !important; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.skip-link {
+  position: fixed; z-index: 100; top: calc(var(--s3) + env(safe-area-inset-top, 0px)); left: var(--gutter);
+  padding: var(--s3) var(--s4); background: var(--daffodil); color: var(--on-daffodil);
+  font: 600 var(--t-sm) var(--f-ui); border-radius: 8px; transform: translateY(-200%);
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.skip-link:focus { transform: none; }
+.skip-link:not(:focus) { clip-path: inset(50%); }
+
+/* Labels: condensed caps with tracking. Small caps-labels let the eye
+   find structure without reading (pre-attentive processing). */
+.eyebrow, .section-tag, .kicker, .record-facts dt, .time, .video-play, .nav-list a, .btn {
+  font-family: var(--f-ui); letter-spacing: .06em;
+}
+.eyebrow, .section-tag, .kicker { text-transform: uppercase; font-size: var(--t-xs); font-weight: 600; color: var(--thread-2); }
+
+/* Pseudo-element stitches (running stitch: a 9px dash, 6px gap). */
+.record::after, .tracks::after, .book-card::after, .player::before, .masthead::after {
+  content: ""; position: absolute; pointer-events: none;
+}
+
+/* ── MASTHEAD ──────────────────────────────────────────────────────── */
+.masthead {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: var(--s4);
+  padding: calc(var(--s3) + env(safe-area-inset-top, 0px)) var(--gutter-r) var(--s3) var(--gutter);
+  background: color-mix(in srgb, var(--felt) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.masthead::after {
+  left: 0; right: 0; bottom: 0; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--stitch-color) 0 9px, transparent 9px 15px);
+  opacity: .55;
+}
+.brand { display: inline-flex; align-items: center; gap: var(--s3); text-decoration: none; margin-right: auto; }
+.brand-patch { width: 40px; height: 40px; border-radius: 50%; }
+.brand-name { font: 400 1.375rem/1 var(--f-display); }
+.nav-list { display: flex; gap: var(--s1); list-style: none; }
+.nav-list a {
+  display: block; padding: var(--s2) var(--s3); border-radius: 999px;
+  text-decoration: none; font-size: var(--t-sm); font-weight: 600; text-transform: uppercase; color: var(--thread-2);
+  transition: color .2s, background-color .2s;
+}
+.nav-list a:hover { color: var(--thread); background: var(--felt-2); }
+/* "You are here": set by redesign.js. Shown by color AND an underline
+   stitch, never color alone. */
+.nav-list a[aria-current] { color: var(--thread); background: var(--felt-2); box-shadow: inset 0 -2px 0 var(--accent-ink); }
+.theme-btn {
+  width: 44px; height: 44px; align-items: center; justify-content: center;
+  border: 1px solid var(--seam); border-radius: 50%; background: transparent; cursor: pointer;
+}
+.theme-btn:hover { background: var(--felt-2); }
+.i-sun { display: none; }
+:root[data-theme="light"] .i-sun { display: inline; }
+:root[data-theme="light"] .i-moon { display: none; }
+@media (max-width: 640px) {
+  /* Phones: four short words still fit in one row; the brand keeps
+     only the patch so nothing wraps. */
+  .brand-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .nav-list a { padding: var(--s2) var(--s2); font-size: var(--t-xs); }
+  .masthead { gap: var(--s2); }
+}
+
+/* ── LAYOUT ────────────────────────────────────────────────────────── */
+main { display: block; }
+main:focus { outline: none; }
+.hero, .section, .sampler, .site-footer {
+  padding-left: var(--gutter); padding-right: var(--gutter-r);
+}
+.hero > *, .section > *, .site-footer > * { max-width: var(--page); margin-inline: auto; }
+.section { padding-block: var(--s8); }
+.section-head { display: grid; gap: var(--s2); margin-bottom: var(--s6); }
+.section-head h2 { font: 400 var(--t-2xl)/1 var(--f-display); letter-spacing: -.01em; }
+.section-lede { color: var(--thread-2); max-width: var(--measure); }
+.section-tag::before { content: "✕ "; color: var(--ring); letter-spacing: 0; }
+
+/* ── HERO ──────────────────────────────────────────────────────────── */
+.hero {
+  display: grid; gap: var(--s6);
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: var(--s6) var(--s8);
+}
+.hero > * { margin-inline: 0; max-width: none; }
+.hero-copy { display: grid; gap: var(--s3); align-content: end; }
+/* The name is the biggest object on the page by a wide margin: the
+   visitor's first question is "whose site is this?" */
+.hero-title {
+  font: 400 var(--t-hero)/.82 var(--f-display);
+  letter-spacing: -.035em;
+  margin-left: -.04em;     /* optical: align the A's stem with the text below */
+}
+.hero-sub { font-size: var(--t-lg); color: var(--thread-2); max-width: 30ch; }
+.hero-photo { margin: 0; position: relative; rotate: -1.5deg; }
+.hero-photo img { width: 100%; aspect-ratio: 1260 / 855; object-fit: cover; border-radius: var(--radius); }
+/* Stitched inner edge: sewn on, not pasted on. */
+.hero-photo::after {
+  content: ""; position: absolute; inset: 10px; border-radius: calc(var(--radius) - 6px); pointer-events: none;
+  border: 2px dashed rgb(244 196 48 / .75);
+}
+@media (min-width: 960px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    grid-template-areas: "copy photo" "new photo";
+    max-width: calc(var(--page) + 32px); margin-inline: auto; column-gap: var(--s7);
+  }
+  .hero-copy { grid-area: copy; }
+  .hero-photo { grid-area: photo; align-self: center; }
+  .new-record { grid-area: new; }
+}
+
+/* Newest record: a sewn label holding the page's one primary action. */
+.new-record {
+  display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--s2) var(--s4); align-items: center;
+  padding: var(--s4); border-radius: var(--radius); background: var(--felt-2); position: relative;
+  max-width: 36rem;
+}
+.new-record-art { grid-row: span 3; width: 96px; height: 96px; border-radius: 50%; box-shadow: 0 0 0 3px var(--felt), 0 0 0 5px var(--ring); }
+.new-record .kicker { color: var(--accent-ink); display: flex; align-items: center; gap: var(--s2); }
+.stitch-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--daffodil); }
+.new-record-title { font: 400 var(--t-xl)/1.05 var(--f-display); }
+.new-record-meta { color: var(--thread-2); font-size: var(--t-sm); }
+.new-record-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s4); margin-top: var(--s3); }
+.stream-links { color: var(--thread-2); font-size: var(--t-sm); }
+@media (max-width: 420px) {
+  .new-record { grid-template-columns: 72px minmax(0, 1fr); }
+  .new-record-art { width: 72px; height: 72px; }
+}
+
+/* ── BUTTONS ───────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  min-height: 48px; padding: 0 var(--s5); border-radius: 999px;
+  font-size: var(--t-sm); font-weight: 700; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .18s var(--ease), background-color .2s, color .2s;
+}
+/* Primary = solid daffodil. The only solid yellow on screen, so the
+   decision is pre-made for the visitor. */
+.btn-primary { background: var(--daffodil); color: var(--on-daffodil); }
+.btn-primary:hover { color: var(--on-daffodil); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-secondary { border-color: var(--thread); color: var(--thread); background: transparent; }
+.btn-secondary:hover { background: var(--thread); color: var(--felt); }
+.btn-quiet { background: transparent; color: var(--thread-2); border-color: var(--seam); min-height: 44px; padding: 0 var(--s4); }
+.btn-quiet:hover { color: var(--thread); border-color: var(--thread-2); }
+.file-meta { font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+/* ── RECORDS ───────────────────────────────────────────────────────── */
+.records { list-style: none; display: grid; gap: var(--s7); }
+.record {
+  display: grid; gap: var(--s4) var(--s6); position: relative;
+  grid-template-columns: minmax(0, 1fr);
+}
+/* The cover is an iron-on patch: a circle with a felt margin and a red
+   running-stitch ring. A circle stands out on a page of rectangles and
+   echoes the logo, so every record looks like part of one collection. */
+.record-art {
+  width: min(100%, 22rem); aspect-ratio: 1; object-fit: cover; border-radius: 50%;
+  box-shadow: 0 0 0 6px var(--felt-2), 0 18px 40px -18px rgb(0 0 0 / .6);
+  outline: 2px dashed var(--ring); outline-offset: 12px;
+  margin: 14px;
+  transition: outline-color .3s, outline-offset .3s var(--ease);
+}
+/* The record that's playing re-threads its ring in daffodil: the state
+   is visible from anywhere in the list without reading a word. */
+.record:has(a.track[aria-current]) .record-art { outline-color: var(--daffodil); outline-offset: 8px; }
+@keyframes patch-spin { to { rotate: 360deg; } }
+.record-head { display: grid; gap: var(--s1); }
+.record-title { font: 400 var(--t-xl)/1.05 var(--f-display); }
+.record-byline { color: var(--thread-2); font-size: var(--t-sm); }
+/* Facts as a single quiet row: four values, one glance. */
+.record-facts { display: flex; flex-wrap: wrap; gap: var(--s3) var(--s5); margin: 0; }
+.record-facts div { display: grid; }
+.record-facts dt { font-size: var(--t-xs); text-transform: uppercase; color: var(--thread-2); }
+.record-facts dd { margin: 0; font-size: var(--t-sm); }
+.record-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s4); font-size: var(--t-sm); color: var(--thread-2); }
+
+/* Tracklist = a sewn-in care label: raised felt, stitched edge. */
+.tracks {
+  width: 100%; border-collapse: collapse; position: relative;
+  background: var(--felt-2); border-radius: var(--radius);
+  font-variant-numeric: tabular-nums;
+}
+.tracks::after { inset: 7px; border: 2px dashed var(--seam); border-radius: calc(var(--radius) - 4px); }
+.tracks thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.tracks td, .tracks th { padding: 0; text-align: left; font-weight: 400; }
+.tracks tr + tr { border-top: 1px solid var(--seam); }
+.tracks tbody tr { position: relative; }
+.tracks td:first-child { width: 3.25rem; padding-left: var(--s5); color: var(--thread-2); font: 500 var(--t-sm) var(--f-ui); }
+.tracks td:last-child { width: 4.5rem; padding-right: var(--s5); text-align: right; color: var(--thread-2); font: 500 var(--t-sm) var(--f-ui); }
+.tracks tbody tr:first-child td, .tracks tbody tr:first-child th { padding-top: var(--s2); }
+.tracks tbody tr:last-child td, .tracks tbody tr:last-child th { padding-bottom: var(--s2); }
+/* The whole row is the target (Fitts's law: bigger targets are faster),
+   via the link's ::before stretched over the row. */
+.track {
+  display: block; padding: var(--s3) 0; min-height: 48px; text-decoration: none;
+  font: 400 var(--t-md)/1.35 var(--f-text);
+}
+.track::before { content: ""; position: absolute; inset: 0; z-index: 1; }
+.tracks tbody tr:hover { background: rgb(from var(--thread) r g b / .05); }
+.tracks tbody tr:hover .track { color: var(--accent-ink); }
+.tracks tbody tr:has(.track:focus-visible) { outline: 3px solid var(--accent-ink); outline-offset: -3px; border-radius: 6px; }
+.track:focus-visible { outline: none; }
+/* Now playing: color + weight + a marker glyph (three cues, so it works
+   for color-blind listeners too). */
+.tracks tr:has(.track[aria-current]) td:first-child { color: var(--accent-ink); }
+.tracks tr:has(.track[aria-current]) td:first-child::before { content: "♪ "; }
+.track[aria-current] { color: var(--accent-ink); }
+
+@media (min-width: 880px) {
+  .record {
+    grid-template-columns: 20rem minmax(0, 1fr);
+    grid-template-areas: "art head" "art facts" "art actions" "art tracks";
+    align-items: start; grid-template-rows: auto auto auto 1fr;
+  }
+  .record-art { grid-area: art; width: calc(20rem - 28px); position: sticky; top: 6rem; }
+  .record-head { grid-area: head; }
+  .record-facts { grid-area: facts; }
+  .record-actions { grid-area: actions; }
+  .tracks { grid-area: tracks; }
+}
+
+/* ── SAMPLER ───────────────────────────────────────────────────────── */
+/* A cross-stitch sampler: a yellow field with a stitched frame and the
+   tagline in display type. The one place the accent floods a surface,
+   so it lands as the page's emotional peak. */
+.sampler {
+  margin: 0; padding-block: var(--s9);
+  background: var(--daffodil); color: var(--on-daffodil);
+  position: relative; display: grid; justify-items: center; gap: var(--s4); text-align: center;
+}
+.sampler::before {
+  content: ""; position: absolute; inset: var(--s4) var(--gutter-r) var(--s4) var(--gutter); pointer-events: none;
+  border: 3px dashed rgb(22 18 15 / .5); border-radius: var(--radius);
+}
+.sampler-text { font: 400 var(--t-2xl)/1.02 var(--f-display); max-width: 16ch; letter-spacing: -.01em; }
+.sampler-sign { font: 600 var(--t-sm) var(--f-ui); letter-spacing: .2em; text-transform: uppercase; }
+.sampler-sign::before, .sampler-sign::after { content: " ✕ "; color: #8E2414; }
+
+/* ── VIDEOS ────────────────────────────────────────────────────────── */
+.videos { list-style: none; display: grid; gap: var(--s6) var(--s5); grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+.video { display: grid; gap: var(--s2); }
+.video-link { position: relative; display: block; border-radius: var(--radius); overflow: hidden; background: var(--felt-2); }
+.video-link img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; transition: scale .5s var(--ease); }
+.video-link:hover img { scale: 1.04; }
+.video-play {
+  position: absolute; left: var(--s3); bottom: var(--s3);
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: var(--s2) var(--s4); border-radius: 999px;
+  background: var(--felt); color: var(--thread); font-size: var(--t-xs); font-weight: 700; text-transform: uppercase;
+}
+.video-link:hover .video-play { background: var(--daffodil); color: var(--on-daffodil); }
+.video-name { font: 400 var(--t-lg)/1.2 var(--f-display); }
+.video-meta { color: var(--thread-2); font-size: var(--t-sm); }
+
+/* ── ABOUT ─────────────────────────────────────────────────────────── */
+.about { display: grid; gap: var(--s6); }
+.about > * { width: 100%; }
+.about-lead { font: 400 var(--t-xl)/1.3 var(--f-text); max-width: 28ch; text-wrap: pretty; }
+/* Scrapbook: photos pinned at small angles; a strip of "tape" on each. */
+.snapshots { margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--s5); align-items: center; max-width: var(--page); }
+.snap { width: 100%; object-fit: cover; border-radius: 6px; border: 8px solid var(--thread); box-shadow: 0 14px 30px -14px rgb(0 0 0 / .55); }
+.snap-main { aspect-ratio: 1; rotate: -2deg; }
+.snap:nth-of-type(2) { aspect-ratio: 3 / 4; rotate: 3deg; }
+.snap:nth-of-type(3) { aspect-ratio: 324 / 362; rotate: -1.5deg; }
+@media (max-width: 640px) {
+  .snapshots { grid-template-columns: 1fr 1fr; }
+  .snap-main { grid-column: 1 / -1; }
+}
+
+/* ── BOOK ──────────────────────────────────────────────────────────── */
+.book-grid { display: grid; gap: var(--s5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.book-card {
+  position: relative; display: grid; gap: var(--s3); align-content: start;
+  padding: var(--s6) var(--s5); border-radius: var(--radius); background: var(--felt-2);
+}
+.book-card::after { inset: 8px; border: 2px dashed var(--seam); border-radius: calc(var(--radius) - 5px); }
+.book-card > * { position: relative; z-index: 1; }
+.book-card > .btn { justify-self: start; }
+.book-email { grid-column: 1 / -1; }
+/* The address itself is the largest text in the section: the answer
+   to "how do I reach them?" needs no reading. */
+.email { font: 400 clamp(1.5rem, 1rem + 2.6vw, 3rem)/1.1 var(--f-display); overflow-wrap: anywhere; }
+.email a { text-decoration-color: var(--ring); text-decoration-thickness: 2px; }
+.copy-status, .form-status { font: 500 var(--t-sm) var(--f-ui); min-height: 1.4em; }
+.copy-status, .form-status.is-ok { color: var(--stem); }
+.form-status.is-error, .field-error { color: var(--ring); }
+.form-note, .field-hint { color: var(--thread-2); font-size: var(--t-sm); }
+.field { display: grid; gap: var(--s1); }
+.field label { font: 600 var(--t-sm) var(--f-ui); letter-spacing: .03em; }
+.field input[type="text"], .field input[type="email"], .field textarea {
+  width: 100%; padding: var(--s3) var(--s4); min-height: 48px;
+  background: var(--felt); border: 1px solid var(--seam); border-radius: 10px; color: var(--thread);
+  font: 400 var(--t-md) var(--f-text);
+}
+.field textarea { resize: vertical; }
+.field input:focus-visible, .field textarea:focus-visible { outline-offset: 0; }
+.field [aria-invalid="true"] { border-color: var(--ring); }
+.field-error { font: 500 var(--t-sm) var(--f-ui); }
+.field-error:empty { display: none; }
+.field-check { grid-template-columns: auto 1fr; align-items: center; gap: var(--s3); }
+.field-check input { width: 22px; height: 22px; accent-color: var(--daffodil); margin: 0; }
+.field-check label { font-weight: 400; }
+.k-shake { animation: shake .4s var(--ease); }
+@keyframes shake { 25% { translate: -4px 0; } 75% { translate: 4px 0; } }
+.kit-heading { font: 600 var(--t-sm) var(--f-ui); text-transform: uppercase; letter-spacing: .06em; margin-top: var(--s3); }
+.kit-label { color: var(--thread-2); font-size: var(--t-sm); }
+.kit-list { padding-left: 1.2em; font-size: var(--t-sm); columns: 2 12rem; }
+.press-photos { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s3); margin-top: var(--s6) !important; }
+.press-photos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; }
+@media (max-width: 640px) { .press-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ── FOOTER ────────────────────────────────────────────────────────── */
+.site-footer { padding-block: var(--s7) var(--s8); text-align: center; }
+.site-footer > * { margin-inline: auto; }
+.site-footer img { width: 72px; height: 72px; border-radius: 50%; margin-bottom: var(--s5); }
+.footer-links { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s2) var(--s5); font: 600 var(--t-sm) var(--f-ui); letter-spacing: .04em; }
+.footer-links a { display: inline-block; padding: var(--s2) 0; }
+.fine-print { display: none; }
+.has-player .site-footer { padding-bottom: calc(var(--s9) + 3rem); }
+
+/* ── PLAYER ────────────────────────────────────────────────────────── */
+/* A patch sewn to the bottom edge: within thumb reach on phones, out of
+   the reading path on desktop. */
+.player {
+  position: fixed; z-index: 30; left: 0; right: 0; bottom: 0;
+  padding: var(--s3) var(--gutter-r) calc(var(--s3) + env(safe-area-inset-bottom, 0px)) var(--gutter);
+  background: color-mix(in srgb, var(--felt-2) 94%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  display: grid; gap: var(--s2);
+}
+.player[hidden] { display: none; }
+.player::before {
+  left: 0; right: 0; top: 0; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--stitch-color) 0 9px, transparent 9px 15px);
+}
+/* The line being sung, in the reading face, centered and large enough
+   to sing along to. Empty (and collapsed) when a song has no lyrics. */
+.player-lyric {
+  font: 400 var(--t-lg)/1.25 var(--f-text); text-align: center; color: var(--accent-ink);
+  min-height: 1.25em; max-width: var(--page); margin-inline: auto; width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: opacity .25s;
+}
+.player-lyric:empty { display: none; }
+.player-lyric.is-changing { opacity: 0; }
+.player-row {
+  display: grid; align-items: center; gap: var(--s2) var(--s4);
+  grid-template-columns: 52px minmax(0, 1fr) auto auto;
+  grid-template-areas: "art meta controls close" "seek seek seek seek";
+  max-width: var(--page); margin-inline: auto; width: 100%;
+}
+.player-art { grid-area: art; width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+.is-playing.motion .player-art { animation: patch-spin 24s linear infinite; }
+.player-meta { grid-area: meta; display: grid; min-width: 0; line-height: 1.25; }
+.player-title { font: 400 var(--t-md) var(--f-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-release { color: var(--thread-2); font: 500 var(--t-xs) var(--f-ui); letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-controls { grid-area: controls; display: flex; align-items: center; gap: var(--s1); }
+.player-close { grid-area: close; }
+.player-seek { grid-area: seek; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s3); }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 44px; height: 44px;
+  border: 0; border-radius: 50%; background: transparent; color: var(--thread); cursor: pointer;
+}
+.icon-btn:hover { background: rgb(from var(--thread) r g b / .08); }
+.icon-btn-main { width: 52px; height: 52px; background: var(--daffodil); color: var(--on-daffodil); }
+.icon-btn-main:hover { background: var(--daffodil); scale: 1.05; }
+.time { font-size: var(--t-xs); color: var(--thread-2); font-variant-numeric: tabular-nums; min-width: 2.6em; }
+.time:last-child { text-align: right; }
+.seek-wrap { position: relative; height: 24px; display: flex; align-items: center; }
+/* Seek track: the unplayed part is a faint stitch line; the played part
+   is solid thread, like a seam being sewn as the song goes. */
+.seek-wrap::before {
+  content: ""; position: absolute; left: 0; right: 0; height: 2px; top: 11px;
+  background: repeating-linear-gradient(90deg, rgb(from var(--thread) r g b / .35) 0 6px, transparent 6px 10px);
+}
+.seek-fill { position: absolute; left: 0; top: 10px; height: 4px; width: 100%; border-radius: 2px; background: var(--daffodil); transform-origin: left; transform: scaleX(0); pointer-events: none; }
+#seek { position: relative; width: 100%; height: 24px; margin: 0; background: transparent; appearance: none; -webkit-appearance: none; cursor: pointer; }
+#seek::-webkit-slider-runnable-track { height: 24px; background: transparent; }
+#seek::-moz-range-track { height: 24px; background: transparent; }
+#seek::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; margin-top: 4px; border-radius: 50%; background: var(--thread); border: 3px solid var(--felt-2); }
+#seek::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--thread); border: 3px solid var(--felt-2); }
+@media (min-width: 900px) {
+  .player-row {
+    grid-template-columns: 52px minmax(10rem, 16rem) auto minmax(0, 1fr) auto;
+    grid-template-areas: "art meta controls seek close";
+  }
+}
+@media (max-width: 420px) {
+  .player-row { gap: var(--s2); }
+  .player-controls #prev { display: none; }   /* skip back = scrub to 0 on the seek bar */
+}
+
+/* ── VIDEO DIALOG ──────────────────────────────────────────────────── */
+.video-dialog {
+  width: min(100% - 32px, 72rem); padding: 0; border: 0; border-radius: var(--radius);
+  background: var(--felt-2); color: var(--thread);
+}
+.video-dialog::backdrop { background: rgb(10 8 6 / .82); }
+.video-dialog-head { display: flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s3) var(--s3) var(--s5); }
+.video-title { font: 400 var(--t-lg) var(--f-display); margin-right: auto; }
+.video-yt { font: 600 var(--t-sm) var(--f-ui); }
+.video-dialog video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.video-error { padding: var(--s5); color: var(--ring); }
+
+/* ── MOTION ────────────────────────────────────────────────────────── */
+/* Sections settle into place as they arrive (from a visible resting
+   state: nothing is ever hidden waiting for script). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .record, .video, .book-card, .snap {
+      animation: settle linear both; animation-timeline: view(); animation-range: entry 0% entry 40%;
+    }
+    /* Movement only, never opacity: content is fully readable at every
+       point of the animation (and in screenshots, previews, print). */
+    @keyframes settle { from { translate: 0 28px; } }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
