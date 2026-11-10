@@ -30,27 +30,35 @@
     "upcoming": [
       {
         "num": 1,
-        "title": "The Cloud for the Desert"
+        "title": "The Cloud for the Desert",
+        "lyrics": "Audio/My Anima/01. The Cloud for the Desert (unreleased)"
       },
       {
         "num": 2,
-        "title": "Pretty, May You Please"
+        "title": "Pretty, May You Please",
+        "lyrics": "Audio/My Anima/02. Pretty, May You Please (unreleased)"
       },
       {
         "num": 3,
-        "title": "Is This Limerence?"
+        "title": "Is This Limerence?",
+        "lyrics": "Audio/My Anima/03. Is This Limerence? (unreleased)"
       },
       {
         "num": 5,
-        "title": "St. James Infirmary"
+        "title": "St. James Infirmary",
+        "traditional": true,
+        "lyrics": "Audio/My Anima/05. St. James Infirmary (unreleased)"
       },
       {
         "num": 7,
-        "title": "The Maid Freed From the Gallows"
+        "title": "The Maid Freed From the Gallows",
+        "traditional": true,
+        "lyrics": "Audio/My Anima/07. The Maid Freed From the Gallows (unreleased)"
       },
       {
         "num": 9,
-        "title": "Lucky to Grieve"
+        "title": "Lucky to Grieve",
+        "lyrics": "Audio/My Anima/09. Lucky to Grieve (unreleased)"
       }
     ],
     "featured": false

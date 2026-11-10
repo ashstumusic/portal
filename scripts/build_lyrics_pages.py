@@ -203,6 +203,21 @@ def main():
             songs.append({'title': t['title'], 'slug': slug, 'release': rel, 'position': t.get('num', i + 1),
                           'total': len(rel.get('tracks', [])) + len(rel.get('upcoming', [])),
                           'date': rdate, 'verses': stanzas(entry, t['file'])})
+        # Songs not out yet (upcoming.txt) whose words are in lyrics.txt:
+        # a lyrics page too, marked unreleased, with nothing to play.
+        for u in rel.get('upcoming', []):
+            entry = lyrics.get(u.get('lyrics') or '')
+            if not entry or not entry.get('lines'):
+                continue
+            slug = slugify(u['title'])
+            if slug in used:
+                slug = f"{slug}-{slugify(rel['name'])}"
+            used.add(slug)
+            songs.append({'title': u['title'], 'slug': slug, 'release': rel, 'position': u['num'],
+                          'total': len(rel.get('tracks', [])) + len(rel.get('upcoming', [])),
+                          'date': None, 'verses': stanzas(entry, None),
+                          'unreleased': True, 'traditional': bool(u.get('traditional'))})
+    songs.sort(key=lambda s: (releases.index(s['release']), s['position']))
 
     written = []
     ALTS = cover_alts()
@@ -219,8 +234,10 @@ def main():
         first = s['verses'][0][0] if s['verses'] else ''
         kind = rel.get('type') or 'Album'
         year = (s['date'] or '')[:4]
-        description = (f"Full lyrics to “{s['title']}” by {ARTIST}, from the {kind.lower()} {rel['name']}"
-                       f"{' (' + year + ')' if year else ''}. Begins: “{first}”")[:300]
+        trad, unrel = s.get('traditional'), s.get('unreleased')
+        who = f'the traditional song “{s["title"]}”, arranged by {ARTIST}' if trad else f'“{s["title"]}” by {ARTIST}'
+        description = (f"Full lyrics to {who}, from the {kind.lower()} {rel['name']}"
+                       f"{' (not released yet)' if unrel else (' (' + year + ')' if year else '')}. Begins: “{first}”")[:300]
         title = f"{s['title']} Lyrics | {ARTIST}"
         listen = []
         if rel.get('apple'):
@@ -228,6 +245,8 @@ def main():
         if rel.get('spotify'):
             listen.append(f'<li><a href="{esc(rel["spotify"])}" rel="noopener">Spotify</a></li>')
         listen.append('<li><a href="/#music">Play on ashstu.art</a></li>')
+        if unrel:
+            listen = ['<li>Not released yet</li>']
         verses_html = '\n'.join('<p>' + '<br>\n'.join(esc(l) for l in v) + '</p>' for v in s['verses'])
         others = [o for o in songs if o['release'] is rel and o is not s]
         more = ''
@@ -244,7 +263,7 @@ def main():
     <img src="{esc(art_path)}" alt="{esc(alt)}" width="288" height="288">
     <hgroup>
       <h1>{esc(s['title'])}</h1>
-      <p class="byline">Lyrics by <a href="/">{ARTIST}</a> · track {s['position']} of {s['total']} on <cite>{esc(rel['name'])}</cite></p>
+      <p class="byline">{'Traditional, arranged by' if trad else 'Lyrics by'} <a href="/">{ARTIST}</a> · track {s['position']} of {s['total']} on <cite>{esc(rel['name'])}</cite>{' · not released yet' if unrel else ''}</p>
     </hgroup>
   </header>
   <section class="lyrics" aria-labelledby="lyrics-heading">
@@ -258,7 +277,7 @@ def main():
       <tbody>
         <tr><th scope="row">Song title</th><td>{esc(s['title'])}</td></tr>
         <tr><th scope="row">Artist</th><td>{ARTIST} ({ARTIST_FULL})</td></tr>
-        <tr><th scope="row">Songwriter and lyricist</th><td>{ARTIST} ({ARTIST_FULL})</td></tr>
+        <tr><th scope="row">Songwriter and lyricist</th><td>{'Traditional (arranged by ' + ARTIST + ')' if trad else ARTIST + ' (' + ARTIST_FULL + ')'}</td></tr>
         <tr><th scope="row">Release</th><td>{esc(rel['name'])} ({esc(kind.lower())})</td></tr>
         <tr><th scope="row">Track number</th><td>{s['position']} of {s['total']} tracks</td></tr>
         {date_row}
@@ -276,16 +295,18 @@ def main():
 </article>
 </main>"""
         comp_id = url + '#composition'
+        writer = {'@type': 'Person', 'name': 'Traditional'} if trad else {'@id': f'{SITE}/#artist'}
         jsonld = {'@context': 'https://schema.org', '@graph': [
             ARTIST_NODE,
-            {'@type': 'MusicRecording', '@id': url + '#recording', 'name': s['title'], 'url': url,
+            *([] if unrel else [{'@type': 'MusicRecording', '@id': url + '#recording', 'name': s['title'], 'url': url,
              'byArtist': {'@id': f'{SITE}/#artist'}, 'inLanguage': 'en', 'genre': GENRE,
              **({'datePublished': s['date']} if s['date'] else {}),
              'inAlbum': {'@type': 'MusicAlbum', 'name': rel['name'], 'url': f'{SITE}/#music', 'image': art,
                          'albumReleaseType': 'SingleRelease' if kind == 'Single' else 'AlbumRelease', 'byArtist': {'@id': f'{SITE}/#artist'}},
-             'position': s['position'], 'recordingOf': {'@id': comp_id}},
+             'position': s['position'], 'recordingOf': {'@id': comp_id}}]),
             {'@type': 'MusicComposition', '@id': comp_id, 'name': s['title'], 'url': url, 'inLanguage': 'en', 'genre': GENRE,
-             'composer': {'@id': f'{SITE}/#artist'}, 'lyricist': {'@id': f'{SITE}/#artist'},
+             'composer': writer, 'lyricist': writer,
+             **({'arranger': {'@id': f'{SITE}/#artist'}} if trad else {}),
              **({'datePublished': s['date']} if s['date'] else {}),
              'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text},
              'dateModified': modified},
@@ -311,7 +332,7 @@ def main():
         if not rs:
             continue
         year = (release_date(rel['name']) or '')[:4]
-        rows = '\n'.join(f'        <tr><td class="num">{s["position"]}</td><th scope="row"><a href="/lyrics/{s["slug"]}/">{esc(s["title"])}</a></th></tr>' for s in rs)
+        rows = '\n'.join(f'        <tr><td class="num">{s["position"]}</td><th scope="row"><a href="/lyrics/{s["slug"]}/">{esc(s["title"])}</a>{" (not released yet)" if s.get("unreleased") else ""}</th></tr>' for s in rs)
         rd = release_date(rel['name'])
         groups.append(f'  <section class="release" aria-labelledby="r-{slugify(rel["name"])}">\n'
                       f'    <h2 id="r-{slugify(rel["name"])}">{esc(rel["name"])}</h2>\n'
