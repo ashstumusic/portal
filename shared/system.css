@@ -1610,33 +1610,50 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-wall--top { row-gap: 0 !important; margin-bottom: 16px !important; }
 :root.psy .bio-wall--bottom { row-gap: 0 !important; margin-top: 16px !important; }
 
-/* About walls: alternating pop-art palettes. Each row has its own colour
-   and the whole group changes palette together every 2.2s (Warhol
-   brights, comic-book primaries, neon, candy); the tagline wall runs the
-   same palettes in reverse row order, so the two walls mirror each other.
-   One fixed palette with reduced motion or background effects off. */
-@keyframes pop-r1 { 0%, 22% { color: #FF2E7E; } 25%, 47% { color: #FF3B30; } 50%, 72% { color: #FF7A00; } 75%, 97% { color: #B983FF; } 100% { color: #FF2E7E; } }
-@keyframes pop-r2 { 0%, 22% { color: #FFE600; } 25%, 47% { color: #FFD500; } 50%, 72% { color: #FF3DF2; } 75%, 97% { color: #FF8AC8; } 100% { color: #FFE600; } }
-@keyframes pop-r3 { 0%, 22% { color: #00E5FF; } 25%, 47% { color: #4D8DFF; } 50%, 72% { color: #B6FF00; } 75%, 97% { color: #8FE6FF; } 100% { color: #00E5FF; } }
-@keyframes pop-r4 { 0%, 22% { color: #7FFF00; } 25%, 47% { color: #FFFFFF; } 50%, 72% { color: #00FFC8; } 75%, 97% { color: #F7C549; } 100% { color: #7FFF00; } }
-:root.psy .bio-wall--top > :nth-child(4n+1):not(#\#):not(#\#) { color: #FF2E7E; animation: pop-r1 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--bottom > :nth-child(4n+1):not(#\#):not(#\#) { color: #7FFF00; animation: pop-r4 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--top > :nth-child(4n+2):not(#\#):not(#\#) { color: #FFE600; animation: pop-r2 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--bottom > :nth-child(4n+2):not(#\#):not(#\#) { color: #00E5FF; animation: pop-r3 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--top > :nth-child(4n+3):not(#\#):not(#\#) { color: #00E5FF; animation: pop-r3 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--bottom > :nth-child(4n+3):not(#\#):not(#\#) { color: #FFE600; animation: pop-r2 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--top > :nth-child(4n+4):not(#\#):not(#\#) { color: #7FFF00; animation: pop-r4 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall--bottom > :nth-child(4n+4):not(#\#):not(#\#) { color: #FF2E7E; animation: pop-r1 8.8s linear infinite !important; animation-delay: 0s !important; }
-:root.psy .bio-wall > *:not(#\#):not(#\#) { background: none !important; -webkit-text-fill-color: currentColor !important; }
-:root.psy.psy-calm .bio-wall > *:not(#\#):not(#\#) { animation: none !important; }
-@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall > *:not(#\#):not(#\#) { animation: none !important; } }
-@media (forced-colors: active) { :root.psy .bio-wall > *:not(#\#):not(#\#) { color: CanvasText; animation: none !important; } }
-
 /* Hero photo shifted further left inside its crop. */
 :root.psy .hero-split-photo:not(#\#) { object-position: 36% 18% !important; }
 :root.psy .hero-photo-frame:not(#\#) { background-position: 36% 18% !important; }
 
 /* About walls: one type size for both. Name rows are filled across with
    repeats of the name, spread to the panel's full width. */
-:root.psy .bio-wall--top .bio-name:not(#\#) { display: flex !important; justify-content: space-between; width: 100% !important; line-height: 1.12 !important; }
+:root.psy .bio-wall--top .bio-name:not(#\#) { line-height: .98 !important; }
 :root.psy .bio-wall--top .bio-name > * { flex: none; }
+
+/* ── About walls, tamed: a print-poster treatment ─────────────────────
+   One ink at a time for the whole card: the accent drifts slowly through
+   four pop colours (pink, yellow, cyan, orange), every row together.
+   Name: the first row is solid; the rows under it are outlined echoes
+   that fade out, like a screen print running out of ink. Tagline: the
+   mirror image, fading in to a solid last line. No offset shadows.
+   Still (pink) with reduced motion or background effects off. */
+:root.psy .bio-wall { color: #FF2E7E; animation: pop-accent 24s linear infinite; }
+@keyframes pop-accent {
+  0%, 20%  { color: #FF2E7E; }
+  25%, 45% { color: #FFE600; }
+  50%, 70% { color: #00E5FF; }
+  75%, 95% { color: #FF7A00; }
+  100%     { color: #FF2E7E; }
+}
+:root.psy .bio-wall > *:not(#\#):not(#\#) {
+  color: inherit !important; background: none !important; -webkit-text-fill-color: currentColor !important;
+  filter: none !important; text-shadow: none !important; animation: none !important; transform: none !important;
+}
+:root.psy .bio-wall--top > :nth-child(n+2):not(#\#):not(#\#) { -webkit-text-fill-color: transparent !important; -webkit-text-stroke: 1.1px currentColor; }
+:root.psy .bio-wall--top > :nth-child(2):not(#\#) { opacity: .8 !important; }
+:root.psy .bio-wall--top > :nth-child(3):not(#\#) { opacity: .5 !important; }
+:root.psy .bio-wall--top > :nth-child(4):not(#\#) { opacity: .26 !important; }
+:root.psy .bio-wall--bottom { flex-direction: column-reverse !important; }
+:root.psy .bio-wall--bottom > :nth-child(2):not(#\#) { opacity: .6 !important; }
+:root.psy .bio-wall--bottom > :nth-child(3):not(#\#) { opacity: .36 !important; }
+:root.psy .bio-wall--bottom > :nth-child(4):not(#\#) { opacity: .18 !important; }
+:root.psy .bio-wall--top { margin-bottom: 28px !important; }
+:root.psy .bio-wall--bottom { margin-top: 28px !important; }
+:root.psy .bio-card-text .bio-desc { max-width: 34em; }
+:root.psy.psy-calm .bio-wall { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall { animation: none; } }
+@media (forced-colors: active) { :root.psy .bio-wall { color: CanvasText; animation: none; } :root.psy .bio-wall > * { opacity: 1 !important; -webkit-text-stroke: 0 !important; -webkit-text-fill-color: currentColor !important; } }
+
+/* large name rows: a slightly heavier outline on the echoes */
+:root.psy .bio-wall--top > :nth-child(n+2):not(#\#):not(#\#) { -webkit-text-stroke: 1.6px currentColor; }
+:root.psy .bio-wall--top { margin-bottom: 22px !important; }
+:root.psy .bio-wall--bottom { margin-top: 22px !important; }
