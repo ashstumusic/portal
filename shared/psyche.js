@@ -131,7 +131,7 @@
 
   // ── RIPPLE: a refraction ring across the viewport ────────────────
   doc.addEventListener('click', (e) => {
-    if (!fxOn() || e.detail === 0) return;   // detail 0 = keyboard "click": no ripple from nowhere
+    return;   // ripple on presses switched off (Nov 2026)
     const b = e.target.closest?.('button, a, [role="button"], .vid-card, .rel-card');
     if (!b) return;
     const rp = doc.createElement('div');

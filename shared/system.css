@@ -228,3 +228,17 @@ h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', 
   font-size: 14px; line-height: 1.65; letter-spacing: 0; color: rgb(235 235 245 / .66);
 }
 .rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
+
+/* The page stops at the end of the About section: no rubber-band
+   overscroll past it (or above the top). */
+html, body { overscroll-behavior-y: none; }
+
+/* A soft dark fog behind the Woody Guthrie quote so it reads clearly over
+   the rainbow haze and stars. */
+.disc-quote { position: relative; isolation: isolate; }
+.disc-quote::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  inset: -14% -8% -18%;
+  background: radial-gradient(ellipse 58% 62% at 50% 50%, rgb(3 4 9 / .88), rgb(3 4 9 / .62) 45%, transparent 75%);
+  filter: blur(8px);
+}
