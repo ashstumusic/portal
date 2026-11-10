@@ -1490,21 +1490,10 @@ html { overscroll-behavior-y: none; }
   :root.psy .epk-body .btn-epk span:not(#\#) { font-size: 15px !important; letter-spacing: .1em !important; white-space: nowrap; }
 }
 
-/* Press Kit: no red carpet (the page shows through again), bulbs along
-   the top edge only, and just the bulbs: no dark strip behind them. */
+/* Press Kit: no red carpet (the page shows through again); the bulb line
+   itself is defined once for all sections further down. */
 :root.psy .epk-section:not(#\#):not(#\#) { background: transparent !important; padding-block: 30px 8px !important; }
 :root.psy .epk-section::after { display: none !important; }
-:root.psy .epk-section::before {
-  box-shadow: none !important;
-  background:
-    radial-gradient(circle, #fff 0 4px, rgb(255 246 214 / .9) 5px, rgb(255 222 130 / .4) 8px, transparent 13px) 0 50% / 84px 100% repeat-x,
-    radial-gradient(circle, rgb(255 255 255 / .34) 0 4px, transparent 5px) 0 50% / 28px 100% repeat-x !important;
-}
-@keyframes marquee-chase { to { background-position: 84px 50%, 0 50%; } }
-:root.psy.psy-calm .epk-section::before { background: radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) 0 50% / 28px 100% repeat-x !important; }
-@media (prefers-reduced-motion: reduce) {
-  :root.psy .epk-section::before { background: radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) 0 50% / 28px 100% repeat-x !important; }
-}
 
 /* Tracklist: track numbers sit closer to their titles, leaving more room
    on the left edge of the card (lyrics stay aligned under the titles). */
@@ -1516,3 +1505,42 @@ html { overscroll-behavior-y: none; }
 /* Phone menu: the word "Search" is centred like the other labels; its
    icon hangs to the left of the word without shifting it. */
 :root.psy .nav-drawer .drawer-search svg:not(#\#) { margin-left: -26px !important; flex: none; }
+
+/* ── Bulb line: the divider at the top of every section ───────────────
+   One row of round white bulbs (no strip behind them) along the top edge
+   of Press Kit, Contact, Music, Videos and About. Every third bulb is lit
+   and the lit ones step along, left to right. (The earlier version set
+   the whole background with !important, which also froze the animated
+   position: the layers are now set piece by piece so it runs again.)
+   Still, softly lit, with reduced motion or background effects off. */
+:root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section) { position: relative; }
+:root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section)::before {
+  content: "" !important; display: block !important; position: absolute !important; inset: 0 0 auto 0 !important; height: 26px !important; z-index: 3; pointer-events: none;
+  opacity: 1 !important; transform: none !important;
+  background-color: transparent !important; box-shadow: none !important;
+  background-image:
+    radial-gradient(circle, #fff 0 4px, rgb(255 246 214 / .9) 5px, rgb(255 222 130 / .4) 8px, transparent 13px),
+    radial-gradient(circle, rgb(255 255 255 / .34) 0 4px, transparent 5px) !important;
+  background-size: 84px 100%, 28px 100% !important;
+  background-repeat: repeat-x !important;
+  background-position: 0 50%, 0 50%;
+  animation: bulb-chase 1.35s steps(3, end) infinite !important;
+}
+@keyframes bulb-chase { to { background-position: 84px 50%, 0 50%; } }
+:root.psy :is(.contact-section, .releases-section, .videos-section) { padding-top: max(56px, 4.5rem) !important; }
+:root.psy .bio-section { padding-top: 30px !important; }
+:root.psy.psy-calm :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section)::before {
+  animation: none !important;
+  background-image: radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) !important; background-size: 28px 100% !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section)::before {
+    animation: none !important;
+    background-image: radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) !important; background-size: 28px 100% !important;
+  }
+}
+@media (forced-colors: active) { :root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section)::before { display: none !important; } }
+
+/* Tracks toggle: shorter (30px instead of 40px; still above the 24px
+   minimum target size) with less space around it. */
+:root.psy .rel-tl-toggle:not(#\#):not(#\#) { min-height: 30px !important; height: 30px; margin: 0 12px 6px !important; }
