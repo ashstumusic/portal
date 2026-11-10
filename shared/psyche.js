@@ -367,6 +367,34 @@
     return { redraw: () => { draw(); kick(); } };
   })();
 
+  // ── SECTION SEPARATORS ─────────────────────────────────────────────
+  // A fading hairline between content sections (not under the hero),
+  // placed exactly halfway between the end of one section's content and
+  // the next section's heading, so it sits centred in the gap whatever the
+  // section paddings are. Re-placed whenever the layout changes.
+  (() => {
+    const main = $('main'); if (!main) return;
+    const secs = $$('main > section').filter((s) => !s.classList.contains('hero-split'));
+    const lines = secs.slice(1).map(() => { const d = doc.createElement('div'); d.className = 'sec-sep'; d.setAttribute('aria-hidden', 'true'); main.append(d); return d; });
+    const contentBottom = (sec) => {
+      let b = sec.getBoundingClientRect().top;
+      for (const e of sec.querySelectorAll('*')) { if (!e.offsetHeight || e.closest('.rel-lyrics')) continue; const r = e.getBoundingClientRect(); if (r.bottom > b && getComputedStyle(e).position !== 'absolute') b = r.bottom; }
+      return b;
+    };
+    function place() {
+      const mt = main.getBoundingClientRect().top;
+      secs.slice(1).forEach((sec, i) => {
+        const prev = secs[i], head = sec.querySelector('.section-h') || sec;
+        const y = (Math.min(contentBottom(prev), prev.getBoundingClientRect().bottom) + head.getBoundingClientRect().top) / 2;
+        lines[i].style.top = (y - mt).toFixed(1) + 'px';
+      });
+    }
+    let t = 0; const later = () => { clearTimeout(t); t = setTimeout(place, 120); };
+    new ResizeObserver(later).observe(main);
+    (doc.fonts?.ready || Promise.resolve()).then(place);
+    place();
+  })();
+
   // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
   // The page turns into an NES game: everything (its own fonts and colours
   // included) rendered at low resolution, photos redrawn as tiny
