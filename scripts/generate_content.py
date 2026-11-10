@@ -174,6 +174,9 @@ def gen_releases():
             'type': rtype,
             'art': art,
             'apple': links.get('apple'),
+            # links.txt "soon: yes": show the "Distributing soon" tag even
+            # though some streaming links exist (more services coming).
+            **({'soon': True} if links.get('soon', '').strip().lower() in ('yes', 'true', '1') else {}),
             'spotify': links.get('spotify'),
             'tracks': tracks,
             **({'upcoming': upcoming} if upcoming else {}),
