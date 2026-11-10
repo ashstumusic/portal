@@ -168,3 +168,25 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
    play circles when they light up gold. */
 :root.psy .fab-music, :root.psy .hero-scroll { color: #120E08; border-color: rgb(18 14 8 / .6); }
 :root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover)), .rel-card:focus-visible:not(:has(.rel-btn:focus-visible)), .featured-play-overlay:hover, .featured-play-overlay:focus-visible) .rel-play-circle svg { color: #120E08; }
+
+/* The severed eyeball in the About card (drawn by shared/psyche.js):
+   below the three text blocks, centred on the width of the widest one
+   (the description, 46ch in its own type). */
+.bio-eye {
+  font-family: var(--plain-sans); font-size: clamp(.95rem, 1.15vw, 1.05rem);
+  width: 100%; max-width: 46ch;
+  margin-top: 1.75rem;
+  display: flex; justify-content: center;
+  pointer-events: none;
+}
+.bio-eye > svg { display: block; width: min(100%, 340px); height: auto; overflow: visible; }
+
+/* The music player wears the top toolbar's colour: the same translucent
+   teal glass (selectors match the dark-theme player rules they replace). */
+:root[data-theme="dark"] #player-bar#player-bar,
+:root[data-theme="dark"] #fs-player.fs-player {
+  background: rgb(8 76 97 / .62);
+  -webkit-backdrop-filter: blur(18px) saturate(1.8);
+          backdrop-filter: blur(18px) saturate(1.8);
+}
+:root[data-theme="dark"] #player-bar#player-bar { border-top: 1px solid rgb(255 255 255 / .16); }
