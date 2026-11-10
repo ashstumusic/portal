@@ -1415,3 +1415,15 @@ html { overscroll-behavior-y: none; }
 :root.psy .epk-section .epk-text { color: rgb(255 240 236 / .94) !important; opacity: 1 !important; }
 :root.psy .epk-section .btn-epk:not(:hover):not(.auto-press) { border: 2px solid #FFE9C7 !important; box-shadow: 0 3px 14px rgb(30 0 5 / .5) !important; }
 @media (prefers-contrast: more) { :root.psy .epk-section { background: #5A0A14 !important; } }
+
+/* Press Kit download button: warm ivory with deep-crimson text and icon.
+   Against the dark red velvet it is the brightest thing in the section
+   (so the eye lands on it, the way a red button does on a neutral page)
+   but it sits in the same warm family, like a theatre ticket on the
+   cloth. A soft glow lifts it; hover is the usual gold fill + ring. */
+:root.psy .epk-section .btn-epk:not(:hover):not(.auto-press):not(#\#) {
+  background: linear-gradient(180deg, #FFF8E8 0%, #FFE9C4 100%) !important;
+  color: #5A0A14 !important; border: 2px solid #FFF8E8 !important;
+  box-shadow: 0 0 0 1px rgb(90 10 20 / .35), 0 6px 22px rgb(255 226 170 / .28), 0 3px 10px rgb(30 0 5 / .5) !important;
+}
+:root.psy .epk-section .btn-epk:not(:hover):not(.auto-press):not(#\#) :is(span, svg) { color: #5A0A14 !important; }
