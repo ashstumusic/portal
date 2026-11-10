@@ -358,8 +358,8 @@
   })();
 
   // ── DOODLE: glasses and a mustache drawn on the About portrait ──────
-  // Black felt-tip marker, as if scribbled straight onto the photo: a
-  // heavy wobbly stroke with a thinner second pass that doesn't line up.
+  // A simple doodle in red ink, as if drawn straight onto the photo with
+  // one wobbly pen line: round glasses and a curly mustache.
   // Drawn in the portrait's own 800x800 pixel space (the image is square
   // and shown square), so it stays on the face at any size. It boils like
   // the stars (redrawn with fresh wobble 8 times a second) while on
@@ -367,7 +367,7 @@
   (() => {
     const host = $('.bio-doodle');
     if (!host) return;
-    const NS = 'http://www.w3.org/2000/svg', INK = '#0E0B0A';
+    const NS = 'http://www.w3.org/2000/svg', INK = '#D3121B';   // red ink
     const el = (tag, attrs, parent) => { const e = doc.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.append(e); return e; };
     let seed = 9;
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
@@ -384,11 +384,8 @@
       return d + (closed ? 'Z' : '');
     }
     const ring = (cx, cy, rx, ry, n = 14) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; });
-    // marker stroke: heavy pass + thinner, misaligned second pass
-    function marker(g, pts, closed, w = 9, wob = 3) {
-      el('path', { d: hand(pts, closed, wob), fill: 'none', stroke: INK, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
-      el('path', { d: hand(pts, closed, wob * 1.6), fill: 'none', stroke: INK, 'stroke-width': w * 0.42, 'stroke-linecap': 'round', opacity: 0.85 }, g);
-    }
+    // one pen line, a little wobbly
+    const pen = (g, pts, closed, wob = 2) => el('path', { d: hand(pts, closed, wob), fill: 'none', stroke: INK, 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
     const svg = el('svg', { viewBox: '0 0 800 800', preserveAspectRatio: 'none', focusable: 'false' });
     const layer = el('g', {}, svg);
     host.append(svg);
@@ -396,26 +393,15 @@
     function drawFrame() {
       layer.textContent = '';
       const g = layer;
-      // ── glasses: two round lenses, a bridge, and arms out to the temples ──
-      const L = [300, 389], R = [461, 386], r = 58;
-      for (const [cx, cy] of [L, R]) {
-        el('path', { d: hand(ring(cx, cy, r, r * 0.92, 22), true, 1.2), fill: 'rgb(150 205 255 / .10)' }, g);   // a faint tint in the lens
-        marker(g, ring(cx, cy, r, r * 0.92, 22), true, 10, 2);
-        // a quick shine scribble in each lens
-        marker(g, [[cx - r * 0.55, cy - r * 0.2], [cx - r * 0.3, cy - r * 0.5]], false, 4, 1.5);
-      }
-      marker(g, [[L[0] + r - 2, L[1] - 6], [380, 366], [R[0] - r + 2, R[1] - 6]], false, 9);   // bridge
-      marker(g, [[L[0] - r + 2, L[1] - 8], [262, 374], [222, 368]], false, 9);              // left arm
-      marker(g, [[R[0] + r - 2, R[1] - 8], [536, 372], [566, 364]], false, 9);              // right arm
-      // ── mustache: a filled handlebar under the nose, curled up at both ends ──
-      const top = [[377, 512], [404, 506], [428, 512], [446, 524], [458, 518], [462, 502], [470, 508], [466, 528], [450, 541], [426, 538], [402, 532], [378, 536],
-                   [354, 532], [330, 538], [306, 541], [290, 528], [286, 508], [294, 502], [298, 518], [310, 524], [328, 512], [352, 506]];
-      el('path', { d: hand(top, true, 2.5), fill: INK }, g);
-      for (let k = 0; k < 9; k++) {                                                        // scratchy hairs
-        const x = 312 + k * 17 + J(3), y = 518 + J(3);
-        el('path', { d: hand([[x, y - 8], [x + (x < 378 ? -6 : 6), y + 18]], false, 1.5), fill: 'none', stroke: INK, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
-      }
-      marker(g, top, true, 6, 2.5);
+      // Simple, in one red pen line: two round lenses, a bridge, short arms...
+      const L = [300, 389], R = [461, 386], r = 56;
+      for (const [cx, cy] of [L, R]) pen(g, ring(cx, cy, r, r * 0.94, 16), true, 0.9);
+      pen(g, [[L[0] + r - 2, L[1] - 6], [380, 372], [R[0] - r + 2, R[1] - 6]], false);
+      pen(g, [[L[0] - r + 2, L[1] - 8], [226, 372]], false);
+      pen(g, [[R[0] + r - 2, R[1] - 8], [562, 370]], false);
+      // ...and a curly mustache: two swoops that meet under the nose and curl up.
+      pen(g, [[378, 516], [350, 530], [318, 532], [298, 518], [302, 504]], false);
+      pen(g, [[378, 516], [406, 530], [438, 531], [458, 517], [454, 503]], false);
     }
 
     let raf = 0, last = 0, visible = false;
