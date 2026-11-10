@@ -25,7 +25,7 @@
   let fxPref = store.get('psy-fx') !== 'off';
   const fxOn = () => fxPref && !reduce.matches;
   const announce = (m) => window.kinetic?.announce?.(m);
-  function syncFx() { root.classList.toggle('psy-calm', !fxOn()); field.redraw(); cosmos.redraw(); }
+  function syncFx() { root.classList.toggle('psy-calm', !fxOn()); field.redraw(); stars.redraw(); }
   reduce.addEventListener?.('change', () => syncFx());
 
   root.classList.add('psy');
@@ -148,200 +148,136 @@
     })(t0);
   }, { capture: true, passive: true });
 
-  // ── COSMOS: a vintage paper stage set of planets, moons and stars ──
-  // Every piece is cut with straight scissor snips from E. L. Trouvelot's
-  // 1880s astronomical plates (Images/cutouts/cosmos.webp, credits in
-  // Images/cutouts/CREDITS.md), given a cream paper border and a hard
-  // shadow, and joined with paper fasteners. Each object hangs on a thread
-  // from the underside of whatever is above it (a card, a heading, the
-  // hero), like scenery lowered onto a theatre stage, or floats when
-  // nothing is near.
+  // ── STARS: a sky of vintage paper cutout stars ────────────────────
+  // Every star is cut with straight scissor snips from E. L. Trouvelot's
+  // 1880s astronomical plates (Images/cutouts/stars.webp: the inside of
+  // Jupiter's bands, sunspot fibres, lunar craters, solar flares; credits
+  // in Images/cutouts/CREDITS.md), hand-tinted, with a cream paper border
+  // and a hard shadow. Three sizes:
+  //   big     jointed: every point is its own cut piece, pinned to a
+  //           centre with a paper fastener, and flaps on its own
+  //   medium  one cutout that twinkles
+  //   tiny    sprinkled loose in the empty space
+  // Big and medium stars hang on threads from the underside of whatever is
+  // above them (a card, a heading, a photo), like a mobile, when there's
+  // something near; otherwise they float.
   //
   // Placement: the page is measured on every layout (text, cards, photos,
-  // buttons become no-go areas) and each object goes only where its whole
-  // swing stays clear of content, preferring roomy spots, spread out.
+  // buttons become no-go areas). Each star tries a few hundred spots and
+  // takes the one with the most room around it and furthest from the
+  // others, so the sky fills evenly; only spots whose whole swing stays
+  // clear of content count. Redone when the layout changes.
   //
-  // Moving parts, worked by scrolling (12 updates a second, angles
-  // snapped, like hand-moved cutouts): everything swings on its thread;
-  // Saturn's ring tilts around the globe; Jupiter's moon orbits on a wire;
-  // the moon's shadow slides across it (phases); the sun turns and each
-  // ray flaps; the comet's jointed tail whips; stars twinkle. A fast
-  // scroll shakes the lot. Still under reduced motion or with effects off.
-  const cosmos = (() => {
-    const NS = 'http://www.w3.org/2000/svg', SHEET = 'Images/cutouts/cosmos.webp', SWID = 1024, SHGT = 768, C = 256;
-    const T = {
-      jupiter: { x: 0, y: 0, w: C, h: C }, globe: { x: C, y: 0, w: C, h: C }, moon: { x: 2 * C, y: 0, w: C, h: C },
-      eclipse: { x: 3 * C, y: 0, w: C, h: C }, ring: { x: 0, y: C, w: 2 * C, h: C }, spots: { x: 2 * C, y: C, w: C, h: C },
-      flare: { x: 3 * C, y: C, w: C, h: C }, tail: { x: 0, y: 2 * C, w: C / 2, h: C }, head: { x: C / 2, y: 2 * C, w: C / 2, h: C / 2 },
-      meteors: { x: C, y: 2 * C, w: C, h: C }, flare2: { x: 2 * C, y: 2 * C, w: C, h: C }, spots2: { x: 3 * C, y: 2 * C, w: C, h: C },
-    };
+  // Moving parts, worked by scrolling at 12 updates a second with angles
+  // snapped (hand-moved cutout style): threads swing, stars turn and
+  // twinkle, the points of big stars flap; each is lowered in on its
+  // thread the first time it's seen; a fast scroll shakes the lot. Still
+  // under reduced motion or with effects off.
+  const stars = (() => {
+    const NS = 'http://www.w3.org/2000/svg', SHEET = 'Images/cutouts/stars.webp', SW = 512, C = 256;
+    // [texture tile, tint, tint strength]: every tile is textured edge to edge.
+    const LOOKS = [
+      [{ x: 0, y: 0 }, '#F2B33D', 0.45],   // Jupiter's bands, gilded
+      [{ x: C, y: 0 }, '#F2B33D', 0.7],    // sunspot fibres, gold
+      [{ x: C, y: 0 }, '#F6D77A', 0.55],   // sunspot fibres, pale gold
+      [{ x: 0, y: C }, '#FFF1B8', 0.45],   // lunar craters, cream
+      [{ x: 0, y: C }, '#F2B33D', 0.6],    // lunar craters, gold
+      [{ x: C, y: C }, null, 0],           // solar flares, red as printed
+    ];
     const PAPER = '#FBF5E6', INK = '#2B2420';
     let seed = 11, uid = 0;   // fixed seed: the same sky on every visit
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const j = (n) => (rnd() - 0.5) * n;   // scissor wobble
+    const pick = (a) => a[Math.floor(rnd() * a.length)];
     const snap = (v, s) => Math.round(v / s) * s;
     const pts = (a) => a.map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
     function el(tag, attrs, parent) { const e = doc.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.append(e); return e; }
-    // Shapes (straight cuts).
-    const disc = (r, n = 13) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2 + j(0.12); const rr = r + j(r * 0.05); return [Math.cos(a) * rr, Math.sin(a) * rr]; });
-    function spike(len, wid) { return [[-wid / 2 + j(1), 1], [-wid * 0.22 + j(1.2), -len * 0.5 + j(1.5)], [j(1.5), -len + j(1)], [wid * 0.22 + j(1.2), -len * 0.5 + j(1.5)], [wid / 2 + j(1), 1]]; }
-    function star(R, n = 5) { const a = []; for (let i = 0; i < n * 2; i++) { const r = i % 2 ? R * (0.42 + j(0.08)) : R + j(R * 0.1), t = (i / (n * 2)) * Math.PI * 2 - Math.PI / 2; a.push([Math.cos(t) * r, Math.sin(t) * r]); } return a; }
-    function band(rx, ry, w, from, to) {   // half of a flattened ring: outer arc there, inner arc back
-      const o = [], i = [], n = 9;
-      for (let k = 0; k <= n; k++) { const t = from + (to - from) * (k / n); o.push([Math.cos(t) * (rx + j(1.2)), Math.sin(t) * (ry + j(0.8))]); i.unshift([Math.cos(t) * (rx - w + j(1)), Math.sin(t) * (ry - w * ry / rx + j(0.6))]); }
-      return [...o, ...i];
-    }
-    // One cut piece: paper backing, the print clipped to the shape, a tint.
-    // win: which part of the tile shows ('full', or a fixed sub-window).
-    function piece(parent, defs, shape, tile, o = {}) {
-      const id = 'cosp' + (++uid);
+    function starShape(R, n) { const a = []; for (let i = 0; i < n * 2; i++) { const r = i % 2 ? R * (0.4 + j(0.08)) : R + j(R * 0.1), t = (i / (n * 2)) * Math.PI * 2 - Math.PI / 2 + j(0.06); a.push([Math.cos(t) * r, Math.sin(t) * r]); } return a; }
+    const spike = (len, wid) => [[-wid / 2 + j(0.8), 1], [-wid * 0.2 + j(0.8), -len * 0.55 + j(1)], [j(1), -len + j(0.8)], [wid * 0.2 + j(0.8), -len * 0.55 + j(1)], [wid / 2 + j(0.8), 1]];
+    const blob = (r, n = 9) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; const rr = r + j(r * 0.15); return [Math.cos(a) * rr, Math.sin(a) * rr]; });
+    // One cut piece: paper backing, a random window of its texture tile
+    // clipped to the shape, and a hand tint.
+    function piece(parent, defs, shape, look, border = 2.6) {
+      const [tile, tint, alpha] = look, id = 'starp' + (++uid);
       const xs = shape.map((p) => p[0]), ys = shape.map((p) => p[1]);
       const bx = Math.min(...xs), by = Math.min(...ys), bw = Math.max(...xs) - bx, bh = Math.max(...ys) - by;
       el('polygon', { points: pts(shape) }, el('clipPath', { id }, defs));
-      el('polygon', { points: pts(shape), fill: PAPER, stroke: PAPER, 'stroke-width': o.border ?? 3, 'stroke-linejoin': 'miter' }, parent);
-      let w = o.win;
-      if (!w) { const fw = tile.w * (0.5 + rnd() * 0.45), fh = Math.min(tile.h, fw * bh / Math.max(1, bw)); w = { x: tile.x + rnd() * (tile.w - fw), y: tile.y + rnd() * Math.max(0, tile.h - fh), w: fw, h: fh }; }
-      if (w === 'full') w = tile;
+      el('polygon', { points: pts(shape), fill: PAPER, stroke: PAPER, 'stroke-width': border, 'stroke-linejoin': 'miter' }, parent);
+      const fw = C * (0.3 + rnd() * 0.45), fh = fw * bh / Math.max(1, bw);
       const clip = el('g', { 'clip-path': `url(#${id})` }, parent);
-      const win = el('svg', { x: bx, y: by, width: bw, height: bh, viewBox: `${w.x.toFixed(1)} ${w.y.toFixed(1)} ${w.w.toFixed(1)} ${w.h.toFixed(1)}`, preserveAspectRatio: o.fit || 'xMidYMid slice', overflow: 'hidden' }, clip);
-      el('image', { href: SHEET, width: SWID, height: SHGT }, win);
-      if (o.tint) el('polygon', { points: pts(shape), fill: o.tint, opacity: o.alpha ?? 0.5, style: 'mix-blend-mode:multiply' }, parent);
-      return clip;
+      const win = el('svg', { x: bx, y: by, width: bw, height: bh, viewBox: `${(tile.x + rnd() * (C - fw)).toFixed(1)} ${(tile.y + rnd() * Math.max(0, C - fh)).toFixed(1)} ${fw.toFixed(1)} ${fh.toFixed(1)}`, preserveAspectRatio: 'xMidYMid slice', overflow: 'hidden' }, clip);
+      el('image', { href: SHEET, width: SW, height: SW }, win);
+      if (tint) el('polygon', { points: pts(shape), fill: tint, opacity: alpha, style: 'mix-blend-mode:multiply' }, parent);
     }
-    const pin = (parent, x, y, r = 2.4) => { el('circle', { cx: x, cy: y, r, fill: PAPER }, parent); el('circle', { cx: x, cy: y, r: r * 0.55, fill: '#6B5A3A' }, parent); };
+    const pin = (parent, r = 2.2) => { el('circle', { cx: 0, cy: 0, r, fill: PAPER }, parent); el('circle', { cx: 0, cy: 0, r: r * 0.55, fill: '#6B5A3A' }, parent); };
 
-    // ── the objects: each builds into g (centred on 0,0) and returns its
-    // half-size and an animate(t, moving) for its own moving parts.
-    const MAKERS = {
-      saturn(g, defs) {
-        const rx = 70, ry = 21, rw = 15, R = 29;
-        const ring = el('g', {}, g), back = el('g', {}, ring);
-        piece(back, defs, band(rx, ry, rw, Math.PI, Math.PI * 2), T.ring, { win: 'full', fit: 'none' });
-        const globe = el('g', {}, g);
-        piece(globe, defs, disc(R, 15), T.globe, { win: 'full' });
-        const front = el('g', {}, g);
-        piece(front, defs, band(rx, ry, rw, 0, Math.PI), T.ring, { win: 'full', fit: 'none' });
-        const base = -14 + j(10), ph = rnd() * 6;
-        return { hw: rx + 4, hh: 34, animate(t, m) {
-          const tilt = m ? base + snap(Math.sin(t * 0.004 + ph) * 9, 3) : base, sq = m ? snap(1 + Math.sin(t * 0.005 + ph) * 0.28, 0.07) : 1;
-          const tr = `rotate(${tilt}) scale(1 ${sq})`;
-          ring.setAttribute('transform', tr); front.setAttribute('transform', tr);
-          globe.setAttribute('transform', `rotate(${m ? snap(Math.sin(t * 0.003 + ph) * 6, 2) : 0})`);
-        } };
-      },
-      jupiter(g, defs) {
-        const R = 40, body = el('g', {}, g);
-        piece(body, defs, disc(R, 16), T.jupiter, { win: 'full' });
-        const arm = el('g', {}, g), ph = rnd() * 6, dir = rnd() < 0.5 ? -1 : 1;
-        el('line', { x1: 0, y1: 0, x2: R + 15, y2: 0, stroke: INK, 'stroke-width': 1, opacity: 0.6 }, arm);
-        const moonlet = el('g', { transform: `translate(${R + 15} 0)` }, arm);
-        piece(moonlet, defs, disc(7, 9), T.moon, { border: 2.4 });
-        pin(g, 0, 0, 2.6);
-        return { hw: R + 24, hh: R + 24, animate(t, m) {
-          body.setAttribute('transform', `rotate(${m ? snap(Math.sin(t * 0.003 + ph) * 8, 2) : 0})`);
-          arm.setAttribute('transform', `rotate(${m ? snap(dir * t * 0.22 + ph * 57, 12) : -30})`);
-        } };
-      },
-      moon(g, defs) {
-        const R = 32, copper = rnd() < 0.35, shape = disc(R, 15), cid = 'cosm' + (++uid);
-        piece(g, defs, shape, copper ? T.eclipse : T.moon, copper ? { win: 'full' } : {});
-        el('polygon', { points: pts(shape) }, el('clipPath', { id: cid }, defs));
-        const shade = el('g', {}, el('g', { 'clip-path': `url(#${cid})` }, g));
-        piece(shade, defs, disc(R + 2, 13), T.eclipse, { tint: '#2A2438', alpha: 0.5, border: 0 });
-        const ph = rnd() * 6;
-        return { hw: R + 3, hh: R + 3, animate(t, m) {
-          // From a thin crescent (0.55R) to nearly full (2.3R), either side: never fully dark.
-          const d = R * (1.42 + 0.88 * Math.sin(t * 0.0022 + ph)) * (Math.cos(t * 0.0011 + ph) < 0 ? -1 : 1);
-          shade.setAttribute('transform', `translate(${m ? snap(d, R * 0.18).toFixed(1) : R * 1.1} 0)`);
-        } };
-      },
-      sun(g, defs) {
-        const R = 25, rays = el('g', {}, g), list = [], n = 12;
+    // ── the three kinds; each builds into g (centred) and animates itself ──
+    function makeStar(size, g, defs) {
+      const look = pick(LOOKS), ph = rnd() * 6;
+      if (size === 'big') {
+        const R = 24 + rnd() * 9, n = pick([5, 5, 6, 8]), points = el('g', {}, g), list = [];
         for (let i = 0; i < n; i++) {
-          const a = el('g', { transform: `rotate(${(i / n) * 360 + j(6)}) translate(0 ${-R + 4})` }, rays), flap = el('g', {}, a);
-          piece(flap, defs, spike(18 + rnd() * 9, 11 + j(3)), i % 2 ? T.flare : T.flare2);
+          const arm = el('g', { transform: `rotate(${(i / n) * 360 + j(5)})` }, points), flap = el('g', {}, arm);
+          piece(flap, defs, spike(R * (i % 2 && n === 8 ? 0.62 : 1), R * (n === 8 ? 0.42 : 0.55)), look);
           list.push({ flap, ph: rnd() * 6 });
         }
-        const face = el('g', {}, g);
-        piece(face, defs, disc(R, 15), T.spots, { tint: '#F2B33D', alpha: 0.6 });
-        pin(g, 0, 0);
-        const ph = rnd() * 6;
-        return { hw: R + 26, hh: R + 26, animate(t, m) {
-          rays.setAttribute('transform', `rotate(${m ? snap(-t * 0.04 + ph * 57, 6) : 0})`);
-          face.setAttribute('transform', `rotate(${m ? snap(t * 0.06, 8) : 0})`);
-          for (const r of list) r.flap.setAttribute('transform', m ? `rotate(${snap(Math.sin(t * 0.012 + r.ph) * 9, 3)}) scale(1 ${snap(1 + Math.sin(t * 0.01 + r.ph * 2) * 0.2, 0.07)})` : '');
+        piece(g, defs, blob(R * 0.3), pick(LOOKS)); pin(g);
+        return { R, animate(t, m) {
+          points.setAttribute('transform', `rotate(${m ? snap(t * 0.05 + ph * 57, 8) : 0})`);
+          for (const p of list) p.flap.setAttribute('transform', m ? `rotate(${snap(Math.sin(t * 0.012 + p.ph) * 10, 3)}) scale(1 ${snap(1 + Math.sin(t * 0.01 + p.ph * 2) * 0.2, 0.07)})` : '');
         } };
-      },
-      // Hung by the tip of its tail; the head dangles at the bottom.
-      comet(g, defs) {
-        const segs = [], n = 4, L = 30, top = -62;
-        let parent = el('g', { transform: `translate(0 ${top})` }, g);
-        for (let i = 0; i < n; i++) {
-          const sg = el('g', {}, parent), w0 = 24 - i * 4.5, w1 = 24 - (i + 1) * 4.5;
-          const win = { x: T.tail.x, y: T.tail.y + (T.tail.h * i) / n, w: T.tail.w, h: T.tail.h / n };
-          piece(sg, defs, [[-w0 / 2 + j(1), -1], [w0 / 2 + j(1), -1], [w1 / 2 + j(1), L + 2], [-w1 / 2 + j(1), L + 2]], T.tail, { win, fit: 'none', tint: '#CFE3E8', alpha: 0.35 });
-          if (i) pin(sg, 0, 0, 2);
-          segs.push(sg); parent = el('g', { transform: `translate(0 ${L})` }, sg);
-        }
-        const head = el('g', {}, parent);
-        for (let i = 0; i < 6; i++) piece(el('g', { transform: `rotate(${i * 60 + j(10)})` }, head), defs, spike(14 + rnd() * 6, 5), T.head, { border: 2, tint: '#F4EBD0', alpha: 0.4 });
-        piece(head, defs, disc(8.5, 10), T.head, { win: 'full', tint: '#FFF6D8', alpha: 0.35 });
-        const ph = rnd() * 6;
-        return { hw: 30, hh: 70, hangAt: top, animate(t, m) {
-          segs.forEach((sg, i) => sg.setAttribute('transform', `rotate(${m ? snap(Math.sin(t * 0.006 + ph - i * 0.8) * (5 + i * 3), 3) : 0})`));
-          head.setAttribute('transform', `rotate(${m ? snap(t * 0.1, 15) : 0})`);
-        } };
-      },
-      star(g, defs) {
-        const R = 11 + rnd() * 6, body = el('g', {}, g);
-        piece(body, defs, star(R, rnd() < 0.25 ? 4 : 5), rnd() < 0.5 ? T.spots2 : T.moon, { tint: rnd() < 0.7 ? '#F2B33D' : '#FFF1B8', alpha: 0.7, border: 2.6 });
-        const ph = rnd() * 6;
-        return { hw: R + 2, hh: R + 2, small: true, animate(t, m) {
-          body.setAttribute('transform', m ? `rotate(${snap(Math.sin(t * 0.005 + ph) * 18, 6)}) scale(${snap(1 + Math.sin(t * 0.012 + ph) * 0.18, 0.06)})` : '');
-        } };
-      },
-    };
-
-    // ── the stage: build an object, hang it ──
-    function build(kind) {
-      const svg = el('svg', { 'aria-hidden': 'true', focusable: 'false', class: 'cos-obj cos-' + kind });
-      const defs = el('defs', {}, svg), root = el('g', {}, svg), swing = el('g', {}, root);
-      const thread = el('line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: INK, 'stroke-width': 1.1, opacity: 0.75 }, swing);
+      }
+      const R = size === 'medium' ? 12 + rnd() * 7 : 5 + rnd() * 4, body = el('g', {}, g);
+      piece(body, defs, starShape(R, pick([4, 5, 5, 5, 6])), look, size === 'tiny' ? 1.8 : 2.6);
+      return { R, animate(t, m) {
+        body.setAttribute('transform', m ? `rotate(${snap(Math.sin(t * 0.005 + ph) * 22, 6)}) scale(${snap(1 + Math.sin(t * 0.012 + ph) * 0.2, 0.07)})` : '');
+      } };
+    }
+    function build(size) {
+      const svg = el('svg', { 'aria-hidden': 'true', focusable: 'false', class: 'star-obj', width: 2, height: 2 });
+      const defs = el('defs', {}, svg), root = el('g', { transform: 'translate(1 1)' }, svg), swing = el('g', {}, root);
+      const thread = el('line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: INK, 'stroke-width': 1, opacity: 0.7 }, swing);
       const holder = el('g', {}, swing), body = el('g', {}, holder);
-      const o = MAKERS[kind](body, defs);
-      const anchorPin = el('g', {}, root); pin(anchorPin, 0, 0, 2.6);
-      return { kind, svg, root, swing, thread, holder, anchorPin, ...o, ph: rnd() * 6, popAt: 0, seen: false };
+      const anchorPin = el('g', {}, root); pin(anchorPin, 2.2);
+      return { size, svg, swing, thread, holder, anchorPin, ...makeStar(size, body, defs), ph: rnd() * 6, popAt: 0, seen: false };
     }
 
     const layer = doc.createElement('div');
-    layer.className = 'cut-cosmos'; layer.setAttribute('aria-hidden', 'true');
+    layer.className = 'cut-stars'; layer.setAttribute('aria-hidden', 'true');
     doc.body.append(layer);
     let placed = [];
 
-    // ── placement ──
-    // An occupancy grid of the page (10px cells): content is marked, with
-    // a margin; a summed-area table answers "is this box clear?" at once.
-    const G = 10, M = 14;
+    // ── measuring the page ──
+    // An occupancy grid (8px cells): content is marked with a margin; a
+    // summed-area table answers "is this box clear?" at once, and each
+    // column knows the nearest content above every row (thread anchors).
+    const G = 8, M = 12;
     function measure() {
       // Sections below the fold skip layout until they're near
       // (content-visibility: auto): lay them all out for the measurement.
-      // The browser then remembers their real sizes.
-      root.classList.add('cos-measure');
-      try { return measureNow(); } finally { root.classList.remove('cos-measure'); }
+      root.classList.add('star-measure');
+      try { return measureNow(); } finally { root.classList.remove('star-measure'); }
     }
     function measureNow() {
-      const W = doc.documentElement.clientWidth, H = doc.documentElement.scrollHeight;
-      const cols = Math.ceil(W / G), rows = Math.ceil(H / G), occ = new Uint8Array(cols * rows), sy = scrollY;
+      const W = doc.documentElement.clientWidth, H = doc.documentElement.scrollHeight, sy = scrollY;
+      const cols = Math.ceil(W / G), rows = Math.ceil(H / G), occ = new Uint8Array(cols * rows);
       const mark = (x0, y0, x1, y1, m = M) => {
         const c0 = Math.max(0, Math.floor((x0 - m) / G)), c1 = Math.min(cols - 1, Math.floor((x1 + m) / G));
         const r0 = Math.max(0, Math.floor((y0 - m) / G)), r1 = Math.min(rows - 1, Math.floor((y1 + m) / G));
         for (let r = r0; r <= r1; r++) occ.fill(1, r * cols + c0, r * cols + c1 + 1);
       };
-      const regions = [...$$('main > section:not(.hero-split)'), $('footer')].filter(Boolean);
       const hero = $('.hero-split');
-      if (hero) { const r = hero.getBoundingClientRect(); mark(0, 0, W, r.bottom + sy, 0); }   // the hero (and above) is off limits
+      if (hero) mark(0, 0, W, hero.getBoundingClientRect().bottom + sy, 0);   // the hero (and above) is off limits
       const rg = doc.createRange();
-      for (const reg of regions) {
+      for (const reg of [...$$('main > section:not(.hero-split)'), $('footer')]) {
+        if (!reg) continue;
+        // A section with its own background: don't let a star straddle its edges.
+        const rcs = getComputedStyle(reg), rr = reg.getBoundingClientRect();
+        if (!/rgba\(0, 0, 0, 0\)|transparent/.test(rcs.backgroundColor)) { mark(0, rr.top + sy, W, rr.top + sy); mark(0, rr.bottom + sy, W, rr.bottom + sy); }
+        for (const band of reg.querySelectorAll(':scope > *')) {   // full-width coloured bands inside it (the footer's bar)
+          const br = band.getBoundingClientRect(), bcs = getComputedStyle(band);
+          if (br.width >= W * 0.92 && br.height > 0 && !/rgba\(0, 0, 0, 0\)|transparent/.test(bcs.backgroundColor)) { mark(0, br.top + sy, W, br.top + sy); mark(0, br.bottom + sy, W, br.bottom + sy); }
+        }
         for (const e of reg.querySelectorAll('*')) {
           const r = e.getBoundingClientRect();
           if (r.width < 1 || r.height < 1) continue;
@@ -358,67 +294,61 @@
           }
         }
       }
-      mark(0, 0, 6, H, 0); mark(W - 6, 0, W, H, 0);   // keep off the very edges
+      mark(0, 0, 4, H, 0); mark(W - 4, 0, W, H, 0);   // keep off the very edges
       const sat = new Int32Array((cols + 1) * (rows + 1));
       for (let r = 0; r < rows; r++) { let run = 0; for (let c = 0; c < cols; c++) { run += occ[r * cols + c]; sat[(r + 1) * (cols + 1) + c + 1] = sat[r * (cols + 1) + c + 1] + run; } }
+      const above = new Int32Array(cols * rows).fill(-1);   // row index of the nearest content cell above
+      for (let c = 0; c < cols; c++) { let last = -1; for (let r = 0; r < rows; r++) { if (occ[r * cols + c]) last = r; else above[r * cols + c] = last; } }
       const free = (x0, y0, x1, y1) => {
         const c0 = Math.floor(x0 / G), c1 = Math.ceil(x1 / G), r0 = Math.floor(y0 / G), r1 = Math.ceil(y1 / G);
         if (c0 < 0 || r0 < 0 || c1 > cols || r1 > rows) return false;
         return sat[r1 * (cols + 1) + c1] - sat[r0 * (cols + 1) + c1] - sat[r1 * (cols + 1) + c0] + sat[r0 * (cols + 1) + c0] === 0;
       };
-      // Nearest thing above a point (a card's underside, a heading...).
-      const ceiling = (x, y, max) => {
-        const c = Math.floor(x / G);
-        for (let r = Math.floor(y / G) - 1, k = 0; r >= 0 && k * G < max; r--, k++) if (occ[r * cols + c]) return (r + 1) * G - M + 2;
-        return null;
-      };
-      return { W, H, free, ceiling, regions: regions.map((e) => { const r = e.getBoundingClientRect(); return { top: r.top + sy, bottom: r.bottom + sy }; }) };
+      const ceiling = (x, y) => { const c = Math.floor(x / G), r = Math.floor(y / G); if (c < 0 || c >= cols || r < 0 || r >= rows) return null; const a = above[r * cols + c]; return a < 0 ? null : (a + 1) * G - M + 2; };
+      const top = hero ? hero.getBoundingClientRect().bottom + sy : 0;
+      return { W, H, top, free, ceiling };
     }
 
+    // ── placing the sky ──
     function layout() {
       seed = 11; uid = 0;
       for (const o of placed) o.svg.remove();
       placed = [];
-      const map = measure(), s = Math.max(0.62, Math.min(1.05, innerWidth / 1300)), phone = innerWidth < 700;
-      const BIG = ['saturn', 'moon', 'jupiter', 'sun', 'comet', 'moon', 'saturn', 'sun'];
-      let next = 0;
-      // Too near another object, or its thread (threads shouldn't bunch up).
-      const tooClose = (x, y, top, d) => placed.some((o) => Math.hypot(o.cx - x, o.cy - y) < d
-        || (o.hung && Math.abs(o.ax - x) < 70 * s && top < o.cy && y > o.ay));
-      function place(kind, reg) {
-        const o = build(kind), hw = o.hw * s, hh = o.hh * s, hang = (o.hangAt ?? -o.hh) * s;
-        let best = null;
-        for (let y = reg.top + 8; y + 2 * hh < reg.bottom - 4; y += 20) {
-          for (let x = hw + 10; x < map.W - hw - 10; x += 20) {
-            const top = y, cy = y + hh;
-            const anchor = map.ceiling(x, top + (hang + hh), 280);
-            const L = anchor == null ? 0 : (cy + hang) - anchor;
-            if (anchor != null && L < 12) continue;
-            const sw = Math.min(40, (L + hh) * 0.16) + 4;
-            if (!map.free(x - hw - sw, top - 4, x + hw + sw, top + 2 * hh + 4)) continue;
-            if (tooClose(x, cy, anchor ?? top, (o.small ? 170 : 300) * s)) continue;
-            let score = rnd() * 6;
-            for (const m of [24, 48, 80]) if (map.free(x - hw - sw - m, top - m, x + hw + sw + m, top + 2 * hh + m)) score += 10;
-            if (anchor != null) score += L > 30 && L < 170 ? 14 : L < 240 ? 6 : 0;
-            if (!best || score > best.score) best = { x, cy, anchor, L, score };
+      const map = measure(), s = Math.max(0.7, Math.min(1.05, innerWidth / 1300));
+      // How many: by the page's area, so phones get fewer.
+      const area = (map.W * (map.H - map.top)) / 1e6;
+      const plan = [['big', Math.round(area * 1.4)], ['medium', Math.round(area * 4.2)], ['tiny', Math.round(area * 6)]];
+      const SPACE = { big: 150, medium: 95, tiny: 55 };
+      for (const [size, count] of plan) {
+        for (let k = 0; k < count; k++) {
+          const o = build(size), R = o.R * s, gap = SPACE[size] * s;
+          let best = null;
+          for (let tries = 0; tries < 260; tries++) {
+            const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
+            // Hang from what's above, if it's near and the star isn't tiny.
+            const anchor = size === 'tiny' ? null : map.ceiling(x, cy - R - 4);
+            const L = anchor != null && cy - R - anchor < 230 ? cy - R - anchor : 0, hung = L > 10;
+            const sw = hung ? Math.min(30, (L + R) * 0.13) + 3 : 3;
+            if (!map.free(x - R - sw, cy - R - 3, x + R + sw, cy + R + 3)) continue;
+            // Distance to the nearest star (and to threads, so they don't bunch).
+            let near = 1e9;
+            for (const p of placed) {
+              near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R * p.s);
+              if (p.hung && Math.abs(p.cx - x) < 26 * s && cy + R > p.ay && cy - R < p.cy) near = 0;
+            }
+            if (near < gap) continue;
+            let score = Math.min(near, gap * 3) / gap * 10 + rnd() * 5;
+            for (const m of [16, 36]) if (map.free(x - R - sw - m, cy - R - m, x + R + sw + m, cy + R + m)) score += 6;
+            if (hung && L < 160) score += 6;
+            if (!best || score > best.score) best = { x, cy, L: hung ? L : 0, hung, score, ay: hung ? anchor : cy - R };
           }
+          if (!best) continue;
+          Object.assign(o, { cx: best.x, cy: best.cy, L: best.L, hung: best.hung, ay: best.ay, s, R: o.R });
+          o.thread.style.display = o.hung ? '' : 'none'; o.anchorPin.style.display = o.hung ? '' : 'none';
+          o.thread.setAttribute('y2', o.L.toFixed(1));
+          o.svg.style.left = best.x + 'px'; o.svg.style.top = best.ay + 'px';
+          layer.append(o.svg); placed.push(o);
         }
-        if (!best) return false;
-        Object.assign(o, { cx: best.x, cy: best.cy, L: best.L, hung: best.anchor != null, s, ax: best.x, ay: best.anchor ?? best.cy });
-        o.thread.style.display = o.hung ? '' : 'none'; o.anchorPin.style.display = o.hung ? '' : 'none';
-        const ay = o.hung ? best.anchor : best.cy + hang;
-        o.thread.setAttribute('y2', o.L.toFixed(1));
-        o.holder.setAttribute('transform', `translate(0 ${(o.L - hang).toFixed(1)}) scale(${s})`);
-        o.svg.setAttribute('width', 2); o.svg.setAttribute('height', 2);
-        o.svg.style.left = best.x + 'px'; o.svg.style.top = ay + 'px';
-        o.root.setAttribute('transform', 'translate(1 1)');
-        layer.append(o.svg); placed.push(o);
-        return true;
-      }
-      for (const reg of map.regions) {
-        let bigs = 0;
-        for (let tries = 0; tries < BIG.length && bigs < (phone ? 1 : 2); tries++) if (place(BIG[next++ % BIG.length], reg)) bigs++;
-        for (let k = 0; k < (phone ? 1 : 2); k++) place('star', reg);
       }
       layer.style.height = map.H + 'px';
       draw();
@@ -431,13 +361,13 @@
       shake = Math.min(14, shake * 0.7 + Math.abs(scrollVel) * 4);
       for (const o of placed) {
         const vy = o.cy - sy;
-        if (vy < -400 || vy > vh + 400) continue;
-        if (!o.seen && vy < vh * 0.9) { o.seen = true; if (moving) { o.popAt = now; settleUntil = Math.max(settleUntil, now + 600); } }
+        if (vy < -300 || vy > vh + 300) continue;
+        if (!o.seen && vy < vh * 0.92) { o.seen = true; if (moving && o.size !== 'tiny') { o.popAt = now; settleUntil = Math.max(settleUntil, now + 600); } }
         // Lowered in on its thread the first time it's seen (three jerks).
-        const drop = o.popAt && now - o.popAt < 450 ? (1 - Math.ceil(((now - o.popAt) / 450) * 3) / 3) * -(o.L + o.hh * o.s + 30) : 0;
-        const sw = moving ? snap(Math.sin(sy * 0.0035 + o.ph) * (o.hung ? 6 : 3) + Math.sin(now * 0.02 + o.ph) * shake * 0.5, 2) : 0;
+        const drop = o.popAt && now - o.popAt < 450 ? (1 - Math.ceil(((now - o.popAt) / 450) * 3) / 3) * -(o.L + o.R * o.s * 2 + 20) : 0;
+        const sw = moving ? snap(Math.sin(sy * 0.0035 + o.ph) * (o.hung ? 7 : 3) + Math.sin(now * 0.02 + o.ph) * shake * 0.5, 2) : 0;
         o.swing.setAttribute('transform', `rotate(${sw})`);
-        o.holder.setAttribute('transform', `translate(0 ${(o.L - (o.hangAt ?? -o.hh) * o.s + drop).toFixed(1)}) scale(${o.s})`);
+        o.holder.setAttribute('transform', `translate(0 ${(o.L + o.R * o.s + drop).toFixed(1)}) scale(${o.s})`);
         if (o.hung) o.thread.setAttribute('y2', Math.max(0, o.L + drop).toFixed(1));
         o.animate(sy, moving);
       }
