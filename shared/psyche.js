@@ -162,9 +162,9 @@
   //
   // Animation is shot "on threes" (8 frames a second), no smooth tweens:
   // the stars on screen boil and jitter a pixel or so every frame; while
-  // you scroll they also turn in hard clicks and swell in steps; each pops
-  // up over two frames the first time it's seen; a fast scroll knocks them
-  // about. Still under reduced motion or with effects off.
+  // you scroll they also turn in hard clicks and swell in steps; a fast
+  // scroll knocks them about. Every star is there from the start (no
+  // pop-in), and stars added later are only ever placed off screen. Still under reduced motion or with effects off.
   const stars = (() => {
     const FRAMES = 3, DESIGNS = 6;   // six hand-drawn hollow stars
     let seed = 11;   // fixed seed: the same sky on every visit
@@ -242,7 +242,7 @@
     // instead of the whole sky being thrown away and re-placed.
     const SIZES = [[56, 72, 1.3], [32, 46, 3.6], [16, 24, 5]];   // [min px, max px, stars per million px²]
     const regions = () => [...$$('main > section:not(.hero-split)'), $('footer')].filter(Boolean);
-    function place(map, s, cls, count) {
+    function place(map, s, cls, count, avoidView) {
       const [lo, hi] = SIZES[cls], secs = regions().map((el) => { const r = el.getBoundingClientRect(); return { el, top: r.top + scrollY, bottom: r.bottom + scrollY }; });
       for (let k = 0; k < count; k++) {
         const d = Math.floor(rnd() * DESIGNS);
@@ -251,6 +251,8 @@
         for (let tries = 0; tries < 260; tries++) {
           const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
           const pad = R * 0.2 + 4;   // room to jitter and swell
+          // When topping up, never add a star where you're looking (it would pop in).
+          if (avoidView && cy + R > scrollY - 50 && cy - R < scrollY + innerHeight + 50) continue;
           if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
           let near = 1e9;
           for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R);
@@ -261,21 +263,20 @@
         }
         if (!best) continue;
         const sec = secs.find((q) => best.cy >= q.top && best.cy < q.bottom) || secs[secs.length - 1];
+        const o0base = Math.floor((rnd() - 0.5) * 50);
         const el = doc.createElement('i');
         el.className = 'chalk-star';
-        // Hidden until it first comes into view, then it pops in (with
-        // effects off it's simply there).
-        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`
-          + (fxOn() ? 'transform:scale(0);' : '');
+        // Always there from the start (no pop-in): a star never appears late.
+        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;transform:rotate(${o0base}deg)`;
         layer.append(el);
-        const o = { el, d, cls, sec: sec.el, off: best.cy - sec.top, cx: best.x, cy: best.cy, R, base: Math.floor((rnd() - 0.5) * 50), spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES), popAt: 0, seen: false };
+        const o = { el, d, cls, sec: sec.el, off: best.cy - sec.top, cx: best.x, cy: best.cy, R, base: o0base, spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES) };
         setFrame(o); placed.push(o);
       }
     }
     // Fill the sky up to its quota for the page's size (phones get fewer).
-    function fill(map) {
+    function fill(map, avoidView = false) {
       const s = Math.max(0.7, Math.min(1.05, innerWidth / 1300)), area = (map.W * (map.H - map.top)) / 1e6;
-      SIZES.forEach(([, , per], cls) => place(map, s, cls, Math.max(0, Math.round(area * per) - placed.filter((o) => o.cls === cls).length)));
+      SIZES.forEach(([, , per], cls) => place(map, s, cls, Math.max(0, Math.round(area * per) - placed.filter((o) => o.cls === cls).length), avoidView));
       layer.style.height = map.H + 'px';
     }
     // From scratch: on first load and when the page's width changes.
@@ -305,7 +306,7 @@
         if (map.free(o.cx - o.R - pad, o.cy - o.R - pad, o.cx + o.R + pad, o.cy + o.R + pad)) keep.push(o); else o.el.remove();
       }
       placed = keep;
-      fill(map);
+      fill(map, true);
     }
 
     function setFrame(o) { o.el.style.backgroundPosition = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; }
@@ -313,25 +314,19 @@
     // ── stop motion: 8 frames a second ("on threes") ──
     let raf = 0, lastT = 0, shake = 0;
     function draw() {
-      const vh = innerHeight, sy = scrollY, moving = fxOn(), now = performance.now();
+      const vh = innerHeight, sy = scrollY, moving = fxOn();
       // Knocked about only by a genuinely fast flick, not ordinary scrolling.
       shake = Math.min(6, shake * 0.6 + Math.max(0, Math.abs(scrollVel) - 1.5) * 3);
       for (const o of placed) {
         const vy = o.cy - sy;
         if (vy < -500 || vy > vh + 500) continue;
-        // Pops in while still 400px off screen, so a star scrolled to is
-        // already there at full size (only ones on screen at load visibly pop).
-        if (!o.seen) { if (vy - o.R > vh + 400 || vy + o.R < -400) continue; o.seen = true; if (moving) o.popAt = now; }
         if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
         o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o);
-        // Two-frame pop: tiny, too big, then itself.
-        const pf = o.popAt ? Math.floor((now - o.popAt) / 125) : 9;
-        const pop = pf === 0 ? 0.2 : pf === 1 ? 1.3 : 1;
         // A pixel of jitter every frame, more when a fast scroll knocks it.
         const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
         const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
-        const sc = pop * snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05);
+        const sc = snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05);
         o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${sc})`;
       }
     }
