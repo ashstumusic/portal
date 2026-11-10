@@ -1440,11 +1440,32 @@ html { overscroll-behavior-y: none; }
 }
 @media (prefers-contrast: more) { :root.psy .epk-section:not(#\#) { background: #7A0E1A !important; } }
 
-/* Lyrics button: icon only (lines-of-text glyph + dropdown arrow), no
-   word. A compact 52x32 pill; the arrow flips when the lyrics are open.
-   Screen readers still hear "Show lyrics for <song>"; hovering shows a
-   "Lyrics" tooltip. */
-:root.psy .rel-lyrics-toggle:not(#\#) { width: 52px !important; height: 32px !important; padding-inline: 0 !important; gap: 5px !important; }
-:root.psy .rel-lyrics-toggle svg.lyr-ico:not(#\#) { width: 16px !important; height: 16px !important; opacity: 1; transform: none !important; }
-:root.psy .rel-lyrics-toggle svg.lyr-chev:not(#\#) { width: 10px !important; height: 10px !important; transition: transform .3s var(--spring, ease); }
-:root.psy .rel-lyrics-toggle.open svg.lyr-chev:not(#\#) { transform: rotate(180deg) !important; }
+/* ── Tracklist, redesigned ────────────────────────────────────────────
+   Quieter and more regular: each row is 46px with one hairline between
+   rows and no background bands, so the titles carry the list. The lyrics
+   control is a small round ghost button (lines-of-text glyph, no outline,
+   no word, no arrow) sitting in its own right-hand column; it fills light
+   with a dark glyph while that song's lyrics are open. Hover and keyboard
+   focus are the same as every other button (gold fill + ring / focus
+   ring). Screen readers still hear "Show lyrics for <song>". */
+:root.psy .rel-tracklist { padding: 4px 0 8px; }
+:root.psy .rel-track-wrap { border-bottom: 1px solid rgb(240 245 246 / .08) !important; column-gap: 6px; padding-right: 10px; }
+:root.psy .rel-track-wrap:last-child { border-bottom: 0 !important; }
+:root.psy .rel-track-wrap::before { display: none !important; }
+:root.psy .rel-track:not(:hover):not(.active) { background: transparent !important; }
+:root.psy .rel-track { min-height: 46px !important; padding-block: 0 !important; border-radius: 10px !important; }
+:root.psy .rel-track.active:not(:hover) { background: rgb(240 245 246 / .07) !important; border-left: 0 !important; }
+:root.psy .rel-track-num { font-size: 13px !important; text-align: right; }
+:root.psy .rel-lyrics-toggle:not(#\#) {
+  width: 34px !important; height: 34px !important; min-width: 34px; padding: 0 !important; gap: 0 !important;
+  border-radius: 50% !important; margin: 0 !important;
+}
+:root.psy .rel-lyrics-toggle:not(:hover):not(.open):not(#\#) { background: rgb(240 245 246 / .09) !important; border: 2px solid transparent !important; color: rgb(240 245 246 / .9) !important; }
+:root.psy .rel-lyrics-toggle svg.lyr-ico:not(#\#) { width: 16px !important; height: 16px !important; opacity: 1 !important; transform: none !important; }
+:root.psy .rel-lyrics-toggle svg.lyr-chev:not(#\#) { display: none !important; }
+/* open lyrics sit in a soft inset panel so they read as belonging to the row above */
+:root.psy .rel-track-wrap > .rel-lyrics { margin-right: -10px; }
+:root.psy .rel-track-wrap:has(.rel-lyrics-toggle.open) { background: rgb(240 245 246 / .035); border-radius: 12px; border-bottom-color: transparent !important; }
+@media (forced-colors: active) { :root.psy .rel-lyrics-toggle:not(#\#) { border: 2px solid ButtonText !important; } }
+/* lyrics a touch smaller (16px; body text stays 17px) */
+:root.psy .rel-track-wrap .rel-lyrics-inner:not(#\#) { font-size: 16px !important; }
