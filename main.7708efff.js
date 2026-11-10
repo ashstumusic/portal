@@ -1175,7 +1175,12 @@ if (!lyrics) return;
 var inner = lyrics.querySelector('.rel-lyrics-inner');
 var tl = btn.closest('.rel-tracklist');
 var opening = !btn.classList.contains('open');
-if (opening) document.querySelectorAll('.rel-lyrics-toggle.open').forEach(function(o) { if (o !== btn) toggleTrackLyrics(o); });
+if (opening) {
+var _topBefore = btn.getBoundingClientRect().top;
+document.querySelectorAll('.rel-lyrics-toggle.open').forEach(function(o) { if (o !== btn) toggleTrackLyrics(o); });
+var _shift = btn.getBoundingClientRect().top - _topBefore;
+if (_shift) { var _sb = document.documentElement.style.scrollBehavior; document.documentElement.style.scrollBehavior = 'auto'; window.scrollBy(0, _shift); document.documentElement.style.scrollBehavior = _sb; }
+}
 btn.classList.toggle('open');
 var songTitle = (btn.getAttribute('aria-label') || '').replace(/^(Show|Hide) lyrics for /, '');
 btn.setAttribute('aria-label', (opening ? 'Hide lyrics for ' : 'Show lyrics for ') + songTitle);
