@@ -1427,3 +1427,15 @@ html { overscroll-behavior-y: none; }
   box-shadow: 0 0 0 1px rgb(90 10 20 / .35), 0 6px 22px rgb(255 226 170 / .28), 0 3px 10px rgb(30 0 5 / .5) !important;
 }
 :root.psy .epk-section .btn-epk:not(:hover):not(.auto-press):not(#\#) :is(span, svg) { color: #5A0A14 !important; }
+
+/* Press Kit: a flat red carpet (replaces the folded velvet). One even
+   carpet red across the whole section, no folds or sheen streaks; only a
+   fine short-pile grain and a barely-there darkening toward the edges so
+   it reads as a lit, flat surface. */
+:root.psy .epk-section:not(#\#) {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 120% 160% at 50% 50%, transparent 55%, rgb(0 0 0 / .16) 100%),
+    #9C1422 !important;
+}
+@media (prefers-contrast: more) { :root.psy .epk-section:not(#\#) { background: #7A0E1A !important; } }
