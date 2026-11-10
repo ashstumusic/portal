@@ -158,9 +158,7 @@
   //           centre with a paper fastener, and flaps on its own
   //   medium  one cutout that twinkles
   //   tiny    sprinkled loose in the empty space
-  // Big and medium stars hang on threads from the underside of whatever is
-  // above them (a card, a heading, a photo), like a mobile, when there's
-  // something near; otherwise they float.
+  // They float free in the empty space.
   //
   // Placement: the page is measured on every layout (text, cards, photos,
   // buttons become no-go areas). Each star tries a few hundred spots and
@@ -169,9 +167,9 @@
   // clear of content count. Redone when the layout changes.
   //
   // Moving parts, worked by scrolling at 12 updates a second with angles
-  // snapped (hand-moved cutout style): threads swing, stars turn and
-  // twinkle, the points of big stars flap; each is lowered in on its
-  // thread the first time it's seen; a fast scroll shakes the lot. Still
+  // snapped (hand-moved cutout style): stars rock, turn and twinkle, the
+  // points of big stars flap; each pops up the first time it's seen; a
+  // fast scroll shakes the lot. Still
   // under reduced motion or with effects off.
   const stars = (() => {
     const NS = 'http://www.w3.org/2000/svg', SHEET = 'Images/cutouts/stars.webp', SW = 512, C = 256;
@@ -184,7 +182,7 @@
       [{ x: 0, y: C }, '#F2B33D', 0.6],    // lunar craters, gold
       [{ x: C, y: C }, null, 0],           // solar flares, red as printed
     ];
-    const PAPER = '#FBF5E6', INK = '#2B2420';
+    const PAPER = '#FBF5E6';
     let seed = 11, uid = 0;   // fixed seed: the same sky on every visit
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const j = (n) => (rnd() - 0.5) * n;   // scissor wobble
@@ -203,9 +201,13 @@
       const bx = Math.min(...xs), by = Math.min(...ys), bw = Math.max(...xs) - bx, bh = Math.max(...ys) - by;
       el('polygon', { points: pts(shape) }, el('clipPath', { id }, defs));
       el('polygon', { points: pts(shape), fill: PAPER, stroke: PAPER, 'stroke-width': border, 'stroke-linejoin': 'miter' }, parent);
-      const fw = C * (0.3 + rnd() * 0.45), fh = fw * bh / Math.max(1, bw);
+      // A window onto the tile with the piece's proportions, always wholly
+      // inside its own tile (inset, so no neighbouring print bleeds in).
+      const IN = 4, room = C - 2 * IN, k = room * (0.4 + rnd() * 0.55), tall = bh > bw;
+      const fh = tall ? k : k * bh / Math.max(1, bw), fw = tall ? k * bw / Math.max(1, bh) : k;
+      const fx = tile.x + IN + rnd() * (room - fw), fy = tile.y + IN + rnd() * (room - fh);
       const clip = el('g', { 'clip-path': `url(#${id})` }, parent);
-      const win = el('svg', { x: bx, y: by, width: bw, height: bh, viewBox: `${(tile.x + rnd() * (C - fw)).toFixed(1)} ${(tile.y + rnd() * Math.max(0, C - fh)).toFixed(1)} ${fw.toFixed(1)} ${fh.toFixed(1)}`, preserveAspectRatio: 'xMidYMid slice', overflow: 'hidden' }, clip);
+      const win = el('svg', { x: bx, y: by, width: bw, height: bh, viewBox: `${fx.toFixed(1)} ${fy.toFixed(1)} ${fw.toFixed(1)} ${fh.toFixed(1)}`, preserveAspectRatio: 'none', overflow: 'hidden' }, clip);
       el('image', { href: SHEET, width: SW, height: SW }, win);
       if (tint) el('polygon', { points: pts(shape), fill: tint, opacity: alpha, style: 'mix-blend-mode:multiply' }, parent);
     }
@@ -235,11 +237,8 @@
     }
     function build(size) {
       const svg = el('svg', { 'aria-hidden': 'true', focusable: 'false', class: 'star-obj', width: 2, height: 2 });
-      const defs = el('defs', {}, svg), root = el('g', { transform: 'translate(1 1)' }, svg), swing = el('g', {}, root);
-      const thread = el('line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: INK, 'stroke-width': 1, opacity: 0.7 }, swing);
-      const holder = el('g', {}, swing), body = el('g', {}, holder);
-      const anchorPin = el('g', {}, root); pin(anchorPin, 2.2);
-      return { size, svg, swing, thread, holder, anchorPin, ...makeStar(size, body, defs), ph: rnd() * 6, popAt: 0, seen: false };
+      const defs = el('defs', {}, svg), holder = el('g', {}, el('g', { transform: 'translate(1 1)' }, svg)), body = el('g', {}, holder);
+      return { size, svg, holder, ...makeStar(size, body, defs), ph: rnd() * 6, popAt: 0, seen: false };
     }
 
     const layer = doc.createElement('div');
@@ -252,13 +251,10 @@
     // summed-area table answers "is this box clear?" at once, and each
     // column knows the nearest content above every row (thread anchors).
     const G = 8, M = 12;
+    // (psyche.css lays out every section up front while the stars are on:
+    // sections that only laid out when scrolled near changed the page's
+    // height mid-scroll and the sky had to be re-placed.)
     function measure() {
-      // Sections below the fold skip layout until they're near
-      // (content-visibility: auto): lay them all out for the measurement.
-      root.classList.add('star-measure');
-      try { return measureNow(); } finally { root.classList.remove('star-measure'); }
-    }
-    function measureNow() {
       const W = doc.documentElement.clientWidth, H = doc.documentElement.scrollHeight, sy = scrollY;
       const cols = Math.ceil(W / G), rows = Math.ceil(H / G), occ = new Uint8Array(cols * rows);
       const mark = (x0, y0, x1, y1, m = M) => {
@@ -325,28 +321,19 @@
           let best = null;
           for (let tries = 0; tries < 260; tries++) {
             const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
-            // Hang from what's above, if it's near and the star isn't tiny.
-            const anchor = size === 'tiny' ? null : map.ceiling(x, cy - R - 4);
-            const L = anchor != null && cy - R - anchor < 230 ? cy - R - anchor : 0, hung = L > 10;
-            const sw = hung ? Math.min(30, (L + R) * 0.13) + 3 : 3;
-            if (!map.free(x - R - sw, cy - R - 3, x + R + sw, cy + R + 3)) continue;
-            // Distance to the nearest star (and to threads, so they don't bunch).
+            // Clear of content with room to rock and swell (the whole star stays in view).
+            const pad = R * 0.25 + 3;
+            if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
             let near = 1e9;
-            for (const p of placed) {
-              near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R * p.s);
-              if (p.hung && Math.abs(p.cx - x) < 26 * s && cy + R > p.ay && cy - R < p.cy) near = 0;
-            }
+            for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R * p.s);
             if (near < gap) continue;
             let score = Math.min(near, gap * 3) / gap * 10 + rnd() * 5;
-            for (const m of [16, 36]) if (map.free(x - R - sw - m, cy - R - m, x + R + sw + m, cy + R + m)) score += 6;
-            if (hung && L < 160) score += 6;
-            if (!best || score > best.score) best = { x, cy, L: hung ? L : 0, hung, score, ay: hung ? anchor : cy - R };
+            for (const m of [16, 36]) if (map.free(x - R - pad - m, cy - R - pad - m, x + R + pad + m, cy + R + pad + m)) score += 6;
+            if (!best || score > best.score) best = { x, cy, score };
           }
           if (!best) continue;
-          Object.assign(o, { cx: best.x, cy: best.cy, L: best.L, hung: best.hung, ay: best.ay, s, R: o.R });
-          o.thread.style.display = o.hung ? '' : 'none'; o.anchorPin.style.display = o.hung ? '' : 'none';
-          o.thread.setAttribute('y2', o.L.toFixed(1));
-          o.svg.style.left = best.x + 'px'; o.svg.style.top = best.ay + 'px';
+          Object.assign(o, { cx: best.x, cy: best.cy, s });
+          o.svg.style.left = best.x + 'px'; o.svg.style.top = best.cy + 'px';
           layer.append(o.svg); placed.push(o);
         }
       }
@@ -363,12 +350,11 @@
         const vy = o.cy - sy;
         if (vy < -300 || vy > vh + 300) continue;
         if (!o.seen && vy < vh * 0.92) { o.seen = true; if (moving && o.size !== 'tiny') { o.popAt = now; settleUntil = Math.max(settleUntil, now + 600); } }
-        // Lowered in on its thread the first time it's seen (three jerks).
-        const drop = o.popAt && now - o.popAt < 450 ? (1 - Math.ceil(((now - o.popAt) / 450) * 3) / 3) * -(o.L + o.R * o.s * 2 + 20) : 0;
-        const sw = moving ? snap(Math.sin(sy * 0.0035 + o.ph) * (o.hung ? 7 : 3) + Math.sin(now * 0.02 + o.ph) * shake * 0.5, 2) : 0;
-        o.swing.setAttribute('transform', `rotate(${sw})`);
-        o.holder.setAttribute('transform', `translate(0 ${(o.L + o.R * o.s + drop).toFixed(1)}) scale(${o.s})`);
-        if (o.hung) o.thread.setAttribute('y2', Math.max(0, o.L + drop).toFixed(1));
+        // Pops up the first time it's seen (three jerky frames), then rocks
+        // on its centre; a fast scroll shakes it.
+        const pop = o.popAt && now - o.popAt < 450 ? [0.15, 1.2, 1][Math.min(2, Math.floor(((now - o.popAt) / 450) * 3))] : 1;
+        const rock = moving ? snap(Math.sin(sy * 0.0035 + o.ph) * 8 + Math.sin(now * 0.02 + o.ph) * shake * 0.6, 2) : 0;
+        o.holder.setAttribute('transform', `rotate(${rock}) scale(${(o.s * pop).toFixed(3)})`);
         o.animate(sy, moving);
       }
     }
