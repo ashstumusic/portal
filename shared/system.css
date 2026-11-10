@@ -1199,3 +1199,15 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-card.tracks-open .rel-tl-toggle:not(:hover):not(#\#) { color: rgb(240 245 246 / .95) !important; }
 :root.psy .rel-tl-toggle:hover:not(#\#) { background: var(--gold) !important; color: #111 !important; box-shadow: none !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
 @media (forced-colors: active) { :root.psy .rel-tl-toggle:not(#\#) { border: 1px solid ButtonText !important; } }
+
+/* "Ash Stu" (home and About): the gradient flows slowly through the name.
+   The colours repeat end-to-start so the loop is seamless. Holds still
+   when motion is reduced or the background effects are off. */
+@keyframes name-flow { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
+:root.psy :is(.hero-split .hero-name, .bio-name) {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) !important;
+  background-size: 200% 100% !important; background-repeat: repeat-x !important;
+  animation: name-flow 9s linear infinite;
+}
+:root.psy.psy-calm :is(.hero-split .hero-name, .bio-name) { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root.psy :is(.hero-split .hero-name, .bio-name) { animation: none; } }
