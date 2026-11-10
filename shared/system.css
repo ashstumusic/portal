@@ -1036,3 +1036,16 @@ html { overscroll-behavior-y: none; }
 :root.psy :is(a, button, [role="button"]):focus-visible:hover:not(#\#) { outline: 3px solid #fff !important; outline-offset: 3px !important; box-shadow: 0 0 0 6px rgb(0 0 0 / .85) !important; }
 :root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible:hover:not(#\#) { outline: none !important; box-shadow: var(--focus-ring) !important; }
 :root .nav-links a:focus-visible:hover:not(#\#)::after { outline: none !important; box-shadow: var(--focus-ring) !important; }
+
+/* Toolbar: whiter glass (less of the page's colour shows through) */
+:root.psy .nav, :root[data-theme="dark"].psy .nav {
+  background: rgb(255 255 255 / .93) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.1) brightness(1.1) !important; backdrop-filter: blur(28px) saturate(1.1) brightness(1.1) !important;
+}
+/* Featured panel: slate #4b6478. White title (~6:1); the label in a paler
+   gold so it clears 4.5:1 on the slate. */
+:root.psy #party.hero-split-right { background: #4b6478 !important; }
+:root.psy #party .featured-title { color: #fff !important; -webkit-text-fill-color: #fff !important; }
+:root.psy #party .featured-kicker { color: #FFE08A !important; }
+:root.psy #party .f-btn:not(:hover, :focus-visible) { background: rgb(255 255 255 / .72) !important; border-color: rgb(255 255 255 / .7) !important; }
+:root.psy #party .f-btn:focus-visible:not(#\#) { background: rgb(255 255 255 / .72) !important; border-color: rgb(255 255 255 / .7) !important; }
