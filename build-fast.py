@@ -88,6 +88,15 @@ css = open("styles.css").read()
 # springs, glass header...). Appended so page rules can still override it.
 css += "\n" + open("shared/kinetic.css").read()
 css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
+# Images the stylesheet references get a content-hash query, so a browser
+# holding an older copy under the same name fetches the new one (a stale
+# star sheet showed the old textures as squares).
+import hashlib as _hl, re as _re
+def _bust(m):
+    path = m.group(2)
+    if path.startswith(("data:", "http")) or "?" in path or not __import__("os").path.isfile(path): return m.group(0)
+    return f"url({m.group(1)}{path}?v={_hl.sha256(open(path, 'rb').read()).hexdigest()[:8]}{m.group(1)})"
+css = _re.sub(r"""url\((['"]?)(Images/[^'")]+)\1\)""", _bust, css)
 for src_path, rel_path in FONT_RELPATHS.items():
     css = css.replace(f"url('{src_path}') format('truetype')", f"url('{rel_path}') format('woff2')")
     css = css.replace(f"url('{src_path}') format('opentype')", f"url('{rel_path}') format('woff2')")
