@@ -357,6 +357,78 @@
     return { redraw: () => { draw(); kick(); } };
   })();
 
+  // ── DOODLE: glasses and a mustache drawn on the About portrait ──────
+  // Black felt-tip marker, as if scribbled straight onto the photo: a
+  // heavy wobbly stroke with a thinner second pass that doesn't line up.
+  // Drawn in the portrait's own 800x800 pixel space (the image is square
+  // and shown square), so it stays on the face at any size. It boils like
+  // the stars (redrawn with fresh wobble 8 times a second) while on
+  // screen; still under reduced motion or with effects off.
+  (() => {
+    const host = $('.bio-doodle');
+    if (!host) return;
+    const NS = 'http://www.w3.org/2000/svg', INK = '#0E0B0A';
+    const el = (tag, attrs, parent) => { const e = doc.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.append(e); return e; };
+    let seed = 9;
+    const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const J = (n) => (rnd() - 0.5) * 2 * n;
+    function hand(pts, closed, wob) {
+      const p = pts.map(([x, y]) => [x + J(wob), y + J(wob)]);
+      if (closed) p.push(p[0], p[1], p[2]);
+      let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
+      for (let i = 1; i < p.length - (closed ? 2 : 0); i++) {
+        const p0 = p[i - 1], p1 = p[i], p2 = p[i + 1] || p1, pm = p[i - 2] || p0;
+        const c1 = [p0[0] + (p1[0] - pm[0]) / 6, p0[1] + (p1[1] - pm[1]) / 6], c2 = [p1[0] - (p2[0] - p0[0]) / 6, p1[1] - (p2[1] - p0[1]) / 6];
+        d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`;
+      }
+      return d + (closed ? 'Z' : '');
+    }
+    const ring = (cx, cy, rx, ry, n = 14) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; });
+    // marker stroke: heavy pass + thinner, misaligned second pass
+    function marker(g, pts, closed, w = 9, wob = 3) {
+      el('path', { d: hand(pts, closed, wob), fill: 'none', stroke: INK, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+      el('path', { d: hand(pts, closed, wob * 1.6), fill: 'none', stroke: INK, 'stroke-width': w * 0.42, 'stroke-linecap': 'round', opacity: 0.85 }, g);
+    }
+    const svg = el('svg', { viewBox: '0 0 800 800', preserveAspectRatio: 'none', focusable: 'false' });
+    const layer = el('g', {}, svg);
+    host.append(svg);
+
+    function drawFrame() {
+      layer.textContent = '';
+      const g = layer;
+      // ── glasses: two round lenses, a bridge, and arms out to the temples ──
+      const L = [300, 389], R = [461, 386], r = 58;
+      for (const [cx, cy] of [L, R]) {
+        el('path', { d: hand(ring(cx, cy, r, r * 0.92, 22), true, 1.2), fill: 'rgb(150 205 255 / .10)' }, g);   // a faint tint in the lens
+        marker(g, ring(cx, cy, r, r * 0.92, 22), true, 10, 2);
+        // a quick shine scribble in each lens
+        marker(g, [[cx - r * 0.55, cy - r * 0.2], [cx - r * 0.3, cy - r * 0.5]], false, 4, 1.5);
+      }
+      marker(g, [[L[0] + r - 2, L[1] - 6], [380, 366], [R[0] - r + 2, R[1] - 6]], false, 9);   // bridge
+      marker(g, [[L[0] - r + 2, L[1] - 8], [262, 374], [222, 368]], false, 9);              // left arm
+      marker(g, [[R[0] + r - 2, R[1] - 8], [536, 372], [566, 364]], false, 9);              // right arm
+      // ── mustache: a filled handlebar under the nose, curled up at both ends ──
+      const top = [[377, 512], [404, 506], [428, 512], [446, 524], [458, 518], [462, 502], [470, 508], [466, 528], [450, 541], [426, 538], [402, 532], [378, 536],
+                   [354, 532], [330, 538], [306, 541], [290, 528], [286, 508], [294, 502], [298, 518], [310, 524], [328, 512], [352, 506]];
+      el('path', { d: hand(top, true, 2.5), fill: INK }, g);
+      for (let k = 0; k < 9; k++) {                                                        // scratchy hairs
+        const x = 312 + k * 17 + J(3), y = 518 + J(3);
+        el('path', { d: hand([[x, y - 8], [x + (x < 378 ? -6 : 6), y + 18]], false, 1.5), fill: 'none', stroke: INK, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+      }
+      marker(g, top, true, 6, 2.5);
+    }
+
+    let raf = 0, last = 0, visible = false;
+    function tick(t) {
+      raf = 0;
+      if (!visible) return;
+      if (fxOn() && t - last >= 1000 / 8 - 4) { last = t; drawFrame(); }
+      raf = requestAnimationFrame(tick);
+    }
+    drawFrame();
+    new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible && !raf) raf = requestAnimationFrame(tick); }).observe(host);
+  })();
+
   // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
   // The page turns into an NES game: everything (its own fonts and colours
   // included) rendered at low resolution, photos redrawn as tiny
