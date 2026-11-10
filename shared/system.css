@@ -1211,3 +1211,23 @@ html { overscroll-behavior-y: none; }
 }
 :root.psy.psy-calm :is(.hero-split .hero-name, .bio-name) { animation: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy :is(.hero-split .hero-name, .bio-name) { animation: none; } }
+
+/* Tracklist: number, title and lyrics shifted left together (smaller
+   inset, narrower number column) so lines have more room; lyrics stay
+   aligned under the titles. Lyric lines never wrap (fitLyrics() shrinks a
+   song's lyrics to fit instead) and nothing runs past the card. */
+:root.psy { --tl-inset: 8px; --tl-num: 16px; --tl-gap: 8px; }
+:root.psy .rel-track { padding-left: var(--tl-inset) !important; padding-right: 8px !important; gap: var(--tl-gap) !important; }
+:root.psy .rel-track-num { min-width: var(--tl-num) !important; width: var(--tl-num); flex: none; }
+:root.psy .rel-track-wrap .rel-lyrics-inner {
+  padding-left: calc(var(--tl-inset) + var(--tl-num) + var(--tl-gap)) !important; padding-right: 12px !important;
+  overflow: hidden; white-space: normal;
+}
+:root.psy .rel-track-wrap .rel-lyric-line { display: block; white-space: nowrap; }
+:root.psy .rel-track-wrap .rel-lyrics-inner.lyr-wrap .rel-lyric-line { white-space: normal; overflow-wrap: anywhere; }
+:root.psy .rel-track-wrap { min-width: 0; }
+:root.psy .rel-track-title { min-width: 0; }
+/* the few lines too long to fit even at 12px wrap with a hanging indent,
+   so the continuation reads as part of the same line */
+:root.psy .rel-track-wrap .rel-lyrics-inner.lyr-wrap .rel-lyric-line { padding-left: 1.1em; text-indent: -1.1em; }
+:root.psy .rel-track-wrap .rel-lyric-line { font-size: inherit !important; }
