@@ -123,3 +123,37 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .nav-links a, .nav-toggle, .nav-drawer a, .lb-close { border-radius: var(--r-md); }
 .rel-btn.rel-btn--label, .f-btn.f-btn--label { font-size: 12px; }
 .nav-logo .hero-brand { gap: var(--s1); }
+
+/* ── Solid cards; stars behind everything ─────────────────────────── */
+/* The music and video cards (and the other panels) are solid, so nothing
+   shows through them, and the star layer sits behind all page content:
+   a card that grows (tracklist, lyrics) covers any star instead of a
+   star landing on top of it. */
+:root[data-theme="dark"].psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card),
+.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
+  background: #14161E;
+  border-color: var(--hair);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.cut-stars { z-index: -1; }
+
+/* ── Tracklist rows highlight as one ──────────────────────────────── */
+/* A row is the song (play) plus its Lyrics pill: pointing at either lights
+   up the whole row, pill included. The highlight is one layer behind both
+   (the row's first grid line); the open lyrics panel below isn't part of it. */
+.rel-track-wrap { position: relative; }
+.rel-track-wrap > .rel-track { grid-row: 1; grid-column: 1; position: relative; z-index: 1; }
+.rel-track-wrap > .rel-lyrics-toggle { grid-row: 1; grid-column: 2; position: relative; z-index: 1; }
+.rel-track-wrap > .rel-lyrics { grid-row: 2; }
+.rel-track-wrap::before {
+  content: ""; grid-row: 1; grid-column: 1 / -1; align-self: stretch;
+  border-radius: var(--r-sm); background: transparent; pointer-events: none;
+  transition: background-color var(--t-fast) var(--ease-ui);
+}
+.rel-track-wrap:has(> .rel-track:not(.rel-track--upcoming):hover, > .rel-lyrics-toggle:hover)::before {
+  background: rgb(255 255 255 / .06);
+}
+.rel-track-wrap > .rel-track:hover, .rel-track-wrap > .rel-lyrics-toggle:hover { background: transparent; }
+.rel-track-wrap:has(> .rel-track:not(.rel-track--upcoming):hover) > :is(.rel-track, .rel-lyrics-toggle),
+.rel-track-wrap:has(> .rel-lyrics-toggle:hover) > :is(.rel-track, .rel-lyrics-toggle),
+.rel-track-wrap > .rel-lyrics-toggle.open { color: rgb(242 242 247); }
