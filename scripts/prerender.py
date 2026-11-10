@@ -25,7 +25,7 @@ import re
 import sys
 
 from buildutil import img_b64
-from build_lyrics_pages import stanzas
+from build_lyrics_pages import stanzas, slugify
 
 LYRICS = {}   # lyrics.json, loaded in main()
 
@@ -36,7 +36,7 @@ def lyrics_html(file):
     entry = LYRICS.get(file)
     if not entry or not entry.get('lines'):
         return ''
-    verses = ''.join('<p>' + '<br>'.join(esc(l) for l in v) + '</p>' for v in stanzas(entry))
+    verses = ''.join('<p>' + '<br>'.join(esc(l) for l in v) + '</p>' for v in stanzas(entry, file))
     return f'<details class="rel-lyrics-static"><summary>Lyrics</summary>{verses}</details>'
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -207,15 +207,22 @@ def main():
 
     page = inject_container(page, 'releases-grid', 'releases-grid', releases_html)
     # Every song with lyrics as structured data (MusicComposition + lyrics text).
-    comps = []
+    comps, used_slugs = [], set()
     for rel in releases:
         for i, t in enumerate(rel['tracks']):
             entry = LYRICS.get(t['file'])
             if not entry or not entry.get('lines'):
                 continue
-            text = '\n\n'.join('\n'.join(v) for v in stanzas(entry))
+            text = '\n\n'.join('\n'.join(v) for v in stanzas(entry, t['file']))
+            # Each song's own lyrics page (same slugs as build_lyrics_pages.py);
+            # structured data only - nothing on the homepage links to it.
+            slug = slugify(t['title'])
+            if slug in used_slugs:
+                slug = f"{slug}-{slugify(rel['name'])}"
+            used_slugs.add(slug)
+            song_url = f'https://ashstu.art/lyrics/{slug}/'
             comps.append({'@type': 'MusicComposition', 'name': t['title'], 'inLanguage': 'en',
-                          'url': 'https://ashstu.art/#music',
+                          'url': song_url, 'mainEntityOfPage': song_url,
                           'composer': {'@id': 'https://ashstu.art/#artist'}, 'lyricist': {'@id': 'https://ashstu.art/#artist'},
                           'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text},
                           'recordedAs': {'@type': 'MusicRecording', 'name': t['title'], 'byArtist': {'@id': 'https://ashstu.art/#artist'},

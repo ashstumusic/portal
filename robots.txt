@@ -1,5 +1,5 @@
 # Everything on ashstu.art may be crawled and indexed by search engines
-# and AI crawlers, including the lyrics on the homepage.
+# and AI crawlers, including the lyrics at /lyrics/.
 
 User-agent: *
 Allow: /
