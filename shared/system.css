@@ -593,12 +593,41 @@ html { overscroll-behavior-y: none; }
 .cut-stars { z-index: 0 !important; }
 :root.psy main { position: relative; z-index: 1; }
 
-/* Section separators (placed by shared/psyche.js): a 1px hairline across
-   the content width that fades out at both ends. */
-.sec-sep {
-  position: absolute; left: 50%; translate: -50% -.5px; pointer-events: none;
-  width: min(1060px, calc(100% - 2 * var(--s4))); height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / .24) 18%, rgb(255 255 255 / .24) 82%, transparent);
-}
 /* The About card's "Ash Stu" in the same yellow as the hero and toolbar names. */
 :root.psy .bio-name { color: var(--gold) !important; -webkit-text-fill-color: var(--gold) !important; }
+
+/* ── Every button highlights the same way: gold ───────────────────── */
+/* Hover/focus = gold fill, black label, gold rim - for every button,
+   toolbar link, icon button and play circle (selected stays gold too). */
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll):is(:hover, :focus-visible),
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label)):has(.pt--apple, .pt--spotify):is(:hover, :focus-visible),
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) {
+  background: var(--gold) !important; border-color: var(--gold) !important; color: #111 !important;
+}
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) svg { color: #111 !important; }
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .fs-ctrl, .rel-lyrics-toggle):is(:hover, :focus-visible) svg { color: #111 !important; }
+/* toolbar links: same gold on hover (current section stays gold) */
+.nav-links a:hover, .nav-links a:focus-visible { color: #111 !important; }
+.nav-links a:hover::after, .nav-links a:focus-visible::after { background: var(--gold) !important; box-shadow: inset 0 0 0 2px var(--gold) !important; }
+/* the press-kit download: gold on hover like the rest */
+:root.psy .btn-epk:is(:hover, :focus-visible) { background: var(--gold) !important; color: #111 !important; }
+/* the big play discs are already gold: a white rim marks their hover */
+:root.psy :is(#np-play, .fs-play):is(:hover, :focus-visible) { border-color: #fff !important; }
+
+/* "A figment of my own imagination" in the section headers' gradient. */
+:root.psy .bio-tagline {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: #F7C549;
+  filter: drop-shadow(2px 2px 0 rgb(223 43 44 / .55));
+  width: fit-content;
+}
+
+/* Featured panel order: badge, "ALBUM", the cover, the album name, the
+   buttons. 16px badge -> label, 12px label -> cover, 24px cover -> name,
+   32px name -> buttons. */
+:root.psy .hero-split-right > .featured-badge { order: 1; }
+:root.psy .hero-split-right > .featured-kicker { order: 2; margin: -8px 0 -12px !important; }
+:root.psy .hero-split-right > .featured-art-wrap { order: 3; }
+:root.psy .hero-split-right > .featured-title { order: 4; margin: 0 !important; }
+:root.psy .hero-split-right > .featured-btns { order: 5; margin-top: var(--s1) !important; }
