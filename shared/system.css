@@ -1782,3 +1782,6 @@ html { overscroll-behavior-y: none; }
   color: #F2F4F6;
 }
 :root.psy .fs-collapse:not(#\#):not(#\#):not(#\#) { left: 50% !important; transform: translateX(-50%) !important; }
+/* press photos cross-fade when they reshuffle */
+:root.psy .epk-photos img { transition: opacity .3s ease; }
+:root.psy .epk-photos img.swap { opacity: 0; }

@@ -2604,14 +2604,23 @@ requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline')
 var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
 if(document.readyState==='complete')build();else addEventListener('load',build);
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
-<script>/* Press Kit photos: a fresh random order on every visit (never the
-   same order twice in a row). */
+<script>/* Press Kit photos: they reshuffle live, every 2.5 seconds, with a
+   quick cross-fade; every photo moves to a different slot each time.
+   Only while the section is on screen and the tab is visible; no live
+   shuffling with reduced motion or background effects off (one random
+   order per visit instead). */
 (function(){var imgs=[].slice.call(document.querySelectorAll('.epk-photos img'));if(imgs.length<2)return;
-var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),n=items.length,last='',key='epk-order';
-try{last=localStorage.getItem(key)||'';}catch(e){}
-var order,tries=0;do{order=items.map(function(_,i){return i;});for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=order[i];order[i]=order[j];order[j]=t;}tries++;}while((order.join('')===last||(!last&&order.join('')==='0123'))&&tries<20);
-try{localStorage.setItem(key,order.join(''));}catch(e){}
-imgs.forEach(function(im,k){im.src=items[order[k]].src;im.alt=items[order[k]].alt;});})();</script>
+var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),n=items.length,cur=items.map(function(_,i){return i;});
+items.forEach(function(it){var p=new Image();p.src=it.src;});
+function next(){var o,ok,t=0;do{o=cur.slice();for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=o[i];o[i]=o[j];o[j]=x;}ok=o.every(function(v,k){return v!==cur[k];});}while(!ok&&++t<50);return o;}
+function apply(o){cur=o;imgs.forEach(function(im,k){im.src=items[o[k]].src;im.alt=items[o[k]].alt;});}
+apply(next());
+var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
+var onScreen=true,sec=document.getElementById('epk');
+if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
+setInterval(function(){if(still()||!onScreen||document.hidden)return;var o=next();
+imgs.forEach(function(im){im.classList.add('swap');});
+setTimeout(function(){apply(o);imgs.forEach(function(im){im.classList.remove('swap');});},320);},2500);})();</script>
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
