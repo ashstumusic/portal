@@ -1638,9 +1638,8 @@ if (ok) return pool[i];
 }
 return pool[Math.floor(Math.random()*pool.length)];
 }
-var heroIcon = document.getElementById('hero-icon');
 var heroTrack = document.getElementById('hero-photo-track');
-if (!heroIcon || !heroTrack) return;
+if (!heroTrack) return;
 var swapped = false;
 function randHue(near) {
 for (var t = 0; t < 64; t++) {

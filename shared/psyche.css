@@ -244,3 +244,13 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 /* In the top bar the name is small: a lighter offset shadow. */
 .nav-logo .hero-name { filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .5)); }
 .nav-logo .hero-icon { filter: drop-shadow(1px 1px 0 rgb(223 43 44 / .5)) !important; }
+
+/* Header and toolbar: the name is plain white (no gradient, no offset
+   shadow); the toolbar's star logo is white too. The header has no logo. */
+.hero-name, .nav-logo .hero-name {
+  background: none; -webkit-text-fill-color: #fff; color: #fff;
+  filter: none; text-shadow: none;
+}
+.nav-logo .hero-icon { filter: brightness(0) invert(1) !important; }
+/* A bit fainter (Nov 2026). */
+.psy-field, :root[data-theme="dark"] .psy-field { opacity: .15; }

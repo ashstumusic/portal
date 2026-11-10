@@ -243,7 +243,6 @@
     </div>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
-        <img width="330" height="330" src="Images/logo-star.webp" alt="Ash Stu" class="hero-icon" id="hero-icon"/>
         <h1 class="hero-name">Ash Stu<span class="sr-only"> - Outsider-Folk Singer-Songwriter</span></h1>
       </div>
     </div>
@@ -2280,9 +2279,8 @@ if (ok) return pool[i];
 }
 return pool[Math.floor(Math.random()*pool.length)];
 }
-var heroIcon = document.getElementById('hero-icon');
 var heroTrack = document.getElementById('hero-photo-track');
-if (!heroIcon || !heroTrack) return;
+if (!heroTrack) return;
 var swapped = false;
 function randHue(near) {
 for (var t = 0; t < 64; t++) {
