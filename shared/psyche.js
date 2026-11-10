@@ -361,64 +361,6 @@
     return { redraw: () => { draw(); kick(); } };
   })();
 
-  // ── DOODLE: glasses and a mustache drawn on the About portrait ──────
-  // A simple doodle in red ink, as if drawn straight onto the photo with
-  // one wobbly pen line: round glasses and a curly mustache.
-  // Drawn in the portrait's own 800x800 pixel space (the image is square
-  // and shown square), so it stays on the face at any size. It boils like
-  // the stars (redrawn with fresh wobble 8 times a second) while on
-  // screen; still under reduced motion or with effects off.
-  (() => {
-    const host = $('.bio-doodle');
-    if (!host) return;
-    const NS = 'http://www.w3.org/2000/svg', INK = '#D3121B';   // red ink
-    const el = (tag, attrs, parent) => { const e = doc.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.append(e); return e; };
-    let seed = 9;
-    const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-    const J = (n) => (rnd() - 0.5) * 2 * n;
-    function hand(pts, closed, wob) {
-      const p = pts.map(([x, y]) => [x + J(wob), y + J(wob)]);
-      if (closed) p.push(p[0], p[1], p[2]);
-      let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
-      for (let i = 1; i < p.length - (closed ? 2 : 0); i++) {
-        const p0 = p[i - 1], p1 = p[i], p2 = p[i + 1] || p1, pm = p[i - 2] || p0;
-        const c1 = [p0[0] + (p1[0] - pm[0]) / 6, p0[1] + (p1[1] - pm[1]) / 6], c2 = [p1[0] - (p2[0] - p0[0]) / 6, p1[1] - (p2[1] - p0[1]) / 6];
-        d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`;
-      }
-      return d + (closed ? 'Z' : '');
-    }
-    const ring = (cx, cy, rx, ry, n = 14) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; });
-    // one pen line, a little wobbly
-    const pen = (g, pts, closed, wob = 2) => el('path', { d: hand(pts, closed, wob), fill: 'none', stroke: INK, 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
-    const svg = el('svg', { viewBox: '0 0 800 800', preserveAspectRatio: 'none', focusable: 'false' });
-    const layer = el('g', {}, svg);
-    host.append(svg);
-
-    function drawFrame() {
-      layer.textContent = '';
-      const g = layer;
-      // Simple, in one red pen line: two round lenses, a bridge, short arms...
-      const L = [300, 389], R = [461, 386], r = 56;
-      for (const [cx, cy] of [L, R]) pen(g, ring(cx, cy, r, r * 0.94, 16), true, 0.9);
-      pen(g, [[L[0] + r - 2, L[1] - 6], [380, 372], [R[0] - r + 2, R[1] - 6]], false);
-      pen(g, [[L[0] - r + 2, L[1] - 8], [226, 372]], false);
-      pen(g, [[R[0] + r - 2, R[1] - 8], [562, 370]], false);
-      // ...and a curly mustache: two swoops that meet under the nose and curl up.
-      pen(g, [[378, 516], [350, 530], [318, 532], [298, 518], [302, 504]], false);
-      pen(g, [[378, 516], [406, 530], [438, 531], [458, 517], [454, 503]], false);
-    }
-
-    let raf = 0, last = 0, visible = false;
-    function tick(t) {
-      raf = 0;
-      if (!visible) return;
-      if (fxOn() && t - last >= 1000 / 8 - 4) { last = t; drawFrame(); }
-      raf = requestAnimationFrame(tick);
-    }
-    drawFrame();
-    new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible && !raf) raf = requestAnimationFrame(tick); }).observe(host);
-  })();
-
   // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
   // The page turns into an NES game: everything (its own fonts and colours
   // included) rendered at low resolution, photos redrawn as tiny
