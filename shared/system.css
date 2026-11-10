@@ -157,3 +157,18 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .rel-track-wrap:has(> .rel-track:not(.rel-track--upcoming):hover) > :is(.rel-track, .rel-lyrics-toggle),
 .rel-track-wrap:has(> .rel-lyrics-toggle:hover) > :is(.rel-track, .rel-lyrics-toggle),
 .rel-track-wrap > .rel-lyrics-toggle.open { color: rgb(242 242 247); }
+
+/* Release titles keep their Young Serif headline face (album cards and
+   the featured release); video titles stay SF Pro. */
+.rel-name, .featured-title { font-family: 'Headline', Georgia, 'Times New Roman', serif; font-weight: normal; letter-spacing: 0; }
+
+/* The SOON pill matches the LYRICS pill: same size, type and border, and
+   the same right edge (it sits inside the row's 12px padding, the Lyrics
+   pill 6.4px from the edge, so it's pulled out the difference). */
+.rel-lyrics-toggle, .rel-track-soon {
+  box-sizing: border-box; min-width: 80px; height: 26px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 .6rem; border: 1px solid var(--hair); border-radius: var(--r-pill);
+  font-size: 12px; letter-spacing: .06em; line-height: 1;
+}
+.rel-track-soon { margin-right: calc(.4rem - .75rem); opacity: 1; }
