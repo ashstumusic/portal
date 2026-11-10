@@ -1479,6 +1479,7 @@ sparks.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1,
 flashes.push({ x: r.x, y: r.y, life: 1, c: r.pal[1], R: 46 * k });
 }
 window.partyBurst = function() {
+if (calm()) return;
 if (!running) return;
 const art = document.querySelector('.featured-art-hero'), pr = cvs.getBoundingClientRect();
 if (!art) return;
@@ -1561,11 +1562,14 @@ ctx.setTransform(1, 0, 0, 1, 0, 0);
 ctx.globalAlpha = 1;
 rafId = requestAnimationFrame(draw);
 }
-function start() { if (!running) { running = true; rafId = requestAnimationFrame(draw); } }
+function calm() { return document.documentElement.classList.contains('psy-calm'); }
+function start() { if (!running && !calm()) { running = true; rafId = requestAnimationFrame(draw); } }
 function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
 start();
 if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
+new MutationObserver(function() { if (calm()) { stop(); for (const c of [cvs, fcvs]) if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); } else start(); })
+.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 })();
 (function() {
 /* Release cards get a now-playing chip and a confetti pop on play. Decor
@@ -1607,6 +1611,7 @@ if (pieces.length) raf = requestAnimationFrame(frame);
 else { raf = 0; last = 0; cv.hidden = true; }
 }
 window.partyCardBurst = function(idx) {
+if (document.documentElement.classList.contains('psy-calm')) return;
 if (reduce) return;
 var party = document.getElementById('party');
 if (idx === FEATURED_IDX && party && !party.classList.contains('party-off')) return;

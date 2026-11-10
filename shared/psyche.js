@@ -29,6 +29,8 @@
   reduce.addEventListener?.('change', () => syncFx());
 
   root.classList.add('psy');
+  // the saved choice applies from the first frame, not only after a toggle
+  root.classList.toggle('psy-calm', !fxOn());
 
   // ── SHARED POINTER + SCROLL STATE ────────────────────────────────
   const ptr = { x: innerWidth / 2, y: innerHeight / 2, vx: 0, vy: 0, t: 0, energy: 0 };
@@ -100,7 +102,7 @@
     }
     function frame(now) {
       raf = 0;
-      if (doc.hidden) return;
+      if (doc.hidden || !fxOn()) return;   // effects off: the haze holds still
       if (now - last >= 50) {   // 20 fps is plenty for a slow, blurred liquid
         const dt = Math.min(0.1, (now - (last || now)) / 1000);
         last = now;
@@ -796,7 +798,7 @@
 
   // Palette settings (kinetic.js picks these up).
   window.kineticItems = () => [
-    { group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Liquid background and click ripples', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } },
+    { group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Haze, stars, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } },
     { group: 'Settings', title: nes.on ? 'Turn 8-bit mode off' : 'Turn 8-bit mode on', sub: 'NES look and sound (or tap the logo five times)', run: () => nes.toggle() },
   ];
 

@@ -1049,3 +1049,31 @@ html { overscroll-behavior-y: none; }
 :root.psy #party .featured-kicker { color: #FFE08A !important; }
 :root.psy #party .f-btn:not(:hover, :focus-visible) { background: rgb(255 255 255 / .72) !important; border-color: rgb(255 255 255 / .7) !important; }
 :root.psy #party .f-btn:focus-visible:not(#\#) { background: rgb(255 255 255 / .72) !important; border-color: rgb(255 255 255 / .7) !important; }
+
+/* Toolbar streaming icons on hover: the icon goes solid grey inside its
+   own shape (white details and cut-outs kept, via the #pt-mono filter) so
+   it doesn't clash with the gold; back to full colour on mouse-out. */
+:root.psy .nav .nav-platform:hover .pt { filter: url(#pt-mono); }
+
+/* Section headers in the toolbar's typeface (Bricolage Grotesque), keeping
+   the white fill and the red offset layer. */
+:root.psy .section-h {
+  font-family: var(--font-ui) !important; font-weight: 800 !important; font-style: normal !important;
+  letter-spacing: -.02em !important; text-transform: none !important; font-stretch: 100%;
+}
+
+/* Featured panel: brighter background lights. */
+:root.psy #party .party-aurora {
+  opacity: 1 !important; mix-blend-mode: screen !important;
+  background:
+    radial-gradient(closest-side at 22% 24%, rgb(255 140 100 / .7), transparent),
+    radial-gradient(closest-side at 84% 76%, rgb(255 90 160 / .62), transparent),
+    radial-gradient(closest-side at 76% 16%, rgb(90 230 255 / .62), transparent),
+    radial-gradient(closest-side at 16% 86%, rgb(170 130 255 / .6), transparent) !important;
+}
+
+/* Background effects off: the haze holds still (psyche.js), the stars stop
+   flickering, the featured panel's lights stop drifting, and there are no
+   fireworks or confetti. */
+.psy-calm .party-aurora { animation: none !important; }
+.psy-calm :is(.confetti-canvas, .fireworks-canvas, #confetti-canvas, #fireworks-canvas) { display: none !important; }
