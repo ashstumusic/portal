@@ -679,3 +679,18 @@ html { overscroll-behavior-y: none; }
   -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
 }
 :root.psy .nav::before { display: none !important; }
+
+/* Toolbar: white bar, black buttons (white labels and icons); gold still
+   marks hover/focus and the current section. */
+:root.psy .nav, :root[data-theme="dark"].psy .nav {
+  background: #fff !important; border-bottom: 1px solid rgb(0 0 0 / .12) !important;
+  box-shadow: 0 2px 14px rgb(0 0 0 / .25);
+}
+:root .nav-links a:not(:hover, :focus-visible, [aria-current], :active) { color: #fff !important; }
+:root .nav-links a:not(:hover, :focus-visible, [aria-current], :active)::after { background: #111 !important; box-shadow: inset 0 0 0 2px #111 !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle):not(:hover, :focus-visible) { background: #111 !important; border-color: #111 !important; color: #fff !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle):not(:hover, :focus-visible) svg { color: #fff !important; }
+:root.psy .nav .nav-toggle:not(:hover, :focus-visible) .nav-toggle-bar { background: #fff !important; }
+:root.psy .nav .k-tools::before { background: rgb(0 0 0 / .2) !important; border-color: rgb(0 0 0 / .2) !important; }
+/* the gradient name washes out on white: the toolbar's copy is black */
+:root.psy .nav-logo .hero-name { background: none !important; -webkit-text-fill-color: #111 !important; color: #111 !important; filter: none !important; }
