@@ -184,3 +184,21 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 /* Confetti falls in front of the featured panel's album, text and buttons.
    The canvas ignores the pointer, so everything under it stays clickable. */
 .hero-split-right > .confetti-canvas { z-index: 5; pointer-events: none; }
+
+/* Lyrics written into the page for crawlers and no-JS readers (collapsed;
+   the interactive tracklist replaces them when JS runs). */
+.rel-lyrics-static { margin: .25rem 0 .5rem; font-size: .8rem; }
+.rel-lyrics-static summary { cursor: pointer; opacity: .7; }
+.rel-lyrics-static p { margin: .5rem 0; line-height: 1.5; }
+
+/* Fireworks burst behind the album cover (and the rest of the panel's
+   content); the confetti canvas stays in front. */
+.hero-split-right > .fireworks-canvas { z-index: 0; pointer-events: none; }
+
+/* Under each song's lyrics in the Music section: a link to its own page. */
+.rel-lyrics-page {
+  display: inline-block; margin-top: .9rem;
+  font: 600 .72rem var(--plain-sans, sans-serif); letter-spacing: .08em; text-transform: uppercase;
+  color: inherit; opacity: .75; text-decoration: underline; text-underline-offset: 3px;
+}
+.rel-lyrics-page:hover, .rel-lyrics-page:focus-visible { opacity: 1; }
