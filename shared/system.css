@@ -242,3 +242,6 @@ html, body { overscroll-behavior-y: none; }
   background: radial-gradient(ellipse 58% 62% at 50% 50%, rgb(3 4 9 / .88), rgb(3 4 9 / .62) 45%, transparent 75%);
   filter: blur(8px);
 }
+
+/* The scroll-down button over a card or button: dimmed, still there. */
+.hero-scroll.soft { opacity: .55; }
