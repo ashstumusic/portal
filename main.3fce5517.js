@@ -1404,8 +1404,8 @@ else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); f
 (function() {
 const cvs = document.getElementById('confetti-canvas');
 if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-/* Saturated so they read on the light panel: gold, red, deep teal, blue, orange. */
-const COLORS = ['#F2B33D','#DF2B2C','#084C61','#1E63D6','#E8641B'];
+/* Saturated so they read on the yellow panel: purple, red, deep teal, blue, orange. */
+const COLORS = ['#7A1FA2','#DF2B2C','#084C61','#1E63D6','#E8641B'];
 const COUNT = window.matchMedia('(min-width: 601px)').matches ? 45 : 20;
 const ctx = cvs.getContext('2d', { desynchronized: true, alpha: true });
 /* Fireworks get their own canvas, layered behind the album cover (confetti stays in front). */
@@ -1427,7 +1427,7 @@ const bursts = [];
 /* Fireworks: a rocket streaks up from the bottom trailing sparks, then
 bursts into a ring of sparks that fall, flicker and fade. One every
 1.4-3s, anywhere in the panel, always behind its content. */
-const FW_COLORS = [['#F2B33D','#FFE08A'],['#DF2B2C','#FF8A7A'],['#1E63D6','#7FB2FF'],['#E8641B','#FFB070'],['#084C61','#3FA7C4'],['#C8161E','#F2B33D']];
+const FW_COLORS = [['#7A1FA2','#C77DFF'],['#DF2B2C','#FF8A7A'],['#1E63D6','#7FB2FF'],['#E8641B','#FFB070'],['#084C61','#3FA7C4'],['#C8161E','#7A1FA2']];
 const rockets = [], sparks = [], flashes = [];
 let nextFirework = 600;
 function launchFirework() {
