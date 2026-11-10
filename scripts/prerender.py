@@ -77,6 +77,11 @@ def render_release_card(rel, r_idx):
         items = ''.join(f'<li value="{n}">{title}</li>' for n, title in sorted(rows, key=lambda r: r[0]))
         tracklist = (f'<div class="rel-tracklist" id="tracklist-{r_idx}">'
                      f'<ol aria-label="Tracklist for {esc(rel["name"])}">{items}</ol></div>')
+    n_songs = len(rel['tracks']) + len(upcoming)
+    tl_toggle = (f'<button type="button" class="rel-tl-toggle" aria-expanded="false" aria-controls="tracklist-{r_idx}">'
+                 f'<span class="rel-tl-label">Tracklist</span><span class="rel-tl-count">{n_songs} songs</span>'
+                 '<svg class="rel-tl-chev" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+                 'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>') if tracklist else ''
     return (f'<article class="rel-card" aria-label="{esc(rel["name"])} - {esc(rel["type"])} by Ash Stu" '
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-art-wrap">'
@@ -87,6 +92,7 @@ def render_release_card(rel, r_idx):
             f'<h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>'
             f'</div></div></div>'
             f'<div class="rel-btns">{btns}</div>'
+            f'{tl_toggle}'
             f'{tracklist}'
             f'{lyrics_html(rel["tracks"][0]["file"]) if len(rel["tracks"]) == 1 and not upcoming else ""}</article>')
 

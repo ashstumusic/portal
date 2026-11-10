@@ -922,3 +922,33 @@ html { overscroll-behavior-y: none; }
   :root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .np-ctrl, .fs-ctrl, .hero-scroll, .rel-play-circle, .vid-play-circle) { border: 2px solid ButtonText !important; }
   :root.psy :is(.rel-btn--label, .rel-track-soon) { border: 0 !important; }
 }
+
+/* ── Tracklist toggle on album/EP cards ───────────────────────────────
+   A full-width outlined bar under the streaming buttons: "Tracklist ·
+   N songs" with a chevron that flips when open. Same button family
+   (grey rim, gold on hover/focus); announces expanded/collapsed. */
+:root.psy .rel-tl-toggle {
+  display: flex; align-items: center; gap: 8px; width: calc(100% - 24px); margin: 0 12px 12px;
+  min-height: 40px; padding: 0 14px; cursor: pointer;
+  font: 600 13px/1 var(--font-ui); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--btn-label); background: var(--btn-fill);
+  border: 2px solid var(--btn-rim); border-radius: 12px;
+  transition: var(--btn-fade);
+}
+:root.psy .rel-tl-toggle .rel-tl-count { text-transform: none; letter-spacing: 0; font-weight: 500; opacity: .85; }
+:root.psy .rel-tl-toggle .rel-tl-count::before { content: "·"; margin-right: 8px; }
+:root.psy .rel-tl-toggle .rel-tl-chev { margin-left: auto; flex: none; transition: transform .35s var(--spring, ease); }
+:root.psy .rel-card.tracks-open .rel-tl-toggle .rel-tl-chev { transform: rotate(180deg); }
+:root.psy .rel-tl-toggle:is(:hover, :focus-visible), :root.psy .rel-card.tracks-open .rel-tl-toggle:hover { background: var(--gold); border-color: var(--gold); color: #111; }
+:root.psy .rel-card.tracks-open .rel-tl-toggle:not(:hover, :focus-visible) { border-color: rgb(240 245 246 / .85); }
+@media (prefers-reduced-motion: reduce) { :root.psy .rel-tl-toggle .rel-tl-chev { transition: none; } }
+@media (forced-colors: active) { :root.psy .rel-tl-toggle { border: 2px solid ButtonText !important; } }
+
+/* ── Featured panel: baby blue ────────────────────────────────────────
+   A soft baby-blue gradient; on the light fill the panel's text turns to
+   dark ink so it keeps 4.5:1+ (white and gold would fail on it). */
+:root.psy #party.hero-split-right { background: linear-gradient(180deg, #CDEBFA 0%, #A9DBF3 55%, #93CFEE 100%) !important; }
+:root.psy #party .party-aurora { opacity: .35 !important; mix-blend-mode: soft-light; }
+:root.psy #party .featured-title { color: #0E2638 !important; -webkit-text-fill-color: #0E2638 !important; text-shadow: none !important; }
+:root.psy #party .featured-kicker { color: #6A3D00 !important; }
+:root.psy #party :is(.f-btn):not(:hover, :focus-visible) { background: rgb(255 255 255 / .7) !important; border-color: rgb(14 38 56 / .55) !important; }
