@@ -872,7 +872,7 @@ setTracklist(rIdx, false);
 var _partyPlayingIdx = -1;
 function updatePlayUI() {
 var _nowIdx = !npAudio.paused ? pState.releaseIdx : -1;
-if (_nowIdx >= 0 && _nowIdx !== _partyPlayingIdx && window.partyCardBurst) window.partyCardBurst(_nowIdx);
+/* (No confetti pop from the card when a track starts.) */
 _partyPlayingIdx = _nowIdx;
 document.querySelectorAll('.rel-card.now-playing').forEach(function(c) { c.classList.remove('now-playing'); });
 Object.keys(_discCache).forEach(function(rIdx) {
@@ -890,7 +890,7 @@ if (fp) {
 var fpPlaying = pState.releaseIdx === FEATURED_IDX && !npAudio.paused;
 var party = document.getElementById('party');
 if (party) {
-if (fpPlaying && !party.classList.contains('is-playing') && window.partyBurst) window.partyBurst();
+/* (No confetti burst on play; the featured panel's own confetti and fireworks keep going.) */
 party.classList.toggle('is-playing', fpPlaying);
 }
 fp.innerHTML = fpPlaying ? PAUSE : PLAY;
