@@ -255,3 +255,10 @@ html = "\n".join(l.strip() for l in html.split("\n") if l.strip())
 
 open("index.html", "w").write(html)
 print(f"\nWrote index.html: {len(html)//1024}KB")
+
+# Delete hashed bundles from earlier builds (anything index.html no longer
+# loads), so old builds don't pile up and weigh down every deploy.
+_keep = set(re.findall(r"(?:main|styles|kinetic|psyche)\.[0-9a-f]{8}(?:\.min)?\.(?:js|css)", html))
+_old = [f for f in os.listdir(".") if re.fullmatch(r"(?:main|styles|kinetic|psyche)\.[0-9a-f]{8}(?:\.min)?\.(?:js|css)", f) and f not in _keep]
+for f in _old: os.remove(f)
+if _old: print(f"Removed {len(_old)} old build file(s)")
