@@ -1137,3 +1137,12 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav-drawer .drawer-search svg { width: 18px; height: 18px; color: currentColor !important; }
 :root.psy .nav-drawer .drawer-platforms a { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; }
 :root.psy .nav-drawer .drawer-platforms a:hover:not(#\#) { background: var(--gold); outline: var(--hl-outline); outline-offset: 2px; }
+
+/* Toolbar links sit on the page's true centre line (not just centred in
+   the space between the name and the icons), wherever there's room for
+   them not to touch either side. */
+@media (min-width: 1100px) {
+  :root.psy .nav { position: fixed; }
+  :root.psy .nav-links { position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; margin: 0 !important; }
+  :root.psy .nav-platforms { margin-left: auto !important; }
+}
