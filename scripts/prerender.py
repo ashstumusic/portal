@@ -57,8 +57,11 @@ def render_release_card(rel, r_idx):
     if not btns:
         btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>'
     tracklist = ''
-    if len(rel['tracks']) > 1:
-        items = ''.join(f'<li>{esc(t["title"])}</li>' for t in rel['tracks'])
+    upcoming = rel.get('upcoming', [])
+    if len(rel['tracks']) + len(upcoming) > 1:
+        rows = [(t.get('num', i + 1), esc(t['title'])) for i, t in enumerate(rel['tracks'])]
+        rows += [(u['num'], f'{esc(u["title"])} (not released yet)') for u in upcoming]
+        items = ''.join(f'<li value="{n}">{title}</li>' for n, title in sorted(rows, key=lambda r: r[0]))
         tracklist = (f'<div class="rel-tracklist" id="tracklist-{r_idx}">'
                      f'<ol aria-label="Tracklist for {esc(rel["name"])}">{items}</ol></div>')
     return (f'<article class="rel-card" aria-label="{esc(rel["name"])} - {esc(rel["type"])} by Ash Stu" '
