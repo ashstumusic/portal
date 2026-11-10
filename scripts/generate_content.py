@@ -253,6 +253,14 @@ def parse_lyrics_txt(path):
     return out
 
 
+def clean_lyric(line):
+    """One lyric line as shown everywhere: trimmed, with no punctuation at
+    the end of the line (commas, periods, colons, semicolons, ! ? ...), even
+    tucked inside a closing quote. Punctuation inside the line stays."""
+    line = re.sub(r'\s+', ' ', (line or '').strip())
+    return re.sub(r'[.,;:!?\u2026]+(["\u201d\u2019\']?)$', r'\1', line).strip()
+
+
 def gen_lyrics(releases):
     """Lyrics for each track, keyed by its audio file path.
 
@@ -275,14 +283,17 @@ def gen_lyrics(releases):
                     album_txt[folder] = parse_lyrics_txt(os.path.join(folder, 'lyrics.txt'))
                 m = re.match(r'(\d+)\.', os.path.basename(t['file']))
                 plain = album_txt[folder].get(int(m.group(1))) if m else None
+                plain = [clean_lyric(l) for l in (plain or [])]
+                plain = [l for l in plain if l]   # no blank lines or verse breaks
                 if plain:
                     out[t['file']] = {'synced': False, 'lines': [[None, l] for l in plain]}
                 continue
             lines = []
             for raw in open(lrc, encoding='utf-8').read().splitlines():
                 m = LRC_LINE.match(raw.strip())
-                if m and m.group(3).strip():
-                    lines.append([round(int(m.group(1)) * 60 + float(m.group(2)), 2), m.group(3).strip()])
+                text = clean_lyric(m.group(3)) if m else ''
+                if text:   # blank lines (verse breaks) are dropped
+                    lines.append([round(int(m.group(1)) * 60 + float(m.group(2)), 2), text])
             lines.sort(key=lambda l: l[0])
             if lines:
                 out[t['file']] = {'synced': True, 'lines': lines}
