@@ -976,7 +976,9 @@ b.type = 'button';
 b.className = 'rel-lyrics-toggle';
 b.setAttribute('aria-label', 'Show lyrics for ' + title);
 b.setAttribute('aria-expanded', 'false');
-b.innerHTML = '<span aria-hidden="true">Lyrics</span><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+b.title = 'Lyrics';
+b.innerHTML = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg>' +
+'<svg class="lyr-chev" aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
 b.addEventListener('click', function(e) { e.stopPropagation(); toggleTrackLyrics(this); });
 return b;
 }

@@ -1439,3 +1439,12 @@ html { overscroll-behavior-y: none; }
     #9C1422 !important;
 }
 @media (prefers-contrast: more) { :root.psy .epk-section:not(#\#) { background: #7A0E1A !important; } }
+
+/* Lyrics button: icon only (lines-of-text glyph + dropdown arrow), no
+   word. A compact 52x32 pill; the arrow flips when the lyrics are open.
+   Screen readers still hear "Show lyrics for <song>"; hovering shows a
+   "Lyrics" tooltip. */
+:root.psy .rel-lyrics-toggle:not(#\#) { width: 52px !important; height: 32px !important; padding-inline: 0 !important; gap: 5px !important; }
+:root.psy .rel-lyrics-toggle svg.lyr-ico:not(#\#) { width: 16px !important; height: 16px !important; opacity: 1; transform: none !important; }
+:root.psy .rel-lyrics-toggle svg.lyr-chev:not(#\#) { width: 10px !important; height: 10px !important; transition: transform .3s var(--spring, ease); }
+:root.psy .rel-lyrics-toggle.open svg.lyr-chev:not(#\#) { transform: rotate(180deg) !important; }
