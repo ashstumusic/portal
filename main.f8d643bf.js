@@ -1195,8 +1195,6 @@ function renderFeatured(rel) {
 if (!rel) return;
 var img = document.querySelector('.featured-art-hero .featured-art');
 if (img) { img.src = rel.art; img.alt = rel.name; }
-var vl = document.querySelector('.party-vinyl-label');
-if (vl) vl.style.backgroundImage = 'url("' + encodeURI(rel.art) + '")';
 var play = document.getElementById('featured-play');
 if (play) { play.setAttribute('aria-label', 'Play ' + rel.name); play.setAttribute('title', 'Play ' + rel.name); }
 var kicker = document.querySelector('.featured-kicker');
@@ -1535,22 +1533,16 @@ if ('IntersectionObserver' in window) { new IntersectionObserver(function(entrie
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
 })();
 (function() {
-/* Release cards get the same party kit as the hero: a record tucked in the
-sleeve (peeks out on hover, slides out spinning while that release plays),
-a glare, a now-playing chip, a lean toward the pointer, and a confetti pop
-on play. Decor is aria-hidden and added here (not in the prerendered HTML)
-so there is one copy of it; re-applied whenever the grid re-renders. */
+/* Release cards get a now-playing chip and a confetti pop on play. Decor
+is aria-hidden and added here (not in the prerendered HTML) so there is
+one copy of it; re-applied whenever the grid re-renders. */
 var grid = document.getElementById('releases-grid');
 if (!grid) return;
 var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function decorate() {
 grid.querySelectorAll('.rel-card').forEach(function(card) {
 var wrap = card.querySelector('.rel-art-wrap'), img = wrap && wrap.querySelector('.rel-art');
-if (!wrap || !img || wrap.querySelector('.rel-vinyl')) return;
-var v = document.createElement('div'); v.className = 'party-vinyl rel-vinyl'; v.setAttribute('aria-hidden', 'true');
-var l = document.createElement('span'); l.className = 'party-vinyl-label'; l.style.backgroundImage = 'url("' + img.getAttribute('src') + '")';
-v.appendChild(l); wrap.insertBefore(v, img);
-var g = document.createElement('span'); g.className = 'party-glare'; g.setAttribute('aria-hidden', 'true'); wrap.appendChild(g);
+if (!wrap || !img || wrap.querySelector('.rel-eq')) return;
 var e = document.createElement('span'); e.className = 'party-eq rel-eq'; e.setAttribute('aria-hidden', 'true');
 e.innerHTML = '<i></i><i></i><i></i><i></i> Now playing'; wrap.appendChild(e);
 });
@@ -1599,71 +1591,12 @@ pieces.push({ x: r.left + r.width * (.15 + Math.random() * .7), y: r.top + r.hei
 }
 if (!raf) raf = requestAnimationFrame(frame);
 };
-if (reduce || !matchMedia('(pointer: fine)').matches) return;
-/* Lean toward the pointer on a spring (real frame time), per card. */
-var springs = new WeakMap();
-function spring(card) {
-var st = springs.get(card);
-if (!st) { st = { tx: 0, ty: 0, x: 0, y: 0, vx: 0, vy: 0, raf: 0, last: 0 }; springs.set(card, st); }
-return st;
-}
-function run(card, st) {
-function step(t) {
-var dt = st.last ? Math.min(t - st.last, 50) / 1000 : 1 / 60; st.last = t;
-st.vx += ((st.tx - st.x) * 170 - st.vx * 16) * dt; st.vy += ((st.ty - st.y) * 170 - st.vy * 16) * dt;
-st.x += st.vx * dt; st.y += st.vy * dt;
-card.style.setProperty('--rx', (-st.y * 6).toFixed(2) + 'deg');
-card.style.setProperty('--ry', (st.x * 8).toFixed(2) + 'deg');
-card.style.setProperty('--gx', (50 + st.x * 60).toFixed(1) + '%');
-card.style.setProperty('--gy', (50 + st.y * 60).toFixed(1) + '%');
-if (Math.abs(st.tx - st.x) + Math.abs(st.ty - st.y) + Math.abs(st.vx) + Math.abs(st.vy) > .002) st.raf = requestAnimationFrame(step);
-else { st.raf = 0; st.last = 0; }
-}
-if (!st.raf) st.raf = requestAnimationFrame(step);
-}
-grid.addEventListener('pointermove', function(e) {
-var card = e.target.closest && e.target.closest('.rel-card'); if (!card) return;
-var wrap = card.querySelector('.rel-art-wrap'), r = wrap.getBoundingClientRect(), st = spring(card);
-var over = e.clientY <= r.bottom;   /* lean only while over the art, not the tracklist */
-st.tx = over ? Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (r.width / 2))) * .5 : 0;
-st.ty = over ? Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (r.height / 2))) * .5 : 0;
-card.classList.toggle('party-hot', over); run(card, st);
-});
-grid.addEventListener('pointerout', function(e) {
-var card = e.target.closest && e.target.closest('.rel-card');
-if (!card || card.contains(e.relatedTarget)) return;
-var st = spring(card); st.tx = 0; st.ty = 0; card.classList.remove('party-hot'); run(card, st);
-});
 })();
 (function() {
-/* Featured "party" panel: the cover leans toward the pointer on a spring
-(real frame time), with a glare that tracks it. Fine pointers only, off
-for reduced motion; animations pause while the panel is off screen. */
+/* Featured "party" panel: its animations pause while it's off screen. */
 var party = document.getElementById('party');
 if (!party) return;
 if ('IntersectionObserver' in window) new IntersectionObserver(function(e) { party.classList.toggle('party-off', !e[0].isIntersecting); }).observe(party);
-var art = party.querySelector('.featured-art-hero');
-if (!art || !matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-var tx = 0, ty = 0, x = 0, y = 0, vx = 0, vy = 0, raf = 0, last = 0;
-function step(t) {
-var dt = last ? Math.min(t - last, 50) / 1000 : 1 / 60; last = t;
-var k = 170, d = 16;
-vx += ((tx - x) * k - vx * d) * dt; vy += ((ty - y) * k - vy * d) * dt;
-x += vx * dt; y += vy * dt;
-art.style.setProperty('--rx', (-y * 9).toFixed(2) + 'deg');
-art.style.setProperty('--ry', (x * 11).toFixed(2) + 'deg');
-art.style.setProperty('--gx', (50 + x * 60).toFixed(1) + '%');
-art.style.setProperty('--gy', (50 + y * 60).toFixed(1) + '%');
-if (Math.abs(tx - x) + Math.abs(ty - y) + Math.abs(vx) + Math.abs(vy) > .002) raf = requestAnimationFrame(step); else { raf = 0; last = 0; }
-}
-function kick() { if (!raf) raf = requestAnimationFrame(step); }
-party.addEventListener('pointermove', function(e) {
-var r = art.getBoundingClientRect();
-tx = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (r.width / 2))) * .5;
-ty = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (r.height / 2))) * .5;
-art.classList.add('party-hot'); kick();
-});
-party.addEventListener('pointerleave', function() { tx = 0; ty = 0; art.classList.remove('party-hot'); kick(); });
 })();
 (function() {
 var WARHOL_BG = ['#FF0055','#00B8D9','#FFE600','#FF5400','#E7000B','#0055FF','#7FFF00','#9B5CFF','#00E5FF','#00C853','#FF0080','#FF9F00','#FFD500','#1E40FF','#00FF9D','#FF3D5A'];
