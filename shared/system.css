@@ -1230,7 +1230,7 @@ html { overscroll-behavior-y: none; }
 /* the few lines too long to fit even at 12px wrap with a hanging indent,
    so the continuation reads as part of the same line */
 :root.psy .rel-track-wrap .rel-lyrics-inner.lyr-wrap .rel-lyric-line { padding-left: 1.1em; text-indent: -1.1em; }
-:root.psy .rel-track-wrap .rel-lyric-line { font-size: inherit !important; }
+:root.psy .rel-track-wrap .rel-lyric-line { font-size: inherit; }   /* not !important: a line's own fitted size must win */
 
 /* On the gold-filled streaming buttons the logo fills solid black on
    hover (white details and cut-outs kept), matching the black label.
@@ -1255,3 +1255,24 @@ html { overscroll-behavior-y: none; }
 :root.psy :is(.epk-text, .contact-intro, .bio-desc, .bio-text) { font-size: var(--body-size) !important; line-height: var(--body-lh) !important; }
 :root.psy .rel-track, :root.psy .rel-track-title { font-size: var(--body-size) !important; line-height: 1.3 !important; }
 :root.psy .rel-track-wrap .rel-lyrics-inner { font-size: var(--body-size); line-height: 1.6 !important; }
+
+/* Cat strip: photo | grid | grid, each one hero wide, on its own
+   composited layer; the cells are plain baked bitmaps. */
+.hero-photo-track.warhol-strip { width: 300% !important; will-change: transform; backface-visibility: hidden; }
+.hero-photo-track.warhol-strip > :is(.hero-split-photo, .hero-photo-frame, .warhol-half) { width: calc(100% / 3) !important; flex: none; }
+.hero-photo-track.warhol-strip .hero-photo-frame { background: none; }
+.warhol-cell { contain: strict; }
+.warhol-cell img { image-rendering: auto; }
+:root.psy .rel-track-wrap .rel-lyric-line.lyr-wrap-line { white-space: normal; overflow-wrap: anywhere; padding-left: 1.1em; text-indent: -1.1em; }
+/* a line given its own size keeps the song's line spacing */
+:root.psy .rel-track-wrap .rel-lyric-line[style*="font-size"] { line-height: calc(var(--lyr-lh, 1.6) * 1em); }
+
+/* Every streaming logo highlights the same way, everywhere: gold behind
+   it, the logo solid black (white details and cut-outs kept), a gold ring
+   around. (Toolbar and phone-menu icons now match the buttons.) */
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):hover:not(#\#) { background: var(--gold) !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
+:root.psy :is(.nav-platform, .drawer-platforms a, .f-btn, .rel-btn, .vid-yt):hover .pt:not(#\#):not(#\#) { filter: url(#pt-mono) !important; }
+/* a song opened from its own page lands just below the toolbar */
+.rel-track-wrap { scroll-margin-top: 80px; }
+/* track numbers: a touch brighter to clear 4.5:1 on the track rows */
+:root.psy .rel-track:not(:hover) .rel-track-num { color: #8F999F !important; opacity: 1 !important; }

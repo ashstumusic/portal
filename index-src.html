@@ -1565,6 +1565,7 @@ if (tlBtn) tlBtn.addEventListener('click', function() { setTracklist(rIdx, false
 wrap.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRelOverlay(e, rIdx); } });
 });
 }
+
 // One lyrics button for every release: a "Lyrics" pill with a chevron,
 // used on each album track and under a single's streaming buttons.
 function makeLyricsBtn(title) {
@@ -1605,9 +1606,41 @@ var rows = rel.tracks.map(function(t, tIdx) { return { t: t, tIdx: tIdx, num: t.
 (rel.upcoming || []).forEach(function(u) { rows.push({ t: u, tIdx: -1, num: u.num }); });
 return rows.sort(function(a, b) { return a.num - b.num; });
 }
+/* Song pages (/lyrics/<song>/, what a search for the song lands on) are
+   this page with <meta name="deep-song"> naming the song: its album's
+   tracklist opens, its lyrics open and scroll into view, and it loads in
+   the player (and plays, where the browser allows autoplay; otherwise the
+   play button is ready). Songs not out yet just open their lyrics. */
+var _deepDone = false, _deepAt = 0;
+function openDeepSong() {
+if (_deepDone) return;
+var m = document.querySelector('meta[name="deep-song"]');
+if (!m || !m.content) return;
+var key = m.content, rIdx = -1, tIdx = -1, upcoming = false;
+RELEASE_LIST.forEach(function(rel, ri) {
+(rel.tracks || []).forEach(function(t, ti) { if (t.file === key) { rIdx = ri; tIdx = ti; } });
+(rel.upcoming || []).forEach(function(u) { if (u.lyrics === key) { rIdx = ri; upcoming = true; } });
+});
+if (rIdx < 0) return;
+var card = document.querySelector('.rel-card[data-release="' + rIdx + '"]');
+if (!card) return;
+if (!card.classList.contains('tracks-open')) setTracklist(rIdx, false);
+var wrap = upcoming ? card.querySelector('.rel-track-wrap[data-lyrics-key="' + CSS.escape(key) + '"]')
+                    : (card.querySelector('.rel-track[data-track="' + tIdx + '"]') || {}).parentNode;
+if (!wrap) return;
+if (!_deepDone && !_deepAt) _deepAt = performance.now();
+_deepDone = true;
+var lb = wrap.querySelector('.rel-lyrics-toggle');
+if (lb && !lb.classList.contains('open')) lb.click();
+if (!upcoming && _src !== key) playTrack(rIdx, tIdx);
+var land = function() { var top = wrap.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' }); };
+setTimeout(land, 450); setTimeout(land, 1100);
+}
+window.addEventListener('load', function() { setTimeout(openDeepSong, 300); });
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
+if (u.lyrics) wrap.dataset.lyricsKey = u.lyrics;
 var entry = u.lyrics && LYRICS[u.lyrics];
 var hasLyr = !!(entry && entry.lines && entry.lines.length);
 /* Greyed out and not playable; one pill on the right: Lyrics when its
@@ -1763,21 +1796,27 @@ function fitLyrics(inner) {
 if (!inner || !inner.offsetWidth) return;
 inner.style.fontSize = ''; inner.classList.remove('lyr-wrap');
 var lines = inner.querySelectorAll('.rel-lyric-line');
+lines.forEach(function(l) { l.style.fontSize = ''; l.classList.remove('lyr-wrap-line'); });
 var limit = function() { var r = inner.getBoundingClientRect(); return r.right - parseFloat(getComputedStyle(inner).paddingRight); };
-// how far past the edge the worst line runs, as a ratio of its room
-var worst = function() {
-var lim = limit(), w = 1;
-lines.forEach(function(l) { var rg = document.createRange(); rg.selectNodeContents(l); var b = rg.getBoundingClientRect();
-if (b.width && b.right > lim) w = Math.max(w, b.width / Math.max(1, lim - b.left)); });
-return w;
-};
-var size = parseFloat(getComputedStyle(inner).fontSize) || 14;
-for (var k = 0; k < 5; k++) {
-var w = worst(); if (w <= 1) return;
-size = Math.floor(size / w * 10) / 10 - 0.1;
-if (size < 12) { inner.style.fontSize = '12px'; inner.classList.add('lyr-wrap'); return; }
+var over = function(l, lim) { var rg = document.createRange(); rg.selectNodeContents(l); var b = rg.getBoundingClientRect(); return b.width && b.right > lim + .5 ? b.width / Math.max(1, lim - b.left) : 0; };
+var worst = function() { var lim = limit(), w = 0; lines.forEach(function(l) { w = Math.max(w, over(l, lim)); }); return w; };
+// 1) the whole song shrinks together, down to 12px
+var size = parseFloat(getComputedStyle(inner).fontSize) || 17;
+for (var k = 0; k < 6; k++) {
+var w = worst(); if (!w) return;
+size = Math.max(12, Math.floor(size / w * 10) / 10 - 0.1);
 inner.style.fontSize = size + 'px';
+if (size === 12) break;
 }
+// 2) a line still too long shrinks on its own, down to 10.5px
+var lim = limit();
+lines.forEach(function(l) {
+var w = over(l, lim); if (!w) return;
+var ls = Math.floor(size / w * 10) / 10 - 0.1;
+if (ls >= 10.5) { l.style.fontSize = ls + 'px'; if (over(l, lim)) { l.style.fontSize = (ls - .4) + 'px'; } }
+// 3) only beyond that does it wrap (hanging indent)
+if (ls < 10.5 || over(l, lim)) { l.style.fontSize = '10.5px'; if (over(l, lim)) { l.style.fontSize = ''; l.classList.add('lyr-wrap-line'); } }
+});
 }
 // Measure with the real lyrics face: fit now, and again once it's loaded
 // (the fallback serif is narrower, so a fit made with it can overflow).
@@ -1936,6 +1975,9 @@ if (!isRefresh || !_src || !_everPlayed) initDefaultTrack();
 buildTracklists();
 setupCardListeners();
 wireVideos();
+// a refresh re-render shortly after load would close the song again
+if (_deepDone && performance.now() - _deepAt < 6000) _deepDone = false;
+openDeepSong();
 if (typeof initMarquees === 'function') setTimeout(initMarquees, 50);
 }
 function loadDynamicContent() {
@@ -2427,47 +2469,71 @@ if (gridValid(grid)) return grid;
 }
 return grid;
 }
-// Warhol easter egg: triggered only from the footer logo, which first
-// scrolls the page back to the very top, then reveals. One-shot.
+// Warhol easter egg (the About name): back to the top, then the hero
+// slides on to a wall of pop-art cats that keeps panning.
+// Smoothness: each tinted cat is baked once into a plain bitmap at its
+// on-screen size (no live CSS filters on 24 moving images), every image is
+// decoded before anything moves, and the strip is built in full up front
+// (photo, grid, identical grid) so the slide-in flows straight into the
+// endless pan with no DOM change or restart in between.
+var CAT_SRC = 'Images/Cat_pop.webp';
+function loadCat() {
+return new Promise(function(res, rej) { var im = new Image(); im.decoding = 'async'; im.onload = function() { res(im); }; im.onerror = rej; im.src = CAT_SRC; });
+}
+function canFilter() { try { var c = document.createElement('canvas').getContext('2d'); c.filter = 'sepia(1)'; return c.filter === 'sepia(1)'; } catch (e) { return false; } }
+function bakeGrid(grid, cat, px) {
+var jobs = [];
+grid.querySelectorAll('.warhol-cell img').forEach(function(img) {
+var hue = img.getAttribute('data-hue');
+var cv = document.createElement('canvas'); cv.width = cv.height = px;
+var ctx = cv.getContext('2d');
+ctx.filter = 'sepia(1) saturate(7) hue-rotate(' + hue + 'deg)';
+ctx.drawImage(cat, 0, 0, px, px);
+jobs.push(new Promise(function(res) {
+cv.toBlob(function(b) {
+img.removeAttribute('style'); img.style.setProperty('--tilt', img.dataset.tilt + 'deg');
+img.src = URL.createObjectURL(b);
+img.decode ? img.decode().then(res, res) : (img.onload = res);
+}, 'image/webp', .92);
+}));
+});
+return Promise.all(jobs);
+}
 function revealWarhol() {
 if (swapped) return;
 swapped = true;
 var img = heroTrack.querySelector('.hero-split-photo');
 var frame = heroTrack.querySelector('.hero-photo-frame');
 var grid = buildWarholGrid();
-frame.innerHTML = '';
-frame.appendChild(grid);
+grid.querySelectorAll('.warhol-cell img').forEach(function(im) {
+var m = /hue-rotate\(([-\d.]+)deg\)/.exec(im.getAttribute('style') || ''), t = /--tilt:([-\d.]+)deg/.exec(im.getAttribute('style') || '');
+im.setAttribute('data-hue', m ? m[1] : 0); im.dataset.tilt = t ? t[1] : 0;
+});
+var cell = heroTrack.getBoundingClientRect();
+var px = Math.min(640, Math.ceil(Math.min(cell.width / 4, cell.height / 3) * (window.devicePixelRatio || 1)));
+var ready = canFilter() ? loadCat().then(function(cat) { return bakeGrid(grid, cat, px); }).catch(function() {}) : loadCat().catch(function() {});
+ready.then(function() {
+// the strip: photo | grid | identical grid (each one hero wide)
+var twin = document.createElement('div'); twin.className = 'warhol-half'; twin.setAttribute('aria-hidden', 'true');
+twin.appendChild(grid.cloneNode(true));
+frame.innerHTML = ''; frame.appendChild(grid);
+frame.setAttribute('aria-label', 'A pop-art cat by Ash Stu');
+heroTrack.appendChild(twin);
+heroTrack.classList.add('warhol-strip');
 var heroLeft = heroTrack.parentNode;
 if (heroLeft) heroLeft.classList.add('warhol-on');
-frame.setAttribute('aria-label', 'A pop-art cat by Ash Stu');
-function finishReveal() {
-var left = document.createElement('div');
-left.className = 'warhol-half';
-left.appendChild(grid.cloneNode(true));
-heroTrack.insertBefore(left, img);
-heroTrack.classList.add('warhol');
-heroTrack.classList.add('pan');
-}
 var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if (reduced) {
-finishReveal();
-return;
-}
-if (heroTrack.animate) {
-var revealAnim = heroTrack.animate(
-[{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }],
-{ duration: 2250, easing: 'linear', fill: 'forwards' }
-);
-revealAnim.onfinish = function() { revealAnim.cancel(); finishReveal(); };
-} else {
-heroTrack.classList.add('reveal');
-heroTrack.addEventListener('animationend', function done(e) {
-if (e.target !== heroTrack) return;
-heroTrack.removeEventListener('animationend', done);
-heroTrack.classList.remove('reveal');
-finishReveal();
+var third = 100 / 3;
+if (reduced || !heroTrack.animate) { heroTrack.style.transform = 'translate3d(-' + third + '%,0,0)'; return; }
+// one speed throughout: a hero-width every 2.25s
+var slide = heroTrack.animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-' + third + '%,0,0)' }], { duration: 2250, easing: 'linear', fill: 'forwards' });
+slide.onfinish = function() {
+var pan = heroTrack.animate([{ transform: 'translate3d(-' + third + '%,0,0)' }, { transform: 'translate3d(-' + (2 * third) + '%,0,0)' }], { duration: 2250, iterations: Infinity, easing: 'linear' });
+slide.cancel();
+// pause while the hero is off screen or the tab is hidden
+if ('IntersectionObserver' in window) new IntersectionObserver(function(e) { e[0].isIntersecting ? pan.play() : pan.pause(); }).observe(heroTrack.parentNode);
+};
 });
-}
 }
 /* The About name (and the old footer logo): back to the top, then the
    hero slides away. */
