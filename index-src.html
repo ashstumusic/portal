@@ -510,7 +510,8 @@ heroH = heroSection ? heroSection.offsetHeight : 400;
 cacheOffsets();
 var _resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(cacheOffsets, 150); }, { passive: true });
-let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false;
+let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false, _lastAboutIn = -1;
+const aboutName = document.querySelector('.bio-name');
 function updateNav() {
 let cur = '';
 if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
@@ -529,8 +530,23 @@ _lastCur = cur;
 const h = heroH;
 const heroOut = Math.min(1, Math.max(0, (scrollY - h * 0.15) / (h * 0.2)));
 const navIn = Math.min(1, Math.max(0, (scrollY - h * 0.25) / (h * 0.2)));
+// The same hand-off at the other end: as the About card's "Ash Stu"
+// rises into view, the toolbar logo fades out and the About one fades in,
+// over the same distances (measured from the bottom of the screen), so only
+// one logo is ever on screen. At the very bottom the About one is fully in.
+let navOut = 0, aboutIn = 1;
+if (aboutName) {
+const rise = innerHeight - aboutName.getBoundingClientRect().top;   /* how far it has come up into view */
+const atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
+/* same fade length as the hero hand-off (0.2 of the hero's height), but
+   back to back: the toolbar logo is fully gone before the About one starts */
+navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.2)));
+aboutIn = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.25) / (h * 0.2)));
+}
+const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
-if (navLogo && navIn !== _lastNavIn) { navLogo.style.opacity = navIn; _lastNavIn = navIn; }
+if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; navLogo.style.pointerEvents = navShow < .05 ? 'none' : ''; _lastNavIn = navShow; }
+if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
 }
@@ -1765,7 +1781,7 @@ var kindWord = rel.type === 'Single' ? 'Single cover: ' : rel.type === 'EP' ? 'E
 var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
-if (!btns) btns = '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>';
+if (!btns || rel.soon) btns += '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>';
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';

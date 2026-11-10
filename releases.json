@@ -115,6 +115,7 @@
     "type": "Album",
     "art": "Images/Releases/Ash Stu, Vol. I.webp",
     "apple": null,
+    "soon": true,
     "spotify": "https://open.spotify.com/album/7C9HCW6rKsXW2zXFR7QPf1",
     "tracks": [
       {

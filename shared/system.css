@@ -538,3 +538,21 @@ html { overscroll-behavior-y: none; }
   :root.psy .disc-quote { font-size: 17px !important; }
   :root.psy .bio-tagline { font-size: 20px !important; }
 }
+
+/* "Distributing soon" text is black (on the gradient fill). */
+:root.psy .rel-label-text { -webkit-text-fill-color: #111 !important; color: #111 !important; text-shadow: none !important; }
+:root.psy .rel-btn.rel-btn--label { border-color: rgb(0 0 0 / .18) !important; }
+
+/* The "Latest release" badge: one fixed pill at every size (older
+   breakpoint rules shrank its text and padding until it looked squashed). */
+:root.psy .featured-badge {
+  display: inline-flex !important; align-items: center; justify-content: center; gap: var(--s1);
+  height: 28px !important; padding: 0 12px !important; margin-bottom: 0 !important;
+  font-size: 12px !important; line-height: 1 !important; white-space: nowrap; flex: none;
+  border-radius: var(--r-pill) !important; box-sizing: border-box;
+  text-box: trim-both cap alphabetic;
+}
+:root.psy .featured-badge .party-dot { width: 6px; height: 6px; flex: none; }
+:root.psy .bio-name { will-change: opacity; }
+/* The toolbar logo follows the scroll exactly (no opacity easing), like the hero and About names. */
+.nav-logo { transition: none !important; }

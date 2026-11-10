@@ -1,3 +1,4 @@
 spotify: https://open.spotify.com/album/7C9HCW6rKsXW2zXFR7QPf1
 date: 2026-11-07
 order: 3
+soon: yes
