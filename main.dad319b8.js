@@ -1789,8 +1789,9 @@ finishReveal();
 });
 }
 }
-var footerLogo = document.querySelector('.footer-logo');
-if (footerLogo) {
+/* The About name (and the old footer logo): back to the top, then the
+hero slides away. */
+document.querySelectorAll('.footer-logo, .bio-name-link').forEach(function(footerLogo) {
 footerLogo.addEventListener('click', function(e) {
 e.preventDefault();
 var reducedScroll = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1803,7 +1804,7 @@ go();
 });
 setTimeout(go, 1200);
 });
-}
+});
 })();
 /* About-section childhood shots are grayscale at rest, color on hover -
 a click/tap toggles each photo to color and back, so touch devices

@@ -1146,3 +1146,26 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav-links { position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; margin: 0 !important; }
   :root.psy .nav-platforms { margin-left: auto !important; }
 }
+
+/* Streaming buttons (featured panel, release cards, YouTube chips) take
+   the toolbar chip's shape: rounded square (squircle), normal-case label
+   in the UI font, 2px rim. On hover: gold, with black text and a black
+   logo (its white details kept by the #pt-mono filter). */
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt) {
+  border-radius: 12px !important; corner-shape: squircle;
+  text-transform: none !important; letter-spacing: -.005em !important;
+  font: 600 14px/1 var(--font-ui) !important;
+}
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):hover:not(#\#),
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):hover:not(#\#) :is(span, svg) { color: #000 !important; }
+
+/* Lyrics button: gold only on mouse-over; when open it fills solid
+   (light) with the text inverted to dark. */
+:root.psy .rel-lyrics-toggle.open:not(:hover):not(#\#) {
+  background: rgb(240 245 246) !important; border-color: rgb(240 245 246) !important; color: #111 !important;
+}
+:root.psy .rel-lyrics-toggle.open:not(:hover):not(#\#) svg { color: #111 !important; }
+
+/* The About name is a link back to the top (the hero slides away). */
+:root.psy .bio-name-link { color: inherit; text-decoration: none; border-radius: 8px; cursor: pointer; -webkit-text-fill-color: inherit; }
+:root.psy .bio-name:has(.bio-name-link:hover) { filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) drop-shadow(0 0 10px rgb(247 197 73 / .55)) !important; }

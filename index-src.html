@@ -219,9 +219,9 @@
     <span class="nav-toggle-bar"></span>
   </button>
 </nav>
-<!-- Hover filter for the toolbar's streaming icons: the coloured shape turns
-     solid grey; white details stay white and cut-outs stay transparent. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".42 .42 .42 .42 .42 .42 .42 .62 1 1"/><feFuncG type="table" tableValues=".42 .42 .42 .42 .42 .42 .42 .62 1 1"/><feFuncB type="table" tableValues=".42 .42 .42 .42 .42 .42 .42 .62 1 1"/></feComponentTransfer></filter></svg>
+<!-- Hover filter for the streaming logos: the coloured shape turns
+     solid black; white details stay white and cut-outs stay transparent. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter></svg>
 <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile menu" aria-hidden="true">
   <div class="drawer-platforms">
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
@@ -325,7 +325,7 @@
          small thumbnails under the copy. -->
     <div class="bio-card">
       <div class="bio-card-text">
-        <p class="bio-name">Ash Stu</p>
+        <p class="bio-name"><a href="#" class="bio-name-link" aria-label="Ash Stu, back to the top of the page" title="Back to the top">Ash Stu</a></p>
         <p class="bio-text bio-desc">Outsider-folk singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
         <p class="bio-tagline">A figment of my own imagination.</p>
       </div>
@@ -2433,8 +2433,9 @@ finishReveal();
 });
 }
 }
-var footerLogo = document.querySelector('.footer-logo');
-if (footerLogo) {
+/* The About name (and the old footer logo): back to the top, then the
+   hero slides away. */
+document.querySelectorAll('.footer-logo, .bio-name-link').forEach(function(footerLogo) {
 footerLogo.addEventListener('click', function(e) {
 e.preventDefault();
 var reducedScroll = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2449,7 +2450,7 @@ go();
 });
 setTimeout(go, 1200);
 });
-}
+});
 })();
 /* About-section childhood shots are grayscale at rest, color on hover -
    a click/tap toggles each photo to color and back, so touch devices
