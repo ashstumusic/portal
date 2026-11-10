@@ -198,7 +198,7 @@
     </div>
   </a>
   <ul class="nav-links" role="list">
-    <li><a href="#epk">Press Kit</a></li>
+    <li><a href="#epk" data-epk-download aria-label="Press Kit (also downloads it)" title="Go to the press kit and download it">Press Kit</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#music">Music</a></li>
     <li><a href="#videos">Videos</a></li>
@@ -228,7 +228,7 @@
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span></a>
   </div>
-  <a href="#epk">Press Kit</a>
+  <a href="#epk" data-epk-download aria-label="Press Kit (also downloads it)">Press Kit</a>
   <a href="#contact">Contact</a>
   <a href="#music">Music</a>
   <a href="#videos">Videos</a>
@@ -2467,5 +2467,13 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
+<script>/* Toolbar "Press Kit": scroll to the section, then press its download
+   button for you (it visibly presses) and the ZIP starts downloading. */
+(function(){var dl=document.querySelector('.btn-epk-dl');if(!dl)return;
+function press(){dl.classList.add('auto-press');setTimeout(function(){dl.classList.remove('auto-press');},700);dl.click();window.kinetic&&kinetic.announce&&kinetic.announce('Downloading the press kit');}
+document.querySelectorAll('a[data-epk-download]').forEach(function(a){a.addEventListener('click',function(){
+var done=false,go=function(){if(done)return;done=true;removeEventListener('scrollend',go);press();};
+if('onscrollend' in window){addEventListener('scrollend',go,{once:true});setTimeout(go,1600);}else setTimeout(go,900);
+});});})();</script>
 </body>
 </html>
