@@ -1582,3 +1582,46 @@ html { overscroll-behavior-y: none; }
    of the right-hand side of the picture). */
 :root.psy .hero-split-photo { object-position: 22% 18% !important; }
 :root.psy .hero-photo-frame { background-position: 22% 18% !important; }
+
+/* ── About card: walls of text ────────────────────────────────────────
+   Top half: rows of "Ash Stu"; bottom half: the same number of rows of
+   the tagline; the description sits between. Every row wears the flowing
+   gradient on the same clock. */
+:root.psy .bio-wall { display: flex; flex-direction: column; row-gap: 2px; }
+:root.psy .bio-wall--top { margin-bottom: 20px; will-change: opacity; }
+:root.psy .bio-wall--bottom { margin-top: 20px; row-gap: 6px; }
+:root.psy .bio-wall .bio-name, :root.psy .bio-wall .bio-tagline { margin: 0 !important; width: fit-content; opacity: 1 !important; }
+:root.psy .bio-wall .bio-name { line-height: 1.05 !important; }
+:root.psy .bio-wall .bio-tagline {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) !important;
+  background-size: 200% 100% !important; background-repeat: repeat-x !important;
+  animation: name-flow 9s linear infinite;
+}
+:root.psy.psy-calm .bio-wall .bio-tagline { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall .bio-tagline { animation: none; } }
+@media (max-width: 767px) { :root.psy .bio-wall { align-items: center; } }
+
+/* About walls in pop-art colours: each row is one flat bright colour
+   (hot pink, yellow, cyan, lime, orange) and the colours travel down the
+   rows, one step every 1.2s, all on one clock. Static (one colour per
+   row) with reduced motion or background effects off. */
+:root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) {
+  background: none !important; -webkit-text-fill-color: currentColor !important;
+  color: #FF2E7E !important;
+  animation: pop-rows 6s linear infinite !important;
+}
+@keyframes pop-rows {
+  0%, 17%  { color: #FF2E7E; }
+  20%, 37% { color: #FFE600; }
+  40%, 57% { color: #00E5FF; }
+  60%, 77% { color: #7FFF00; }
+  80%, 97% { color: #FF7A00; }
+  100%     { color: #FF2E7E; }
+}
+:root.psy .bio-wall > :nth-child(5n+2):not(#\#) { animation-delay: -4.8s !important; color: #FF7A00 !important; }
+:root.psy .bio-wall > :nth-child(5n+3):not(#\#) { animation-delay: -3.6s !important; color: #7FFF00 !important; }
+:root.psy .bio-wall > :nth-child(5n+4):not(#\#) { animation-delay: -2.4s !important; color: #00E5FF !important; }
+:root.psy .bio-wall > :nth-child(5n+5):not(#\#) { animation-delay: -1.2s !important; color: #FFE600 !important; }
+:root.psy.psy-calm .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { animation: none !important; } }
+@media (forced-colors: active) { :root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { color: CanvasText !important; animation: none !important; } }

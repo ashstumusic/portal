@@ -49,7 +49,7 @@ cacheOffsets();
 var _resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(cacheOffsets, 150); }, { passive: true });
 let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false, _lastAboutIn = -1;
-const aboutName = document.querySelector('.bio-name');
+const aboutName = document.querySelector('.bio-wall--top') || document.querySelector('.bio-name');
 function updateNav() {
 let cur = '';
 if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {

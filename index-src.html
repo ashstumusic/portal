@@ -325,9 +325,9 @@
          small thumbnails under the copy. -->
     <div class="bio-card">
       <div class="bio-card-text">
-        <p class="bio-name"><a href="#" class="bio-name-link" aria-label="Ash Stu, back to the top of the page" title="Back to the top">Ash Stu</a></p>
+        <div class="bio-wall bio-wall--top"><p class="bio-name"><a href="#" class="bio-name-link" aria-label="Ash Stu, back to the top of the page" title="Back to the top">Ash Stu</a></p></div>
         <p class="bio-text bio-desc">Outsider-folk singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
-        <p class="bio-tagline">A figment of my own imagination.</p>
+        <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" src="Images/Profile-3.webp" alt="Ash Stu - Outsider-folk singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
@@ -515,7 +515,7 @@ cacheOffsets();
 var _resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(cacheOffsets, 150); }, { passive: true });
 let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false, _lastAboutIn = -1;
-const aboutName = document.querySelector('.bio-name');
+const aboutName = document.querySelector('.bio-wall--top') || document.querySelector('.bio-name');
 function updateNav() {
 let cur = '';
 if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
@@ -2572,5 +2572,26 @@ document.querySelectorAll('a[data-epk-download]').forEach(function(a){a.addEvent
 var done=false,go=function(){if(done)return;done=true;removeEventListener('scrollend',go);press();};
 if('onscrollend' in window){addEventListener('scrollend',go,{once:true});setTimeout(go,1600);}else setTimeout(go,900);
 });});})();</script>
+<script>/* About card: the top half repeats "Ash Stu" in as many rows as fit,
+   the bottom half repeats the tagline in the same number of rows; every
+   row's gradient runs in step. The copies are decorative (hidden from
+   screen readers); the first of each is the real text. */
+(function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
+if(!card||!text||!top||!bot)return;var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
+function build(){
+top.querySelectorAll('[data-copy]').forEach(function(e){e.remove();});bot.querySelectorAll('[data-copy]').forEach(function(e){e.remove();});
+var name=top.querySelector('.bio-name'),tag=bot.querySelector('.bio-tagline');
+var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
+var n=3;
+if(side){var cs=getComputedStyle(text),avail=media.offsetHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-(desc?desc.offsetHeight:0)-48;
+var gap=parseFloat(getComputedStyle(top).rowGap)||0;n=Math.max(1,Math.floor((avail/2+gap)/(name.offsetHeight+gap)));}
+for(var i=1;i<n;i++){var a=document.createElement('p');a.className='bio-name';a.setAttribute('aria-hidden','true');a.dataset.copy='1';a.textContent='Ash Stu';top.appendChild(a);
+var b=tag.cloneNode(true);b.setAttribute('aria-hidden','true');b.dataset.copy='1';bot.appendChild(b);}
+// one clock for every row
+requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
+}
+var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
+if(document.readyState==='complete')build();else addEventListener('load',build);
+(document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
 </body>
 </html>
