@@ -1707,3 +1707,47 @@ html { overscroll-behavior-y: none; }
   :root.psy .epk-photos:not(#\#) { gap: 10px !important; }
   :root.psy .epk-body:not(#\#):not(#\#) { padding-inline: 0 !important; }
 }
+
+/* ── Music player bar: the toolbar's glass, in dark mode ──────────────
+   Dark frosted glass, light text, light-rimmed buttons; the play button
+   and switched-on controls are solid white with dark icons (the dark
+   mirror of the toolbar's black "current" chip). Gold on hover. */
+:root.psy #player-bar:not(#\#) {
+  --player: #14161C; --player-hi: #14161C; --player-ink: #F2F4F6; --bar-rim: rgb(255 255 255 / .5); --focus-ring: 0 0 0 2px #14161C, 0 0 0 5px #fff;
+  background: rgb(20 22 28 / .82) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.4); backdrop-filter: blur(28px) saturate(1.4);
+  border-top: 1px solid rgb(255 255 255 / .12);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), 0 -8px 30px rgb(0 0 0 / .45) !important;
+  color: #F2F4F6;
+}
+:root.psy #player-bar #np-track:not(#\#) { color: #fff !important; }
+:root.psy #player-bar #np-album:not(#\#) { color: rgb(242 244 246 / .72) !important; }
+:root.psy #player-bar .np-time:not(#\#) { color: rgb(242 244 246 / .8) !important; }
+:root.psy #player-bar .np-bar-track:not(#\#) { background: rgb(255 255 255 / .2) !important; }
+:root.psy #player-bar :is(#np-fill, .seek-thumb):not(#\#) { background: #fff !important; }
+:root.psy #player-bar .vol-slider:not(#\#) { background: linear-gradient(to right, #fff var(--vol, 100%), rgb(255 255 255 / .22) var(--vol, 100%)) !important; }
+:root.psy #player-bar .vol-slider::-webkit-slider-thumb { background: #fff; box-shadow: 0 0 0 2px #14161C, 0 1px 4px rgb(0 0 0 / .5); }
+:root.psy #player-bar .vol-slider::-moz-range-thumb { background: #fff; box-shadow: 0 0 0 2px #14161C, 0 1px 4px rgb(0 0 0 / .5); }
+:root.psy #player-bar :is(.np-ctrl, .np-close):not(:hover):not(.active):not([aria-pressed="true"]):not(#\#) { background: rgb(255 255 255 / .08) !important; border: 2px solid var(--bar-rim) !important; color: #F2F4F6 !important; }
+:root.psy #player-bar :is(.np-ctrl, .np-close):not(:hover):not(.active):not([aria-pressed="true"]):not(#\#) svg { color: #F2F4F6 !important; }
+:root.psy #player-bar .np-close:not(:hover):not(#\#)::before { color: #F2F4F6 !important; }
+:root.psy #player-bar .np-ctrl:is(.active, [aria-pressed="true"]):not(:hover):not(#\#) { background: #fff !important; border: 2px solid #fff !important; color: #111 !important; }
+:root.psy #player-bar .np-ctrl:is(.active, [aria-pressed="true"]):not(:hover):not(#\#) svg { color: #111 !important; }
+:root.psy #player-bar #np-play:not(:hover):not(#\#) { background: #fff !important; border: 2px solid #fff !important; color: #111 !important; }
+:root.psy #player-bar #np-play:not(:hover):not(#\#) svg { color: #111 !important; }
+@media (prefers-contrast: more) { :root.psy #player-bar:not(#\#) { background: #0B0C10 !important; border-top: 2px solid #fff; } }
+
+/* ── Full-screen player: closing it ───────────────────────────────────
+   The lone floating arrow is replaced by two clear cues: a small grab
+   handle at the top centre (the sheet can be swiped down) and a labelled
+   "Close" pill in the top-left corner, where a back/close control is
+   expected. Esc still closes it. */
+:root.psy .fs-grabber { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 8px); left: 50%; transform: translateX(-50%); width: 44px; height: 5px; border-radius: 3px; background: rgb(240 245 246 / .38); z-index: 2; pointer-events: none; }
+:root.psy .fs-collapse:not(#\#):not(#\#) {
+  top: calc(env(safe-area-inset-top, 0px) + 22px) !important; left: max(16px, 4vw) !important; right: auto !important; transform: none !important;
+  width: auto !important; height: 40px !important; min-height: 40px; padding: 0 16px 0 12px !important; gap: 6px;
+  border-radius: 12px !important; corner-shape: squircle; display: inline-flex !important; align-items: center;
+  font: 600 14px/1 var(--font-ui) !important;
+}
+:root.psy .fs-collapse span { text-box: trim-both cap alphabetic; }
+@media (hover: hover) and (pointer: fine) { :root.psy .fs-grabber { display: none; } }
