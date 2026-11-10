@@ -1185,27 +1185,11 @@ cardLyricsKick();
 card, that song's lyrics shrink just enough (down to 12px); only below
 that does a line wrap, so nothing ever runs past the card edge. */
 function fitLyrics(inner) {
-if (!inner || !inner.offsetWidth) return;
+/* Lyrics are never shrunk: one size for lyrics and body text. A line too
+long for the card wraps (hanging indent, see CSS) and the card grows. */
+if (!inner) return;
 inner.style.fontSize = ''; inner.classList.remove('lyr-wrap');
-var lines = inner.querySelectorAll('.rel-lyric-line');
-lines.forEach(function(l) { l.style.fontSize = ''; l.classList.remove('lyr-wrap-line'); });
-var limit = function() { var r = inner.getBoundingClientRect(); return r.right - parseFloat(getComputedStyle(inner).paddingRight); };
-var over = function(l, lim) { var rg = document.createRange(); rg.selectNodeContents(l); var b = rg.getBoundingClientRect(); return b.width && b.right > lim + .5 ? b.width / Math.max(1, lim - b.left) : 0; };
-var worst = function() { var lim = limit(), w = 0; lines.forEach(function(l) { w = Math.max(w, over(l, lim)); }); return w; };
-var size = parseFloat(getComputedStyle(inner).fontSize) || 17;
-for (var k = 0; k < 6; k++) {
-var w = worst(); if (!w) return;
-size = Math.max(12, Math.floor(size / w * 10) / 10 - 0.1);
-inner.style.fontSize = size + 'px';
-if (size === 12) break;
-}
-var lim = limit();
-lines.forEach(function(l) {
-var w = over(l, lim); if (!w) return;
-var ls = Math.floor(size / w * 10) / 10 - 0.1;
-if (ls >= 10.5) { l.style.fontSize = ls + 'px'; if (over(l, lim)) { l.style.fontSize = (ls - .4) + 'px'; } }
-if (ls < 10.5 || over(l, lim)) { l.style.fontSize = '10.5px'; if (over(l, lim)) { l.style.fontSize = ''; l.classList.add('lyr-wrap-line'); } }
-});
+inner.querySelectorAll('.rel-lyric-line').forEach(function(l) { l.style.fontSize = ''; l.classList.remove('lyr-wrap-line'); });
 }
 function fitLyricsSoon(inner) {
 fitLyrics(inner);

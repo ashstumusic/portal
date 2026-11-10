@@ -1276,3 +1276,15 @@ html { overscroll-behavior-y: none; }
 .rel-track-wrap { scroll-margin-top: 80px; }
 /* track numbers: a touch brighter to clear 4.5:1 on the track rows */
 :root.psy .rel-track:not(:hover) .rel-track-num { color: #8F999F !important; opacity: 1 !important; }
+
+/* Tracklist inset a little wider (14px); lyrics stay under the titles. */
+:root.psy { --tl-inset: 14px; }
+/* Lyrics: always the body size (17px), never shrunk. A line too long for
+   the card wraps with a hanging indent (its continuation indented, so it
+   still reads as one line) and the section grows to hold it. */
+:root.psy .rel-track-wrap .rel-lyrics-inner { font-size: var(--body-size) !important; }
+:root.psy .rel-track-wrap .rel-lyric-line { white-space: normal !important; overflow-wrap: break-word; padding-left: 1.1em; text-indent: -1.1em; }
+/* "Distributing Soon": solid white tag, black text. */
+:root.psy .rel-btn--label:not(#\#), :root.psy .rel-btn--label .rel-label-text:not(#\#) {
+  background: #fff !important; background-image: none !important; color: #000 !important; -webkit-text-fill-color: #000 !important;
+}
