@@ -234,42 +234,75 @@
       return { W, H, top, free, ceiling };
     }
 
+    let rt = 0;   // pending repair timer
     // ── placing the sky ──
+    // Each star belongs to a section, at an offset from its top, so when
+    // content above it grows or shrinks (a tracklist opens, the player
+    // docks, a phone's address bar slides away) it moves with its section
+    // instead of the whole sky being thrown away and re-placed.
+    const SIZES = [[56, 72, 1.3], [32, 46, 3.6], [16, 24, 5]];   // [min px, max px, stars per million px²]
+    const regions = () => [...$$('main > section:not(.hero-split)'), $('footer')].filter(Boolean);
+    function place(map, s, cls, count) {
+      const [lo, hi] = SIZES[cls], secs = regions().map((el) => { const r = el.getBoundingClientRect(); return { el, top: r.top + scrollY, bottom: r.bottom + scrollY }; });
+      for (let k = 0; k < count; k++) {
+        const d = Math.floor(rnd() * DESIGNS);
+        const size = (lo + rnd() * (hi - lo)) * s, R = size / 2, gap = size * 1.4 + 18 * s;
+        let best = null;
+        for (let tries = 0; tries < 260; tries++) {
+          const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
+          const pad = R * 0.2 + 4;   // room to jitter and swell
+          if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
+          let near = 1e9;
+          for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R);
+          if (near < gap) continue;
+          let score = Math.min(near, gap * 3) / gap * 10 + rnd() * 5;
+          for (const m of [16, 36]) if (map.free(x - R - pad - m, cy - R - pad - m, x + R + pad + m, cy + R + pad + m)) score += 6;
+          if (!best || score > best.score) best = { x, cy, score };
+        }
+        if (!best) continue;
+        const sec = secs.find((q) => best.cy >= q.top && best.cy < q.bottom) || secs[secs.length - 1];
+        const el = doc.createElement('i');
+        el.className = 'chalk-star';
+        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`;
+        layer.append(el);
+        const o = { el, d, cls, sec: sec.el, off: best.cy - sec.top, cx: best.x, cy: best.cy, R, base: Math.floor((rnd() - 0.5) * 50), spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES), popAt: 0, seen: false };
+        setFrame(o); placed.push(o);
+      }
+    }
+    // Fill the sky up to its quota for the page's size (phones get fewer).
+    function fill(map) {
+      const s = Math.max(0.7, Math.min(1.05, innerWidth / 1300)), area = (map.W * (map.H - map.top)) / 1e6;
+      SIZES.forEach(([, , per], cls) => place(map, s, cls, Math.max(0, Math.round(area * per) - placed.filter((o) => o.cls === cls).length)));
+      layer.style.height = map.H + 'px';
+    }
+    // From scratch: on first load and when the page's width changes.
     function layout() {
       seed = 11;
       for (const o of placed) o.el.remove();
       placed = [];
-      const map = measure(), s = Math.max(0.7, Math.min(1.05, innerWidth / 1300));
-      // How many: by the page's area, so phones get fewer.
-      const area = (map.W * (map.H - map.top)) / 1e6;
-      const plan = [[56, 72, Math.round(area * 1.3)], [32, 46, Math.round(area * 3.6)], [16, 24, Math.round(area * 5)]];   // [min px, max px, count]
-      for (const [lo, hi, count] of plan) {
-        for (let k = 0; k < count; k++) {
-          const d = Math.floor(rnd() * DESIGNS);
-          const size = (lo + rnd() * (hi - lo)) * s, R = size / 2, gap = size * 1.4 + 18 * s;
-          let best = null;
-          for (let tries = 0; tries < 260; tries++) {
-            const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
-            const pad = R * 0.2 + 4;   // room to jitter and swell
-            if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
-            let near = 1e9;
-            for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R);
-            if (near < gap) continue;
-            let score = Math.min(near, gap * 3) / gap * 10 + rnd() * 5;
-            for (const m of [16, 36]) if (map.free(x - R - pad - m, cy - R - pad - m, x + R + pad + m, cy + R + pad + m)) score += 6;
-            if (!best || score > best.score) best = { x, cy, score };
-          }
-          if (!best) continue;
-          const el = doc.createElement('i');
-          el.className = 'chalk-star';
-          el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`;
-          layer.append(el);
-          const o = { el, d, cx: best.x, cy: best.cy, R, base: Math.floor((rnd() - 0.5) * 50), spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES), popAt: 0, seen: false };
-          setFrame(o); placed.push(o);
-        }
-      }
-      layer.style.height = map.H + 'px';
+      fill(measure());
       draw();
+    }
+    // Cheap: move every star with its section (no measuring).
+    function follow() {
+      const tops = new Map(regions().map((el) => [el, el.getBoundingClientRect().top + scrollY]));
+      for (const o of placed) {
+        const t = tops.get(o.sec); if (t == null) continue;
+        const cy = t + o.off; if (Math.abs(cy - o.cy) < 0.5) continue;
+        o.cy = cy; o.el.style.top = (cy - o.R).toFixed(1) + 'px';
+      }
+      layer.style.height = doc.documentElement.scrollHeight + 'px';
+    }
+    // When things settle: drop any star now sitting on content, top up gaps.
+    function repair() {
+      rt = 0;
+      const map = measure(), keep = [];
+      for (const o of placed) {
+        const pad = o.R * 0.2 + 4;
+        if (map.free(o.cx - o.R - pad, o.cy - o.R - pad, o.cx + o.R + pad, o.cy + o.R + pad)) keep.push(o); else o.el.remove();
+      }
+      placed = keep;
+      fill(map);
     }
 
     function setFrame(o) { o.el.style.backgroundPosition = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; }
@@ -278,7 +311,8 @@
     let raf = 0, lastT = 0, shake = 0;
     function draw() {
       const vh = innerHeight, sy = scrollY, moving = fxOn(), now = performance.now();
-      shake = Math.min(12, shake * 0.6 + Math.abs(scrollVel) * 4);
+      // Knocked about only by a genuinely fast flick, not ordinary scrolling.
+      shake = Math.min(6, shake * 0.6 + Math.max(0, Math.abs(scrollVel) - 1.5) * 3);
       for (const o of placed) {
         const vy = o.cy - sy;
         if (vy < -200 || vy > vh + 200) continue;
@@ -306,12 +340,17 @@
     }
     const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
     addEventListener('scroll', kick, { passive: true });
+    // Width changed: re-place from scratch. Only the height: stars follow
+    // their sections now, and a repair runs once scrolling has stopped.
     let lt = 0, lastW = 0, lastH = 0;
+    const scheduleRepair = () => { clearTimeout(rt); rt = setTimeout(repair, 900); };
+    addEventListener('scroll', () => { if (rt) scheduleRepair(); }, { passive: true });
     const relayout = () => { clearTimeout(lt); lt = setTimeout(() => {
       const w = doc.documentElement.clientWidth, h = doc.documentElement.scrollHeight;
-      if (w === lastW && Math.abs(h - lastH) < 4) return;   // nothing moved
-      lastW = w; lastH = h; layout(); kick();
-    }, 200); };
+      if (w !== lastW) { lastW = w; lastH = h; clearTimeout(rt); rt = 0; layout(); kick(); return; }
+      if (Math.abs(h - lastH) < 2) return;
+      lastH = h; follow(); scheduleRepair();
+    }, 120); };
     new ResizeObserver(relayout).observe(doc.body);
     addEventListener('resize', relayout, { passive: true });
     (doc.fonts?.ready || Promise.resolve()).then(() => setTimeout(relayout, 300));

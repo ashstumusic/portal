@@ -534,8 +534,8 @@ html {
   padding: 3rem 2rem 132px;
   padding: clamp(3rem,7vw,6rem) clamp(2rem,5vw,4rem) 132px;
   gap: 1.25rem;
-  /* Coral-red panel for the featured release. */
-  background: #F44355;
+  /* Deep red panel for the featured release. */
+  background: #B21E2B;
   border-left: 1px solid rgba(8,76,97,.06);
   border-left: 1px solid rgb(from var(--ink) r g b / .06);
   overflow: hidden;
@@ -549,10 +549,10 @@ html {
   max-height: max(var(--panel-floor, 470px), calc(100svh - var(--nav-pad, 0px) - var(--band, 0px)));
 }
 .hero-split-right > * { position: relative; z-index: 1; }
-/* On the coral panel: gold text and the red badge lost contrast, so the
-   kicker and badge go deep wine (kicker ~5:1 on the coral). */
-.hero-split-right .featured-kicker { color: #4A0E1C; }
-.hero-split-right .featured-badge { background: #7A1022; }
+/* On the deep red panel: the kicker keeps the site's gold, and the badge
+   goes darker wine so it doesn't melt into the panel. */
+.hero-split-right .featured-kicker { color: var(--gold); }
+.hero-split-right .featured-badge { background: #6A0D18; }
 /* On the gold panel the translucent-teal buttons went olive; cream chips
    read as printed tickets and keep the icons crisp. */
 .hero-split-right .f-btn {
