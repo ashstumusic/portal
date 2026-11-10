@@ -181,3 +181,15 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   box-shadow: 0 4px 16px rgb(0 0 0 / .35), 0 0 0 1px rgb(8 76 97 / .4);
 }
 :root.psy .fab-music:hover, :root.psy .hero-scroll:hover { background: rgb(14 98 124); border-color: var(--gold); }
+
+/* Lyrics under a track line up with its title: the panel's left padding is
+   the row's own inset (12px padding + 22.4px number column + 8px gap), and
+   it ends where the Lyrics pill ends. Same face as the title (SF Pro), a
+   step smaller and quieter, with even line spacing. */
+.rel-track-wrap .rel-lyrics-inner {
+  padding: 4px .4rem 16px calc(.75rem + 1.4rem + .5rem);
+  font-family: var(--font-ui); font-size: 14px; line-height: 1.6; letter-spacing: -.005em;
+  color: rgb(235 235 245 / .72);
+}
+.rel-track-wrap .rel-lyric-line { font-family: inherit; font-size: inherit; }
+.rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
