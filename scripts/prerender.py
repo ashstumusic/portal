@@ -25,24 +25,9 @@ import re
 import sys
 
 from buildutil import img_b64
-from build_lyrics_pages import stanzas, slugify
+from build_lyrics_pages import stanzas
 
 LYRICS = {}   # lyrics.json, loaded in main()
-PAGES = {}    # audio file -> its lyrics page URL (same slugs as build_lyrics_pages.py)
-
-
-def lyric_pages(releases):
-    used = set()
-    for rel in releases:
-        for t in rel.get('tracks', []):
-            entry = LYRICS.get(t['file'])
-            if not entry or not entry.get('lines'):
-                continue
-            slug = slugify(t['title'])
-            if slug in used:
-                slug = f"{slug}-{slugify(rel['name'])}"
-            used.add(slug)
-            PAGES[t['file']] = f'/lyrics/{slug}/'
 
 
 def lyrics_html(file):
@@ -52,8 +37,7 @@ def lyrics_html(file):
     if not entry or not entry.get('lines'):
         return ''
     verses = ''.join('<p>' + '<br>'.join(esc(l) for l in v) + '</p>' for v in stanzas(entry))
-    link = f'<p><a href="{PAGES[file]}">Lyrics page</a></p>' if file in PAGES else ''
-    return f'<details class="rel-lyrics-static"><summary>Lyrics</summary>{verses}{link}</details>'
+    return f'<details class="rel-lyrics-static"><summary>Lyrics</summary>{verses}</details>'
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
@@ -203,7 +187,6 @@ def main():
         videos = json.load(f)
     with open('lyrics.json', encoding='utf-8') as f:
         LYRICS.update(json.load(f))
-    lyric_pages(releases)   # before art paths are rewritten; titles/files are what matter
 
     # Single-file build: bake raster art/thumb paths as 90%-scale base64
     # WebP data URIs so the prerendered cards AND the embedded data-all JSON
@@ -232,7 +215,7 @@ def main():
                 continue
             text = '\n\n'.join('\n'.join(v) for v in stanzas(entry))
             comps.append({'@type': 'MusicComposition', 'name': t['title'], 'inLanguage': 'en',
-                          **({'url': 'https://ashstu.art' + PAGES[t['file']], 'mainEntityOfPage': 'https://ashstu.art' + PAGES[t['file']]} if t['file'] in PAGES else {}),
+                          'url': 'https://ashstu.art/#music',
                           'composer': {'@id': 'https://ashstu.art/#artist'}, 'lyricist': {'@id': 'https://ashstu.art/#artist'},
                           'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text},
                           'recordedAs': {'@type': 'MusicRecording', 'name': t['title'], 'byArtist': {'@id': 'https://ashstu.art/#artist'},
@@ -240,8 +223,6 @@ def main():
     if comps:
         ld = json.dumps({'@context': 'https://schema.org', '@graph': comps}, ensure_ascii=False).replace('</', '<\\/')
         page = page.replace('</head>', f'<script type="application/ld+json" id="lyrics-ld">{ld}</script>\n</head>', 1)
-    # The song -> lyrics page map the runtime JS uses for its "Lyrics page" links.
-    page = page.replace('</head>', '<script type="application/json" id="lyrics-pages">' + json.dumps(PAGES).replace('</', '<\\/') + '</script>\n</head>', 1)
     page = inject_container(page, 'video-grid', 'video-grid', videos_html)
     page = inject_featured(page, next((r for r in releases if r.get('featured')), releases[0] if releases else None))
 
