@@ -1680,3 +1680,30 @@ html { overscroll-behavior-y: none; }
 :root.psy.psy-calm .bio-wall > *:not(#\#):not(#\#):not(#\#) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { :root.psy .bio-wall > *:not(#\#):not(#\#):not(#\#) { animation: none !important; } }
 @media (forced-colors: active) { :root.psy .bio-wall > *:not(#\#):not(#\#):not(#\#) { background: none !important; -webkit-text-fill-color: currentColor !important; -webkit-text-stroke: 0 !important; animation: none !important; } }
+
+/* Tagline fade inverted: solid first line at the top, fading down. Name
+   rows a little tighter together. */
+:root.psy .bio-wall--bottom:not(#\#) { flex-direction: column !important; }
+:root.psy .bio-wall--top .bio-name:not(#\#):not(#\#) { line-height: .93 !important; }
+
+/* Albums: small covers side by side; clicking one (its cover or Tracks)
+   grows that card to the full lyric-width for its tracklist, and it
+   shrinks back when closed. */
+:root.psy .releases-grid > *:not(#\#) { flex: 0 0 min(100%, 20rem) !important; max-width: min(100%, 20rem) !important; }
+:root.psy .releases-grid > .tracks-open:not(#\#) { flex: 0 0 min(100%, 43rem) !important; max-width: min(100%, 43rem) !important; }
+/* an opened album shows a banner crop of its cover, so the tracklist
+   starts near the top instead of below a huge square */
+:root.psy .releases-grid > .tracks-open .rel-art-wrap:not(#\#) { padding-top: 40% !important; }
+:root.psy .releases-grid > .tracks-open .rel-art:not(#\#) { width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: 50% 30%; aspect-ratio: auto !important; }
+
+/* Press Kit photos: evenly spaced (12px between all four, 10px on
+   phones), rounded, and held inside the page margin on the right instead
+   of running to the screen edge. */
+:root.psy .epk-section:not(#\#) { column-gap: 12px !important; padding-right: max(20px, 5vw, (100% - 1248px) / 2) !important; }
+:root.psy .epk-photos:not(#\#) { gap: 12px !important; }
+:root.psy .epk-photos img { border-radius: 10px; }
+@media (max-width: 767px) {
+  :root.psy .epk-section:not(#\#) { padding-inline: max(20px, 5vw) !important; row-gap: 10px !important; }
+  :root.psy .epk-photos:not(#\#) { gap: 10px !important; }
+  :root.psy .epk-body:not(#\#):not(#\#) { padding-inline: 0 !important; }
+}
