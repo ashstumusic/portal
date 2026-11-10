@@ -1874,6 +1874,14 @@ body.player-active { padding-bottom: 68px; }
   text-align: right; font-variant-numeric: tabular-nums;
 }
 .rel-track.active .rel-track-num { display: none; }
+/* Not released yet (upcoming.txt): greyed out, can't be played. */
+.rel-track--upcoming, .rel-track--upcoming:hover { cursor: default; background: none; color: rgb(8 76 97 / .38); color: rgb(from var(--ink) r g b / .38); }
+.rel-track--upcoming .rel-track-num { opacity: .6; }
+.rel-track--upcoming .rel-track-title { font-style: italic; }
+.rel-track-soon {
+  flex: none; font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
+  padding: .1rem .4rem; border: 1px solid currentColor; border-radius: 99px; opacity: .8;
+}
 .rel-track-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
 .rel-track-title.marquee { text-overflow: clip; }
 .rel-track-title.marquee > span {

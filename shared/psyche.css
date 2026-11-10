@@ -138,3 +138,29 @@ html.nes :is(.rel-card, .vid-card-wrap, .contact-inner, .bio-card) { background:
 html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-collapse, .rel-lyrics-toggle, .nav-toggle, .vid-yt) {
   border: 3px solid currentColor !important;
 }
+
+/* ── CUTOUT FLOWERS (see shared/psyche.js) ──────────────────────────────
+   Jointed paper flowers cut from old photographs, in the page margins.
+   The layer spans the page, clips at its sides (no sideways scroll) and
+   never takes the pointer. Each flower's svg is 300×300 with the stem's
+   base pinned at (150, 285): that point sits on the page edge. */
+.cut-flowers {
+  position: absolute; top: 0; left: 0; width: 100%; height: 0;
+  overflow: hidden; overflow: clip; pointer-events: none; z-index: 3;
+}
+.cut-flower { position: absolute; width: 0; height: 0; }
+.cut-flower.cut-left { left: -4px; }
+.cut-flower.cut-right { right: -4px; }
+.cut-flower > svg {
+  position: absolute; left: -150px; top: -285px; overflow: visible;
+  transform-origin: 150px 285px;
+  filter: drop-shadow(2px 3px 0 rgb(0 0 0 / .3));
+}
+/* First sighting: springs up from nothing in three jerky frames. */
+.cut-pop > svg { animation: cutPop .5s steps(3, end) both; }
+@keyframes cutPop {
+  0% { scale: .1 0; }
+  60% { scale: 1.15 1.2; }
+  100% { scale: 1 1; }
+}
+@media print { .cut-flowers { display: none; } }

@@ -25,7 +25,7 @@
   let fxPref = store.get('psy-fx') !== 'off';
   const fxOn = () => fxPref && !reduce.matches;
   const announce = (m) => window.kinetic?.announce?.(m);
-  function syncFx() { root.classList.toggle('psy-calm', !fxOn()); field.redraw(); }
+  function syncFx() { root.classList.toggle('psy-calm', !fxOn()); field.redraw(); flowers.redraw(); }
   reduce.addEventListener?.('change', () => syncFx());
 
   root.classList.add('psy');
@@ -147,6 +147,180 @@
       if (p < 1) requestAnimationFrame(step); else rp.remove();
     })(t0);
   }, { capture: true, passive: true });
+
+  // ── CUTOUT FLOWERS: jointed paper flowers cut from old photographs ──
+  // Every piece (three stem segments, leaves, each petal, the centre) is
+  // cut with straight scissor snips from a sheet of public-domain
+  // photographs (Images/cutouts/flowers.webp: Blossfeldt's 1928 plant
+  // studies and 1910s autochromes, see Images/cutouts/CREDITS.md),
+  // hand-tinted like an old print, backed by a cream paper border, and
+  // pinned at its joint with a paper fastener. The flowers poke in from
+  // the page edges beside each section, in the margin. Scrolling works
+  // them like a cutout puppet: each pops up when first seen, the stem
+  // swings joint by joint (a wave running up it), leaves flap, every
+  // petal flaps on its own, the head turns in clicks and the centre
+  // counter-spins; a fast scroll shakes them. 12 updates a second, angles
+  // snapped. They hold still under reduced motion or with effects off.
+  const flowers = (() => {
+    const NS = 'http://www.w3.org/2000/svg', SHEET = 'Images/cutouts/flowers.webp', SW = 768, C = 192;
+    const PETAL_T = [[0, 0, .5], [1, 0, .5], [2, 0, .6], [3, 0, .55], [0, 1, .75], [1, 1, .75], [2, 1, .75], [3, 1, .6]];   // [col, row, tint strength]
+    const LEAF_T = [[0, 2, .65], [1, 2, .4], [2, 2, .65]], CENTRE_T = [[0, 3], [1, 3], [2, 3]];
+    const STEM_T = [{ x: 576, y: 384, w: 96, h: 384 }, { x: 672, y: 384, w: 96, h: 384 }];
+    const TINTS = ['#E8553E', '#F2B33D', '#EE7FA0', '#7FB3D9', '#C9507E', '#F08A3C', '#B08CD9'];
+    const LEAF_TINT = ['#6F9A45', '#88A84A', '#4F7A2E'];
+    const PAPER = '#FBF5E6';
+    let seed = 7, uid = 0;   // fixed seed: the same flowers on every visit
+    const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const pick = (a) => a[Math.floor(rnd() * a.length)];
+    const j = (n) => (rnd() - 0.5) * n;   // scissor wobble
+    const pts = (a) => a.map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    function el(tag, attrs, parent) { const e = doc.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.append(e); return e; }
+    // Shapes, drawn pointing up from (0,0), a few straight cuts per side.
+    function petal(len, wid, round) {
+      const L = [], R = [], n = 4;
+      for (let i = 1; i <= n; i++) {
+        const t = i / (n + 1), w = wid * (round ? Math.sin(Math.PI * Math.min(1, t * 1.15)) : Math.sin(Math.PI * t) * (1 - t * 0.35));
+        L.push([-w / 2 + j(1.6), -len * t + j(1.6)]); R.unshift([w / 2 + j(1.6), -len * t + j(1.6)]);
+      }
+      return [[j(1), 2], ...L, [j(2.5), -len + j(1.5)], ...R];
+    }
+    function blob(r, n) { const a = []; for (let i = 0; i < n; i++) { const t = (i / n) * Math.PI * 2; a.push([Math.cos(t) * (r + j(r * 0.16)), Math.sin(t) * (r + j(r * 0.16))]); } return a; }
+    // One cut piece: paper backing, the photo clipped to the shape, a tint.
+    function piece(parent, defs, shape, tile, tint, alpha) {
+      const id = 'cutp' + (++uid);
+      const xs = shape.map((p) => p[0]), ys = shape.map((p) => p[1]);
+      const bx = Math.min(...xs), by = Math.min(...ys), bw = Math.max(...xs) - bx, bh = Math.max(...ys) - by;
+      el('polygon', { points: pts(shape) }, el('clipPath', { id }, defs));
+      el('polygon', { points: pts(shape), fill: PAPER, stroke: PAPER, 'stroke-width': 3.2, 'stroke-linejoin': 'miter' }, parent);
+      // A random window onto the tile, so no two pieces are cut alike.
+      const fw = tile.w * (0.55 + rnd() * 0.4), fh = Math.min(tile.h, fw * bh / Math.max(1, bw));
+      const fx = tile.x + rnd() * (tile.w - fw), fy = tile.y + rnd() * Math.max(0, tile.h - fh);
+      const clip = el('g', { 'clip-path': `url(#${id})` }, parent);
+      const win = el('svg', { x: bx, y: by, width: bw, height: bh, viewBox: `${fx.toFixed(1)} ${fy.toFixed(1)} ${fw.toFixed(1)} ${fh.toFixed(1)}`, preserveAspectRatio: 'xMidYMid slice', overflow: 'hidden' }, clip);
+      el('image', { href: SHEET, width: SW, height: SW }, win);
+      if (tint) el('polygon', { points: pts(shape), fill: tint, opacity: alpha, style: 'mix-blend-mode:multiply' }, parent);
+    }
+    const cell = ([c, r]) => ({ x: c * C, y: r * C, w: C, h: C });
+    // A paper fastener at a joint.
+    const pin = (parent, x, y) => { el('circle', { cx: x, cy: y, r: 2.4, fill: PAPER }, parent); el('circle', { cx: x, cy: y, r: 1.4, fill: '#6B5A3A' }, parent); };
+
+    function makeFlower(side) {
+      const svg = el('svg', { width: 300, height: 300, 'aria-hidden': 'true', focusable: 'false' });
+      const defs = el('defs', {}, svg);
+      const root = el('g', { transform: 'translate(150 285)' }, svg);
+      const tint = pick(TINTS), ptile = pick(PETAL_T), stemT = pick(STEM_T);
+      const segs = [], leaves = [], petals = [];
+      const lens = [30 + rnd() * 16, 28 + rnd() * 14, 24 + rnd() * 12];
+      let parent = root, w = 6 + rnd() * 1.5, prevLen = 0;
+      for (let i = 0; i < 3; i++) {
+        const g = el('g', {}, parent), L = lens[i], w2 = w * 0.82;
+        segs.push({ g, y: -prevLen });
+        // Leaves sit under the stem piece so the stem covers their roots.
+        if (i < 2) for (const dir of rnd() < 0.5 ? [-1, 1] : [i ? 1 : -1]) {
+          const lg = el('g', {}, g), base = dir * (48 + rnd() * 26), lt = pick(LEAF_T);
+          leaves.push({ g: lg, y: -L * (0.45 + rnd() * 0.3), base, phase: rnd() * 6 });
+          piece(lg, defs, petal(22 + rnd() * 10, 11 + rnd() * 5, false), cell(lt), pick(LEAF_TINT), lt[2]);
+          el('line', { x1: 0, y1: 0, x2: 0, y2: -16, stroke: '#2F4D1A', 'stroke-width': 0.8, opacity: 0.5 }, lg);
+        }
+        piece(g, defs, [[-w / 2 + j(1), 3], [-w2 / 2 + j(1), -L - 2], [w2 / 2 + j(1), -L - 2], [w / 2 + j(1), 3]], stemT, '#7E9F55', 0.35);
+        if (i) pin(g, 0, 0);
+        parent = g; prevLen = L; w = w2;
+      }
+      // The head on its own joint at the top of the stem.
+      const head = el('g', {}, parent);
+      const n = 5 + Math.floor(rnd() * 7), round = n < 8, rc = 9 + rnd() * 4;
+      const layers = rnd() < 0.45 ? 2 : 1;
+      for (let l = layers - 1; l >= 0; l--) {
+        const len = (l ? 24 : 34) + j(6), wid = round ? 22 + j(5) : 11 + j(3);
+        const lt = l ? pick(PETAL_T) : ptile, lc = l ? pick(TINTS) : tint;
+        for (let i = 0; i < n; i++) {
+          const base = (i / n) * 360 + (l ? 180 / n : 0) + j(8);
+          const g = el('g', {}, head), flap = el('g', {}, g);
+          petals.push({ g, flap, base, y: -rc * 0.55, phase: rnd() * 6 });
+          piece(flap, defs, petal(len + j(5), wid, round), cell(lt), lc, lt[2]);
+        }
+      }
+      const centre = el('g', {}, head);
+      piece(centre, defs, blob(rc, 9), cell(pick(CENTRE_T)), pick(['#F2B33D', '#8A5A2B', null]), 0.45);
+      pin(centre, 0, 0);
+      return { svg, segs, leaves, petals, head, centre, lens, side, total: lens[0] + lens[1] + lens[2],
+        phase: rnd() * Math.PI * 2, spin: (rnd() < 0.5 ? -1 : 1) * (0.1 + rnd() * 0.15), lean: 0, popped: false, y: 0, k: 1 };
+    }
+
+    const layer = doc.createElement('div');
+    layer.className = 'cut-flowers'; layer.setAttribute('aria-hidden', 'true');
+    doc.body.append(layer);
+    // Two per section, alternating sides; none over the hero photo.
+    const list = [];
+    $$('main > section:not(.hero-split), footer').forEach((sec, i) => {
+      for (const [side, at] of [[i % 2 ? 'right' : 'left', 0.12 + rnd() * 0.2], [i % 2 ? 'left' : 'right', 0.55 + rnd() * 0.3]]) {
+        const f = makeFlower(side); f.sec = sec; f.at = at;
+        f.wrap = doc.createElement('div'); f.wrap.className = 'cut-flower cut-' + side;
+        f.wrap.append(f.svg); layer.append(f.wrap); list.push(f);
+      }
+    });
+
+    // Place each flower: base pinned at the page edge, head in the margin.
+    function layout() {
+      const m = $('#music .section-inner') || $('main');
+      const gutter = Math.max(0, m ? m.getBoundingClientRect().left : 40);
+      const k = Math.max(0.42, Math.min(1.15, (gutter * 0.95) / 80));   // a head is ~80px across at full size
+      let bottom = 0;
+      for (const f of list) {
+        const r = f.sec.getBoundingClientRect();
+        f.y = r.top + scrollY + r.height * f.at;
+        f.k = k;
+        const want = Math.max(10, gutter * 0.4), lean = Math.asin(Math.min(0.9, want / (f.total * k))) * 180 / Math.PI;
+        f.lean = f.side === 'left' ? lean : -lean;
+        f.wrap.style.top = f.y + 'px';
+        f.svg.style.transform = `scale(${k})`;
+        bottom = Math.max(bottom, f.y + 20);
+      }
+      layer.style.height = Math.min(bottom, doc.documentElement.scrollHeight) + 'px';
+      draw();
+    }
+
+    // The puppet show: 12 updates a second while there's motion.
+    const snap = (v, s) => Math.round(v / s) * s;
+    let raf = 0, lastT = 0, settleUntil = 0, shake = 0;
+    function pose(f, t, moving) {
+      const now = performance.now() * 0.02;
+      f.segs.forEach((sg, i) => {
+        const a = !moving ? (i ? 0 : f.lean)
+          : (i ? 0 : f.lean) + snap(Math.sin(t * 0.004 + f.phase - i * 0.8) * (i ? 9 : 5) + Math.sin(now + f.phase + i) * shake * (i ? 0.6 : 0.3), 3);
+        sg.g.setAttribute('transform', `translate(0 ${sg.y.toFixed(1)}) rotate(${a})`);
+      });
+      for (const lf of f.leaves) lf.g.setAttribute('transform', `translate(0 ${lf.y.toFixed(1)}) rotate(${lf.base + (moving ? snap(Math.sin(t * 0.007 + lf.phase) * 14, 5) : 0)})`);
+      f.head.setAttribute('transform', `translate(0 ${(-f.lens[2]).toFixed(1)}) rotate(${moving ? snap(t * f.spin + f.phase * 57, 10) : 0})`);
+      for (const p of f.petals) {
+        p.g.setAttribute('transform', `rotate(${p.base.toFixed(1)}) translate(0 ${p.y.toFixed(1)})`);
+        p.flap.setAttribute('transform', moving ? `rotate(${snap(Math.sin(t * 0.011 + p.phase) * 11, 4)}) scale(1 ${snap(1 + Math.sin(t * 0.009 + p.phase * 2) * 0.12, 0.04)})` : '');
+      }
+      f.centre.setAttribute('transform', `rotate(${moving ? snap(-t * f.spin * 2.2, 15) : 0})`);
+    }
+    function draw() {
+      const vh = innerHeight, sy = scrollY, moving = fxOn();
+      shake = Math.min(14, shake * 0.7 + Math.abs(scrollVel) * 4);
+      for (const f of list) {
+        const vy = f.y - sy;
+        if (vy < -250 || vy > vh + 250) continue;
+        if (!f.popped && vy < vh * 0.92) { f.popped = true; if (moving) f.wrap.classList.add('cut-pop'); }
+        pose(f, sy, moving);
+      }
+    }
+    function loop(t) {
+      raf = 0;
+      if (t - lastT >= 1000 / 12 - 4) { lastT = t; draw(); }
+      if (performance.now() < settleUntil || shake > 0.5) raf = requestAnimationFrame(loop);
+    }
+    addEventListener('scroll', () => { settleUntil = performance.now() + 400; if (!raf) raf = requestAnimationFrame(loop); }, { passive: true });
+    let lt = 0;
+    const relayout = () => { clearTimeout(lt); lt = setTimeout(layout, 120); };
+    new ResizeObserver(relayout).observe(doc.body);
+    addEventListener('resize', relayout, { passive: true });
+    (doc.fonts?.ready || Promise.resolve()).then(layout);
+    return { redraw: draw };
+  })();
 
   // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
   // The page turns into an NES game: everything (its own fonts and colours
