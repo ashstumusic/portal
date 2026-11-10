@@ -265,9 +265,16 @@ def parse_lyrics_txt(path):
 def clean_lyric(line):
     """One lyric line as shown everywhere: trimmed, with no punctuation at
     the end of the line (commas, periods, colons, semicolons, ! ? ...), even
-    tucked inside a closing quote. Punctuation inside the line stays."""
+    tucked inside a closing quote; first letter capitalised and a lone "i"
+    made "I". Punctuation inside the line stays."""
     line = re.sub(r'\s+', ' ', (line or '').strip())
-    return re.sub(r'[.,;:!?\u2026]+(["\u201d\u2019\']?)$', r'\1', line).strip()
+    line = re.sub(r'[.,;:!?\u2026]+(["\u201d\u2019\']?)$', r'\1', line).strip()
+    # Conservative casing only: the line's first letter is a capital (after
+    # any opening quote or bracket), and a lone "i" (also i'm, i've, i'll,
+    # i'd) is "I". Nothing else in the words is changed.
+    line = re.sub(r"(?<![\w'\u2019])i(?=(?:['\u2019](?:m|ve|ll|d))?(?![\w'\u2019]))", 'I', line)
+    line = re.sub(r'^([^A-Za-z]*)([a-z])', lambda m: m.group(1) + m.group(2).upper(), line)
+    return line
 
 
 def gen_lyrics(releases):
