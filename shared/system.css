@@ -1288,3 +1288,93 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-btn--label:not(#\#), :root.psy .rel-btn--label .rel-label-text:not(#\#) {
   background: #fff !important; background-image: none !important; color: #000 !important; -webkit-text-fill-color: #000 !important;
 }
+
+/* Lyrics start exactly under the song titles: the hanging indent adds to
+   the line's highlight padding (.4rem, cancelled by its -.4rem margin)
+   instead of replacing it. */
+:root.psy .rel-track-wrap .rel-lyric-line { padding-left: calc(1.1em + .4rem) !important; text-indent: -1.1em; }
+/* measuring each line's natural width */
+:root.psy .rel-lyrics-inner.lyr-measure .rel-lyric-line { white-space: nowrap !important; }
+/* a card widening for its lyrics does it smoothly */
+.releases-grid > .rel-card { transition: flex-basis .35s var(--ease-ui, ease), max-width .35s var(--ease-ui, ease); }
+@media (prefers-reduced-motion: reduce) { .releases-grid > .rel-card { transition: none; } }
+/* song titles a touch smaller than the body size */
+:root.psy .rel-track, :root.psy .rel-track-title { font-size: 16px !important; }
+
+/* ── Music player bar, styled like the toolbar ────────────────────────
+   Whiter frosted glass, dark text, 2px dark-rimmed buttons; the play
+   button and switched-on controls (shuffle, repeat) are solid black with
+   white icons, like the toolbar's current section. Gold fill + ring on
+   hover and the black-and-white focus ring, as in the toolbar. */
+:root.psy #player-bar {
+  --player: #fff; --player-hi: #fff; --player-ink: #111;
+  background: rgb(255 255 255 / .93) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.1) brightness(1.1); backdrop-filter: blur(28px) saturate(1.1) brightness(1.1);
+  border-top: 1px solid rgb(0 0 0 / .08);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .5), 0 -8px 30px rgb(0 0 0 / .14) !important;
+  color: #1d1d1f;
+}
+:root.psy #player-bar #np-track { color: #111 !important; }
+:root.psy #player-bar #np-album { color: rgb(29 29 31 / .72) !important; }
+:root.psy #player-bar .np-time { color: #3a3a3c !important; }
+:root.psy #player-bar .np-bar-track { background: rgb(0 0 0 / .16) !important; }
+:root.psy #player-bar #np-fill, :root.psy #player-bar .seek-thumb { background: #111 !important; }
+:root.psy #player-bar .vol-slider { background: linear-gradient(to right, #111 var(--vol, 100%), rgb(0 0 0 / .18) var(--vol, 100%)) !important; }
+:root.psy #player-bar .vol-slider::-webkit-slider-thumb { background: #111; box-shadow: 0 0 0 2px #fff, 0 1px 4px rgb(0 0 0 / .35); }
+:root.psy #player-bar .vol-slider::-moz-range-thumb { background: #111; box-shadow: 0 0 0 2px #fff, 0 1px 4px rgb(0 0 0 / .35); }
+:root.psy #player-bar :is(.np-ctrl, .np-close):not(:hover):not(.active):not([aria-pressed="true"]) {
+  background: rgb(255 255 255 / .55) !important; border: 2px solid var(--bar-rim) !important; color: #1d1d1f !important;
+}
+:root.psy #player-bar :is(.np-ctrl, .np-close):not(:hover):not(.active):not([aria-pressed="true"]) svg { color: #1d1d1f !important; }
+:root.psy #player-bar .np-close:not(:hover)::before { color: #1d1d1f !important; }
+:root.psy #player-bar .np-ctrl:is(.active, [aria-pressed="true"]):not(:hover) { background: #111 !important; border: 2px solid #111 !important; color: #fff !important; }
+:root.psy #player-bar .np-ctrl:is(.active, [aria-pressed="true"]):not(:hover) svg { color: #fff !important; }
+:root.psy #player-bar #np-play:not(:hover) { background: #111 !important; border: 2px solid #111 !important; color: #fff !important; }
+:root.psy #player-bar #np-play:not(:hover) svg { color: #fff !important; }
+:root.psy #player-bar #np-play:hover { background: var(--gold) !important; color: #111 !important; }
+:root.psy #player-bar #np-play:hover svg { color: #111 !important; }
+:root.psy #player-bar :is(button, [role="button"], input):focus-visible:not(#\#) { outline: none !important; box-shadow: var(--focus-ring) !important; }
+@media (prefers-contrast: more) {
+  :root.psy #player-bar { background: #fff !important; -webkit-backdrop-filter: none; backdrop-filter: none; border-top: 2px solid #000; }
+}
+
+/* Release cards: one fixed width, wide enough for the longest lyric line.
+   The longest line in the catalogue is 620px at the 17px lyrics size
+   ("Some guy who still hangs around high school football games five years
+   too late"); plus the lyrics panel's 50px side padding and a little
+   slack = 43rem. Cards never change width when lyrics open. On screens
+   narrower than that the card fills the width and long lines wrap with a
+   hanging indent. Re-measure if a longer line is added. */
+:root.psy .releases-grid > * { flex: 0 0 min(100%, 43rem) !important; max-width: min(100%, 43rem) !important; transition: none !important; }
+:root.psy .releases-section .section-inner { max-width: min(90rem, 100%) !important; }
+
+/* ── Press Kit: theatre-marquee bulbs along the top and bottom edges ──
+   A row of round white bulbs on a dark strip. Every third bulb is lit with
+   a warm glow and the lit ones step along one bulb at a time: left to
+   right on top, right to left along the bottom, so the light chases
+   around the section. Slow enough to be comfortable (well under three
+   flashes a second); with reduced motion or background effects off, the
+   bulbs stay softly lit and still. Decorative only. */
+:root.psy .epk-section { position: relative; padding-block: 34px !important; }
+:root.psy .epk-section::before, :root.psy .epk-section::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 26px; z-index: 3; pointer-events: none;
+  background:
+    radial-gradient(circle, #fff 0 4px, rgb(255 246 214 / .9) 5px, rgb(255 222 130 / .4) 8px, transparent 13px) 0 50% / 84px 100% repeat-x,
+    radial-gradient(circle, rgb(255 255 255 / .34) 0 4px, transparent 5px) 0 50% / 28px 100% repeat-x,
+    linear-gradient(rgb(8 8 12 / .82), rgb(8 8 12 / .82));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .1), inset 0 -1px 0 rgb(255 255 255 / .1);
+  animation: marquee-chase 1.35s steps(3, end) infinite;
+}
+:root.psy .epk-section::before { top: 0; }
+:root.psy .epk-section::after { bottom: 0; animation-direction: reverse; }
+@keyframes marquee-chase { to { background-position: 84px 50%, 0 50%, 0 0; } }
+/* still: every bulb softly lit */
+:root.psy.psy-calm .epk-section::before, :root.psy.psy-calm .epk-section::after { animation: none; background:
+    radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) 0 50% / 28px 100% repeat-x,
+    linear-gradient(rgb(8 8 12 / .82), rgb(8 8 12 / .82)); }
+@media (prefers-reduced-motion: reduce) {
+  :root.psy .epk-section::before, :root.psy .epk-section::after { animation: none; background:
+    radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) 0 50% / 28px 100% repeat-x,
+    linear-gradient(rgb(8 8 12 / .82), rgb(8 8 12 / .82)); }
+}
+@media (forced-colors: active) { :root.psy .epk-section::before, :root.psy .epk-section::after { display: none; } }

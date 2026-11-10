@@ -1729,8 +1729,9 @@ var _relGrid = document.querySelector('.releases-grid');
 if (_relGrid) {
 new MutationObserver(function(mutations) {
 mutations.forEach(function(m) {
-if (m.target.classList && m.target.classList.contains('rel-card') && m.target.classList.contains('tracks-open')) {
-setTimeout(initMarquees, 50);
+if (m.target.classList && m.target.classList.contains('rel-card')) {
+if (m.target.classList.contains('tracks-open')) setTimeout(initMarquees, 50);
+if (typeof sizeCardForLyrics === 'function') sizeCardForLyrics(m.target);
 }
 });
 }).observe(_relGrid, { attributes: true, subtree: true, attributeFilter: ['class'] });
@@ -1780,25 +1781,25 @@ if (!lyrics) return;
 var inner = lyrics.querySelector('.rel-lyrics-inner');
 var tl = btn.closest('.rel-tracklist');
 var opening = !btn.classList.contains('open');
+// one song's lyrics at a time: opening one closes any other that's open
+if (opening) document.querySelectorAll('.rel-lyrics-toggle.open').forEach(function(o) { if (o !== btn) toggleTrackLyrics(o); });
 btn.classList.toggle('open');
 var songTitle = (btn.getAttribute('aria-label') || '').replace(/^(Show|Hide) lyrics for /, '');
 btn.setAttribute('aria-label', (opening ? 'Hide lyrics for ' : 'Show lyrics for ') + songTitle);
 btn.setAttribute('aria-expanded', String(opening));
 lyrics.style.maxHeight = opening ? 'none' : '0';
-if (opening) fitLyricsSoon(lyrics.querySelector('.rel-lyrics-inner'));
+if (opening) fitLyricsSoon(lyrics.querySelector('.rel-lyrics-inner')); else sizeCardForLyrics(btn.closest('.rel-card'));
 recalcTracklistHeight(tl);
 cardLyricsKick();
 }
 /* Each lyric stays on one line: if a song's longest line won't fit the
    card, that song's lyrics shrink just enough (down to 12px); only below
    that does a line wrap, so nothing ever runs past the card edge. */
-function fitLyrics(inner) {
-/* Lyrics are never shrunk: one size for lyrics and body text. A line too
-   long for the card wraps (hanging indent, see CSS) and the card grows. */
-if (!inner) return;
-inner.style.fontSize = ''; inner.classList.remove('lyr-wrap');
-inner.querySelectorAll('.rel-lyric-line').forEach(function(l) { l.style.fontSize = ''; l.classList.remove('lyr-wrap-line'); });
-}
+/* Lyrics are never shrunk and cards never change width: every release
+   card is wide enough for the longest lyric line in the catalogue (see
+   "Release cards: one fixed width" in shared/system.css). */
+function fitLyrics(inner) {}
+function sizeCardForLyrics(card) {}
 // Measure with the real lyrics face: fit now, and again once it's loaded
 // (the fallback serif is narrower, so a fit made with it can overflow).
 function fitLyricsSoon(inner) {
@@ -1806,7 +1807,7 @@ fitLyrics(inner);
 if (document.fonts && document.fonts.load) document.fonts.load('14px Lyrics').then(function() { fitLyrics(inner); recalcTracklistHeight(inner.closest('.rel-tracklist')); });
 }
 function refitOpenLyrics() {
-document.querySelectorAll('.rel-lyrics-toggle.open').forEach(function(b) { var w = b.closest('.rel-track-wrap'); if (w) fitLyrics(w.querySelector('.rel-lyrics-inner')); });
+document.querySelectorAll('.rel-card').forEach(sizeCardForLyrics);
 }
 var _fitT = 0;
 window.addEventListener('resize', function() { clearTimeout(_fitT); _fitT = setTimeout(refitOpenLyrics, 150); }, { passive: true });
