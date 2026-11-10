@@ -1,20 +1,22 @@
-# Cutout flower sheet (`flowers.webp`)
+# Cutout sheet (`cosmos.webp`)
 
-The paper flowers in the page margins are cut from crops of these
-photographs, all public domain or with no known copyright restrictions
-(via Wikimedia Commons):
+The paper planets, moons, sun, comet and stars hung around the page are
+cut from crops of E. L. Trouvelot's astronomical chromolithographs
+(*The Trouvelot Astronomical Drawings*, 1881-82), via Wikimedia Commons:
 
-- Karl Blossfeldt, *Acanthus mollis*, 1928 (Urformen der Kunst) - public domain
-  https://commons.wikimedia.org/wiki/File:Karl_Blossfeldt._Acanthus_mollis,_1928.jpg
-- Karl Blossfeldt, *Equisetum hyemale* - public domain
-  https://commons.wikimedia.org/wiki/File:Blossfeldt_-_Equisetum_hyemale,_16168.jpg
-- Karl Blossfeldt, *Impatiens glandulifera* - public domain
-  https://commons.wikimedia.org/wiki/File:Blossfeldt_-_Impatiens_glandulifera,_84.XM.142.4.jpg
-- Karl Blossfeldt, *Cucurbita*, 1928 - public domain
-  https://commons.wikimedia.org/wiki/File:Karl_Blossfeldt._Cucurbita,_1928.jpg
-- Sarah Angelina Acland, *Flowers in a Garden, Probably in Madeira*, c.1910 (autochrome) - public domain
-  https://commons.wikimedia.org/wiki/File:Flowers_in_a_Garden,_Probably_in_Madeira,_by_Sarah_Angelina_Acland,_c.1910.jpg
-- *Blomstermotiv, Målselv 1912* (autochrome) - no known copyright restrictions
-  https://commons.wikimedia.org/wiki/File:Blomstermotiv,_M%C3%A5lselv_1912_(autochrome)_(14587763689).jpg
-- *Blå blomster, Målselv 1912* (autochrome) - no known copyright restrictions
-  https://commons.wikimedia.org/wiki/File:Bl%C3%A5_blomster,_M%C3%A5lselv_1912_(autochrome)_(14794295953).jpg
+- *The Planet Jupiter* - public domain
+  https://commons.wikimedia.org/wiki/File:Trouvelot_-_The_Planet_Jupiter.jpg
+- *The Planet Saturn* - public domain
+  https://commons.wikimedia.org/wiki/File:Trouvelot_-_The_Planet_Saturn.jpg
+- *Partial Eclipse of the Moon* - public domain
+  https://commons.wikimedia.org/wiki/File:Trouvelot_-_Partial_Eclipse_of_the_Moon.jpg
+- *Mare Humorum* - CC0
+  https://commons.wikimedia.org/wiki/File:%C3%89tienne_L%C3%A9opold_Trouvelot,_%E2%80%9CMare_Humorum,_from_The_Trouvelot_Astronomical_Drawings%E2%80%9D_2006_48_6v1.jpg
+- *The Great Comet of 1881* - public domain
+  https://commons.wikimedia.org/wiki/File:Trouvelot_-_The_Great_Comet_of_1881.jpg
+- *Group of Sun Spots and Veiled Spots* - public domain
+  https://commons.wikimedia.org/wiki/File:Trouvelot_-_Group_of_Sun_Spots_and_Veiled_Spots.jpg
+- *Solar Protuberances* - CC0
+  https://commons.wikimedia.org/wiki/File:%C3%89tienne_L%C3%A9opold_Trouvelot,_%E2%80%9CSolar_Protuberances,_from_The_Trouvelot_Astronomical_Drawings%E2%80%9D_2006_48_2v1.jpg
+- *The November Meteors* - public domain
+  https://commons.wikimedia.org/wiki/File:Trouvelot_-_The_November_Meteors.jpg
