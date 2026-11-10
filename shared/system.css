@@ -193,3 +193,38 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 }
 .rel-track-wrap .rel-lyric-line { font-family: inherit; font-size: inherit; }
 .rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
+
+/* ── Fonts (Nov 2026) ─────────────────────────────────────────────── */
+/* Brand faces stay: the 'Logo' wordmark (name, section headers), Young
+   Serif release and video titles, the Quote serif, Figment handwriting.
+   Everything else is Bricolage Grotesque (OFL, Fonts/bricolage): a warm,
+   slightly hand-cut grotesk with optical sizes, instead of the system UI
+   font. */
+@font-face {
+  font-family: 'UI'; src: url('Fonts/bricolage/BricolageGrotesque-VF.ttf') format('truetype');
+  font-weight: 200 800; font-stretch: 75% 100%; font-display: swap;
+}
+:root {
+  --font-ui: 'UI', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-ui-display: var(--font-ui);
+  --plain-sans: var(--font-ui);
+}
+body, button, input, select, textarea { font-optical-sizing: auto; }
+/* Video titles match the release titles. */
+h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', serif; font-weight: normal; letter-spacing: 0; }
+/* Grotesk tuning: a touch less tracking in caps labels, regular weight
+   for running text, medium for tracks so titles read as titles. */
+.featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label,
+.rel-lyrics-toggle, .rel-track-soon, .featured-badge, .nav-links a, .nav-drawer a { letter-spacing: .05em; }
+.rel-track { font-weight: 500; }
+.rel-track--upcoming { font-weight: 400; }
+.rel-track-wrap .rel-lyrics-inner { font-weight: 400; }
+/* Track titles vs lyrics: titles are the bold, bright UI face; lyrics are
+   the Fraunces serif, regular weight, softer grey (still aligned under
+   the title). */
+.rel-track:not(.rel-track--upcoming) .rel-track-title { font-weight: 650; color: rgb(242 242 247); }
+.rel-track-wrap .rel-lyrics-inner, .rel-track-wrap .rel-lyric-line {
+  font-family: 'Lyrics', Georgia, 'Times New Roman', serif; font-optical-sizing: auto;
+  font-size: 14px; line-height: 1.65; letter-spacing: 0; color: rgb(235 235 245 / .66);
+}
+.rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }

@@ -25,6 +25,7 @@ FONT_FILES = [
     "Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf",  # quote (OFL)
     "Fonts/youngserif/YoungSerif-Regular.ttf",   # release/video titles (OFL, see Fonts/youngserif/OFL.txt)
     "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # lyrics (OFL, see Fonts/fraunces/OFL.txt)
+    "Fonts/bricolage/BricolageGrotesque-VF.ttf", # UI and body text (OFL, see Fonts/bricolage/OFL.txt)
 ]
 FONT_RELPATHS = {}
 
