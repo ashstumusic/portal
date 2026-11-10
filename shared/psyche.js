@@ -263,7 +263,10 @@
         const sec = secs.find((q) => best.cy >= q.top && best.cy < q.bottom) || secs[secs.length - 1];
         const el = doc.createElement('i');
         el.className = 'chalk-star';
-        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`;
+        // Hidden until it first comes into view, then it pops in (with
+        // effects off it's simply there).
+        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`
+          + (fxOn() ? 'transform:scale(0);' : '');
         layer.append(el);
         const o = { el, d, cls, sec: sec.el, off: best.cy - sec.top, cx: best.x, cy: best.cy, R, base: Math.floor((rnd() - 0.5) * 50), spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES), popAt: 0, seen: false };
         setFrame(o); placed.push(o);
@@ -316,7 +319,8 @@
       for (const o of placed) {
         const vy = o.cy - sy;
         if (vy < -200 || vy > vh + 200) continue;
-        if (!o.seen && vy < vh * 0.95) { o.seen = true; if (moving) o.popAt = now; }
+        // Pops in the moment any of it crosses into view (top or bottom).
+        if (!o.seen) { if (vy - o.R > vh || vy + o.R < 0) continue; o.seen = true; if (moving) o.popAt = now; }
         if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
         o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o);
