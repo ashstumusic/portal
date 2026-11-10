@@ -1602,10 +1602,23 @@ return rows.sort(function(a, b) { return a.num - b.num; });
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
+var entry = u.lyrics && LYRICS[u.lyrics];
+var hasLyr = !!(entry && entry.lines && entry.lines.length);
+/* Greyed out and not playable; one pill on the right: Lyrics when its
+   words exist, otherwise Soon. (The screen-reader note sits outside the
+   title so the scrolling-title effect never copies it into view.) */
 wrap.innerHTML = '<div class="rel-track rel-track--upcoming" aria-disabled="true" title="Not released yet">' +
 '<span class="rel-track-num">' + u.num + '</span>' +
-'<span class="rel-track-title">' + escHtml(u.title) + '<span class="sr-only"> (not released yet)</span></span>' +
-'<span class="rel-track-soon" aria-hidden="true">Soon</span></div>';
+'<span class="rel-track-title">' + escHtml(u.title) + '</span><span class="sr-only"> (not released yet)</span>' +
+(hasLyr ? '' : '<span class="rel-track-soon" aria-hidden="true">Soon</span>') + '</div>';
+if (hasLyr) {
+wrap.appendChild(makeLyricsBtn(u.title));
+var lDiv = document.createElement('div'); lDiv.className = 'rel-lyrics';
+var lInner = document.createElement('div'); lInner.className = 'rel-lyrics-inner';
+fillCardLyrics(lInner, entry, u.lyrics);
+lDiv.appendChild(lInner); wrap.appendChild(lDiv);
+wrap.classList.add('has-lyrics');
+}
 return wrap;
 }
 function buildTracklists() {

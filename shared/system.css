@@ -631,3 +631,21 @@ html { overscroll-behavior-y: none; }
 :root.psy .hero-split-right > .featured-art-wrap { order: 3; }
 :root.psy .hero-split-right > .featured-title { order: 4; margin: 0 !important; }
 :root.psy .hero-split-right > .featured-btns { order: 5; margin-top: var(--s1) !important; }
+
+/* Flip: the name "Ash Stu" (hero, toolbar, About) wears the section
+   headers' gradient and red offset shadow; the section headers are solid
+   yellow (keeping their offset shadow). */
+:root.psy :is(.hero-split .hero-name, .nav-logo .hero-name, .bio-name) {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%) !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  -webkit-text-fill-color: transparent !important; color: #F7C549 !important;
+  text-shadow: none !important;
+  filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) !important;
+}
+:root.psy .nav-logo .hero-name { filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .5)) !important; }
+:root.psy .section-h, :root[data-theme="dark"].psy .section-h {
+  background: none !important; -webkit-text-fill-color: var(--gold) !important; color: var(--gold) !important;
+}
+@media (forced-colors: active) {
+  :root.psy :is(.hero-name, .bio-name) { -webkit-text-fill-color: currentColor !important; background: none !important; filter: none !important; }
+}

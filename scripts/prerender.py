@@ -73,7 +73,7 @@ def render_release_card(rel, r_idx):
     upcoming = rel.get('upcoming', [])
     if len(rel['tracks']) + len(upcoming) > 1:
         rows = [(t.get('num', i + 1), esc(t['title']) + lyrics_html(t['file'])) for i, t in enumerate(rel['tracks'])]
-        rows += [(u['num'], f'{esc(u["title"])} (not released yet)') for u in upcoming]
+        rows += [(u['num'], f'{esc(u["title"])} (not released yet)' + (lyrics_html(u['lyrics']) if u.get('lyrics') else '')) for u in upcoming]
         items = ''.join(f'<li value="{n}">{title}</li>' for n, title in sorted(rows, key=lambda r: r[0]))
         tracklist = (f'<div class="rel-tracklist" id="tracklist-{r_idx}">'
                      f'<ol aria-label="Tracklist for {esc(rel["name"])}">{items}</ol></div>')
@@ -227,6 +227,22 @@ def main():
                           'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text},
                           'recordedAs': {'@type': 'MusicRecording', 'name': t['title'], 'byArtist': {'@id': 'https://ashstu.art/#artist'},
                                          'inAlbum': {'@type': 'MusicAlbum', 'name': rel['name']}, 'position': t.get('num', i + 1)}})
+    # unreleased songs with lyrics (traditional songs credited as such)
+    for rel in releases:
+        for u in rel.get('upcoming', []):
+            entry = LYRICS.get(u.get('lyrics') or '')
+            if not entry or not entry.get('lines'):
+                continue
+            slug = slugify(u['title'])
+            if slug in used_slugs:
+                slug = f"{slug}-{slugify(rel['name'])}"
+            used_slugs.add(slug)
+            song_url = f'https://ashstu.art/lyrics/{slug}/'
+            text = '\n\n'.join('\n'.join(v) for v in stanzas(entry, None))
+            who = {'@type': 'Person', 'name': 'Traditional'} if u.get('traditional') else {'@id': 'https://ashstu.art/#artist'}
+            comps.append({'@type': 'MusicComposition', 'name': u['title'], 'inLanguage': 'en', 'url': song_url, 'mainEntityOfPage': song_url,
+                          'composer': who, 'lyricist': who,
+                          'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text}})
     if comps:
         ld = json.dumps({'@context': 'https://schema.org', '@graph': comps}, ensure_ascii=False).replace('</', '<\\/')
         page = page.replace('</head>', f'<script type="application/ld+json" id="lyrics-ld">{ld}</script>\n</head>', 1)

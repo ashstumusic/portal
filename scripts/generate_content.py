@@ -57,7 +57,13 @@ def parse_upcoming_txt(path):
         for line in fh:
             m = re.match(r'^\s*(\d+)\.\s*(.+?)\s*$', line)
             if m:
-                out.append({'num': int(m.group(1)), 'title': m.group(2)})
+                # "N. Title | traditional" marks a traditional song (credited
+                # "Traditional, arranged by" on its lyrics page)
+                title, _, flags = m.group(2).partition('|')
+                u = {'num': int(m.group(1)), 'title': title.strip()}
+                if 'traditional' in flags.lower():
+                    u['traditional'] = True
+                out.append(u)
             elif line.strip():
                 print(f'  WARNING: {path}: "{line.strip()}" is not "N. Title" - ignoring', file=sys.stderr)
     return out
@@ -300,6 +306,20 @@ def gen_lyrics(releases):
             lines.sort(key=lambda l: l[0])
             if lines:
                 out[t['file']] = {'synced': True, 'lines': lines}
+        # Songs not out yet: their words from lyrics.txt, under a key of
+        # their own (no audio file), so they can be read but not played.
+        for u in rel.get('upcoming', []):
+            folder = os.path.join(ROOT, os.path.dirname(rel['tracks'][0]['file'])) if rel['tracks'] else None
+            if not folder:
+                continue
+            if folder not in album_txt:
+                album_txt[folder] = parse_lyrics_txt(os.path.join(folder, 'lyrics.txt'))
+            plain = [clean_lyric(l) for l in (album_txt[folder].get(u['num']) or [])]
+            plain = [l for l in plain if l]
+            if plain:
+                key = f"{os.path.dirname(rel['tracks'][0]['file'])}/{u['num']:02d}. {u['title']} (unreleased)"
+                u['lyrics'] = key
+                out[key] = {'synced': False, 'lines': [[None, l] for l in plain]}
     return out
 
 
@@ -330,7 +350,8 @@ def touch_sitemap():
 
 if __name__ == '__main__':
     releases = gen_releases()
+    lyrics = gen_lyrics(releases)          # also links each unreleased song to its lyrics
     write_json('releases.json', releases)
-    write_json('lyrics.json', gen_lyrics(releases))
+    write_json('lyrics.json', lyrics)
     write_json('videos.json', gen_videos())
     touch_sitemap()
