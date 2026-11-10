@@ -172,3 +172,12 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   font-size: 12px; letter-spacing: .06em; line-height: 1;
 }
 .rel-track-soon { margin-right: calc(.4rem - .75rem); opacity: 1; }
+
+/* The floating music button and scroll-down cue: the toolbar's teal with
+   yellow accents (icon and rim), instead of solid yellow. */
+:root.psy .fab-music, :root.psy .hero-scroll {
+  background: rgb(8 76 97); color: var(--gold);
+  border: 1.5px solid rgb(247 197 73 / .85);
+  box-shadow: 0 4px 16px rgb(0 0 0 / .35), 0 0 0 1px rgb(8 76 97 / .4);
+}
+:root.psy .fab-music:hover, :root.psy .hero-scroll:hover { background: rgb(14 98 124); border-color: var(--gold); }
