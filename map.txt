@@ -41,7 +41,7 @@
   * `links.txt`
 
 * `My Anima` (Folder)
-  * `04. Still Sad.mp3`, `06. Worship Song.mp3`, `08. You Are What You Love.mp3`, `10. Somewhere, Sometime (2026 Version).mp3` (+ `.lrc` synced lyrics)
+  * `04. Still Sad.mp3`, `06. Worship Song.mp3`, `08. You Are What You Love.mp3`, `10. Somewhere, Sometime.mp3` (+ `.lrc` synced lyrics)
   * `lyrics.txt`
   * `links.txt`
 
