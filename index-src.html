@@ -2000,9 +2000,10 @@ var _lastHref = '';
 function updateArrow() {
 var atBottom = innerHeight + scrollY >= document.body.scrollHeight - 40;
 var t = nextTarget();
-/* A hint for the first screen only: past the hero it just sat on top of
-   cards and buttons, and the nav already jumps between sections. */
-if (!t || atBottom || scrollY > innerHeight * .5) {
+/* Stays on every section and steps to the next one on each press; hidden
+   only once there's no section left below (About, the end of the page).
+   Over a card's button it fades down ('soft') rather than vanishing. */
+if (!t || atBottom) {
 arrow.classList.add('hidden');
 return;
 }
