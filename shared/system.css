@@ -644,7 +644,7 @@ html { overscroll-behavior-y: none; }
 }
 :root.psy .nav-logo .hero-name { filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .5)) !important; }
 :root.psy .section-h, :root[data-theme="dark"].psy .section-h {
-  background: none !important; -webkit-text-fill-color: var(--gold) !important; color: var(--gold) !important;
+  background: none !important; -webkit-text-fill-color: #fff !important; color: #fff !important;
 }
 @media (forced-colors: active) {
   :root.psy :is(.hero-name, .bio-name) { -webkit-text-fill-color: currentColor !important; background: none !important; filter: none !important; }
@@ -692,3 +692,23 @@ html { overscroll-behavior-y: none; }
 }
 :root .nav-links a:focus-visible { outline: none; }
 :root .nav-links a:focus-visible::after { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* Section headers: white fill (offset shadow kept). */
+/* Toolbar: filled with the gradient (gold, pink, orange, sky). On that
+   bright fill the toolbar's own copy of the name, the search and menu
+   buttons switch to dark ink so they stay readable. */
+:root.psy .nav, :root[data-theme="dark"].psy .nav {
+  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%) !important;
+  border-bottom: 1px solid rgb(0 0 0 / .25) !important;
+  box-shadow: 0 2px 16px rgb(0 0 0 / .35);
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+:root.psy .nav::before { display: none !important; }
+:root.psy .nav-logo .hero-name {
+  background: none !important; -webkit-text-fill-color: #1a1010 !important; color: #1a1010 !important;
+  filter: drop-shadow(1.5px 1.5px 0 rgb(255 255 255 / .45)) !important;
+}
+:root.psy .nav :is(.nav-toggle, .k-tool, .nav-search, button):not(:hover, :focus-visible) { color: #1a1010 !important; border-color: rgb(26 16 16 / .75) !important; background: rgb(255 255 255 / .18) !important; }
+:root.psy .nav :is(.nav-toggle, .k-tool, button):not(:hover, :focus-visible) svg { color: #1a1010 !important; stroke: currentColor; }
+:root.psy .nav .nav-toggle-bar { background: #1a1010 !important; }
+:root.psy .nav [class*="divider"], :root.psy .nav .nav-sep { background: rgb(26 16 16 / .4) !important; }
