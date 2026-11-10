@@ -517,3 +517,24 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-lyric-line { border-radius: var(--r-sm); }
 :root.psy .btn-epk span { font-size: 12px !important; }
 :root.psy #np-track { font-size: 13px !important; }
+
+/* ── Fixed display sizes on the scale (no fit-to-box scaling) ──────── */
+/* Desktop / tablet / phone steps; titles wrap instead of shrinking. */
+:root.psy .section-h { font-size: 48px !important; }
+:root.psy .hero-split .hero-name { font-size: 128px !important; }
+:root.psy .featured-title { font-size: 28px !important; white-space: normal !important; text-wrap: balance; line-height: 1.15 !important; }
+:root.psy .rel-name { font-size: 24px !important; white-space: normal !important; text-wrap: balance; line-height: 1.2 !important; }
+:root.psy .disc-quote { font-size: 34px !important; white-space: normal !important; line-height: 1.6 !important; }
+:root.psy .bio-tagline { font-size: 24px !important; }
+@media (max-width: 1199px) {
+  :root.psy .hero-split .hero-name { font-size: 96px !important; }
+  :root.psy .disc-quote { font-size: 28px !important; }
+}
+@media (max-width: 767px) {
+  :root.psy .section-h { font-size: 34px !important; }
+  :root.psy .hero-split .hero-name { font-size: 64px !important; }
+  :root.psy .featured-title { font-size: 24px !important; }
+  :root.psy .rel-name { font-size: 20px !important; }
+  :root.psy .disc-quote { font-size: 17px !important; }
+  :root.psy .bio-tagline { font-size: 20px !important; }
+}
