@@ -1625,3 +1625,12 @@ html { overscroll-behavior-y: none; }
 :root.psy.psy-calm .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { :root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { animation: none !important; } }
 @media (forced-colors: active) { :root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { color: CanvasText !important; animation: none !important; } }
+
+/* About walls sized to fill the panel (font sizes set by script): tight
+   rows, slimmer panel padding, no wrapping. */
+:root.psy .bio-card-text:not(#\#) { padding: clamp(18px, 2.4vw, 32px) !important; justify-content: center; }
+:root.psy .bio-wall :is(.bio-name, .bio-tagline) { white-space: nowrap; }
+:root.psy .bio-wall .bio-name:not(#\#) { line-height: .98 !important; }
+:root.psy .bio-wall .bio-tagline:not(#\#) { line-height: 1.12 !important; }
+:root.psy .bio-wall--top { row-gap: 0 !important; margin-bottom: 16px !important; }
+:root.psy .bio-wall--bottom { row-gap: 0 !important; margin-top: 16px !important; }
