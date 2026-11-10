@@ -551,11 +551,11 @@ html {
   max-height: max(var(--panel-floor, 470px), calc(100svh - var(--nav-pad, 0px) - var(--band, 0px)));
 }
 .hero-split-right > * { position: relative; z-index: 1; }
-/* On the white panel everything goes high contrast: a near-black title,
-   the site's red for the kicker, and solid black badge and buttons. */
+/* On the light panel everything goes high contrast: a near-black title,
+   the site's red for the kicker and the badge, solid black buttons. */
 .hero-split-right .featured-title { color: #111; text-shadow: none; }
 .hero-split-right .featured-kicker { color: #C8161E; }
-.hero-split-right .featured-badge { background: #111; color: #fff; }
+.hero-split-right .featured-badge { background: #C8161E; color: #fff; }
 .hero-split-right .f-btn {
   background: #111; color: #fff;
   border-color: #111;
