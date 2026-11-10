@@ -200,7 +200,8 @@ def main():
             if slug in used:
                 slug = f"{slug}-{slugify(rel['name'])}"
             used.add(slug)
-            songs.append({'title': t['title'], 'slug': slug, 'release': rel, 'position': i + 1,
+            songs.append({'title': t['title'], 'slug': slug, 'release': rel, 'position': t.get('num', i + 1),
+                          'total': len(rel.get('tracks', [])) + len(rel.get('upcoming', [])),
                           'date': rdate, 'verses': stanzas(entry, t['file'])})
 
     written = []
@@ -243,7 +244,7 @@ def main():
     <img src="{esc(art_path)}" alt="{esc(alt)}" width="288" height="288">
     <hgroup>
       <h1>{esc(s['title'])}</h1>
-      <p class="byline">Lyrics by <a href="/">{ARTIST}</a> · track {s['position']} of {len(rel.get('tracks', []))} on <cite>{esc(rel['name'])}</cite></p>
+      <p class="byline">Lyrics by <a href="/">{ARTIST}</a> · track {s['position']} of {s['total']} on <cite>{esc(rel['name'])}</cite></p>
     </hgroup>
   </header>
   <section class="lyrics" aria-labelledby="lyrics-heading">
@@ -259,7 +260,7 @@ def main():
         <tr><th scope="row">Artist</th><td>{ARTIST} ({ARTIST_FULL})</td></tr>
         <tr><th scope="row">Songwriter and lyricist</th><td>{ARTIST} ({ARTIST_FULL})</td></tr>
         <tr><th scope="row">Release</th><td>{esc(rel['name'])} ({esc(kind.lower())})</td></tr>
-        <tr><th scope="row">Track number</th><td>{s['position']} of {len(rel.get('tracks', []))} tracks</td></tr>
+        <tr><th scope="row">Track number</th><td>{s['position']} of {s['total']} tracks</td></tr>
         {date_row}
         <tr><th scope="row">Genre</th><td>{GENRE}</td></tr>
         <tr><th scope="row">Language</th><td>English</td></tr>
