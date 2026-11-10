@@ -1657,3 +1657,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-wall--top > :nth-child(n+2):not(#\#):not(#\#) { -webkit-text-stroke: 1.6px currentColor; }
 :root.psy .bio-wall--top { margin-bottom: 22px !important; }
 :root.psy .bio-wall--bottom { margin-top: 22px !important; }
+
+/* "Ash Stu" fade inverted: faintest outline at the top, building down to
+   the solid name on the last row (same direction as the tagline). */
+:root.psy .bio-wall--top { flex-direction: column-reverse !important; }
