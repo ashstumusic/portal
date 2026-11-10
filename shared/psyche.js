@@ -318,9 +318,10 @@
       shake = Math.min(6, shake * 0.6 + Math.max(0, Math.abs(scrollVel) - 1.5) * 3);
       for (const o of placed) {
         const vy = o.cy - sy;
-        if (vy < -200 || vy > vh + 200) continue;
-        // Pops in the moment any of it crosses into view (top or bottom).
-        if (!o.seen) { if (vy - o.R > vh || vy + o.R < 0) continue; o.seen = true; if (moving) o.popAt = now; }
+        if (vy < -500 || vy > vh + 500) continue;
+        // Pops in while still 400px off screen, so a star scrolled to is
+        // already there at full size (only ones on screen at load visibly pop).
+        if (!o.seen) { if (vy - o.R > vh + 400 || vy + o.R < -400) continue; o.seen = true; if (moving) o.popAt = now; }
         if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
         o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o);
