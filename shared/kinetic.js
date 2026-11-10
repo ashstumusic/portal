@@ -49,11 +49,13 @@
   }
 
   // ── THEME ─────────────────────────────────────────────────────────
-  // Always the system setting (no toggle): the inline <head> script set
+  // The system setting (no toggle): the inline <head> script set
   // data-theme before first paint; this keeps it in step if the OS
-  // switches (e.g. sunset auto dark mode) while the page is open.
+  // switches (e.g. sunset auto dark mode) while the page is open. A page
+  // can lock its theme with data-theme-lock (the homepage is always dark:
+  // a space-black sky for its cutout stars).
   const sysDark = matchMedia('(prefers-color-scheme: dark)');
-  const theme = () => (sysDark.matches ? 'dark' : 'light');
+  const theme = () => root.dataset.themeLock || (sysDark.matches ? 'dark' : 'light');
   function syncTheme() { root.setAttribute('data-theme', theme()); root.classList.toggle('k-dark', theme() === 'dark'); }
   sysDark.addEventListener?.('change', syncTheme);
   syncTheme();

@@ -101,8 +101,8 @@
    gold stays deep teal (5.9:1) in both themes. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper:      #05080A;
-  --paper-deep: #0B1418;
+  --paper:      #030409;   /* space black */
+  --paper-deep: #0A0D16;
   --cream:      #0F1B20;
   --ink:        #DCEEF2;
   --ink-soft:   #9DB7C0;
@@ -129,20 +129,8 @@ html { scroll-behavior: smooth; font-size: 16px; overflow-x: clip; -webkit-text-
   html { scroll-behavior: auto; }
 }
 body {
-  /* Ruled notebook lines across the whole page - one shade above
-     invisible, felt as paper rather than read as a grid. Sections with
-     their own opaque backgrounds (hero panel, nav, player) sit on top. */
-  /* Ruled lines are 2px, not 1px: on fractionally-scaled displays
-     (125% OS zoom etc.) a 1px line lands on half device pixels and
-     antialiases down to invisible at this opacity - alternate lines
-     vanished entirely, making the spacing look uneven. A 2px line
-     always covers at least two device pixels, so every rule renders,
-     at every zoom, at the same weight. Whole-pixel 34px period keeps
-     the spacing exact; opacity low enough to stay texture. */
-  background: repeating-linear-gradient(to bottom, transparent 0 32px, rgba(8,76,97,.025) 32px 34px), var(--paper);
-  background:
-    repeating-linear-gradient(to bottom, transparent 0 32px, rgb(from var(--ink) r g b / .025) 32px 34px),
-    var(--paper);
+  /* Space black (the theme is always dark): a sky for the cutout stars. */
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans); line-height: 1.65;
   -webkit-font-smoothing: antialiased;

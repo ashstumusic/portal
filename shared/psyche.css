@@ -152,5 +152,7 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
   position: absolute; overflow: visible; margin: -1px 0 0 -1px;
   filter: drop-shadow(1.5px 2.5px 0 rgb(0 0 0 / .3));
 }
-.star-measure main > section { content-visibility: visible !important; }
+/* Every section laid out up front, so the page's height (and the sky
+   measured from it) doesn't shift as sections come into view. */
+.psy main > section { content-visibility: visible; }
 @media print { .cut-stars { display: none; } }
