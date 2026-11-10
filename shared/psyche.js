@@ -358,15 +358,17 @@
   })();
 
   // ── THE EYEBALL: a severed eye in the About card ──────────────────
-  // Drawn live in SVG in a childlike outsider-art hand: unrefined double
-  // marker outlines, flat primary colours laid in with colored-pencil
-  // hatching that misses the edges, felt-tip veins, a trailing optic
-  // nerve with a ragged cut end and a puddle, and a scribbled shadow as
-  // the only sign of the surface it sits on. Stop motion like the stars,
-  // 8 frames a second: the linework boils (redrawn slightly differently
-  // every frame), the iris jumps to look toward the pointer (or darts
-  // about when there's none), and eyelids snap shut to blink. Still under
-  // reduced motion or with effects off; idle while off screen.
+  // Drawn live in SVG in a raw, outsider felt-tip-and-ballpoint manner:
+  // blank white paper for the eye inside a thin, loose ballpoint line that
+  // doesn't quite close; one side loaded with red marker, curved strokes
+  // hugging the edge with thin black ribs over them; red veins branching
+  // off the back like roots; the cut optic nerve a short open stub on
+  // top; a cyan-and-blue marker iris with a small pupil ring and a glint;
+  // a few ink spatters. Stop motion like the stars, 8 frames a second:
+  // the lines boil (redrawn slightly differently every frame), the iris
+  // jumps to look toward the pointer (or darts about when there's none),
+  // and a paper lid snaps shut to blink. Still under reduced motion or
+  // with effects off; idle while off screen.
   (() => {
     const host = $('.bio-eye');
     if (!host) return;
@@ -376,89 +378,97 @@
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const J = (n) => (rnd() - 0.5) * 2 * n;
     // A wobbly hand-drawn path through points (Catmull-Rom, jittered).
-    function hand(pts, closed, wob = 1.6) {
+    function hand(pts, closed, wob = 1.2) {
       const p = pts.map(([x, y]) => [x + J(wob), y + J(wob)]);
       if (closed) p.push(p[0], p[1], p[2]);
       let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
-      for (let i = 1; i < p.length - (closed ? 2 : 1); i++) {
+      for (let i = 1; i < p.length - (closed ? 2 : 0); i++) {
         const p0 = p[i - 1], p1 = p[i], p2 = p[i + 1] || p1, pm = p[i - 2] || p0;
         const c1 = [p0[0] + (p1[0] - pm[0]) / 6, p0[1] + (p1[1] - pm[1]) / 6], c2 = [p1[0] - (p2[0] - p0[0]) / 6, p1[1] - (p2[1] - p0[1]) / 6];
         d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`;
       }
       return d + (closed ? 'Z' : '');
     }
-    const ring = (cx, cy, rx, ry, n = 14, lump = 0.04) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2, k = 1 + J(lump); return [cx + Math.cos(a) * rx * k, cy + Math.sin(a) * ry * k]; });
-    const INK = '#141110';
-    // Marker outline: a heavy stroke and a thinner second pass that doesn't line up.
-    function outline(g, pts, closed, w = 4.6) {
-      el('path', { d: hand(pts, closed), fill: 'none', stroke: INK, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
-      el('path', { d: hand(pts, closed, 2.4), fill: 'none', stroke: INK, 'stroke-width': w * 0.45, 'stroke-linecap': 'round', opacity: 0.8 }, g);
-    }
-    // Colored pencil: a flat wash, then hatching that wanders past the
-    // shape a little and misses bits of it.
-    function pencil(g, pts, base, hatch, id) {
-      el('path', { d: hand(pts.map(([x, y]) => [x + 2, y + 1.5]), true, 2.2), fill: base }, g);
-      el('path', { d: hand(pts, true, 2.6), fill: `url(#${id})`, opacity: 0.85 }, g);
-    }
+    const arc = (cx, cy, r, a0, a1, n = 10, lump = 0.02) => Array.from({ length: n + 1 }, (_, i) => { const a = a0 + (a1 - a0) * (i / n), k = 1 + J(lump); return [cx + Math.cos(a) * r * k, cy + Math.sin(a) * r * k]; });
+    const line = (g, pts, color, w, op = 1, wob = 1.2) => el('path', { d: hand(pts, false, wob), fill: 'none', stroke: color, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: op }, g);
+    const INK = '#15110F', RED = '#E5191C', RED2 = '#C8102E', CYAN = '#2FB5E6', BLUE = '#1E63D6';
 
-    const svg = el('svg', { viewBox: '0 0 260 170', width: '100%', role: 'presentation', focusable: 'false' });
+    const svg = el('svg', { viewBox: '0 0 260 270', width: '100%', role: 'presentation', focusable: 'false' });
     const defs = el('defs', {}, svg);
-    const hatchDef = (id, color, ang, gap = 5, w = 2.2) => { const pt = el('pattern', { id, width: gap, height: gap, patternUnits: 'userSpaceOnUse', patternTransform: `rotate(${ang})` }, defs); el('line', { x1: 0, y1: 0, x2: 0, y2: gap, stroke: color, 'stroke-width': w, 'stroke-linecap': 'round' }, pt); };
-    hatchDef('eh-white', '#FFE9B8', 30, 6, 1.6); hatchDef('eh-blue', '#0B2F9E', -40, 4.5, 2.2); hatchDef('eh-pink', '#B5122B', 55, 5, 2.2);
-    hatchDef('eh-skin', '#E0704F', 20, 5, 2.2); hatchDef('eh-red', '#8E0B12', -25, 4.5, 2.4); hatchDef('eh-shadow', '#000', -15, 5, 2.6);
-    const clipEye = el('clipPath', { id: 'eh-eyeclip' }, defs), clipPath = el('path', {}, clipEye);
+    const clipEye = el('clipPath', { id: 'eh-eyeclip' }, defs), clipPath = el('circle', {}, clipEye);
     const layer = el('g', {}, svg);
     host.append(svg);
 
-    // Where the eye is looking, and how shut the lids are (0 open .. 3 shut).
+    // The veins and spatters keep their layout between frames (only the
+    // hand-wobble changes), so the drawing boils rather than reshuffles.
+    const E = { cx: 172, cy: 190, r: 52 };
+    const plan = (() => {
+      let s0 = seed; seed = 77;
+      // Long branching veins sprawling off the back like roots, mostly up
+      // and to the left, often longer than the eye is wide.
+      const veins = [];
+      for (let k = 0; k < 7; k++) {
+        const a = Math.PI * (0.85 + k * 0.12) + J(0.05);           // around the back (left/top-left) of the eye
+        // fanned out: from pointing left to pointing straight up
+        const len = 50 + rnd() * 55, dir = Math.PI * (0.98 + (k / 6) * 0.55) + J(0.12);
+        const sub = Array.from({ length: 1 + Math.floor(rnd() * 3) }, () => ({ at: 0.3 + rnd() * 0.5, turn: (rnd() < 0.5 ? -1 : 1) * (0.5 + rnd() * 0.5), len: 14 + rnd() * 22 }));
+        // and it forks at the tip, two or three twigs
+        const nt = 2 + Math.floor(rnd() * 2);
+        const tips = Array.from({ length: nt }, (_, i) => ({ turn: (i - (nt - 1) / 2) * 0.55 + J(0.15), len: 14 + rnd() * 20 }));
+        veins.push({ a, len, dir, sub, tips, black: rnd() < 0.6 });
+      }
+      const spat = Array.from({ length: 7 }, () => ({ x: 20 + rnd() * 230, y: 60 + rnd() * 190, r: 1.2 + rnd() * 2.2, c: rnd() < 0.7 ? RED : BLUE }));
+      seed = s0;
+      return { veins, spat };
+    })();
+
     let look = [0, 0], lid = 0, nextBlink = performance.now() + 1800, blinkQ = [], nextGlance = 0, ptr = null;
-    const E = { cx: 98, cy: 80, r: 56 };
     function drawFrame() {
       layer.textContent = '';
-      const g = layer;
-      // the surface: a scribbled shadow, and the puddle under the cut nerve
-      el('path', { d: hand(ring(110, 146, 92, 10, 12, .06), true, 2.5), fill: 'url(#eh-shadow)', opacity: 0.55 }, g);
-      const pud = ring(222, 148, 24, 6, 10, .14);
-      pencil(g, pud, '#C8161E', 'eh-red', 'eh-red'); outline(g, pud, true, 3.2);
-      // optic nerve: a fat, wiggly cord out of the back, ending in a ragged cut
-      // (dangling strands at the cut end first, so the cord covers their roots)
-      for (const [x, y, dx, dy] of [[214, 128, -6, 18], [222, 130, 2, 20], [230, 128, 8, 15]]) el('path', { d: hand([[x, y], [x + dx * .5, y + dy * .6], [x + dx, y + dy]], false, 1.6), stroke: '#C8161E', 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round' }, g);
-      const nerveTop = [[136, 58], [166, 44], [200, 56], [224, 86], [236, 122]];
-      const nerveBot = [[204, 128], [196, 108], [176, 96], [148, 104]];
-      const nerve = [...nerveTop, [230, 132], [222, 126], [214, 134], [208, 126], ...nerveBot];
-      pencil(g, nerve, '#F2617A', 'eh-pink', 'eh-pink'); outline(g, nerve, true, 4.2);
-      for (let i = 0; i < 4; i++) el('path', { d: hand([[156 + i * 17, 60 + i * 11], [166 + i * 15, 84 + i * 9]], false, 2), stroke: '#8E0B12', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round' }, g);
-      // the white of the eye
-      const sclera = ring(E.cx, E.cy, E.r, E.r * 0.98, 16, .035);
-      clipPath.setAttribute('d', hand(sclera, true, 0.6));
-      pencil(g, sclera, '#FFFDF4', 'eh-white', 'eh-white');
-      // felt-tip veins creeping in from the edge
-      for (let k = 0; k < 7; k++) {
-        const a = -2.6 + k * 0.62 + J(0.1), r0 = E.r * 0.96, r1 = E.r * (0.55 + rnd() * 0.12);
-        const pts = [0, .5, 1].map((t) => { const r = r0 + (r1 - r0) * t; return [E.cx + Math.cos(a + J(0.12)) * r, E.cy + Math.sin(a + J(0.12)) * r]; });
-        el('path', { d: hand(pts, false, 1.8), stroke: '#E3221D', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round' }, g);
+      const g = layer, { cx, cy, r } = E;
+      // ink spatter around it
+      for (const sp of plan.spat) el('circle', { cx: (sp.x + J(0.6)).toFixed(1), cy: (sp.y + J(0.6)).toFixed(1), r: sp.r, fill: sp.c, opacity: 0.85 }, g);
+      // red veins branching off the back, like roots
+      for (const v of plan.veins) {
+        const x0 = cx + Math.cos(v.a) * r * 0.9, y0 = cy + Math.sin(v.a) * r * 0.9;
+        const x1 = x0 + Math.cos(v.dir) * v.len, y1 = y0 + Math.sin(v.dir) * v.len;
+        const mid = [(x0 + x1) / 2 + J(6), (y0 + y1) / 2 + J(6)];
+        line(g, [[x0, y0], mid, [x1, y1]], RED, 6, 0.92, 1.8);
+        for (const sb of v.sub) {
+          const sx = x0 + (x1 - x0) * sb.at, sy = y0 + (y1 - y0) * sb.at, d2 = v.dir + sb.turn;
+          line(g, [[sx, sy], [sx + Math.cos(d2) * sb.len, sy + Math.sin(d2) * sb.len]], RED, 4, 0.92, 1.4);
+        }
+        for (const tp of v.tips) { const d2 = v.dir + tp.turn; line(g, [[x1, y1], [x1 + Math.cos(d2) * tp.len, y1 + Math.sin(d2) * tp.len]], RED, 3.4, 0.92, 1.3); }
+        if (v.black) line(g, [[x0 + 2, y0 + 2], mid, [x1 + 2, y1 + 1]], INK, 1.1, 0.8, 1.6);
       }
-      // iris + pupil, wherever it's looking
-      const ix = E.cx + look[0], iy = E.cy + look[1], iris = ring(ix, iy, 25, 25, 12, .05);
+      // the cut optic nerve: a short open stub on top
+      const na = -Math.PI * 0.42, nx = cx + Math.cos(na) * r * 0.96, ny = cy + Math.sin(na) * r * 0.96;
+      el('path', { d: hand([[nx - 8, ny + 4], [nx - 7, ny - 16], [nx + 7, ny - 18], [nx + 9, ny + 2]], true, 1.2), fill: '#F25C6E', opacity: 0.9 }, g);
+      line(g, [[nx - 8, ny + 4], [nx - 7, ny - 17]], INK, 1.6); line(g, [[nx + 9, ny + 2], [nx + 7, ny - 18]], INK, 1.6);
+      el('ellipse', { cx: (nx + J(0.6)).toFixed(1), cy: (ny - 18 + J(0.6)).toFixed(1), rx: 8, ry: 3.5, fill: '#B3122A', stroke: INK, 'stroke-width': 1.5 }, g);
+      // the eye itself: blank paper
+      clipPath.setAttribute('cx', cx); clipPath.setAttribute('cy', cy); clipPath.setAttribute('r', r);
+      el('circle', { cx, cy, r, fill: '#FFFDF7' }, g);
+      // red marker loaded on the back side, curved strokes hugging the edge, black ribs over them
       const eyeG = el('g', { 'clip-path': 'url(#eh-eyeclip)' }, g);
-      pencil(eyeG, iris, '#2E6BEA', 'eh-blue', 'eh-blue');
-      for (let k = 0; k < 9; k++) { const a = (k / 9) * Math.PI * 2 + J(.15); el('path', { d: hand([[ix + Math.cos(a) * 12, iy + Math.sin(a) * 12], [ix + Math.cos(a) * 22, iy + Math.sin(a) * 22]], false, 1.2), stroke: INK, 'stroke-width': 1.6, fill: 'none', 'stroke-linecap': 'round', opacity: .7 }, eyeG); }
-      outline(eyeG, iris, true, 3.4);
-      el('path', { d: hand(ring(ix, iy, 11, 11, 9, .07), true, 1), fill: INK }, eyeG);
-      el('path', { d: hand(ring(ix - 7, iy - 8, 4.5, 3.5, 7, .1), true, .6), fill: '#fff' }, eyeG);
-      // eyelids (it has them anyway): skin flaps that come down from the top and up from the bottom
+      for (let k = 0; k < 4; k++) line(eyeG, arc(cx, cy, r - 4 - k * 7, Math.PI * (0.62 + k * 0.05), Math.PI * (1.45 - k * 0.04), 8), k % 2 ? RED2 : RED, 9 - k, 0.85, 1.4);
+      for (let k = 0; k < 7; k++) { const a = Math.PI * (0.72 + k * 0.1); line(eyeG, arc(cx, cy, r - 3, a, a + 0.05, 2).concat([[cx + Math.cos(a + 0.3) * (r - 26), cy + Math.sin(a + 0.3) * (r - 26)]]), INK, 1.1, 0.75, 1.4); }
+      // iris: cyan ring, blue core, a small pupil ring and a glint (it looks off to the right by habit)
+      const ix = cx + 16 + look[0], iy = cy + 4 + look[1];
+      el('circle', { cx: (ix + J(0.6)).toFixed(1), cy: (iy + J(0.6)).toFixed(1), r: 21, fill: 'none', stroke: CYAN, 'stroke-width': 7, opacity: 0.95 }, eyeG);
+      el('path', { d: hand(arc(ix, iy, 13, 0, Math.PI * 2, 10, 0.06), true, 0.8), fill: BLUE }, eyeG);
+      el('path', { d: hand(arc(ix, iy, 6.5, 0.2, Math.PI * 2 + 0.5, 8, 0.08), false, 0.6), fill: 'none', stroke: INK, 'stroke-width': 2 }, eyeG);
+      el('circle', { cx: ix - 2.5, cy: iy - 3, r: 2.2, fill: '#fff' }, eyeG);
+      // blink: a paper lid comes down from the top, with a few lashes
       if (lid > 0) {
-        const t = [0, 0.45, 0.8, 1.02][lid], top = E.cy - E.r - 4, bot = E.cy + E.r + 4, meet = E.cy + 6;
-        const yT = top + (meet - top) * t, yB = bot - (bot - meet) * t;
-        const upper = [[E.cx - E.r - 6, top - 4], [E.cx + E.r + 6, top - 4], [E.cx + E.r + 6, yT - 6], [E.cx + E.r * 0.5, yT + 4], [E.cx, yT + 7], [E.cx - E.r * 0.5, yT + 4], [E.cx - E.r - 6, yT - 6]];
-        const lower = [[E.cx - E.r - 6, bot + 4], [E.cx - E.r - 6, yB + 6], [E.cx - E.r * 0.5, yB - 2], [E.cx, yB - 4], [E.cx + E.r * 0.5, yB - 2], [E.cx + E.r + 6, yB + 6], [E.cx + E.r + 6, bot + 4]];
-        const lidG = el('g', { 'clip-path': 'url(#eh-eyeclip)' }, g);
-        pencil(lidG, upper, '#F7B58E', 'eh-skin', 'eh-skin'); pencil(lidG, lower, '#F7B58E', 'eh-skin', 'eh-skin');
-        el('path', { d: hand([[E.cx - E.r, yT], [E.cx - E.r * 0.5, yT + 4], [E.cx, yT + 7], [E.cx + E.r * 0.5, yT + 4], [E.cx + E.r, yT]], false, 1.5), stroke: INK, 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round' }, lidG);
-        if (lid === 3) for (let k = -2; k <= 2; k++) { const x = E.cx + k * 18; el('path', { d: hand([[x, meet + 4], [x + k * 3, meet + 16]], false, 1), stroke: INK, 'stroke-width': 3, 'stroke-linecap': 'round', fill: 'none' }, g); }
+        const t = [0, 0.45, 0.8, 1.02][lid], yT = cy - r - 4 + (2 * r + 8) * t * 0.62;
+        const lidPts = [[cx - r - 6, cy - r - 8], [cx + r + 6, cy - r - 8], [cx + r + 6, yT - 4], [cx, yT + 8], [cx - r - 6, yT - 4]];
+        el('path', { d: hand(lidPts, true, 1), fill: '#FFFDF7' }, eyeG);
+        line(eyeG, [[cx - r, yT - 2], [cx - r * 0.5, yT + 5], [cx, yT + 8], [cx + r * 0.5, yT + 5], [cx + r, yT - 2]], INK, 1.8);
+        if (lid === 3) for (let k = -2; k <= 2; k++) { const x = cx + k * 16; line(g, [[x, yT + 8 - Math.abs(k) * 2], [x + k * 2.5, yT + 18 - Math.abs(k) * 2]], INK, 1.5); }
       }
-      // the outline goes on last, over everything, like a marker would
-      outline(g, sclera, true, 5);
+      // the thin, loose ballpoint outline, not quite closed
+      line(g, arc(cx, cy, r, -Math.PI * 0.36, Math.PI * 1.6, 16, 0.025), INK, 2, 1, 1.1);
     }
 
     // ── behaviour, 8 frames a second ──
@@ -477,12 +487,13 @@
         if (blinkQ.length) lid = blinkQ.shift();
         // looking: toward the pointer if it moved lately, else darting glances
         if (ptr && now - ptr.t < 2500) {
-          const b = host.getBoundingClientRect(), sx = b.left + b.width * (E.cx / 260), sy = b.top + b.height * (E.cy / 170);
+          const b = host.getBoundingClientRect(), sv = svg.getBoundingClientRect(), sx = sv.left + sv.width * (E.cx / 260), sy = sv.top + sv.height * (E.cy / 270);
           const dx = ptr.x - sx, dy = ptr.y - sy, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 260) * 22;
-          look = [Math.round((dx / d) * k / 3) * 3, Math.round((dy / d) * k / 3) * 3];
+          look = [Math.round(((dx / d) * k - 12) / 3) * 3, Math.round((dy / d) * k / 3) * 3];
+          void b;
         } else if (now > nextGlance) {
-          const a = rnd() * Math.PI * 2, k = rnd() < 0.25 ? 0 : 10 + rnd() * 12;
-          look = [Math.round(Math.cos(a) * k), Math.round(Math.sin(a) * k * 0.8)];
+          const a = rnd() * Math.PI * 2, k = rnd() < 0.3 ? 0 : 8 + rnd() * 14;
+          look = [Math.round(Math.cos(a) * k - 6), Math.round(Math.sin(a) * k * 0.8)];
           nextGlance = now + 600 + rnd() * 1800;
         }
         drawFrame();
