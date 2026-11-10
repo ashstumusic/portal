@@ -496,3 +496,24 @@ html { overscroll-behavior-y: none; }
 :root.psy .vid-yt:is(:hover, :focus-visible) { background: var(--btn-fill-hover) !important; }
 /* The email address is lowercase: centre its x-height rather than caps. */
 :root.psy .contact-email-link { text-box: trim-both ex alphabetic; }
+
+/* ── Re-audit fixes (Nov 2026, second pass) ───────────────────────── */
+/* Type: fixed sizes back on the scale (fluid display titles that fit
+   their box are left fluid). */
+:root.psy .vid-title { font-size: 17px !important; }
+:root.psy .contact-email-link { font-size: 15px !important; }
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .rel-track-soon, .nav-links a) span { font-size: inherit !important; }
+:root.psy .np-time, :root.psy .fs-times { font-size: 12px !important; font-variant-numeric: tabular-nums; }
+/* Light: one soft two-layer ambient shadow for every card and the
+   featured cover (the heavy near-black card shadow and the teal/gold and
+   red glows had crept back in). */
+:root.psy :is(.rel-card, .vid-card-wrap, .contact-inner, .bio-card) { box-shadow: var(--shadow-ambient) !important; }
+:root.psy .vid-card { box-shadow: none !important; }
+:root.psy .featured-art { box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 12px 32px rgb(0 0 0 / .32) !important; }
+:root.psy .featured-badge { box-shadow: none !important; border: 0 !important; }
+/* Hairlines: one colour for every divider. */
+:root.psy :is(.rel-tracklist, .vid-info, .rel-track-wrap, .bio-card-media) { border-color: var(--hair) !important; }
+/* Radii: the lyric-line highlight joins the 8px row radius. */
+:root.psy .rel-lyric-line { border-radius: var(--r-sm); }
+:root.psy .btn-epk span { font-size: 12px !important; }
+:root.psy #np-track { font-size: 13px !important; }
