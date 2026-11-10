@@ -1169,3 +1169,33 @@ html { overscroll-behavior-y: none; }
 /* The About name is a link back to the top (the hero slides away). */
 :root.psy .bio-name-link { color: inherit; text-decoration: none; border-radius: 8px; cursor: pointer; -webkit-text-fill-color: inherit; }
 :root.psy .bio-name:has(.bio-name-link:hover) { filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) drop-shadow(0 0 10px rgb(247 197 73 / .55)) !important; }
+
+/* Streaming logos on hover: solid gold (white details and cut-outs kept).
+   Toolbar icons: no gold fill behind them, just the gold ring, so the
+   gold logo shows. On the gold-filled buttons the gold logo gets a thin
+   dark outline so it doesn't disappear into the gold. */
+:root.psy .nav .nav-platform:hover:not(#\#), :root.psy .nav-drawer .drawer-platforms a:hover:not(#\#) { background: transparent !important; }
+:root.psy :is(.nav-platform, .drawer-platforms a):hover .pt { filter: url(#pt-gold) !important; }
+:root.psy :is(.f-btn, .rel-btn, .vid-yt):hover .pt {
+  filter: url(#pt-gold) drop-shadow(1px 0 0 #111) drop-shadow(-1px 0 0 #111) drop-shadow(0 1px 0 #111) drop-shadow(0 -1px 0 #111) !important;
+}
+
+/* Tracks toggle, low-key: a quiet disclosure row rather than a boxed
+   button. No rim or fill at rest; a hairline divides it from the
+   streaming buttons; "Tracks" in sentence case, a touch muted, with a
+   small chevron. It still spans the card (a full-width 40px target),
+   announces expanded/collapsed, and highlights like every button on hover
+   (gold fill + ring); the chevron turns when open. */
+:root.psy .rel-tl-toggle:not(#\#) {
+  width: calc(100% - 24px); margin: 2px 12px 8px; min-height: 40px; padding: 0 10px;
+  background: transparent !important; border: 0 !important; border-radius: 10px !important; corner-shape: squircle;
+  box-shadow: inset 0 1px 0 rgb(240 245 246 / .12) !important;
+  justify-content: center; gap: 6px;
+  font: 600 13px/1 var(--font-ui) !important; letter-spacing: .01em !important; text-transform: none !important;
+  color: rgb(240 245 246 / .78) !important;
+}
+:root.psy .rel-tl-toggle .rel-tl-label::first-letter { text-transform: uppercase; }
+:root.psy .rel-tl-toggle .rel-tl-chev { width: 15px; height: 15px; opacity: .85; }
+:root.psy .rel-card.tracks-open .rel-tl-toggle:not(:hover):not(#\#) { color: rgb(240 245 246 / .95) !important; }
+:root.psy .rel-tl-toggle:hover:not(#\#) { background: var(--gold) !important; color: #111 !important; box-shadow: none !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
+@media (forced-colors: active) { :root.psy .rel-tl-toggle:not(#\#) { border: 1px solid ButtonText !important; } }
