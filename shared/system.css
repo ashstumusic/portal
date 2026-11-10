@@ -1467,8 +1467,8 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-track-wrap > .rel-lyrics { margin-right: -10px; }
 :root.psy .rel-track-wrap:has(.rel-lyrics-toggle.open) { background: rgb(240 245 246 / .035); border-radius: 12px; border-bottom-color: transparent !important; }
 @media (forced-colors: active) { :root.psy .rel-lyrics-toggle:not(#\#) { border: 2px solid ButtonText !important; } }
-/* lyrics a touch smaller (16px; body text stays 17px) */
-:root.psy .rel-track-wrap .rel-lyrics-inner:not(#\#) { font-size: 16px !important; }
+/* lyrics smaller than the body text (15px; body text stays 17px) */
+:root.psy .rel-track-wrap .rel-lyrics-inner:not(#\#) { font-size: 15px !important; }
 
 /* Press Kit on narrow screens: a clean stack between the two photo rows.
    Title, one line of copy, then a full-width download button at a normal
