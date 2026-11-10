@@ -1411,7 +1411,6 @@ html { overscroll-behavior-y: none; }
       rgb(0 0 0 / .04) 92px, rgb(0 0 0 / .30) 128px),
     linear-gradient(180deg, #8A1322 0%, #6E0D1A 45%, #4C0711 100%) !important;
 }
-:root.psy .epk-section .section-h { filter: drop-shadow(3px 3px 0 rgb(40 0 6 / .7)) !important; text-shadow: none !important; }
 :root.psy .epk-section .epk-text { color: rgb(255 240 236 / .94) !important; opacity: 1 !important; }
 :root.psy .epk-section .btn-epk:not(:hover):not(.auto-press) { border: 2px solid #FFE9C7 !important; box-shadow: 0 3px 14px rgb(30 0 5 / .5) !important; }
 @media (prefers-contrast: more) { :root.psy .epk-section { background: #5A0A14 !important; } }
@@ -1490,3 +1489,30 @@ html { overscroll-behavior-y: none; }
   :root.psy .epk-body .btn-epk span br { display: none; }
   :root.psy .epk-body .btn-epk span:not(#\#) { font-size: 15px !important; letter-spacing: .1em !important; white-space: nowrap; }
 }
+
+/* Press Kit: no red carpet (the page shows through again), bulbs along
+   the top edge only, and just the bulbs: no dark strip behind them. */
+:root.psy .epk-section:not(#\#):not(#\#) { background: transparent !important; padding-block: 30px 8px !important; }
+:root.psy .epk-section::after { display: none !important; }
+:root.psy .epk-section::before {
+  box-shadow: none !important;
+  background:
+    radial-gradient(circle, #fff 0 4px, rgb(255 246 214 / .9) 5px, rgb(255 222 130 / .4) 8px, transparent 13px) 0 50% / 84px 100% repeat-x,
+    radial-gradient(circle, rgb(255 255 255 / .34) 0 4px, transparent 5px) 0 50% / 28px 100% repeat-x !important;
+}
+@keyframes marquee-chase { to { background-position: 84px 50%, 0 50%; } }
+:root.psy.psy-calm .epk-section::before { background: radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) 0 50% / 28px 100% repeat-x !important; }
+@media (prefers-reduced-motion: reduce) {
+  :root.psy .epk-section::before { background: radial-gradient(circle, rgb(255 255 255 / .85) 0 4px, rgb(255 236 180 / .3) 7px, transparent 10px) 0 50% / 28px 100% repeat-x !important; }
+}
+
+/* Tracklist: track numbers sit closer to their titles, leaving more room
+   on the left edge of the card (lyrics stay aligned under the titles). */
+:root.psy { --tl-inset: 18px; --tl-gap: 5px; }
+
+/* "A figment of my own imagination." centred on phones. */
+@media (max-width: 767px) { :root.psy .bio-tagline { margin-inline: auto !important; text-align: center; } }
+
+/* Phone menu: the word "Search" is centred like the other labels; its
+   icon hangs to the left of the word without shifting it. */
+:root.psy .nav-drawer .drawer-search svg:not(#\#) { margin-left: -26px !important; flex: none; }
