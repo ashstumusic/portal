@@ -25,6 +25,35 @@ import re
 import sys
 
 from buildutil import img_b64
+from build_lyrics_pages import stanzas, slugify
+
+LYRICS = {}   # lyrics.json, loaded in main()
+PAGES = {}    # audio file -> its lyrics page URL (same slugs as build_lyrics_pages.py)
+
+
+def lyric_pages(releases):
+    used = set()
+    for rel in releases:
+        for t in rel.get('tracks', []):
+            entry = LYRICS.get(t['file'])
+            if not entry or not entry.get('lines'):
+                continue
+            slug = slugify(t['title'])
+            if slug in used:
+                slug = f"{slug}-{slugify(rel['name'])}"
+            used.add(slug)
+            PAGES[t['file']] = f'/lyrics/{slug}/'
+
+
+def lyrics_html(file):
+    """A song's full lyrics as a collapsed panel (one <p> per verse), so
+    crawlers and no-JS readers get them in the page itself."""
+    entry = LYRICS.get(file)
+    if not entry or not entry.get('lines'):
+        return ''
+    verses = ''.join('<p>' + '<br>'.join(esc(l) for l in v) + '</p>' for v in stanzas(entry))
+    link = f'<p><a href="{PAGES[file]}">Lyrics page</a></p>' if file in PAGES else ''
+    return f'<details class="rel-lyrics-static"><summary>Lyrics</summary>{verses}{link}</details>'
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
@@ -59,7 +88,7 @@ def render_release_card(rel, r_idx):
     tracklist = ''
     upcoming = rel.get('upcoming', [])
     if len(rel['tracks']) + len(upcoming) > 1:
-        rows = [(t.get('num', i + 1), esc(t['title'])) for i, t in enumerate(rel['tracks'])]
+        rows = [(t.get('num', i + 1), esc(t['title']) + lyrics_html(t['file'])) for i, t in enumerate(rel['tracks'])]
         rows += [(u['num'], f'{esc(u["title"])} (not released yet)') for u in upcoming]
         items = ''.join(f'<li value="{n}">{title}</li>' for n, title in sorted(rows, key=lambda r: r[0]))
         tracklist = (f'<div class="rel-tracklist" id="tracklist-{r_idx}">'
@@ -74,7 +103,8 @@ def render_release_card(rel, r_idx):
             f'<h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>'
             f'</div></div></div>'
             f'<div class="rel-btns">{btns}</div>'
-            f'{tracklist}</article>')
+            f'{tracklist}'
+            f'{lyrics_html(rel["tracks"][0]["file"]) if len(rel["tracks"]) == 1 and not upcoming else ""}</article>')
 
 
 def render_video_card(v, v_idx):
@@ -171,6 +201,9 @@ def main():
         releases = json.load(f)
     with open('videos.json', encoding='utf-8') as f:
         videos = json.load(f)
+    with open('lyrics.json', encoding='utf-8') as f:
+        LYRICS.update(json.load(f))
+    lyric_pages(releases)   # before art paths are rewritten; titles/files are what matter
 
     # Single-file build: bake raster art/thumb paths as 90%-scale base64
     # WebP data URIs so the prerendered cards AND the embedded data-all JSON
@@ -190,6 +223,25 @@ def main():
     videos_html = ''.join(render_video_card(v, i) for i, v in enumerate(videos))
 
     page = inject_container(page, 'releases-grid', 'releases-grid', releases_html)
+    # Every song with lyrics as structured data (MusicComposition + lyrics text).
+    comps = []
+    for rel in releases:
+        for i, t in enumerate(rel['tracks']):
+            entry = LYRICS.get(t['file'])
+            if not entry or not entry.get('lines'):
+                continue
+            text = '\n\n'.join('\n'.join(v) for v in stanzas(entry))
+            comps.append({'@type': 'MusicComposition', 'name': t['title'], 'inLanguage': 'en',
+                          **({'url': 'https://ashstu.art' + PAGES[t['file']], 'mainEntityOfPage': 'https://ashstu.art' + PAGES[t['file']]} if t['file'] in PAGES else {}),
+                          'composer': {'@id': 'https://ashstu.art/#artist'}, 'lyricist': {'@id': 'https://ashstu.art/#artist'},
+                          'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text},
+                          'recordedAs': {'@type': 'MusicRecording', 'name': t['title'], 'byArtist': {'@id': 'https://ashstu.art/#artist'},
+                                         'inAlbum': {'@type': 'MusicAlbum', 'name': rel['name']}, 'position': t.get('num', i + 1)}})
+    if comps:
+        ld = json.dumps({'@context': 'https://schema.org', '@graph': comps}, ensure_ascii=False).replace('</', '<\\/')
+        page = page.replace('</head>', f'<script type="application/ld+json" id="lyrics-ld">{ld}</script>\n</head>', 1)
+    # The song -> lyrics page map the runtime JS uses for its "Lyrics page" links.
+    page = page.replace('</head>', '<script type="application/json" id="lyrics-pages">' + json.dumps(PAGES).replace('</', '<\\/') + '</script>\n</head>', 1)
     page = inject_container(page, 'video-grid', 'video-grid', videos_html)
     page = inject_featured(page, next((r for r in releases if r.get('featured')), releases[0] if releases else None))
 
