@@ -148,99 +148,31 @@
     })(t0);
   }, { capture: true, passive: true });
 
-  // ── STARS: a sky of vintage paper cutout stars ────────────────────
-  // Every star is cut with straight scissor snips from E. L. Trouvelot's
-  // 1880s astronomical plates (Images/cutouts/stars.webp: the inside of
-  // Jupiter's bands, sunspot fibres, lunar craters, solar flares; credits
-  // in Images/cutouts/CREDITS.md), hand-tinted, with a cream paper border
-  // and a hard shadow. Three sizes:
-  //   big     jointed: every point is its own cut piece, pinned to a
-  //           centre with a paper fastener, and flaps on its own
-  //   medium  one cutout that twinkles
-  //   tiny    sprinkled loose in the empty space
-  // They float free in the empty space.
+  // ── STARS: real engraved stars, cut out like a Terry Gilliam collage ──
+  // 80 stars cut from Johann Bayer's Uranometria (1603): the engraving
+  // thresholded to stark black ink, printed on aged paper from the plates'
+  // own margins, cut out with rough scissor edges and a scorched rim
+  // (Images/cutouts/stars.webp, made by scripts/make_star_cutouts.py;
+  // credits in Images/cutouts/CREDITS.md). They're scattered over the
+  // space-black page, sized by how bright Bayer drew them.
   //
   // Placement: the page is measured on every layout (text, cards, photos,
   // buttons become no-go areas). Each star tries a few hundred spots and
-  // takes the one with the most room around it and furthest from the
-  // others, so the sky fills evenly; only spots whose whole swing stays
-  // clear of content count. Redone when the layout changes.
+  // takes the one with the most room, furthest from the others, so the
+  // sky fills evenly. Redone when the layout changes.
   //
-  // Moving parts, worked by scrolling at 12 updates a second with angles
-  // snapped (hand-moved cutout style): stars rock, turn and twinkle, the
-  // points of big stars flap; each pops up the first time it's seen; a
-  // fast scroll shakes the lot. Still
-  // under reduced motion or with effects off.
+  // Animation is cutout jank, shot "on threes" (8 frames a second): no
+  // smooth tweens, only abrupt jumps. While you scroll, each star jitters
+  // a pixel or two every frame, turns in hard clicks and swells in steps;
+  // it pops up in two frames the first time it's seen; a fast scroll
+  // knocks the lot about. Still under reduced motion or with effects off.
   const stars = (() => {
-    const NS = 'http://www.w3.org/2000/svg', SHEET = 'Images/cutouts/stars.webp', SW = 512, C = 256;
-    // [texture tile, tint, tint strength]: every tile is textured edge to edge.
-    const LOOKS = [
-      [{ x: 0, y: 0 }, '#F2B33D', 0.45],   // Jupiter's bands, gilded
-      [{ x: C, y: 0 }, '#F2B33D', 0.7],    // sunspot fibres, gold
-      [{ x: C, y: 0 }, '#F6D77A', 0.55],   // sunspot fibres, pale gold
-      [{ x: 0, y: C }, '#FFF1B8', 0.45],   // lunar craters, cream
-      [{ x: 0, y: C }, '#F2B33D', 0.6],    // lunar craters, gold
-      [{ x: C, y: C }, null, 0],           // solar flares, red as printed
-    ];
-    const PAPER = '#FBF5E6';
-    let seed = 11, uid = 0;   // fixed seed: the same sky on every visit
+    const SHEET = 'Images/cutouts/stars.webp', COLS = 10, ROWS = 8, N = 80;
+    // How big each star was engraved (its brightness in Bayer's chart).
+    const MAG = [32, 39, 30, 28, 43, 29, 45, 44, 44, 40, 28, 28, 46, 28, 28, 40, 31, 38, 28, 37, 30, 28, 45, 35, 27, 45, 30, 34, 42, 43, 42, 44, 28, 30, 28, 29, 34, 36, 37, 37, 28, 46, 40, 45, 38, 28, 30, 23, 24, 26, 22, 27, 46, 37, 32, 36, 28, 27, 25, 37, 27, 26, 40, 29, 28, 47, 36, 39, 33, 40, 38, 33, 25, 37, 36, 38, 37, 30, 30, 35];
+    let seed = 11;   // fixed seed: the same sky on every visit
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-    const j = (n) => (rnd() - 0.5) * n;   // scissor wobble
-    const pick = (a) => a[Math.floor(rnd() * a.length)];
     const snap = (v, s) => Math.round(v / s) * s;
-    const pts = (a) => a.map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-    function el(tag, attrs, parent) { const e = doc.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.append(e); return e; }
-    function starShape(R, n) { const a = []; for (let i = 0; i < n * 2; i++) { const r = i % 2 ? R * (0.4 + j(0.08)) : R + j(R * 0.1), t = (i / (n * 2)) * Math.PI * 2 - Math.PI / 2 + j(0.06); a.push([Math.cos(t) * r, Math.sin(t) * r]); } return a; }
-    const spike = (len, wid) => [[-wid / 2 + j(0.8), 1], [-wid * 0.2 + j(0.8), -len * 0.55 + j(1)], [j(1), -len + j(0.8)], [wid * 0.2 + j(0.8), -len * 0.55 + j(1)], [wid / 2 + j(0.8), 1]];
-    const blob = (r, n = 9) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; const rr = r + j(r * 0.15); return [Math.cos(a) * rr, Math.sin(a) * rr]; });
-    // One cut piece: paper backing, a random window of its texture tile
-    // clipped to the shape, and a hand tint.
-    function piece(parent, defs, shape, look, border = 2.6) {
-      const [tile, tint, alpha] = look, id = 'starp' + (++uid);
-      const xs = shape.map((p) => p[0]), ys = shape.map((p) => p[1]);
-      const bx = Math.min(...xs), by = Math.min(...ys), bw = Math.max(...xs) - bx, bh = Math.max(...ys) - by;
-      el('polygon', { points: pts(shape) }, el('clipPath', { id }, defs));
-      el('polygon', { points: pts(shape), fill: PAPER, stroke: PAPER, 'stroke-width': border, 'stroke-linejoin': 'miter' }, parent);
-      // A window onto the tile with the piece's proportions, always wholly
-      // inside its own tile (inset, so no neighbouring print bleeds in).
-      const IN = 4, room = C - 2 * IN, k = room * (0.4 + rnd() * 0.55), tall = bh > bw;
-      const fh = tall ? k : k * bh / Math.max(1, bw), fw = tall ? k * bw / Math.max(1, bh) : k;
-      const fx = tile.x + IN + rnd() * (room - fw), fy = tile.y + IN + rnd() * (room - fh);
-      const clip = el('g', { 'clip-path': `url(#${id})` }, parent);
-      const win = el('svg', { x: bx, y: by, width: bw, height: bh, viewBox: `${fx.toFixed(1)} ${fy.toFixed(1)} ${fw.toFixed(1)} ${fh.toFixed(1)}`, preserveAspectRatio: 'none', overflow: 'hidden' }, clip);
-      el('image', { href: SHEET, width: SW, height: SW }, win);
-      if (tint) el('polygon', { points: pts(shape), fill: tint, opacity: alpha, style: 'mix-blend-mode:multiply' }, parent);
-    }
-    const pin = (parent, r = 2.2) => { el('circle', { cx: 0, cy: 0, r, fill: PAPER }, parent); el('circle', { cx: 0, cy: 0, r: r * 0.55, fill: '#6B5A3A' }, parent); };
-
-    // ── the three kinds; each builds into g (centred) and animates itself ──
-    function makeStar(size, g, defs) {
-      const look = pick(LOOKS), ph = rnd() * 6;
-      if (size === 'big') {
-        const R = 24 + rnd() * 9, n = pick([5, 5, 6, 8]), points = el('g', {}, g), list = [];
-        for (let i = 0; i < n; i++) {
-          const arm = el('g', { transform: `rotate(${(i / n) * 360 + j(5)})` }, points), flap = el('g', {}, arm);
-          piece(flap, defs, spike(R * (i % 2 && n === 8 ? 0.62 : 1), R * (n === 8 ? 0.42 : 0.55)), look);
-          list.push({ flap, ph: rnd() * 6 });
-        }
-        piece(g, defs, blob(R * 0.3), pick(LOOKS)); pin(g);
-        return { R, animate(t, m) {
-          points.setAttribute('transform', `rotate(${m ? snap(t * 0.05 + ph * 57, 8) : 0})`);
-          for (const p of list) p.flap.setAttribute('transform', m ? `rotate(${snap(Math.sin(t * 0.012 + p.ph) * 10, 3)}) scale(1 ${snap(1 + Math.sin(t * 0.01 + p.ph * 2) * 0.2, 0.07)})` : '');
-        } };
-      }
-      const R = size === 'medium' ? 12 + rnd() * 7 : 5 + rnd() * 4, body = el('g', {}, g);
-      piece(body, defs, starShape(R, pick([4, 5, 5, 5, 6])), look, size === 'tiny' ? 1.8 : 2.6);
-      return { R, animate(t, m) {
-        body.setAttribute('transform', m ? `rotate(${snap(Math.sin(t * 0.005 + ph) * 22, 6)}) scale(${snap(1 + Math.sin(t * 0.012 + ph) * 0.2, 0.07)})` : '');
-      } };
-    }
-    function build(size) {
-      const svg = el('svg', { 'aria-hidden': 'true', focusable: 'false', class: 'star-obj', width: 2, height: 2 });
-      const defs = el('defs', {}, svg), holder = el('g', {}, el('g', { transform: 'translate(1 1)' }, svg)), body = el('g', {}, holder);
-      return { size, svg, holder, ...makeStar(size, body, defs), ph: rnd() * 6, popAt: 0, seen: false };
-    }
-
     const layer = doc.createElement('div');
     layer.className = 'cut-stars'; layer.setAttribute('aria-hidden', 'true');
     doc.body.append(layer);
@@ -307,63 +239,73 @@
 
     // ── placing the sky ──
     function layout() {
-      seed = 11; uid = 0;
-      for (const o of placed) o.svg.remove();
+      seed = 11;
+      for (const o of placed) o.el.remove();
       placed = [];
       const map = measure(), s = Math.max(0.7, Math.min(1.05, innerWidth / 1300));
       // How many: by the page's area, so phones get fewer.
       const area = (map.W * (map.H - map.top)) / 1e6;
-      const plan = [['big', Math.round(area * 1.4)], ['medium', Math.round(area * 4.2)], ['tiny', Math.round(area * 6)]];
-      const SPACE = { big: 150, medium: 95, tiny: 55 };
-      for (const [size, count] of plan) {
+      const plan = [[56, 72, Math.round(area * 1.3)], [32, 46, Math.round(area * 3.6)], [16, 24, Math.round(area * 5)]];   // [min px, max px, count]
+      const order = Array.from({ length: N }, (_, i) => i).sort(() => rnd() - 0.5);
+      let next = 0;
+      for (const [lo, hi, count] of plan) {
         for (let k = 0; k < count; k++) {
-          const o = build(size), R = o.R * s, gap = SPACE[size] * s;
+          // Pick a cutout; brighter-engraved ones go to the bigger sizes.
+          let idx = order[next++ % N];
+          if (hi > 50) for (let t = 0; t < 6 && MAG[idx] < 38; t++) idx = order[next++ % N];
+          const size = (lo + rnd() * (hi - lo)) * s, R = size / 2, gap = size * 1.4 + 18 * s;
           let best = null;
           for (let tries = 0; tries < 260; tries++) {
             const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
-            // Clear of content with room to rock and swell (the whole star stays in view).
-            const pad = R * 0.25 + 3;
+            const pad = R * 0.2 + 4;   // room to jitter and swell
             if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
             let near = 1e9;
-            for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R * p.s);
+            for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R);
             if (near < gap) continue;
             let score = Math.min(near, gap * 3) / gap * 10 + rnd() * 5;
             for (const m of [16, 36]) if (map.free(x - R - pad - m, cy - R - pad - m, x + R + pad + m, cy + R + pad + m)) score += 6;
             if (!best || score > best.score) best = { x, cy, score };
           }
           if (!best) continue;
-          Object.assign(o, { cx: best.x, cy: best.cy, s });
-          o.svg.style.left = best.x + 'px'; o.svg.style.top = best.cy + 'px';
-          layer.append(o.svg); placed.push(o);
+          const el = doc.createElement('i');
+          el.className = 'cut-star';
+          el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`
+            + `background-position:${((idx % COLS) / (COLS - 1)) * 100}% ${(Math.floor(idx / COLS) / (ROWS - 1)) * 100}%`;
+          layer.append(el);
+          placed.push({ el, cx: best.x, cy: best.cy, R, base: Math.floor(rnd() * 360), spin: (rnd() < 0.5 ? -1 : 1) * (0.05 + rnd() * 0.1), ph: rnd() * 6, popAt: 0, seen: false, k: 0 });
         }
       }
       layer.style.height = map.H + 'px';
       draw();
     }
 
-    // ── the show: 12 updates a second while there's motion ──
-    let raf = 0, lastT = 0, settleUntil = 0, shake = 0;
+    // ── the jank: 8 frames a second ("on threes") while there's motion ──
+    let raf = 0, lastT = 0, settleUntil = 0, shake = 0, frame = 0;
     function draw() {
       const vh = innerHeight, sy = scrollY, moving = fxOn(), now = performance.now();
-      shake = Math.min(14, shake * 0.7 + Math.abs(scrollVel) * 4);
+      shake = Math.min(12, shake * 0.6 + Math.abs(scrollVel) * 4);
+      frame++;
       for (const o of placed) {
         const vy = o.cy - sy;
-        if (vy < -300 || vy > vh + 300) continue;
-        if (!o.seen && vy < vh * 0.92) { o.seen = true; if (moving && o.size !== 'tiny') { o.popAt = now; settleUntil = Math.max(settleUntil, now + 600); } }
-        // Pops up the first time it's seen (three jerky frames), then rocks
-        // on its centre; a fast scroll shakes it.
-        const pop = o.popAt && now - o.popAt < 450 ? [0.15, 1.2, 1][Math.min(2, Math.floor(((now - o.popAt) / 450) * 3))] : 1;
-        const rock = moving ? snap(Math.sin(sy * 0.0035 + o.ph) * 8 + Math.sin(now * 0.02 + o.ph) * shake * 0.6, 2) : 0;
-        o.holder.setAttribute('transform', `rotate(${rock}) scale(${(o.s * pop).toFixed(3)})`);
-        o.animate(sy, moving);
+        if (vy < -200 || vy > vh + 200) continue;
+        if (!o.seen && vy < vh * 0.95) { o.seen = true; if (moving) { o.popAt = now; settleUntil = Math.max(settleUntil, now + 400); } }
+        if (!moving) { o.el.style.transform = `rotate(${o.base}deg)`; continue; }
+        // Two-frame pop: nothing, too big, then itself.
+        const pf = o.popAt ? Math.floor((now - o.popAt) / 125) : 9;
+        const pop = pf === 0 ? 0.2 : pf === 1 ? 1.3 : 1;
+        // A pixel or two of boil every frame, plus a knock from fast scrolling.
+        const jx = Math.round((rnd() - 0.5) * (2 + shake)), jy = Math.round((rnd() - 0.5) * (2 + shake));
+        const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
+        const sc = pop * snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05);
+        o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${sc})`;
       }
     }
     function loop(t) {
       raf = 0;
-      if (t - lastT >= 1000 / 12 - 4) { lastT = t; draw(); }
+      if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(); }
       if (performance.now() < settleUntil || shake > 0.5) raf = requestAnimationFrame(loop);
     }
-    const kick = () => { settleUntil = Math.max(settleUntil, performance.now() + 400); if (!raf) raf = requestAnimationFrame(loop); };
+    const kick = () => { settleUntil = Math.max(settleUntil, performance.now() + 300); if (!raf) raf = requestAnimationFrame(loop); };
     addEventListener('scroll', kick, { passive: true });
     let lt = 0, lastW = 0, lastH = 0;
     const relayout = () => { clearTimeout(lt); lt = setTimeout(() => {
