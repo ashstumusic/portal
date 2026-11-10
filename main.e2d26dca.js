@@ -1423,6 +1423,25 @@ let resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); }, { passive: true });
 for (let i = 0; i < COUNT; i++) pieces.push({ x: Math.random()*cw, y: Math.random()*ch, w: 3+Math.random()*4, h: 8+Math.random()*14, rot: Math.random()*TWO_PI, dx: (Math.random()-.5)*.5, dy: .5+Math.random()*1.2, dr: (Math.random()-.5)*3*DEG2RAD, wobble: Math.random()*TWO_PI, wobbleSpeed: .02+Math.random()*.03, flex: Math.random()*TWO_PI, flexSpeed: .03+Math.random()*.04, color: COLORS[Math.floor(Math.random()*COLORS.length)], opacity: .8+Math.random()*.2 });
 const bursts = [];
+/* Fireworks: a rocket streaks up from the bottom trailing sparks, then
+bursts into a ring of sparks that fall, flicker and fade. One every
+1.4-3s, somewhere in the upper part of the panel. */
+const FW_COLORS = [['#F2B33D','#FFE08A'],['#DF2B2C','#FF8A7A'],['#1E63D6','#7FB2FF'],['#E8641B','#FFB070'],['#084C61','#3FA7C4'],['#C8161E','#F2B33D']];
+const rockets = [], sparks = [], flashes = [];
+let nextFirework = 600;
+function launchFirework() {
+const tx = cw * (.15 + Math.random() * .7), ty = ch * (.1 + Math.random() * .38);
+rockets.push({ x: tx + (Math.random() - .5) * 40, y: ch + 10, tx: tx, ty: ty, vy: -(ch - ty) / 38, pal: FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)] });
+}
+function explode(r) {
+const k = Math.min(1.25, Math.max(.7, cw / 420));   /* scale with the panel */
+const n = 56 + Math.floor(Math.random() * 24), sp = (4.2 + Math.random() * 2.2) * k, ring = Math.random() < .35;
+for (let i = 0; i < n; i++) {
+const a = (i / n) * Math.PI * 2 + Math.random() * .12, v = ring ? sp : sp * (.3 + Math.random() * .8);
+sparks.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, decay: .0075 + Math.random() * .006, c: r.pal[i % 2], size: (2.6 + Math.random() * 1.8) * k });
+}
+flashes.push({ x: r.x, y: r.y, life: 1, c: r.pal[1], R: 46 * k });
+}
 window.partyBurst = function() {
 if (!running) return;
 const art = document.querySelector('.featured-art-hero'), pr = cvs.getBoundingClientRect();
@@ -1470,6 +1489,34 @@ ctx.fillStyle = b.color;
 ctx.setTransform(sx * c * Q, sx * s * Q, -s * Q, c * Q, b.x * Q, b.y * Q);
 if (b.round) { ctx.beginPath(); ctx.arc(0, 0, b.w * .6, 0, TWO_PI); ctx.fill(); }
 else ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+}
+nextFirework -= dt * 16.667;
+if (nextFirework <= 0) { launchFirework(); nextFirework = 1400 + Math.random() * 1600; }
+ctx.setTransform(Q, 0, 0, Q, 0, 0);
+for (let i = rockets.length - 1; i >= 0; i--) {
+const r = rockets[i];
+r.y += r.vy * dt; r.x += (r.tx - r.x) * .06 * dt;
+ctx.globalAlpha = 1; ctx.fillStyle = r.pal[1];
+ctx.fillRect(r.x - 1.5, r.y - 1.5, 3, 3);
+for (let k = 1; k <= 4; k++) { ctx.globalAlpha = .5 - k * .1; ctx.fillRect(r.x - 1 + (Math.random() - .5) * 2, r.y - r.vy * k * 1.4, 2, 2); }
+if (r.y <= r.ty) { explode(r); rockets.splice(i, 1); }
+}
+for (let i = flashes.length - 1; i >= 0; i--) {   /* a brief glow where it bursts */
+const f = flashes[i]; f.life -= .09 * dt;
+if (f.life <= 0) { flashes.splice(i, 1); continue; }
+const gr = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.R);
+gr.addColorStop(0, f.c); gr.addColorStop(1, 'rgba(255,255,255,0)');
+ctx.globalAlpha = f.life * .7; ctx.fillStyle = gr;
+ctx.beginPath(); ctx.arc(f.x, f.y, f.R, 0, TWO_PI); ctx.fill();
+}
+for (let i = sparks.length - 1; i >= 0; i--) {
+const p = sparks[i];
+p.vy += .04 * dt; p.vx *= Math.pow(.968, dt); p.vy *= Math.pow(.968, dt);
+p.x += p.vx * dt; p.y += p.vy * dt; p.life -= p.decay * dt;
+if (p.life <= 0) { sparks.splice(i, 1); continue; }
+ctx.globalAlpha = Math.min(1, p.life * 1.4) * (p.life < .35 && Math.random() < .3 ? .3 : 1);   /* flicker as they die */
+ctx.fillStyle = p.c;
+ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (.5 + p.life * .5), 0, TWO_PI); ctx.fill();
 }
 ctx.setTransform(1, 0, 0, 1, 0, 0);
 ctx.globalAlpha = 1;
