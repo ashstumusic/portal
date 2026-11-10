@@ -1441,12 +1441,12 @@ for (let i = 0; i < COUNT; i++) pieces.push({ x: Math.random()*cw, y: Math.rando
 const bursts = [];
 /* Fireworks: a rocket streaks up from the bottom trailing sparks, then
 bursts into a ring of sparks that fall, flicker and fade. One every
-1.4-3s, somewhere in the upper part of the panel. */
+1.4-3s, anywhere in the panel, always behind its content. */
 const FW_COLORS = [['#F2B33D','#FFE08A'],['#DF2B2C','#FF8A7A'],['#1E63D6','#7FB2FF'],['#E8641B','#FFB070'],['#084C61','#3FA7C4'],['#C8161E','#F2B33D']];
 const rockets = [], sparks = [], flashes = [];
 let nextFirework = 600;
 function launchFirework() {
-const tx = cw * (.15 + Math.random() * .7), ty = ch * (.04 + Math.random() * .24);   /* high in the panel */
+const tx = cw * (.08 + Math.random() * .84), ty = ch * (.06 + Math.random() * .8);   /* anywhere in the panel (behind its content) */
 rockets.push({ x: tx + (Math.random() - .5) * 40, y: ch + 10, tx: tx, ty: ty, vy: -(ch - ty) / 38, pal: FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)] });
 }
 function explode(r) {
