@@ -301,3 +301,7 @@ html { overscroll-behavior-y: none; }
   box-shadow: 0 4px 16px rgb(0 0 0 / .35);
 }
 :root.psy .fab-music:hover, :root.psy .hero-scroll:hover { background: #FFD465; border-color: rgb(0 0 0 / .3); }
+/* On second thought: white, turning yellow when pointed at or focused. */
+:root.psy .fab-music, :root.psy .hero-scroll { background: #fff; color: #111; }
+:root.psy .fab-music:hover, :root.psy .hero-scroll:hover,
+:root.psy .fab-music:focus-visible, :root.psy .hero-scroll:focus-visible { background: var(--gold); color: #111; }
