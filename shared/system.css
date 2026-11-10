@@ -1097,3 +1097,43 @@ html { overscroll-behavior-y: none; }
    YouTube chips, the phone menu): the logo goes solid grey inside its own
    shape on hover, white details and cut-outs kept, like the toolbar. */
 :root.psy :is(.f-btn, .rel-btn, .vid-yt, .drawer-platforms a, .nav-platform):hover .pt { filter: url(#pt-mono); }
+
+/* ── Consistency pass (audit of all 53 controls) ──────────────────────
+   Track rows are play buttons, so they behave like every other button:
+   a faint band at rest, gold fill + gold ring on hover, the same focus
+   ring, and a play symbol in place of the number while pointed at or
+   focused (the usual music-app cue). The playing row keeps its own look. */
+:root.psy .rel-track { background: rgb(240 245 246 / .035) !important; transition: var(--btn-fade) !important; }
+:root.psy .rel-track:hover:not(#\#) { background: var(--gold) !important; color: #111 !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
+:root.psy .rel-track:hover:not(#\#) :is(.rel-track-title, .rel-track-num, .rel-track-eq) { color: #111 !important; }
+:root.psy .rel-track:is(:hover, :focus-visible) .rel-track-num { font-size: 0 !important; }
+:root.psy .rel-track:is(:hover, :focus-visible) .rel-track-num::before { content: "\25B6\FE0E"; font-size: 10px; }
+:root.psy .rel-track:focus-visible:hover:not(#\#) { outline: 3px solid #fff !important; outline-offset: 3px !important; }
+/* every outlined button: one 2px rim (the toolbar's were 1.5px) */
+:root.psy .nav .k-search-btn:not(:hover), :root.psy .nav .nav-toggle:not(:hover) { border-width: 2px !important; }
+:root .nav-links a:not(:hover, :focus-visible, [aria-current])::after { box-shadow: inset 0 0 0 2px var(--bar-rim) !important; }
+:root .nav-links a[aria-current]:not(:hover, :focus-visible)::after { box-shadow: inset 0 0 0 2px #111 !important; }
+@media (forced-colors: active) { :root.psy .rel-track { border: 1px solid ButtonText !important; } }
+
+/* Phone menu: same buttons as the toolbar. Whiter glass panel; each link
+   and Search is a full-width outlined chip (48px tall: a comfortable
+   thumb target), sentence case in the UI font; gold fill + ring on
+   hover, the same focus ring. */
+:root.psy .nav-drawer {
+  background: rgb(255 255 255 / .95) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.1); backdrop-filter: blur(24px) saturate(1.1);
+  display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px !important;
+}
+:root.psy .nav-drawer > a, :root.psy .nav-drawer .drawer-search {
+  display: flex !important; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; width: 100%; margin: 0 !important; padding: 0 16px !important;
+  font: 600 16px/1 var(--font-ui) !important; letter-spacing: -.005em !important; text-transform: none !important;
+  color: #1d1d1f !important; background: rgb(255 255 255 / .55) !important;
+  border: 2px solid var(--bar-rim) !important; border-radius: 12px !important; corner-shape: squircle;
+  transition: var(--btn-fade) !important;
+}
+:root.psy .nav-drawer > a::before, :root.psy .nav-drawer > a::after { display: none !important; }
+:root.psy .nav-drawer :is(> a, .drawer-search):hover:not(#\#) { background: var(--gold) !important; border-color: var(--gold) !important; color: #111 !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
+:root.psy .nav-drawer .drawer-search svg { width: 18px; height: 18px; color: currentColor !important; }
+:root.psy .nav-drawer .drawer-platforms a { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; }
+:root.psy .nav-drawer .drawer-platforms a:hover:not(#\#) { background: var(--gold); outline: var(--hl-outline); outline-offset: 2px; }

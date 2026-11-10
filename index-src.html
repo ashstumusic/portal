@@ -1647,8 +1647,9 @@ row.dataset.release = rIdx;
 row.dataset.track = tIdx;
 row.setAttribute('role', 'button');
 row.setAttribute('tabindex', '0');
+row.setAttribute('aria-label', 'Play ' + String(t.title).replace(/<[^>]*>/g, '') + ', track ' + r.num);
 row.innerHTML =
-'<span class="rel-track-num">' + r.num + '</span>' +
+'<span class="rel-track-num" aria-hidden="true">' + r.num + '</span>' +
 '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
 '<span class="rel-track-title">' + t.title + '</span>' +
 '';
