@@ -1469,3 +1469,24 @@ html { overscroll-behavior-y: none; }
 @media (forced-colors: active) { :root.psy .rel-lyrics-toggle:not(#\#) { border: 2px solid ButtonText !important; } }
 /* lyrics a touch smaller (16px; body text stays 17px) */
 :root.psy .rel-track-wrap .rel-lyrics-inner:not(#\#) { font-size: 16px !important; }
+
+/* Press Kit on narrow screens: a clean stack between the two photo rows.
+   Title, one line of copy, then a full-width download button at a normal
+   button height (it used to stretch into a tall block beside the text). */
+@media (max-width: 767px) {
+  :root.psy .epk-body:not(#\#) {
+    display: flex !important; flex-direction: column; align-items: stretch; gap: 10px !important;
+    padding: 22px max(20px, 5vw) 24px !important; text-align: left;
+  }
+  :root.psy .epk-body .section-h { margin: 0 !important; padding: 0 !important; }
+  :root.psy .epk-body .epk-text { margin: 0 0 6px !important; max-width: none !important; }
+  :root.psy .epk-body .epk-text br { display: none; }
+  :root.psy .epk-body .btn-epk:not(#\#) {
+    width: 100% !important; height: auto !important; min-height: 56px !important; align-self: stretch;
+    flex-direction: row !important; justify-content: center !important; padding: 10px 20px !important;
+    border-radius: 14px !important;
+  }
+  :root.psy .epk-body .btn-epk svg:not(#\#) { width: 24px !important; height: 24px !important; max-height: none !important; }
+  :root.psy .epk-body .btn-epk span br { display: none; }
+  :root.psy .epk-body .btn-epk span:not(#\#) { font-size: 15px !important; letter-spacing: .1em !important; white-space: nowrap; }
+}
