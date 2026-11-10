@@ -368,3 +368,93 @@ html { overscroll-behavior-y: none; }
   filter: drop-shadow(1.5px 1.5px 0 #6B2222);
   font-weight: 800;
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   ONE BUTTON SYSTEM (Nov 2026) - every button and pill, same rules:
+     idle      grey 2px outline, faint fill, light label
+     hover     white 2px outline (and focus: plus the gold focus ring)
+     selected  yellow fill, black label  (current section, open, active,
+               pressed)
+   Same shape family (text buttons are pills, icon buttons circles), same
+   one quick colour fade, no lifting, scaling or spinning.
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  --btn-rim: rgb(240 245 246 / .38);
+  --btn-rim-hover: #fff;
+  --btn-fill: rgb(240 245 246 / .06);
+  --btn-fill-hover: rgb(240 245 246 / .12);
+  --btn-label: rgb(240 245 246 / .92);
+  --btn-fade: background-color .18s var(--ease-ui), border-color .18s var(--ease-ui), color .18s var(--ease-ui), box-shadow .18s var(--ease-ui);
+}
+/* the family */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk,
+  .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll,
+  .rel-play-circle, .vid-play-circle) {
+  background: var(--btn-fill) !important;
+  color: var(--btn-label) !important;
+  border: 2px solid var(--btn-rim) !important;
+  box-shadow: none !important;
+  transition: var(--btn-fade) !important;
+  transform: none !important; translate: none !important; rotate: none !important; scale: none !important;
+}
+/* shapes: text buttons pills, icon buttons circles */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .rel-btn--label, .rel-track-soon) { border-radius: var(--r-pill) !important; }
+:root.psy :is(.k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll, .rel-play-circle, .vid-play-circle) { border-radius: 50% !important; }
+/* things that sit on photos keep a darker base so the rim reads */
+:root.psy :is(.hero-scroll, .rel-play-circle, .vid-play-circle, .lb-arrow) { background: rgb(8 12 18 / .55) !important; }
+/* hover */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll):is(:hover, :focus-visible),
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) {
+  border-color: var(--btn-rim-hover) !important;
+  background: var(--btn-fill-hover) !important;
+  color: #fff !important;
+}
+:root.psy :is(.rel-play-circle, .vid-play-circle) svg { color: #fff !important; }
+/* selected / pressed */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll):active,
+:root.psy :is(.rel-lyrics-toggle.open, .np-ctrl.active, .fs-ctrl.active, [aria-pressed="true"]:is(.np-ctrl, .fs-ctrl, .k-tool)) {
+  background: var(--gold) !important; border-color: var(--gold) !important; color: #111 !important;
+}
+:root.psy :is(.rel-lyrics-toggle.open, .np-ctrl.active, .fs-ctrl.active) svg { color: #111 !important; }
+/* the press-kit download keeps its red fill (rim and hover as above) */
+:root.psy .btn-epk { background: #DF2B2C !important; color: #fff !important; }
+:root.psy .btn-epk:is(:hover, :focus-visible) { background: #E8403F !important; }
+/* streaming buttons: a faint wash of the service's own colour */
+:root.psy :is(.f-btn, .rel-btn):has(.pt--apple) { background: rgb(250 45 72 / .16) !important; }
+:root.psy :is(.f-btn, .rel-btn):has(.pt--spotify) { background: rgb(29 185 84 / .16) !important; }
+:root.psy .vid-yt { background: rgb(255 0 0 / .14) !important; }
+:root.psy :is(.f-btn, .rel-btn):has(.pt--apple):is(:hover, :focus-visible) { background: rgb(250 45 72 / .26) !important; }
+:root.psy :is(.f-btn, .rel-btn):has(.pt--spotify):is(:hover, :focus-visible) { background: rgb(29 185 84 / .26) !important; }
+:root.psy .vid-yt:is(:hover, :focus-visible) { background: rgb(255 0 0 / .24) !important; }
+/* labels that look like buttons (not clickable): idle look only */
+:root.psy :is(.rel-btn--label, .rel-track-soon) {
+  background: var(--btn-fill) !important; border: 2px solid var(--btn-rim) !important; box-shadow: none !important;
+}
+:root.psy .rel-btn--label:is(:hover, :focus-visible) { background: var(--btn-fill) !important; border-color: var(--btn-rim) !important; }
+/* the big play buttons stay the one gold "press play" disc, with the same hover rim */
+:root.psy :is(#np-play, .fs-play) { border: 2px solid var(--gold) !important; box-shadow: none !important; transform: none !important; transition: var(--btn-fade) !important; }
+:root.psy :is(#np-play, .fs-play):is(:hover, :focus-visible) { border-color: #fff !important; }
+/* toolbar links: already on this system via their bubble (grey idle,
+   white hover, yellow current); same fade */
+.nav-links a::after { transition: var(--btn-fade) !important; }
+
+/* Close buttons: the × is drawn as a centred mark instead of a text glyph
+   (the new font set the "✕" high in the circle). */
+:root.psy :is(.np-close, .lb-close) { font-size: 0 !important; display: inline-flex !important; align-items: center; justify-content: center; padding: 0 !important; }
+:root.psy :is(.np-close, .lb-close)::before {
+  content: ""; width: 14px; height: 14px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Release cover art isn't darkened at rest: no dimming filter, no idle
+   tint behind the play button; only a short fade at the very bottom so
+   the album title stays readable. */
+:root.psy .rel-art, :root[data-theme="dark"] .rel-art, .featured-art { filter: none !important; }
+:root.psy .rel-play-overlay, :root.psy .rel-card:hover .rel-play-overlay { background: transparent !important; }
+:root.psy .rel-overlay { background: linear-gradient(to top, rgb(0 0 0 / .78) 0%, rgb(0 0 0 / .32) 22%, transparent 42%) !important; }
+:root.psy .rel-name, :root.psy .rel-cat { text-shadow: 0 1px 8px rgb(0 0 0 / .55); }
+
+/* A little more room after the About card (still no excess). */
+.bio-body { padding-bottom: var(--s6) !important; }
+@media (max-width: 767px) { .bio-body { padding-bottom: var(--s4) !important; } }
