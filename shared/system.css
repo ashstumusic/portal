@@ -778,3 +778,46 @@ html { overscroll-behavior-y: none; }
   background: #fff !important; border-color: #fff !important; color: #111 !important;
 }
 :root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):not(:hover, :focus-visible) :is(span, svg) { color: #111 !important; }
+
+/* ── Logo mark: the tilted hand-drawn star ────────────────────────────
+   Left of the name in the home section and the toolbar; a way home on
+   its own (in the toolbar it stays when the name fades out, and is then
+   the only clickable part). Drawn as a mask so it wears the name's fill:
+   the gradient + red offset shadow on the home section, black in the bar. */
+.logo-mark {
+  display: inline-block; flex: none; width: 1em; height: 1em;
+  -webkit-mask: url(Images/logo-mark.webp) center / contain no-repeat; mask: url(Images/logo-mark.webp) center / contain no-repeat;
+  background: currentColor;
+  transition: transform 520ms var(--spring, ease);
+}
+.logo-mark-link { display: inline-flex; line-height: 0; color: inherit; border-radius: 50%; text-decoration: none; }
+.logo-mark-link:hover .logo-mark, .nav-logo:hover .logo-mark { transform: rotate(-14deg) scale(1.06); }
+.logo-mark-link:active .logo-mark, .nav-logo:active .logo-mark { transform: rotate(-14deg) scale(.92); transition-duration: .12s; }
+.logo-mark-link:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
+#hero-brand .logo-mark { font-size: 104px; background: linear-gradient(135deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%); }
+/* the mask would clip a filter on the star itself, so the shadow sits on its link */
+#hero-brand .logo-mark-link { filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); }
+#hero-brand.hero-brand { gap: 14px !important; }
+.nav-logo .logo-mark { font-size: 30px; background: #111; }
+.nav-logo .hero-brand { gap: 8px !important; }
+.nav-logo.name-hidden { pointer-events: none; }
+.nav-logo.name-hidden .logo-mark { pointer-events: auto; }
+.nav-logo, .nav-logo .hero-brand { opacity: 1 !important; }
+@media (max-width: 1199px) { #hero-brand .logo-mark { font-size: 78px; } }
+@media (max-width: 767px) { #hero-brand .logo-mark { font-size: 52px; } #hero-brand.hero-brand { gap: 10px !important; } .nav-logo .logo-mark { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { .logo-mark { transition: none; } }
+@media (forced-colors: active) { .logo-mark { background: CanvasText !important; forced-color-adjust: none; } }
+
+/* Brighter glass toolbar */
+:root.psy .nav, :root[data-theme="dark"].psy .nav {
+  background: rgb(255 255 255 / .8) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(2) brightness(1.15) !important; backdrop-filter: blur(28px) saturate(2) brightness(1.15) !important;
+}
+/* Streaming buttons: the same bright glass instead of solid white */
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):not(:hover, :focus-visible),
+:root.psy .vid-lightbox .vid-yt:not(:hover, :focus-visible) {
+  background: rgb(255 255 255 / .72) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(2) brightness(1.15); backdrop-filter: blur(20px) saturate(2) brightness(1.15);
+  border-color: rgb(255 255 255 / .7) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), 0 4px 16px rgb(0 0 0 / .18) !important;
+}

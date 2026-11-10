@@ -194,6 +194,7 @@
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu · home">
     <div class="hero-brand">
+      <span class="logo-mark" aria-hidden="true"></span>
       <span class="hero-name" style="font-size:1.805rem;padding-top:0;line-height:1">Ash Stu</span>
     </div>
   </a>
@@ -242,6 +243,7 @@
     </div>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
+        <a href="#" class="logo-mark-link" aria-label="Ash Stu · home"><span class="logo-mark" aria-hidden="true"></span></a>
         <h1 class="hero-name">Ash Stu<span class="sr-only"> - Outsider-Folk Singer-Songwriter</span></h1>
       </div>
     </div>
@@ -545,7 +547,8 @@ aboutIn = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.25) / (h * 0.2)));
 }
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
-if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; navLogo.style.pointerEvents = navShow < .05 ? 'none' : ''; _lastNavIn = navShow; }
+/* only the toolbar name fades: the star mark stays as the way home */
+if (navLogo && navShow !== _lastNavIn) { const nm = navLogo.querySelector('.hero-name'); if (nm) nm.style.opacity = navShow; navLogo.classList.toggle('name-hidden', navShow < .05); _lastNavIn = navShow; }
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
