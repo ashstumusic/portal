@@ -535,7 +535,7 @@ html {
   padding: clamp(3rem,7vw,6rem) clamp(2rem,5vw,4rem) 132px;
   gap: 1.25rem;
   /* Orange panel for the featured release. */
-  background: #E8641B;
+  background: #FFFFFF;
   border-left: 1px solid rgba(8,76,97,.06);
   border-left: 1px solid rgb(from var(--ink) r g b / .06);
   overflow: hidden;
@@ -549,17 +549,14 @@ html {
   max-height: max(var(--panel-floor, 470px), calc(100svh - var(--nav-pad, 0px) - var(--band, 0px)));
 }
 .hero-split-right > * { position: relative; z-index: 1; }
-/* On the orange panel: gold would vanish, so the kicker goes near-black
-   brown, and the badge a deep burnt red. */
-.hero-split-right .featured-kicker { color: #2A1206; }
-.hero-split-right .featured-badge { background: #7A2408; }
-/* On the gold panel the translucent-teal buttons went olive; cream chips
-   read as printed tickets and keep the icons crisp. */
+/* On the white panel everything goes high contrast: a near-black title,
+   the site's red for the kicker, and solid black badge and buttons. */
+.hero-split-right .featured-title { color: #111; text-shadow: none; }
+.hero-split-right .featured-kicker { color: #C8161E; }
+.hero-split-right .featured-badge { background: #111; color: #fff; }
 .hero-split-right .f-btn {
-  background: rgba(250,252,252,.8);
-  background: rgb(from var(--cream) r g b / .8);
-  border-color: rgba(8,76,97,.18);
-  border-color: rgb(from var(--ink) r g b / .18);
+  background: #111; color: #fff;
+  border-color: #111;
 }
 /* Hover fill comes from .f-btn's shared ::after overlay (see above) -
    no per-context override needed, it works over any base background. */
