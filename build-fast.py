@@ -88,6 +88,7 @@ css = open("styles.css").read()
 # springs, glass header...). Appended so page rules can still override it.
 css += "\n" + open("shared/kinetic.css").read()
 css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
+css += "\n" + open("shared/system.css").read()   # design system: type, spacing, radii, states (last word)
 # Images the stylesheet references get a content-hash query, so a browser
 # holding an older copy under the same name fetches the new one (a stale
 # star sheet showed the old textures as squares).
@@ -150,8 +151,9 @@ html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_o
 
 # favicon -> external webp file (10KB vs ~80KB inlined base64 in the
 # critical HTML payload; one small cached fetch wins for a page-load win)
-html = re.sub(r'<link rel="icon"[^>]*/>', '<link rel="icon" type="image/webp" href="favicon.webp"/>', html)
-html = re.sub(r'<link rel="apple-touch-icon"[^>]*/>\n?', '<link rel="apple-touch-icon" href="favicon.webp"/>', html)
+_fv = __import__('hashlib').sha256(open("favicon.webp", "rb").read()).hexdigest()[:8]   # cache-bust a changed icon
+html = re.sub(r'<link rel="icon"[^>]*/>', f'<link rel="icon" type="image/webp" href="favicon.webp?v={_fv}"/>', html)
+html = re.sub(r'<link rel="apple-touch-icon"[^>]*/>\n?', f'<link rel="apple-touch-icon" href="favicon.png?v={_fv}"/>', html)
 
 # minify JSON-LD
 def min_jsonld(m):
