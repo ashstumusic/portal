@@ -245,3 +245,12 @@ html, body { overscroll-behavior-y: none; }
 
 /* The scroll-down button over a card or button: dimmed, still there. */
 .hero-scroll.soft { opacity: .55; }
+
+/* The page ends right after the About card: a small breathing gap (plus
+   the docked player's own height, which body padding adds), nothing more. */
+.bio-body { padding-bottom: var(--s3) !important; }
+@media (max-width: 767px) { .bio-body { padding-bottom: var(--s2) !important; } }
+
+/* The featured panel's confetti and fireworks both sit behind its content
+   (album cover, text, buttons), never in front. */
+.hero-split-right > .confetti-canvas, .hero-split-right > .fireworks-canvas { z-index: 0 !important; pointer-events: none; }
