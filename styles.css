@@ -535,7 +535,9 @@ html {
   padding: clamp(3rem,7vw,6rem) clamp(2rem,5vw,4rem) 132px;
   gap: 1.25rem;
   /* Orange panel for the featured release. */
-  background: #FFFFFF;
+  /* White, faintly tinted with the top toolbar's teal (8 76 97 at ~10%). */
+  background: #E6EDEF;
+  background: color-mix(in srgb, rgb(8 76 97) 10%, #fff);
   border-left: 1px solid rgba(8,76,97,.06);
   border-left: 1px solid rgb(from var(--ink) r g b / .06);
   overflow: hidden;
