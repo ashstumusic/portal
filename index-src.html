@@ -2612,5 +2612,8 @@ try{last=localStorage.getItem(key)||'';}catch(e){}
 var order,tries=0;do{order=items.map(function(_,i){return i;});for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=order[i];order[i]=order[j];order[j]=t;}tries++;}while((order.join('')===last||(!last&&order.join('')==='0123'))&&tries<20);
 try{localStorage.setItem(key,order.join(''));}catch(e){}
 imgs.forEach(function(im,k){im.src=items[order[k]].src;im.alt=items[order[k]].alt;});})();</script>
+<script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
+   can't change it), so the slider is hidden there and only mute stays. */
+(function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
 </body>
 </html>
