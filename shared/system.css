@@ -458,3 +458,14 @@ html { overscroll-behavior-y: none; }
 /* A little more room after the About card (still no excess). */
 .bio-body { padding-bottom: var(--s6) !important; }
 @media (max-width: 767px) { .bio-body { padding-bottom: var(--s4) !important; } }
+
+/* "Distributing soon": white text on a gradient fill (the palette), with
+   the dark red-brown as a text shadow so the white reads on the pastels. */
+:root.psy .rel-btn.rel-btn--label {
+  background: linear-gradient(90deg, #FBB669 0%, #F88FA8 20%, #F37C78 40%, #E7AD8B 60%, #E1D0C4 80%, #A9CBC4 100%) !important;
+  border-color: rgb(107 34 34 / .55) !important;
+}
+:root.psy .rel-label-text {
+  background: none; -webkit-text-fill-color: #fff; color: #fff;
+  filter: none; text-shadow: 0 1px 0 #6B2222, 0 0 6px rgb(107 34 34 / .55);
+}
