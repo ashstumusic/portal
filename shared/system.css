@@ -1,0 +1,125 @@
+/* ════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM (Nov 2026) - loaded last, homepage only (build-fast.py).
+   One system under the brand: SF Pro for everything that isn't a brand
+   face, an Apple-style type scale, an 8px spacing grid, three corner
+   radii, one hairline, one ambient shadow, one motion curve, one focus
+   ring. Brand faces stay: the 'Logo' wordmark (name, section headers),
+   the Quote serif, and the Figment handwriting.
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-ui-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  --plain-sans: var(--font-ui);
+
+  /* 8px grid */
+  --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s6: 48px; --s8: 64px; --s12: 96px;
+
+  /* radii: small chips/rows, buttons/media, cards/panels */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+  --radius: var(--r-md);
+
+  /* material and light (dark page) */
+  --hair: rgb(255 255 255 / .08);
+  --shadow-ambient: 0 1px 2px rgb(0 0 0 / .32), 0 8px 24px rgb(0 0 0 / .28);
+  --label-2: rgb(235 235 245 / .64);   /* secondary text */
+
+  /* motion */
+  --ease-ui: cubic-bezier(.25, .1, .25, 1);
+  --t-fast: .18s; --t-med: .3s;
+}
+
+/* ── Typography ───────────────────────────────────────────────────── */
+body, button, input, select, textarea { font-family: var(--font-ui); }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Body (17/25) */
+.bio-desc, .contact-intro, .epk-text {
+  font-family: var(--font-ui); font-size: 17px; line-height: 1.47; letter-spacing: -.01em; font-weight: 400;
+}
+.epk-text { font-size: 15px; color: var(--label-2); }
+
+/* Titles: SF Pro Display, semibold, tight tracking */
+.rel-name, .featured-title, h3.vid-title, .vid-title {
+  font-family: var(--font-ui-display); font-weight: 600; letter-spacing: -.015em;
+}
+.vid-title { font-size: 17px; line-height: 1.3; }
+
+/* Labels: 12px semibold caps, one tracking value */
+.featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label,
+.rel-lyrics-toggle, .rel-track-soon, .featured-badge, .nav-links a, .nav-drawer a {
+  font-family: var(--font-ui); font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+}
+.featured-kicker, .rel-cat { font-size: 12px; }
+.disc-quote cite, .rel-lyrics-toggle, .party-eq, #np-album { font-size: 11px; }
+.nav-links a { font-size: 13px; }
+
+/* Buttons: 13px semibold */
+.f-btn, .rel-btn, .vid-yt { font-family: var(--font-ui); font-weight: 600; letter-spacing: .04em; }
+
+/* Tracklists: readable rows (15px) with tabular numbers */
+.rel-track { font-size: 15px; line-height: 1.33; letter-spacing: -.005em; }
+.rel-track-num { font-size: 12px; font-variant-numeric: tabular-nums; }
+
+/* ── Spacing: 8px grid ────────────────────────────────────────────── */
+.releases-grid { --gap: var(--s3); }
+.video-grid { gap: var(--s3); }
+.featured-btns, .rel-btns { gap: var(--s1); }
+.contact-inner { padding: var(--s4); }
+.vid-info { padding: var(--s2); gap: var(--s1); }
+@media (max-width: 767px) {
+  .releases-grid { --gap: var(--s2); }
+  .video-grid { gap: var(--s2); }
+  .contact-inner { padding: var(--s3); }
+}
+
+/* ── Surfaces: cards and panels ───────────────────────────────────── */
+.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
+  background: rgb(20 22 30 / .6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+          backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-ambient);
+}
+.rel-card, .vid-card-wrap, .bio-card, .contact-inner { overflow: hidden; }
+
+/* Media and buttons: 12px; chips and rows: 8px; pills stay round */
+.featured-art, .featured-art-rounded, .lb-video-wrap { border-radius: var(--r-md); }
+.f-btn, .rel-btn, .contact-email-link, .btn-epk { border-radius: var(--r-md); }
+.rel-track { border-radius: var(--r-sm); }
+.featured-badge, .rel-lyrics-toggle, .rel-track-soon, .vid-yt { border-radius: var(--r-pill); }
+
+/* Softer borders: one hairline everywhere a divider is drawn */
+.rel-track, .bio-card-media { border-color: var(--hair); }
+
+/* ── Interaction: one curve, one focus ring, clear disabled state ─── */
+:where(a, button, [role="button"], input, select, textarea, summary) {
+  transition: color var(--t-fast) var(--ease-ui), background-color var(--t-fast) var(--ease-ui),
+              border-color var(--t-fast) var(--ease-ui), box-shadow var(--t-med) var(--ease-ui),
+              opacity var(--t-fast) var(--ease-ui);
+}
+:where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 3px;
+}
+:where(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .btn-epk):active { opacity: .78; }
+:where(button, [role="button"]):is([disabled], [aria-disabled="true"]):not(.rel-track--upcoming) {
+  opacity: .4; cursor: not-allowed;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(a, button, [role="button"], input, select, textarea, summary) { transition: none; }
+}
+
+/* ── Floors and stragglers (from the audit) ───────────────────────── */
+/* Nothing below 12px. */
+.featured-badge, .party-eq, .f-btn, .rel-btn, .rel-btn--label, .disc-quote cite, .vid-yt,
+.rel-lyrics-toggle, #np-album { font-size: 12px; }
+.f-btn, .rel-btn { font-size: 13px; }
+/* Icon-to-label and inline gaps: 8px; layout gaps on the grid. */
+.featured-badge, .f-btn, .rel-btn, .rel-btn--label, .vid-yt, .contact-email-link, .hero-brand { gap: var(--s1); }
+#hero-brand.hero-brand { gap: var(--s3); }
+.nav-platforms, .k-tools { gap: var(--s2); }
+.nav-links { gap: var(--s4); }
+.epk-body, #party.hero-split-right { gap: var(--s3); }
+.nav-links a, .nav-toggle, .nav-drawer a, .lb-close { border-radius: var(--r-md); }
+.rel-btn.rel-btn--label, .f-btn.f-btn--label { font-size: 12px; }
+.nav-logo .hero-brand { gap: var(--s1); }
