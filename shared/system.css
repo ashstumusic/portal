@@ -1231,3 +1231,8 @@ html { overscroll-behavior-y: none; }
    so the continuation reads as part of the same line */
 :root.psy .rel-track-wrap .rel-lyrics-inner.lyr-wrap .rel-lyric-line { padding-left: 1.1em; text-indent: -1.1em; }
 :root.psy .rel-track-wrap .rel-lyric-line { font-size: inherit !important; }
+
+/* On the gold-filled streaming buttons the logo fills solid black on
+   hover (white details and cut-outs kept), matching the black label.
+   The toolbar icons, which have no gold fill, keep their gold logos. */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt):hover .pt:not(#\#) { filter: url(#pt-mono) !important; }
