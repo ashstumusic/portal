@@ -180,3 +180,7 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 }
 :root[data-theme="dark"] #player-bar#player-bar { border-top: 1px solid rgb(255 255 255 / .16); }
 
+
+/* Confetti falls in front of the featured panel's album, text and buttons.
+   The canvas ignores the pointer, so everything under it stays clickable. */
+.hero-split-right > .confetti-canvas { z-index: 5; pointer-events: none; }
