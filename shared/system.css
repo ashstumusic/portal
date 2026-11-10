@@ -582,3 +582,13 @@ html { overscroll-behavior-y: none; }
 :root.psy .hero-split-right .featured-btns { margin: 0 !important; }
 :root.psy .hero-split-right .featured-badge { margin: 0 !important; }
 @media (max-width: 767px) { :root.psy .hero-split-right .featured-kicker { font-size: 13px !important; } }
+/* More vertical air in the featured panel: 32px cover -> label, 12px label
+   -> title, 32px title -> buttons (the panel's gap is 24px). */
+:root.psy .hero-split-right .featured-kicker { margin: var(--s1) 0 -12px !important; }
+:root.psy .hero-split-right .featured-btns { margin-top: var(--s1) !important; }
+
+/* Stars sit just above the page background (never behind it, which a
+   browser theme or dark-mode extension painting the page could hide) and
+   below the content, which is lifted one level above them. */
+.cut-stars { z-index: 0 !important; }
+:root.psy main { position: relative; z-index: 1; }
