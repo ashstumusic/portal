@@ -1092,3 +1092,8 @@ html { overscroll-behavior-y: none; }
     radial-gradient(closest-side at 16% 86%, rgb(175 130 255 / .88), transparent),
     radial-gradient(closest-side at 50% 52%, rgb(255 220 120 / .35), transparent) !important;
 }
+
+/* Every streaming button on the page (featured panel, release cards,
+   YouTube chips, the phone menu): the logo goes solid grey inside its own
+   shape on hover, white details and cut-outs kept, like the toolbar. */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .drawer-platforms a, .nav-platform):hover .pt { filter: url(#pt-mono); }
