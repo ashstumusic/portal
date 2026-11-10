@@ -1661,3 +1661,22 @@ html { overscroll-behavior-y: none; }
 /* "Ash Stu" fade inverted: faintest outline at the top, building down to
    the solid name on the last row (same direction as the tagline). */
 :root.psy .bio-wall--top { flex-direction: column-reverse !important; }
+
+/* About walls wear the home logo's horizontal gradient (gold, pink,
+   orange, sky), flowing on one clock across every row. Solid rows are
+   filled with it; the outlined echoes show it only in their outline (the
+   glyph's inside is painted the card colour). Replaces the drifting
+   single accent. Still with reduced motion / effects off. */
+:root.psy .bio-wall { animation: none !important; color: #F7C549; }
+:root.psy .bio-wall > *:not(#\#):not(#\#):not(#\#) {
+  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) 0% 50% / 200% 100% repeat-x !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: name-flow 9s linear infinite !important;
+}
+:root.psy .bio-wall--top > :nth-child(n+2):not(#\#):not(#\#):not(#\#) {
+  -webkit-text-fill-color: #15171E !important; -webkit-text-stroke: 4px transparent !important; paint-order: stroke fill;
+}
+:root.psy.psy-calm .bio-wall > *:not(#\#):not(#\#):not(#\#) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall > *:not(#\#):not(#\#):not(#\#) { animation: none !important; } }
+@media (forced-colors: active) { :root.psy .bio-wall > *:not(#\#):not(#\#):not(#\#) { background: none !important; -webkit-text-fill-color: currentColor !important; -webkit-text-stroke: 0 !important; animation: none !important; } }
