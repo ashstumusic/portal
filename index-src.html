@@ -1586,13 +1586,31 @@ wrap.appendChild(lDiv);
 var btns = card.querySelector('.rel-btns');
 if (btns) btns.after(wrap); else card.appendChild(wrap);
 }
+// The tracklist in album order: released tracks plus any not out yet
+// (rel.upcoming, from the folder's upcoming.txt), placed by track number.
+function tracklistRows(rel) {
+var rows = rel.tracks.map(function(t, tIdx) { return { t: t, tIdx: tIdx, num: t.num || tIdx + 1 }; });
+(rel.upcoming || []).forEach(function(u) { rows.push({ t: u, tIdx: -1, num: u.num }); });
+return rows.sort(function(a, b) { return a.num - b.num; });
+}
+function upcomingRow(u) {
+var wrap = document.createElement('div');
+wrap.className = 'rel-track-wrap';
+wrap.innerHTML = '<div class="rel-track rel-track--upcoming" aria-disabled="true" title="Not released yet">' +
+'<span class="rel-track-num">' + u.num + '</span>' +
+'<span class="rel-track-title">' + escHtml(u.title) + '<span class="sr-only"> (not released yet)</span></span>' +
+'<span class="rel-track-soon" aria-hidden="true">Soon</span></div>';
+return wrap;
+}
 function buildTracklists() {
 RELEASE_LIST.forEach(function(rel, rIdx) {
-if (rel.tracks.length === 1) { buildSingleLyrics(rel, rIdx); return; }
+if (rel.tracks.length === 1 && !(rel.upcoming && rel.upcoming.length)) { buildSingleLyrics(rel, rIdx); return; }
 var container = document.getElementById('tracklist-' + rIdx);
 if (!container) return;
 var frag = document.createDocumentFragment();
-rel.tracks.forEach(function(t, tIdx) {
+tracklistRows(rel).forEach(function(r) {
+if (r.tIdx < 0) { frag.appendChild(upcomingRow(r.t)); return; }
+var t = r.t, tIdx = r.tIdx;
 // lyrics.json is keyed by the track's audio file (stable across reordering).
 var lyricsEntry = LYRICS[t.file];
 var hasLyrics = !!(lyricsEntry && lyricsEntry.lines && lyricsEntry.lines.length);
@@ -1605,7 +1623,7 @@ row.dataset.track = tIdx;
 row.setAttribute('role', 'button');
 row.setAttribute('tabindex', '0');
 row.innerHTML =
-'<span class="rel-track-num">' + (tIdx + 1) + '</span>' +
+'<span class="rel-track-num">' + r.num + '</span>' +
 '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
 '<span class="rel-track-title">' + t.title + '</span>' +
 '';
@@ -1758,7 +1776,7 @@ var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 if (!btns) btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>';
-var tracklist = rel.tracks.length > 1
+var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ' - ' + escHtml(rel.type) + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +

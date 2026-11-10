@@ -8,19 +8,49 @@
     "tracks": [
       {
         "title": "Still Sad",
-        "file": "Audio/My Anima/04. Still Sad.mp3"
+        "file": "Audio/My Anima/04. Still Sad.mp3",
+        "num": 4
       },
       {
         "title": "Worship Song",
-        "file": "Audio/My Anima/06. Worship Song.mp3"
+        "file": "Audio/My Anima/06. Worship Song.mp3",
+        "num": 6
       },
       {
         "title": "You Are What You Love",
-        "file": "Audio/My Anima/08. You Are What You Love.mp3"
+        "file": "Audio/My Anima/08. You Are What You Love.mp3",
+        "num": 8
       },
       {
         "title": "Somewhere, Sometime (2026 Version)",
-        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3"
+        "file": "Audio/My Anima/10. Somewhere, Sometime (2026 Version).mp3",
+        "num": 10
+      }
+    ],
+    "upcoming": [
+      {
+        "num": 1,
+        "title": "The Cloud for the Desert"
+      },
+      {
+        "num": 2,
+        "title": "Pretty, May You Please"
+      },
+      {
+        "num": 3,
+        "title": "Is This Limerence?"
+      },
+      {
+        "num": 5,
+        "title": "St. James Infirmary"
+      },
+      {
+        "num": 7,
+        "title": "The Maid Freed From the Gallows"
+      },
+      {
+        "num": 9,
+        "title": "Lucky to Grieve"
       }
     ],
     "featured": false
@@ -34,39 +64,48 @@
     "tracks": [
       {
         "title": "Cool Cat Can't Comprehend",
-        "file": "Audio/Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3"
+        "file": "Audio/Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3",
+        "num": 1
       },
       {
         "title": "Dirge for Ducklings",
-        "file": "Audio/Ash Stu, Vol. II/02. Dirge for Ducklings.mp3"
+        "file": "Audio/Ash Stu, Vol. II/02. Dirge for Ducklings.mp3",
+        "num": 2
       },
       {
         "title": "Savior Complicated",
-        "file": "Audio/Ash Stu, Vol. II/03. Savior Complicated.mp3"
+        "file": "Audio/Ash Stu, Vol. II/03. Savior Complicated.mp3",
+        "num": 3
       },
       {
         "title": "Annabel Lena",
-        "file": "Audio/Ash Stu, Vol. II/04. Annabel Lena.mp3"
+        "file": "Audio/Ash Stu, Vol. II/04. Annabel Lena.mp3",
+        "num": 4
       },
       {
         "title": "Summertime Even on the Moon",
-        "file": "Audio/Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3"
+        "file": "Audio/Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3",
+        "num": 5
       },
       {
         "title": "Performatives Anonymous",
-        "file": "Audio/Ash Stu, Vol. II/06. Performatives Anonymous.mp3"
+        "file": "Audio/Ash Stu, Vol. II/06. Performatives Anonymous.mp3",
+        "num": 6
       },
       {
         "title": "Theory of Hope",
-        "file": "Audio/Ash Stu, Vol. II/07. Theory of Hope.mp3"
+        "file": "Audio/Ash Stu, Vol. II/07. Theory of Hope.mp3",
+        "num": 7
       },
       {
         "title": "Peacekeepers",
-        "file": "Audio/Ash Stu, Vol. II/08. Peacekeepers.mp3"
+        "file": "Audio/Ash Stu, Vol. II/08. Peacekeepers.mp3",
+        "num": 8
       },
       {
         "title": "The Wandering Jerk",
-        "file": "Audio/Ash Stu, Vol. II/09. The Wandering Jerk.mp3"
+        "file": "Audio/Ash Stu, Vol. II/09. The Wandering Jerk.mp3",
+        "num": 9
       }
     ],
     "featured": true
@@ -80,75 +119,93 @@
     "tracks": [
       {
         "title": "The Cosmos Is Alive",
-        "file": "Audio/Ash Stu, Vol. I/01. The Cosmos Is Alive.mp3"
+        "file": "Audio/Ash Stu, Vol. I/01. The Cosmos Is Alive.mp3",
+        "num": 1
       },
       {
         "title": "There Used To Be a Brighter Boy",
-        "file": "Audio/Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3"
+        "file": "Audio/Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3",
+        "num": 2
       },
       {
         "title": "Waste My Time",
-        "file": "Audio/Ash Stu, Vol. I/03. Waste My Time.mp3"
+        "file": "Audio/Ash Stu, Vol. I/03. Waste My Time.mp3",
+        "num": 3
       },
       {
         "title": "AM Soda",
-        "file": "Audio/Ash Stu, Vol. I/04. AM Soda.mp3"
+        "file": "Audio/Ash Stu, Vol. I/04. AM Soda.mp3",
+        "num": 4
       },
       {
         "title": "Who Stuns the Birds",
-        "file": "Audio/Ash Stu, Vol. I/05. Who Stuns the Birds.mp3"
+        "file": "Audio/Ash Stu, Vol. I/05. Who Stuns the Birds.mp3",
+        "num": 5
       },
       {
         "title": "The Helpful Raven",
-        "file": "Audio/Ash Stu, Vol. I/06. The Helpful Raven.mp3"
+        "file": "Audio/Ash Stu, Vol. I/06. The Helpful Raven.mp3",
+        "num": 6
       },
       {
         "title": "VCR",
-        "file": "Audio/Ash Stu, Vol. I/07. VCR.mp3"
+        "file": "Audio/Ash Stu, Vol. I/07. VCR.mp3",
+        "num": 7
       },
       {
         "title": "Drive Me Home",
-        "file": "Audio/Ash Stu, Vol. I/08. Drive Me Home.mp3"
+        "file": "Audio/Ash Stu, Vol. I/08. Drive Me Home.mp3",
+        "num": 8
       },
       {
         "title": "Pretend",
-        "file": "Audio/Ash Stu, Vol. I/09. Pretend.mp3"
+        "file": "Audio/Ash Stu, Vol. I/09. Pretend.mp3",
+        "num": 9
       },
       {
         "title": "Relapse Sonnet",
-        "file": "Audio/Ash Stu, Vol. I/10. Relapse Sonnet.mp3"
+        "file": "Audio/Ash Stu, Vol. I/10. Relapse Sonnet.mp3",
+        "num": 10
       },
       {
         "title": "Pick Up the Phone",
-        "file": "Audio/Ash Stu, Vol. I/11. Pick Up the Phone.mp3"
+        "file": "Audio/Ash Stu, Vol. I/11. Pick Up the Phone.mp3",
+        "num": 11
       },
       {
         "title": "Outdoor Plant",
-        "file": "Audio/Ash Stu, Vol. I/12. Outdoor Plant.mp3"
+        "file": "Audio/Ash Stu, Vol. I/12. Outdoor Plant.mp3",
+        "num": 12
       },
       {
         "title": "Why Have Eyes",
-        "file": "Audio/Ash Stu, Vol. I/13. Why Have Eyes.mp3"
+        "file": "Audio/Ash Stu, Vol. I/13. Why Have Eyes.mp3",
+        "num": 13
       },
       {
         "title": "Unanswerable Questions",
-        "file": "Audio/Ash Stu, Vol. I/14. Unanswerable Questions.mp3"
+        "file": "Audio/Ash Stu, Vol. I/14. Unanswerable Questions.mp3",
+        "num": 14
       },
       {
         "title": "A Grief Preserved",
-        "file": "Audio/Ash Stu, Vol. I/15. A Grief Preserved.mp3"
+        "file": "Audio/Ash Stu, Vol. I/15. A Grief Preserved.mp3",
+        "num": 15
       },
       {
         "title": "Future Lives",
-        "file": "Audio/Ash Stu, Vol. I/16. Future Lives.mp3"
+        "file": "Audio/Ash Stu, Vol. I/16. Future Lives.mp3",
+        "num": 16
       },
       {
         "title": "Don't Wish Your Life Away",
-        "file": "Audio/Ash Stu, Vol. I/17. Don't Wish Your Life Away.mp3"
+        "file": "Audio/Ash Stu, Vol. I/17. Don't Wish Your Life Away.mp3",
+        "num": 17
       },
       {
         "title": "Anybody Still Awake?",
-        "file": "Audio/Ash Stu, Vol. I/18. Anybody Still Awake?.mp3"
+        "file": "Audio/Ash Stu, Vol. I/18. Anybody Still Awake?.mp3",
+        "num": 18
       }
     ],
     "featured": false

@@ -40,6 +40,29 @@ def strip_track_prefix(filename_no_ext):
     return re.sub(r'^\d+\.\s*', '', filename_no_ext)
 
 
+def track_number(filename_no_ext):
+    m = re.match(r'^(\d+)\.', filename_no_ext)
+    return int(m.group(1)) if m else None
+
+
+def parse_upcoming_txt(path):
+    """upcoming.txt: songs on the release that aren't out yet, one per
+    line as "N. Title" (N = its place on the tracklist). They're listed
+    greyed out and can't be played. When one comes out, add its
+    "N. Title.mp3" and delete its line here."""
+    out = []
+    if not os.path.isfile(path):
+        return out
+    with open(path, encoding='utf-8') as fh:
+        for line in fh:
+            m = re.match(r'^\s*(\d+)\.\s*(.+?)\s*$', line)
+            if m:
+                out.append({'num': int(m.group(1)), 'title': m.group(2)})
+            elif line.strip():
+                print(f'  WARNING: {path}: "{line.strip()}" is not "N. Title" - ignoring', file=sys.stderr)
+    return out
+
+
 def classify_release(track_count):
     if track_count >= 7:
         return 'Album'
@@ -105,10 +128,21 @@ def gen_releases():
         for f in tracks_files:
             base = os.path.splitext(f)[0]
             title = strip_track_prefix(base)
-            tracks.append({
+            track = {
                 'title': title,
                 'file': os.path.join(folder, f).replace(os.sep, '/'),
-            })
+            }
+            num = track_number(base)
+            if num is not None:
+                track['num'] = num
+            tracks.append(track)
+        upcoming = parse_upcoming_txt(os.path.join(folder, 'upcoming.txt'))
+        released_nums = {t.get('num') for t in tracks}
+        for u in upcoming:
+            if u['num'] in released_nums:
+                print(f'  WARNING: "{name}" upcoming.txt lists track {u["num"]} ({u["title"]}), '
+                      f'but it is already released - remove that line', file=sys.stderr)
+        upcoming = [u for u in upcoming if u['num'] not in released_nums]
         art = find_art(name)
         if not art:
             print(f'  WARNING: no cover art found for release "{name}" '
@@ -142,6 +176,7 @@ def gen_releases():
             'apple': links.get('apple'),
             'spotify': links.get('spotify'),
             'tracks': tracks,
+            **({'upcoming': upcoming} if upcoming else {}),
             '_sort': sort_val,
             '_lead': links.get('featured', 'yes').strip().lower() not in ('no', 'false', '0'),
             '_order': _int_or_none(links.get('order')),
