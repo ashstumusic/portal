@@ -952,3 +952,87 @@ html { overscroll-behavior-y: none; }
 :root.psy #party .featured-title { color: #0E2638 !important; -webkit-text-fill-color: #0E2638 !important; text-shadow: none !important; }
 :root.psy #party .featured-kicker { color: #6A3D00 !important; }
 :root.psy #party :is(.f-btn):not(:hover, :focus-visible) { background: rgb(255 255 255 / .7) !important; border-color: rgb(14 38 56 / .55) !important; }
+
+/* ── One highlight for every button ───────────────────────────────────
+   Like the toolbar's streaming icons: pointing at any button draws a
+   thick gold ring around it; its fill and label stay as they are (no
+   colour swap). Keyboard focus keeps its own white-and-dark ring (set
+   above); selected states (open lyrics, active player controls, the
+   current section) keep their own look. */
+:root.psy { --hl-ring: 0 0 0 3px var(--gold); }
+/* undo the old gold fill on hover/focus: each group keeps its idle look */
+:root.psy :is(.contact-email-link, .rel-lyrics-toggle:not(.open), .k-tool, .nav-toggle, .np-ctrl:not(.active), .np-close, .lb-close, .fs-ctrl:not(.active), .fs-collapse, .rel-tl-toggle):is(:hover, :focus-visible) {
+  background: var(--btn-fill) !important; color: var(--btn-label) !important; border-color: var(--btn-rim) !important;
+}
+:root.psy :is(.hero-scroll, .lb-arrow):is(:hover, :focus-visible) { background: rgb(8 12 18 / .55) !important; color: var(--btn-label) !important; border-color: var(--btn-rim) !important; }
+:root.psy :is(.rel-play-circle, .vid-play-circle),
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) {
+  background: rgb(8 12 18 / .55) !important; border-color: rgb(255 255 255 / .85) !important; color: #fff !important;
+}
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) svg { color: #fff !important; }
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):is(:hover, :focus-visible) {
+  background: rgb(255 255 255 / .72) !important; color: #111 !important; border-color: rgb(255 255 255 / .7) !important;
+}
+:root.psy #party .f-btn:is(:hover, :focus-visible) { background: rgb(255 255 255 / .7) !important; border-color: rgb(14 38 56 / .55) !important; }
+:root.psy .btn-epk:is(:hover, :focus-visible) { background: #DF2B2C !important; color: #fff !important; }
+:root.psy :is(.k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .fs-ctrl, .rel-lyrics-toggle, .rel-tl-toggle):is(:hover, :focus-visible) svg { color: currentColor !important; }
+:root.psy :is(.f-btn, .rel-btn, .vid-yt):is(:hover, :focus-visible) :is(span, svg) { color: #111 !important; }
+/* toolbar: search, menu and the section links keep their glass look */
+:root.psy .nav :is(.k-search-btn, .nav-toggle):is(:hover, :focus-visible) { background: rgb(255 255 255 / .55) !important; border: 1.5px solid var(--bar-rim) !important; color: #1d1d1f !important; }
+:root.psy .nav :is(.k-search-btn, .nav-toggle):is(:hover, :focus-visible) svg { color: #1d1d1f !important; }
+:root .nav-links a:is(:hover, :focus-visible):not([aria-current]) { color: #1d1d1f !important; }
+:root .nav-links a[aria-current]:is(:hover, :focus-visible) { color: #fff !important; }
+:root .nav-links a:is(:hover, :focus-visible):not([aria-current])::after { background: rgb(255 255 255 / .55) !important; box-shadow: inset 0 0 0 1.5px var(--bar-rim) !important; }
+:root .nav-links a[aria-current]:is(:hover, :focus-visible)::after { background: transparent !important; box-shadow: none !important; }
+:root.psy .k-palette-close:hover { background: transparent; border-color: color-mix(in srgb, var(--k-text) 55%, transparent); color: var(--k-text); }
+.nav-drawer a:hover::before, .nav-drawer a:hover::after { opacity: 0 !important; }
+
+/* the ring itself, on pointer hover */
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll, .rel-tl-toggle, .nav-platform, .k-palette-close, #np-play, .fs-play, .nav-drawer a, .drawer-search):hover,
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover, .rel-tl-toggle:hover, .rel-lyrics-toggle:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) {
+  box-shadow: var(--hl-ring) !important;
+}
+:root .nav-links a:hover::after { box-shadow: inset 0 0 0 1.5px var(--bar-rim), var(--hl-ring) !important; }
+:root .nav-links a[aria-current]:hover::after { box-shadow: var(--hl-ring) !important; }
+:root.psy :is(#np-play, .fs-play):hover { border-color: var(--gold) !important; }
+/* a focused control that is also pointed at keeps the focus ring */
+:root.psy :is(a, button, [role="button"]):focus-visible:hover { box-shadow: 0 0 0 6px rgb(0 0 0 / .85) !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible:hover { box-shadow: var(--focus-ring) !important; }
+@media (forced-colors: active) {
+  :root.psy :is(a, button, [role="button"]):hover { outline: 2px solid Highlight; outline-offset: 2px; }
+}
+/* "Tracks" + arrow, centred together */
+:root.psy .rel-tl-toggle { justify-content: center; gap: 6px; }
+:root.psy .rel-tl-toggle .rel-tl-chev { margin-left: 0; }
+/* (the older Apple/Spotify gold-fill rule is more specific: outrank it) */
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):is(:hover, :focus-visible):not(#\#) {
+  background: rgb(255 255 255 / .72) !important; color: #111 !important; border-color: rgb(255 255 255 / .7) !important;
+}
+:root.psy #party .f-btn:is(:hover, :focus-visible):not(#\#) { background: rgb(255 255 255 / .7) !important; border-color: rgb(14 38 56 / .55) !important; }
+
+/* ── Hover, everywhere: gold fill + gold ring (as the toolbar's streaming
+   icons do). Black label/icon on the gold. The ring is an outline set 2px
+   off the control, so keyboard focus (a white outline) replaces it
+   cleanly. Supersedes the "ring only" block above. */
+:root.psy { --hl-outline: 2px solid var(--gold); }
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll, .rel-tl-toggle, .k-palette-close, .nav-drawer a, .drawer-search):hover:not(#\#),
+:root.psy #party .f-btn:hover:not(#\#),
+:root.psy .nav :is(.k-search-btn, .nav-toggle):hover:not(#\#),
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover, .rel-tl-toggle:hover, .rel-lyrics-toggle:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle):not(#\#) {
+  background: var(--gold) !important; border-color: var(--gold) !important; color: #111 !important;
+  box-shadow: none !important; outline: var(--hl-outline) !important; outline-offset: 2px !important;
+}
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .nav-toggle, .np-ctrl, .np-close, .lb-close, .lb-arrow, .fs-ctrl, .fs-collapse, .hero-scroll, .rel-tl-toggle, .drawer-search):hover:not(#\#) :is(svg, span),
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover, .rel-track-wrap:hover, .rel-tl-toggle:hover, .rel-lyrics-toggle:hover)), .featured-play-overlay:hover, .vid-card-wrap:hover:not(:has(.vid-yt:hover))) :is(.rel-play-circle, .vid-play-circle) svg:not(#\#) { color: #111 !important; }
+:root.psy :is(.f-btn, .rel-btn, .vid-yt):hover .pt { color: inherit; }
+/* toolbar section links (current one included) */
+:root .nav-links a:hover:not(#\#) { color: #111 !important; }
+:root .nav-links a:hover:not(#\#)::after { background: var(--gold) !important; box-shadow: none !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
+/* toolbar streaming icons and the big play discs: ring only round the
+   coloured icon / gold disc already there */
+:root.psy .nav .nav-platform:hover:not(#\#) { background: var(--gold); box-shadow: none !important; outline: var(--hl-outline); outline-offset: 2px; }
+:root.psy :is(#np-play, .fs-play):hover:not(#\#) { border-color: var(--gold) !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; }
+/* keyboard focus wins over hover */
+:root.psy :is(a, button, [role="button"]):focus-visible:hover:not(#\#) { outline: 3px solid #fff !important; outline-offset: 3px !important; box-shadow: 0 0 0 6px rgb(0 0 0 / .85) !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible:hover:not(#\#) { outline: none !important; box-shadow: var(--focus-ring) !important; }
+:root .nav-links a:focus-visible:hover:not(#\#)::after { outline: none !important; box-shadow: var(--focus-ring) !important; }
