@@ -594,7 +594,7 @@ html { overscroll-behavior-y: none; }
 :root.psy main { position: relative; z-index: 1; }
 
 /* The About card's "Ash Stu" in the same yellow as the hero and toolbar names. */
-:root.psy .bio-name { color: var(--gold) !important; -webkit-text-fill-color: var(--gold) !important; }
+:root.psy .bio-name:not(.bio-wall *) { color: var(--gold) !important; -webkit-text-fill-color: var(--gold) !important; }
 
 /* ── Every button highlights the same way: gold ───────────────────── */
 /* Hover/focus = gold fill, black label, gold rim - for every button,
@@ -638,7 +638,7 @@ html { overscroll-behavior-y: none; }
 :root.psy :is(.hero-split .hero-name, .nav-logo .hero-name, .bio-name) {
   background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%) !important;
   -webkit-background-clip: text !important; background-clip: text !important;
-  -webkit-text-fill-color: transparent !important; color: #F7C549 !important;
+  -webkit-text-fill-color: transparent !important; color: #F7C549;   /* not !important: the About walls animate colour */
   text-shadow: none !important;
   filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) !important;
 }
@@ -1601,31 +1601,6 @@ html { overscroll-behavior-y: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy .bio-wall .bio-tagline { animation: none; } }
 @media (max-width: 767px) { :root.psy .bio-wall { align-items: center; } }
 
-/* About walls in pop-art colours: each row is one flat bright colour
-   (hot pink, yellow, cyan, lime, orange) and the colours travel down the
-   rows, one step every 1.2s, all on one clock. Static (one colour per
-   row) with reduced motion or background effects off. */
-:root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) {
-  background: none !important; -webkit-text-fill-color: currentColor !important;
-  color: #FF2E7E !important;
-  animation: pop-rows 6s linear infinite !important;
-}
-@keyframes pop-rows {
-  0%, 17%  { color: #FF2E7E; }
-  20%, 37% { color: #FFE600; }
-  40%, 57% { color: #00E5FF; }
-  60%, 77% { color: #7FFF00; }
-  80%, 97% { color: #FF7A00; }
-  100%     { color: #FF2E7E; }
-}
-:root.psy .bio-wall > :nth-child(5n+2):not(#\#) { animation-delay: -4.8s !important; color: #FF7A00 !important; }
-:root.psy .bio-wall > :nth-child(5n+3):not(#\#) { animation-delay: -3.6s !important; color: #7FFF00 !important; }
-:root.psy .bio-wall > :nth-child(5n+4):not(#\#) { animation-delay: -2.4s !important; color: #00E5FF !important; }
-:root.psy .bio-wall > :nth-child(5n+5):not(#\#) { animation-delay: -1.2s !important; color: #FFE600 !important; }
-:root.psy.psy-calm .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { animation: none !important; }
-@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { animation: none !important; } }
-@media (forced-colors: active) { :root.psy .bio-wall :is(.bio-name, .bio-tagline):not(#\#) { color: CanvasText !important; animation: none !important; } }
-
 /* About walls sized to fill the panel (font sizes set by script): tight
    rows, slimmer panel padding, no wrapping. */
 :root.psy .bio-card-text:not(#\#) { padding: clamp(18px, 2.4vw, 32px) !important; justify-content: center; }
@@ -1634,3 +1609,34 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-wall .bio-tagline:not(#\#) { line-height: 1.12 !important; }
 :root.psy .bio-wall--top { row-gap: 0 !important; margin-bottom: 16px !important; }
 :root.psy .bio-wall--bottom { row-gap: 0 !important; margin-top: 16px !important; }
+
+/* About walls: alternating pop-art palettes. Each row has its own colour
+   and the whole group changes palette together every 2.2s (Warhol
+   brights, comic-book primaries, neon, candy); the tagline wall runs the
+   same palettes in reverse row order, so the two walls mirror each other.
+   One fixed palette with reduced motion or background effects off. */
+@keyframes pop-r1 { 0%, 22% { color: #FF2E7E; } 25%, 47% { color: #FF3B30; } 50%, 72% { color: #FF7A00; } 75%, 97% { color: #B983FF; } 100% { color: #FF2E7E; } }
+@keyframes pop-r2 { 0%, 22% { color: #FFE600; } 25%, 47% { color: #FFD500; } 50%, 72% { color: #FF3DF2; } 75%, 97% { color: #FF8AC8; } 100% { color: #FFE600; } }
+@keyframes pop-r3 { 0%, 22% { color: #00E5FF; } 25%, 47% { color: #4D8DFF; } 50%, 72% { color: #B6FF00; } 75%, 97% { color: #8FE6FF; } 100% { color: #00E5FF; } }
+@keyframes pop-r4 { 0%, 22% { color: #7FFF00; } 25%, 47% { color: #FFFFFF; } 50%, 72% { color: #00FFC8; } 75%, 97% { color: #F7C549; } 100% { color: #7FFF00; } }
+:root.psy .bio-wall--top > :nth-child(4n+1):not(#\#):not(#\#) { color: #FF2E7E; animation: pop-r1 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--bottom > :nth-child(4n+1):not(#\#):not(#\#) { color: #7FFF00; animation: pop-r4 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--top > :nth-child(4n+2):not(#\#):not(#\#) { color: #FFE600; animation: pop-r2 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--bottom > :nth-child(4n+2):not(#\#):not(#\#) { color: #00E5FF; animation: pop-r3 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--top > :nth-child(4n+3):not(#\#):not(#\#) { color: #00E5FF; animation: pop-r3 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--bottom > :nth-child(4n+3):not(#\#):not(#\#) { color: #FFE600; animation: pop-r2 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--top > :nth-child(4n+4):not(#\#):not(#\#) { color: #7FFF00; animation: pop-r4 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall--bottom > :nth-child(4n+4):not(#\#):not(#\#) { color: #FF2E7E; animation: pop-r1 8.8s linear infinite !important; animation-delay: 0s !important; }
+:root.psy .bio-wall > *:not(#\#):not(#\#) { background: none !important; -webkit-text-fill-color: currentColor !important; }
+:root.psy.psy-calm .bio-wall > *:not(#\#):not(#\#) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { :root.psy .bio-wall > *:not(#\#):not(#\#) { animation: none !important; } }
+@media (forced-colors: active) { :root.psy .bio-wall > *:not(#\#):not(#\#) { color: CanvasText; animation: none !important; } }
+
+/* Hero photo shifted further left inside its crop. */
+:root.psy .hero-split-photo:not(#\#) { object-position: 36% 18% !important; }
+:root.psy .hero-photo-frame:not(#\#) { background-position: 36% 18% !important; }
+
+/* About walls: one type size for both. Name rows are filled across with
+   repeats of the name, spread to the panel's full width. */
+:root.psy .bio-wall--top .bio-name:not(#\#) { display: flex !important; justify-content: space-between; width: 100% !important; line-height: 1.12 !important; }
+:root.psy .bio-wall--top .bio-name > * { flex: none; }
