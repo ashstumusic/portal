@@ -2604,5 +2604,13 @@ requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline')
 var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
 if(document.readyState==='complete')build();else addEventListener('load',build);
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
+<script>/* Press Kit photos: a fresh random order on every visit (never the
+   same order twice in a row). */
+(function(){var imgs=[].slice.call(document.querySelectorAll('.epk-photos img'));if(imgs.length<2)return;
+var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),n=items.length,last='',key='epk-order';
+try{last=localStorage.getItem(key)||'';}catch(e){}
+var order,tries=0;do{order=items.map(function(_,i){return i;});for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=order[i];order[i]=order[j];order[j]=t;}tries++;}while((order.join('')===last||(!last&&order.join('')==='0123'))&&tries<20);
+try{localStorage.setItem(key,order.join(''));}catch(e){}
+imgs.forEach(function(im,k){im.src=items[order[k]].src;im.alt=items[order[k]].alt;});})();</script>
 </body>
 </html>
