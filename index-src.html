@@ -2443,5 +2443,11 @@ shots[i].addEventListener('click', function() { this.classList.toggle('bio-revea
 }
 })();
 </script>
+<script>/* Toolbar glider: one black squircle that springs under the current section's link. */
+(function(){var ul=document.querySelector('.nav-links');if(!ul)return;var g=document.createElement('span');g.className='nav-glider instant';g.setAttribute('aria-hidden','true');ul.prepend(g);
+function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth){g.classList.remove('on');return;}var fresh=!g.classList.contains('on');if(fresh)g.classList.add('instant');var r=a.getBoundingClientRect(),u=ul.getBoundingClientRect();g.style.setProperty('--gx',(r.left-u.left)+'px');g.style.setProperty('--gw',r.width+'px');if(fresh){g.offsetWidth;g.classList.remove('instant');}g.classList.add('on');}
+new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
+addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
+document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
 </body>
 </html>
