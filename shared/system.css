@@ -694,21 +694,14 @@ html { overscroll-behavior-y: none; }
 :root .nav-links a:focus-visible::after { outline: 2px solid #fff; outline-offset: 2px; }
 
 /* Section headers: white fill (offset shadow kept). */
-/* Toolbar: filled with the gradient (gold, pink, orange, sky). On that
-   bright fill the toolbar's own copy of the name, the search and menu
-   buttons switch to dark ink so they stay readable. */
+/* Toolbar: filled with the same gradient (gold, pink, orange, sky),
+   darkened, so the bright gradient name and light icons read on it. */
 :root.psy .nav, :root[data-theme="dark"].psy .nav {
-  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%) !important;
-  border-bottom: 1px solid rgb(0 0 0 / .25) !important;
+  background: linear-gradient(100deg,
+    color-mix(in oklab, #F7C549 50%, #000) 0%, color-mix(in oklab, #FF8AC8 50%, #000) 38%,
+    color-mix(in oklab, #FFA36B 50%, #000) 66%, color-mix(in oklab, #8FE6FF 50%, #000) 100%) !important;
+  border-bottom: 1px solid rgb(0 0 0 / .35) !important;
   box-shadow: 0 2px 16px rgb(0 0 0 / .35);
   -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
 }
 :root.psy .nav::before { display: none !important; }
-:root.psy .nav-logo .hero-name {
-  background: none !important; -webkit-text-fill-color: #1a1010 !important; color: #1a1010 !important;
-  filter: drop-shadow(1.5px 1.5px 0 rgb(255 255 255 / .45)) !important;
-}
-:root.psy .nav :is(.nav-toggle, .k-tool, .nav-search, button):not(:hover, :focus-visible) { color: #1a1010 !important; border-color: rgb(26 16 16 / .75) !important; background: rgb(255 255 255 / .18) !important; }
-:root.psy .nav :is(.nav-toggle, .k-tool, button):not(:hover, :focus-visible) svg { color: #1a1010 !important; stroke: currentColor; }
-:root.psy .nav .nav-toggle-bar { background: #1a1010 !important; }
-:root.psy .nav [class*="divider"], :root.psy .nav .nav-sep { background: rgb(26 16 16 / .4) !important; }
