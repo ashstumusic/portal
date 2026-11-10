@@ -148,28 +148,26 @@
     })(t0);
   }, { capture: true, passive: true });
 
-  // ── STARS: real engraved stars, cut out like a Terry Gilliam collage ──
-  // 80 stars cut from Johann Bayer's Uranometria (1603): the engraving
-  // thresholded to stark black ink, printed on aged paper from the plates'
-  // own margins, cut out with rough scissor edges and a scorched rim
-  // (Images/cutouts/stars.webp, made by scripts/make_star_cutouts.py;
-  // credits in Images/cutouts/CREDITS.md). They're scattered over the
-  // space-black page, sized by how bright Bayer drew them.
+  // ── STARS: hand-drawn in white chalk, boiling like stop motion ──
+  // Twelve star designs drawn in chalk, each drawn three times with fresh
+  // hand wobble and grain (Images/chalk-stars.webp, made by
+  // scripts/make_chalk_stars.py: rows are designs, columns the three
+  // frames). Cycling the frames makes the lines "boil" the way hand-drawn
+  // stop motion does. They're scattered over the space-black page.
   //
   // Placement: the page is measured on every layout (text, cards, photos,
   // buttons become no-go areas). Each star tries a few hundred spots and
   // takes the one with the most room, furthest from the others, so the
   // sky fills evenly. Redone when the layout changes.
   //
-  // Animation is cutout jank, shot "on threes" (8 frames a second): no
-  // smooth tweens, only abrupt jumps. While you scroll, each star jitters
-  // a pixel or two every frame, turns in hard clicks and swells in steps;
-  // it pops up in two frames the first time it's seen; a fast scroll
-  // knocks the lot about. Still under reduced motion or with effects off.
+  // Animation is shot "on threes" (8 frames a second), no smooth tweens:
+  // the stars on screen boil and jitter a pixel or so every frame; while
+  // you scroll they also turn in hard clicks and swell in steps; each pops
+  // up over two frames the first time it's seen; a fast scroll knocks them
+  // about. Still under reduced motion or with effects off.
   const stars = (() => {
-    const SHEET = 'Images/cutouts/stars.webp', COLS = 10, ROWS = 8, N = 80;
-    // How big each star was engraved (its brightness in Bayer's chart).
-    const MAG = [32, 39, 30, 28, 43, 29, 45, 44, 44, 40, 28, 28, 46, 28, 28, 40, 31, 38, 28, 37, 30, 28, 45, 35, 27, 45, 30, 34, 42, 43, 42, 44, 28, 30, 28, 29, 34, 36, 37, 37, 28, 46, 40, 45, 38, 28, 30, 23, 24, 26, 22, 27, 46, 37, 32, 36, 28, 27, 25, 37, 27, 26, 40, 29, 28, 47, 36, 39, 33, 40, 38, 33, 25, 37, 36, 38, 37, 30, 30, 35];
+    const FRAMES = 3, DESIGNS = 12;
+    const BIG = [0, 1, 4, 7, 9, 10], SMALL = [2, 3, 5, 6, 8, 11];   // outline stars large, sparkles and asterisks small
     let seed = 11;   // fixed seed: the same sky on every visit
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const snap = (v, s) => Math.round(v / s) * s;
@@ -246,13 +244,9 @@
       // How many: by the page's area, so phones get fewer.
       const area = (map.W * (map.H - map.top)) / 1e6;
       const plan = [[56, 72, Math.round(area * 1.3)], [32, 46, Math.round(area * 3.6)], [16, 24, Math.round(area * 5)]];   // [min px, max px, count]
-      const order = Array.from({ length: N }, (_, i) => i).sort(() => rnd() - 0.5);
-      let next = 0;
       for (const [lo, hi, count] of plan) {
         for (let k = 0; k < count; k++) {
-          // Pick a cutout; brighter-engraved ones go to the bigger sizes.
-          let idx = order[next++ % N];
-          if (hi > 50) for (let t = 0; t < 6 && MAG[idx] < 38; t++) idx = order[next++ % N];
+          const d = (hi > 50 || rnd() < 0.3 ? BIG : SMALL)[Math.floor(rnd() * 6)];
           const size = (lo + rnd() * (hi - lo)) * s, R = size / 2, gap = size * 1.4 + 18 * s;
           let best = null;
           for (let tries = 0; tries < 260; tries++) {
@@ -268,44 +262,50 @@
           }
           if (!best) continue;
           const el = doc.createElement('i');
-          el.className = 'cut-star';
-          el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`
-            + `background-position:${((idx % COLS) / (COLS - 1)) * 100}% ${(Math.floor(idx / COLS) / (ROWS - 1)) * 100}%`;
+          el.className = 'chalk-star';
+          el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`;
           layer.append(el);
-          placed.push({ el, cx: best.x, cy: best.cy, R, base: Math.floor(rnd() * 360), spin: (rnd() < 0.5 ? -1 : 1) * (0.05 + rnd() * 0.1), ph: rnd() * 6, popAt: 0, seen: false, k: 0 });
+          const o = { el, d, cx: best.x, cy: best.cy, R, base: Math.floor((rnd() - 0.5) * 50), spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES), popAt: 0, seen: false };
+          setFrame(o); placed.push(o);
         }
       }
       layer.style.height = map.H + 'px';
       draw();
     }
 
-    // ── the jank: 8 frames a second ("on threes") while there's motion ──
-    let raf = 0, lastT = 0, settleUntil = 0, shake = 0, frame = 0;
+    function setFrame(o) { o.el.style.backgroundPosition = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; }
+
+    // ── stop motion: 8 frames a second ("on threes") ──
+    let raf = 0, lastT = 0, shake = 0;
     function draw() {
       const vh = innerHeight, sy = scrollY, moving = fxOn(), now = performance.now();
       shake = Math.min(12, shake * 0.6 + Math.abs(scrollVel) * 4);
-      frame++;
       for (const o of placed) {
         const vy = o.cy - sy;
         if (vy < -200 || vy > vh + 200) continue;
-        if (!o.seen && vy < vh * 0.95) { o.seen = true; if (moving) { o.popAt = now; settleUntil = Math.max(settleUntil, now + 400); } }
-        if (!moving) { o.el.style.transform = `rotate(${o.base}deg)`; continue; }
-        // Two-frame pop: nothing, too big, then itself.
+        if (!o.seen && vy < vh * 0.95) { o.seen = true; if (moving) o.popAt = now; }
+        if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
+        // The line boils: the next of its three drawings, never the same twice running.
+        o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o);
+        // Two-frame pop: tiny, too big, then itself.
         const pf = o.popAt ? Math.floor((now - o.popAt) / 125) : 9;
         const pop = pf === 0 ? 0.2 : pf === 1 ? 1.3 : 1;
-        // A pixel or two of boil every frame, plus a knock from fast scrolling.
-        const jx = Math.round((rnd() - 0.5) * (2 + shake)), jy = Math.round((rnd() - 0.5) * (2 + shake));
+        // A pixel of jitter every frame, more when a fast scroll knocks it.
+        const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
         const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
         const sc = pop * snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05);
         o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${sc})`;
       }
     }
+    // Runs while effects are on and the page is visible (requestAnimationFrame
+    // stops in background tabs); only the stars on screen are touched.
     function loop(t) {
       raf = 0;
+      if (!fxOn()) { draw(); return; }
       if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(); }
-      if (performance.now() < settleUntil || shake > 0.5) raf = requestAnimationFrame(loop);
+      raf = requestAnimationFrame(loop);
     }
-    const kick = () => { settleUntil = Math.max(settleUntil, performance.now() + 300); if (!raf) raf = requestAnimationFrame(loop); };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
     addEventListener('scroll', kick, { passive: true });
     let lt = 0, lastW = 0, lastH = 0;
     const relayout = () => { clearTimeout(lt); lt = setTimeout(() => {
@@ -316,7 +316,7 @@
     new ResizeObserver(relayout).observe(doc.body);
     addEventListener('resize', relayout, { passive: true });
     (doc.fonts?.ready || Promise.resolve()).then(() => setTimeout(relayout, 300));
-    return { redraw: draw };
+    return { redraw: () => { draw(); kick(); } };
   })();
 
   // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
