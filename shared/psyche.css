@@ -204,3 +204,43 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
    the bands melt, but clearly visible behind the space-black page. */
 .psy-field { opacity: .22; filter: blur(24px) saturate(.95); }
 :root[data-theme="dark"] .psy-field { opacity: .22; }
+
+/* No records and no hover movement (Nov 2026): the sleeve no longer slides
+   to show a record, nothing leans toward the pointer, and cards, art,
+   thumbnails and buttons stay put on hover (colour changes remain). */
+.party-vinyl, .rel-vinyl, .party-glare { display: none !important; }
+.featured-art-hero, #party.is-playing .featured-art-hero,
+.rel-card, .rel-card:hover,
+.rel-card:hover .rel-art, .rel-card.now-playing .rel-art,
+.vid-card:hover, .vid-card-wrap:hover, .vid-card-wrap:hover .vid-thumb img, .vid-card-wrap:hover .vid-thumb video,
+.f-btn:hover, .rel-btn:hover, .vid-yt:hover, .f-btn:hover .pt, .rel-btn:hover .pt, .vid-yt:hover .pt,
+.nav-platform:hover, .nav-platform:focus-visible, .drawer-platforms a:hover, .drawer-platforms a:focus-visible,
+.rel-card:hover .rel-play-circle, .rel-card:focus-visible .rel-play-circle,
+.featured-play-overlay:hover .rel-play-circle, .featured-play-overlay:focus-visible .rel-play-circle,
+.vid-card-wrap:hover .vid-play-circle {
+  transform: none !important; translate: none !important;
+}
+
+/* Logo: one of the hand-drawn chalk stars, in the section headers'
+   gradient (Images/logo-star.webp, transparent). No tile shadow or rounded
+   corners: just the star, with the headers' offset shadow. */
+.hero-icon, .nav-logo .hero-icon, .footer-logo img {
+  border-radius: 0 !important; box-shadow: none !important; background: none;
+  filter: drop-shadow(2px 2px 0 rgb(223 43 44 / .55)) !important;
+}
+.footer-logo:hover img { box-shadow: none !important; }
+
+/* The name "Ash Stu" (hero and top bar) takes the section headers' gradient. */
+.hero-name {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: #F7C549;
+  text-shadow: none;
+  filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55));
+}
+@media (forced-colors: active) {
+  .hero-name { -webkit-text-fill-color: currentColor; background: none; filter: none; }
+}
+/* In the top bar the name is small: a lighter offset shadow. */
+.nav-logo .hero-name { filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .5)); }
+.nav-logo .hero-icon { filter: drop-shadow(1px 1px 0 rgb(223 43 44 / .5)) !important; }

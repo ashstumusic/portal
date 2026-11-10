@@ -173,7 +173,7 @@ def repl_src(m):
     # These small icons appear repeatedly across the page (nav, hero,
     # platform buttons, fullscreen player...) - one cached file the
     # browser fetches once beats several duplicated inline copies.
-    if path.startswith("Icons/") or path == "Images/Icon.webp":
+    if path.startswith("Icons/") or path in ("Images/Icon.webp", "Images/logo-star.webp"):
         return m.group(0)
     # The hero is preloaded in <head> with fetchpriority="high", so shipping
     # it as an external file costs no LCP round-trip while keeping the
