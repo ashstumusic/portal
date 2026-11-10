@@ -253,7 +253,7 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 }
 .nav-logo .hero-icon { filter: brightness(0) invert(1) !important; }
 /* A bit fainter (Nov 2026). */
-.psy-field, :root[data-theme="dark"] .psy-field { opacity: .15; }
+.psy-field, :root[data-theme="dark"] .psy-field { opacity: .11; }
 
 /* The hero's "Ash Stu" is back to the site's yellow (gold, with its soft
    glow); the toolbar keeps a white name and no star. */
