@@ -70,69 +70,13 @@ def release_date(release_name):
     return None
 
 
-def txt_stanzas(file):
-    """The song's real verses from its album's lyrics.txt ("TRACK N: Title"
-    sections, verses separated by blank lines), if that section marks any
-    verse breaks. None otherwise."""
-    if not file:
-        return None
-    m = re.match(r'(\d+)\.', os.path.basename(file))
-    path = os.path.join(ROOT, os.path.dirname(file), 'lyrics.txt')
-    if not m or not os.path.isfile(path):
-        return None
-    want, cur, sections = int(m.group(1)), None, {}
-    with open(path, encoding='utf-8') as f:
-        for line in f:
-            h = re.match(r'\s*TRACK\s+(\d+)\s*:', line)
-            if h:
-                cur = int(h.group(1)); sections[cur] = []
-            elif cur is not None:
-                sections[cur].append(line.rstrip('\n').strip())
-    lines = sections.get(want)
-    if not lines or '' not in lines:
-        return None
-    out, verse = [], []
-    for l in lines:
-        if l:
-            verse.append(l)
-        elif verse:
-            out.append(verse); verse = []
-    if verse:
-        out.append(verse)
-    return out if len(out) > 1 else None
-
-
 def stanzas(entry, file=None):
-    """Split lyric lines into verses. Blank lines always split. Synced
-    lyrics also split at long pauses in the timing (a gap well beyond the
-    song's usual line-to-line gap), which is where verses and choruses
-    usually break. When the album's lyrics.txt marks the verses for this
-    song (blank lines), those are used instead."""
-    real = txt_stanzas(file)
-    if real:
-        return real
-    lines = entry.get('lines') or []
-    times = [l[0] for l in lines]
-    gaps = [b - a for a, b in zip(times, times[1:]) if isinstance(a, (int, float)) and isinstance(b, (int, float))]
-    limit = None
-    if entry.get('synced') is not False and len(gaps) >= 4:
-        med = sorted(gaps)[len(gaps) // 2]
-        limit = max(7.0, med * 1.9)
-    out, cur = [], []
-    for i, (t, text) in enumerate(lines):
-        text = (text or '').strip()
-        if not text:
-            if cur:
-                out.append(cur); cur = []
-            continue
-        if cur and limit is not None and i > 0:
-            prev = lines[i - 1][0]
-            if isinstance(prev, (int, float)) and isinstance(t, (int, float)) and t - prev > limit:
-                out.append(cur); cur = []
-        cur.append(text)
-    if cur:
-        out.append(cur)
-    return out
+    """The lyrics as one block: every line in order, no verse breaks (the
+    lines come already cleaned from lyrics.json - see clean_lyric in
+    generate_content.py). Kept as a list of verses for the page builders."""
+    lines = [(text or '').strip() for _, text in (entry.get('lines') or [])]
+    lines = [l for l in lines if l]
+    return [lines] if lines else []
 
 
 def previous_meta(path):
