@@ -2580,13 +2580,22 @@ if('onscrollend' in window){addEventListener('scrollend',go,{once:true});setTime
 if(!card||!text||!top||!bot)return;var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
 function build(){
 top.querySelectorAll('[data-copy]').forEach(function(e){e.remove();});bot.querySelectorAll('[data-copy]').forEach(function(e){e.remove();});
-var name=top.querySelector('.bio-name'),tag=bot.querySelector('.bio-tagline');
-var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
-var n=3;
-if(side){var cs=getComputedStyle(text),avail=media.offsetHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-(desc?desc.offsetHeight:0)-48;
-var gap=parseFloat(getComputedStyle(top).rowGap)||0;n=Math.max(1,Math.floor((avail/2+gap)/(name.offsetHeight+gap)));}
+var name=top.querySelector('.bio-name'),tag=bot.querySelector('.bio-tagline'),n=4;
 for(var i=1;i<n;i++){var a=document.createElement('p');a.className='bio-name';a.setAttribute('aria-hidden','true');a.dataset.copy='1';a.textContent='Ash Stu';top.appendChild(a);
 var b=tag.cloneNode(true);b.setAttribute('aria-hidden','true');b.dataset.copy='1';bot.appendChild(b);}
+// Four rows each, as large as they go: each wall's type is sized so a row
+// spans the panel's width; if the two walls plus the description would be
+// taller than the photos beside them, both are scaled down together.
+var rows=function(w){return [].slice.call(w.children);};
+var setSize=function(w,px){rows(w).forEach(function(r){r.style.setProperty('font-size',px+'px','important');});};
+var nat=function(el){el.style.setProperty('font-size','100px','important');var rg=document.createRange();rg.selectNodeContents(el);var wd=rg.getBoundingClientRect().width;return wd/100;};
+var cs=getComputedStyle(text),inner=text.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+var f1=inner*.98/nat(name),f2=inner*.95/nat(tag);
+setSize(top,f1);setSize(bot,f2);
+var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
+if(side){var avail=media.offsetHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+for(var k=0;k<4;k++){var used=top.offsetHeight+bot.offsetHeight+(desc?desc.offsetHeight:0)+parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop);
+if(used<=avail)break;var sc=Math.max(.5,(avail-(desc?desc.offsetHeight:0)-32)/(used-(desc?desc.offsetHeight:0)-32))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
 }
