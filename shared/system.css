@@ -1558,3 +1558,27 @@ html { overscroll-behavior-y: none; }
 @keyframes tv-glow { 50% { filter: brightness(1.12) drop-shadow(0 0 14px rgb(255 40 55 / .6)); } }
 :root.psy.psy-calm .epk-section .btn-epk { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { :root.psy .epk-section .btn-epk { animation: none !important; } }
+
+/* No section dividers: the bulb lines are gone everywhere. */
+:root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section):not(#\#):not(#\#)::before { display: none !important; content: none !important; animation: none !important; }
+
+/* Page tightened vertically: less space above and below every section
+   and under each heading (desktop about 40px between sections instead of
+   ~160px; phones about 28px). */
+:root.psy .epk-section:not(#\#):not(#\#):not(#\#) { padding-block: 8px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#) { padding-top: 20px !important; padding-bottom: 20px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section) .section-h { margin-bottom: 20px !important; }
+:root.psy .bio-section:not(#\#) { padding-top: 0 !important; }
+:root.psy .bio-section-header:not(#\#) { padding-top: 20px !important; }
+:root.psy .bio-body:not(#\#) { padding-top: 20px !important; padding-bottom: 32px !important; }
+@media (max-width: 767px) {
+  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#) { padding-top: 14px !important; padding-bottom: 14px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section) .section-h { margin-bottom: 14px !important; }
+  :root.psy .bio-section-header:not(#\#) { padding-top: 14px !important; }
+  :root.psy .bio-body:not(#\#) { padding-top: 14px !important; padding-bottom: 24px !important; }
+}
+
+/* Hero photo shifted a little to the left inside its crop (showing more
+   of the right-hand side of the picture). */
+:root.psy .hero-split-photo { object-position: 22% 18% !important; }
+:root.psy .hero-photo-frame { background-position: 22% 18% !important; }
