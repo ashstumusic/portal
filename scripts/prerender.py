@@ -68,7 +68,7 @@ def render_release_card(rel, r_idx):
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
                    f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
     if not btns:
-        btns = '<span class="rel-btn rel-btn--label">Distributing Soon</span>'
+        btns = '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>'
     tracklist = ''
     upcoming = rel.get('upcoming', [])
     if len(rel['tracks']) + len(upcoming) > 1:

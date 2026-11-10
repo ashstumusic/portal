@@ -357,3 +357,14 @@ html { overscroll-behavior-y: none; }
   background: var(--gold) !important; color: #111 !important; border-color: var(--gold) !important;
   box-shadow: 0 2px 12px rgb(247 197 73 / .4) !important;
 }
+
+/* "Distributing soon": the text is filled with the palette gradient, with
+   the dark red-brown as an offset shadow (like the section headers). The
+   label keeps its outline box. */
+.rel-label-text {
+  background: linear-gradient(90deg, #FBB669 0%, #F88FA8 20%, #F37C78 40%, #E7AD8B 60%, #E1D0C4 80%, #A9CBC4 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  filter: drop-shadow(1.5px 1.5px 0 #6B2222);
+  font-weight: 800;
+}
