@@ -469,3 +469,30 @@ html { overscroll-behavior-y: none; }
   background: none; -webkit-text-fill-color: #fff; color: #fff;
   filter: none; text-shadow: 0 1px 0 #6B2222, 0 0 6px rgb(107 34 34 / .55);
 }
+
+/* ── Pixel-centred buttons ────────────────────────────────────────── */
+/* Every button: contents centred on both axes, the label's line box
+   trimmed to its capitals (so caps sit in the true middle whatever the
+   font's ascent/descent), one height per size, even padding and gaps. */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .rel-btn--label, .rel-track-soon, .nav-links a) {
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+  gap: var(--s1) !important; line-height: 1 !important;
+  text-box: trim-both cap alphabetic;
+  vertical-align: middle;
+}
+:root.psy :is(.f-btn, .rel-btn, .vid-yt, .contact-email-link, .btn-epk, .rel-btn--label) { min-height: 40px; padding-block: 0 !important; padding-inline: var(--s2) !important; }
+:root.psy :is(.rel-lyrics-toggle, .rel-track-soon) { height: 28px !important; padding-block: 0 !important; }
+:root.psy :is(.f-btn, .rel-btn, .vid-yt) .pt { width: 18px !important; height: 18px !important; flex: none; margin: 0 !important; }
+:root.psy .contact-email-link svg, :root.psy .btn-epk svg, :root.psy .rel-lyrics-toggle svg { flex: none; display: block; margin: 0 !important; }
+:root.psy .rel-label-text { text-box: trim-both cap alphabetic; }
+:root.psy .vid-yt { min-height: 32px; padding-inline: 12px !important; }
+/* the press-kit download's two-line label */
+:root.psy .btn-epk { text-box: normal; line-height: 1.15 !important; padding-block: var(--s1) !important; }
+
+/* Streaming buttons are plain again, like the email button (no service tint). */
+:root.psy :is(.f-btn, .rel-btn):has(.pt--apple), :root.psy :is(.f-btn, .rel-btn):has(.pt--spotify), :root.psy .vid-yt { background: var(--btn-fill) !important; }
+:root.psy :is(.f-btn, .rel-btn):has(.pt--apple):is(:hover, :focus-visible),
+:root.psy :is(.f-btn, .rel-btn):has(.pt--spotify):is(:hover, :focus-visible),
+:root.psy .vid-yt:is(:hover, :focus-visible) { background: var(--btn-fill-hover) !important; }
+/* The email address is lowercase: centre its x-height rather than caps. */
+:root.psy .contact-email-link { text-box: trim-both ex alphabetic; }
