@@ -2590,16 +2590,13 @@ var rows=function(w){return [].slice.call(w.children);};
 var setSize=function(w,px){rows(w).forEach(function(r){r.style.setProperty('font-size',px+'px','important');});};
 var nat=function(el){el.style.setProperty('font-size','100px','important');var rg=document.createRange();rg.selectNodeContents(el);var wd=rg.getBoundingClientRect().width;return wd/100;};
 var cs=getComputedStyle(text),inner=text.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
-// one type size for both walls: the size at which a tagline row spans the
-// panel; each name row is then filled across with repeats of the name
-var f2=inner*.95/nat(tag),f1=f2;
+// each wall's type is sized so one row spans the panel
+var f1=inner*.98/nat(name),f2=inner*.95/nat(tag);
 setSize(top,f1);setSize(bot,f2);
 var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
 if(side){var avail=media.offsetHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
 for(var k=0;k<4;k++){var used=top.offsetHeight+bot.offsetHeight+(desc?desc.offsetHeight:0)+parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop);
 if(used<=avail)break;var sc=Math.max(.5,(avail-(desc?desc.offsetHeight:0)-32)/(used-(desc?desc.offsetHeight:0)-32))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
-rows(top).forEach(function(r){var one=r.firstElementChild,w=one.getBoundingClientRect().width,gap=f1*.38,k=Math.max(1,Math.floor((inner+gap)/(w+gap)));
-for(var q=1;q<k;q++){var sp=document.createElement('span');sp.className='rep';sp.setAttribute('aria-hidden','true');sp.textContent='Ash Stu';r.appendChild(sp);}});
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
 }
