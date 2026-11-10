@@ -261,6 +261,7 @@
       <input class="k-palette-input" type="text" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="k-palette-list"
              aria-label="Search songs, videos, sections and actions" placeholder="Search songs, videos, sections…" autocomplete="off" spellcheck="false">
       <ul class="k-palette-list" id="k-palette-list" role="listbox" aria-label="Results"></ul>
+      <button type="button" class="k-palette-close">Close</button>
       <p class="k-palette-foot" aria-hidden="true"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></p>
     </div>`;
   doc.body.append(dlg);
@@ -332,6 +333,7 @@
     else if (e.key === 'Enter') { e.preventDefault(); choose(active); }
   });
   dlg.addEventListener('click', (e) => { if (e.target === dlg) closePalette(); });
+  $('.k-palette-close', dlg).addEventListener('click', () => closePalette());
   dlg.addEventListener('close', () => { palette.open = false; });
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;

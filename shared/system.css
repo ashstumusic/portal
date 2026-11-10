@@ -802,7 +802,6 @@ html { overscroll-behavior-y: none; }
 .nav-logo .hero-brand { gap: 8px !important; }
 .nav-logo.name-hidden { pointer-events: none; }
 .nav-logo.name-hidden .logo-mark { pointer-events: auto; }
-.nav-logo, .nav-logo .hero-brand { opacity: 1 !important; }
 @media (max-width: 1199px) { #hero-brand .logo-mark { font-size: 78px; } }
 @media (max-width: 767px) { #hero-brand .logo-mark { font-size: 52px; } #hero-brand.hero-brand { gap: 10px !important; } .nav-logo .logo-mark { font-size: 22px; } }
 @media (prefers-reduced-motion: reduce) { .logo-mark { transition: none; } }
@@ -820,4 +819,106 @@ html { overscroll-behavior-y: none; }
   -webkit-backdrop-filter: blur(20px) saturate(2) brightness(1.15); backdrop-filter: blur(20px) saturate(2) brightness(1.15);
   border-color: rgb(255 255 255 / .7) !important;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), 0 4px 16px rgb(0 0 0 / .18) !important;
+}
+
+/* ── Toolbar + search: accessibility pass ─────────────────────────────
+   Every control reads as a button at rest (a visible outlined shape with
+   at least 3:1 contrast against the bar, WCAG 1.4.11), labels are 4.5:1+,
+   the keyboard focus ring is a thick black ring with a white halo (seen on
+   any background), hit areas are at least 36px, and the bar holds up in
+   high-contrast and forced-colour modes. */
+:root { --bar-rim: rgb(0 0 0 / .52); --focus-ring: 0 0 0 2px #fff, 0 0 0 5px #111; }
+/* the four section links: outlined glass chips */
+:root .nav-links a:not(:hover, :focus-visible, [aria-current])::after {
+  background: rgb(255 255 255 / .55) !important; box-shadow: inset 0 0 0 1.5px var(--bar-rim) !important;
+}
+:root .nav-links a[aria-current]:not(:hover, :focus-visible)::after { box-shadow: inset 0 0 0 1.5px #111 !important; }
+:root .nav-links a:focus-visible { outline: none !important; }
+:root .nav-links a:focus-visible::after { outline: none !important; box-shadow: var(--focus-ring) !important; }
+.nav-glider { box-shadow: none; }
+/* search: an outlined pill with a visible "Search" label */
+:root.psy .nav .k-search-btn {
+  width: auto !important; padding: 0 14px 0 11px !important; gap: 6px !important;
+  display: inline-flex !important; align-items: center !important;
+  border-radius: 12px !important; corner-shape: squircle;
+  font: 600 14px/1 var(--font-ui) !important; letter-spacing: -.005em;
+}
+:root.psy .nav .k-search-btn:not(:hover, :focus-visible) { background: rgb(255 255 255 / .55) !important; border: 1.5px solid var(--bar-rim) !important; color: #1d1d1f !important; }
+:root.psy .nav .k-search-btn:is(:hover, :focus-visible) { border: 1.5px solid var(--gold) !important; }
+:root.psy .nav .k-search-btn .k-search-label { text-box: trim-both cap alphabetic; }
+:root.psy .nav .nav-toggle:not(:hover, :focus-visible) { border: 1.5px solid var(--bar-rim) !important; background: rgb(255 255 255 / .55) !important; }
+/* streaming icons and the logo: bigger hit areas, gold ring on hover */
+:root.psy .nav .nav-platform { padding: 5px; margin: -5px; border-radius: 50%; }
+:root.psy .nav .nav-platform:hover { box-shadow: 0 0 0 2px var(--gold); }
+:root.psy .nav-logo { border-radius: 10px; }
+/* one focus ring for every toolbar control */
+:root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible,
+:root.psy .logo-mark-link:focus-visible,
+:root.psy .nav-drawer :is(a, button):focus-visible { outline: none !important; box-shadow: var(--focus-ring) !important; }
+/* search dialog: readable secondary text, a real Close button */
+.k-palette-group { opacity: .9; }
+.k-opt-sub, .k-palette-foot, .k-empty { opacity: .9; }
+.k-palette-box { position: relative; }
+.k-palette-input { padding-right: 5.5rem !important; }
+.k-palette-close {
+  position: absolute; top: .7rem; right: .7rem; min-height: 36px; padding: 0 14px;
+  font: 600 14px/1 var(--font-ui, system-ui), sans-serif; color: var(--k-text);
+  background: transparent; border: 1.5px solid color-mix(in srgb, var(--k-text) 55%, transparent); border-radius: 10px; cursor: pointer;
+}
+.k-palette-close:hover { background: var(--gold); border-color: var(--gold); color: #111; }
+.k-palette-close:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--k-surface), 0 0 0 5px var(--k-text); }
+/* more contrast requested: an opaque bar and solid rims */
+@media (prefers-contrast: more) {
+  :root.psy .nav, :root[data-theme="dark"].psy .nav { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; border-bottom: 2px solid #000 !important; }
+  :root { --bar-rim: #000; }
+  :root .nav-links a:not(:hover, :focus-visible, [aria-current])::after { background: #fff !important; box-shadow: inset 0 0 0 2px #000 !important; }
+  .k-palette-group, .k-opt-sub, .k-palette-foot, .k-empty { opacity: 1; }
+}
+/* Windows high contrast / forced colours: system colours, real borders */
+@media (forced-colors: active) {
+  .nav-glider { display: none; }
+  :root .nav-links a { border: 1px solid LinkText !important; border-radius: 12px; }
+  :root .nav-links a::after { display: none !important; }
+  :root .nav-links a[aria-current] { background: Highlight !important; color: HighlightText !important; forced-color-adjust: none; border-color: Highlight !important; }
+  :root .nav-links a:focus-visible, :root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible, .k-palette-close:focus-visible { outline: 3px solid Highlight !important; outline-offset: 2px; }
+  :root.psy .nav :is(.k-tool, .nav-toggle) { border: 1px solid ButtonText !important; }
+  .k-opt[aria-selected="true"] { outline: 2px solid Highlight; }
+}
+:root .nav-links { gap: 8px !important; }
+
+/* ── Whole page: accessibility pass ───────────────────────────────────
+   1. Buttons vs labels: every real button is a pill or circle with a
+      visible outline; status labels ("Distributing Soon", a track's "Soon")
+      are squarer tags with no outline and no pointer, so they don't read
+      as buttons. */
+:root.psy :is(.rel-btn--label, .rel-track-soon) {
+  border-radius: 6px !important; border-color: transparent !important; box-shadow: none !important; cursor: default !important;
+}
+/* 2. Outlines strong enough to see (about 4.8:1 on the dark page, past
+      the 3:1 WCAG asks of control boundaries), and the play discs get a
+      clear white rim over the artwork. */
+:root.psy { --btn-rim: rgb(240 245 246 / .55); }
+:root.psy :is(.rel-play-circle, .vid-play-circle) { border-color: rgb(255 255 255 / .85) !important; }
+/* 3. One unmistakable keyboard focus ring everywhere: white ring, dark
+      halo, offset from the control so it never blends with a gold fill. */
+:root.psy :is(a, button, summary, input, select, textarea, [role="button"], [role="option"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid #fff !important; outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgb(0 0 0 / .85) !important;
+}
+:root.psy :is(.rel-card, .vid-card, .vid-card-wrap):focus-within:not(:focus) { outline: none; }
+/* (the white toolbar keeps its own black ring; restated after the rule above) */
+:root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible,
+:root.psy .nav-drawer :is(a, button):focus-visible { outline: none !important; box-shadow: var(--focus-ring) !important; }
+:root.psy .nav-links a:focus-visible { outline: none !important; box-shadow: none !important; }
+:root.psy .k-palette :is(input, button):focus-visible { outline: none !important; box-shadow: none !important; }
+:root.psy .k-palette-close:focus-visible { box-shadow: 0 0 0 2px var(--k-surface), 0 0 0 5px var(--k-text) !important; }
+/* 4. More contrast requested: solid outlines and labels. */
+@media (prefers-contrast: more) {
+  :root.psy { --btn-rim: #fff; --btn-label: #fff; }
+  :root.psy :is(.contact-intro, .epk-sub, .rel-cat, .featured-kicker) { opacity: 1 !important; color: #fff !important; }
+}
+/* 5. Forced colours: buttons keep a real border; labels don't. */
+@media (forced-colors: active) {
+  :root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt, .contact-email-link, .rel-lyrics-toggle, .btn-epk, .k-tool, .np-ctrl, .fs-ctrl, .hero-scroll, .rel-play-circle, .vid-play-circle) { border: 2px solid ButtonText !important; }
+  :root.psy :is(.rel-btn--label, .rel-track-soon) { border: 0 !important; }
 }
