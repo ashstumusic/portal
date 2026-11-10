@@ -1751,3 +1751,34 @@ html { overscroll-behavior-y: none; }
 }
 :root.psy .fs-collapse span { text-box: trim-both cap alphabetic; }
 @media (hover: hover) and (pointer: fine) { :root.psy .fs-grabber { display: none; } }
+
+/* ── Volume slider, simplified ────────────────────────────────────────
+   One thin 4px line with a small round knob, drawn the same in every
+   browser (the track and knob are styled explicitly, so iPad Safari no
+   longer stretches a fat pill). The input itself is a 28px-tall invisible
+   hit area. Where the device owns the volume (iPhone/iPad), the slider
+   is hidden and the mute button remains. */
+:root.psy .vol-slider:not(#\#):not(#\#) {
+  -webkit-appearance: none !important; appearance: none !important;
+  width: 96px; height: 28px !important; margin: 0 4px; padding: 0; border: 0; border-radius: 0 !important;
+  background: transparent !important; box-shadow: none; cursor: pointer; touch-action: none;
+  --vt: #fff; --vr: rgb(255 255 255 / .24);
+}
+:root.psy .fs-vol .vol-slider:not(#\#):not(#\#) { flex: 1; width: auto; }
+:root.psy .vol-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(to right, var(--vt) var(--vol, 100%), var(--vr) var(--vol, 100%)); }
+:root.psy .vol-slider::-moz-range-track { height: 4px; border-radius: 2px; background: var(--vr); }
+:root.psy .vol-slider::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--vt); }
+:root.psy .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px !important; height: 14px !important; margin-top: -5px; border-radius: 50%; border: 0; background: var(--vt) !important; box-shadow: 0 1px 3px rgb(0 0 0 / .5) !important; transform: none !important; }
+:root.psy .vol-slider::-moz-range-thumb { width: 14px !important; height: 14px !important; border-radius: 50%; border: 0; background: var(--vt) !important; box-shadow: 0 1px 3px rgb(0 0 0 / .5) !important; }
+:root.psy .vol-slider:focus-visible:not(#\#):not(#\#) { outline: 2px solid #fff !important; outline-offset: 2px !important; box-shadow: none !important; border-radius: 6px !important; }
+:root.no-vol .vol-slider { display: none !important; }
+
+/* ── Full-screen player: same dark glass as the mini player; the Close
+   pill sits centred at the top under the grab handle. ── */
+:root.psy .fs-player:not(#\#) {
+  --player: #14161C; --player-hi: #14161C; --player-ink: #F2F4F6;
+  background: rgb(20 22 28 / .9) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.4) !important; backdrop-filter: blur(28px) saturate(1.4) !important;
+  color: #F2F4F6;
+}
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#) { left: 50% !important; transform: translateX(-50%) !important; }
