@@ -650,48 +650,22 @@ html { overscroll-behavior-y: none; }
   :root.psy :is(.hero-name, .bio-name) { -webkit-text-fill-color: currentColor !important; background: none !important; filter: none !important; }
 }
 
-/* ── Toolbar links: glossy 3D pills, one colour each ──────────────── */
-/* The pill is painted by ::after and hugs the label (snug height and
-   side padding); the link itself keeps its full tap target. Each pill is
-   a smooth top-lit gradient with an inner highlight, a darker lower lip
-   and a soft drop shadow. Hover lifts and brightens; the current section
-   (or a press) sinks in. */
-.nav-links li:nth-child(1) { --np: #F37C78; --np-lo: #C9504D; }
-.nav-links li:nth-child(2) { --np: #FBB669; --np-lo: #D2873A; }
-.nav-links li:nth-child(3) { --np: #A9CBC4; --np-lo: #6F9C93; }
-.nav-links li:nth-child(4) { --np: #F88FA8; --np-lo: #CC5F7B; }
-:root .nav-links { gap: 10px !important; }
-:root .nav-links a { padding-inline: 11px !important; color: #1a1010 !important; text-shadow: 0 1px 0 rgb(255 255 255 / .35); transition: transform var(--t-fast) var(--ease-ui) !important; }
+/* ── Toolbar links: styled like the search button ─────────────────── */
+/* Faint fill, 2px grey rim, light label at rest; gold fill with a black
+   label on hover/focus and for the current section. */
+:root .nav-links { gap: var(--s2) !important; }
+:root .nav-links a { padding-inline: 1rem !important; color: var(--btn-label) !important; text-shadow: none; transform: none !important; }
 :root .nav-links a::before { display: none !important; }
 :root .nav-links a::after {
-  opacity: 1 !important; height: 25px !important; border-radius: 999px !important;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--np) 55%, #fff) 0%, var(--np) 48%, var(--np-lo) 100%) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgb(255 255 255 / .6),
-    inset 0 -2px 3px rgb(0 0 0 / .18),
-    0 2px 0 var(--np-lo),
-    0 4px 10px rgb(0 0 0 / .35) !important;
-  transition: filter var(--t-fast) var(--ease-ui), box-shadow var(--t-fast) var(--ease-ui) !important;
+  opacity: 1 !important; height: 38px !important; border-radius: 999px !important; filter: none !important;
+  background: var(--btn-fill) !important;
+  box-shadow: inset 0 0 0 2px var(--btn-rim) !important;
+  transition: var(--btn-fade) !important;
 }
-:root .nav-links a:is(:hover, :focus-visible) { color: #1a1010 !important; transform: translateY(-1px); }
-:root .nav-links a:is(:hover, :focus-visible)::after {
-  filter: brightness(1.08) saturate(1.1);
-  box-shadow:
-    inset 0 1.5px 0 rgb(255 255 255 / .7),
-    inset 0 -2px 3px rgb(0 0 0 / .15),
-    0 3px 0 var(--np-lo),
-    0 7px 16px rgb(0 0 0 / .4) !important;
+:root .nav-links a:is(:hover, :focus-visible, [aria-current], :active) { color: #111 !important; }
+:root .nav-links a:is(:hover, :focus-visible, [aria-current], :active)::after {
+  background: var(--gold) !important; box-shadow: inset 0 0 0 2px var(--gold) !important;
 }
-:root .nav-links a:is([aria-current], :active) { color: #1a1010 !important; transform: translateY(1px); }
-:root .nav-links a:is([aria-current], :active)::after {
-  background: linear-gradient(180deg, var(--np-lo) 0%, var(--np) 55%, color-mix(in oklab, var(--np) 70%, #fff) 100%) !important;
-  box-shadow:
-    inset 0 2px 4px rgb(0 0 0 / .3),
-    inset 0 0 0 1.5px rgb(0 0 0 / .22),
-    0 1px 0 rgb(255 255 255 / .15) !important;
-}
-:root .nav-links a:focus-visible { outline: none; }
-:root .nav-links a:focus-visible::after { outline: 2px solid #fff; outline-offset: 2px; }
 
 /* Section headers: white fill (offset shadow kept). */
 /* Toolbar: filled with the same gradient (gold, pink, orange, sky),
