@@ -592,3 +592,11 @@ html { overscroll-behavior-y: none; }
    below the content, which is lifted one level above them. */
 .cut-stars { z-index: 0 !important; }
 :root.psy main { position: relative; z-index: 1; }
+
+/* Section separators (placed by shared/psyche.js): a 1px hairline across
+   the content width that fades out at both ends. */
+.sec-sep {
+  position: absolute; left: 50%; translate: -50% -.5px; pointer-events: none;
+  width: min(1060px, calc(100% - 2 * var(--s4))); height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / .24) 18%, rgb(255 255 255 / .24) 82%, transparent);
+}
