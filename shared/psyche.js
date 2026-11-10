@@ -187,6 +187,7 @@
     // sections that only laid out when scrolled near changed the page's
     // height mid-scroll and the sky had to be re-placed.)
     function measure() {
+      layer.style.height = '0px';   // don't let the layer's own height count as page (it would only ever grow)
       const W = doc.documentElement.clientWidth, H = doc.documentElement.scrollHeight, sy = scrollY;
       const cols = Math.ceil(W / G), rows = Math.ceil(H / G), occ = new Uint8Array(cols * rows);
       const mark = (x0, y0, x1, y1, m = M) => {
@@ -298,7 +299,8 @@
         const cy = t + o.off; if (Math.abs(cy - o.cy) < 0.5) continue;
         o.cy = cy; o.el.style.top = (cy - o.R).toFixed(1) + 'px';
       }
-      layer.style.height = doc.documentElement.scrollHeight + 'px';
+      layer.style.height = '0px';
+      layer.style.height = doc.documentElement.scrollHeight + 'px';   // the page's real height, without the layer
     }
     // When things settle: drop any star now sitting on content, top up gaps.
     function repair() {
@@ -350,7 +352,11 @@
     const scheduleRepair = () => { clearTimeout(rt); rt = setTimeout(repair, 900); };
     addEventListener('scroll', () => { if (rt) scheduleRepair(); }, { passive: true });
     const relayout = () => { clearTimeout(lt); lt = setTimeout(() => {
+      // The page's own height: measured with the star layer collapsed, so a
+      // page that shrinks (lyrics closed) is noticed and the layer shrinks too.
+      const keep = layer.style.height; layer.style.height = '0px';
       const w = doc.documentElement.clientWidth, h = doc.documentElement.scrollHeight;
+      layer.style.height = keep;
       if (w !== lastW) { lastW = w; lastH = h; clearTimeout(rt); rt = 0; layout(); kick(); return; }
       if (Math.abs(h - lastH) < 2) return;
       lastH = h; follow(); scheduleRepair();
