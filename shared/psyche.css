@@ -140,18 +140,18 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 }
 
 /* ── STARS (see shared/psyche.js) ───────────────────────────────────────
-   Engraved stars cut from Bayer's Uranometria (1603), scattered over the
-   space-black page. The layer spans the page, clips at its sides (no
-   sideways scroll) and never takes the pointer. Each star is one cell of
-   the 10x8 sheet; its transform is set 8 times a second by the script. */
+   Hand-drawn chalk stars on the space-black page. The layer spans the
+   page, clips at its sides (no sideways scroll) and never takes the
+   pointer. Each star shows one cell of the sheet (12 designs down, 3 boil
+   frames across); the script flips frames and jitters it 8 times a second. */
 .cut-stars {
   position: absolute; top: 0; left: 0; width: 100%; height: 0;
   overflow: hidden; overflow: clip; pointer-events: none; z-index: 3;
 }
-.cut-star {
+.chalk-star {
   position: absolute; display: block;
-  background: url('Images/cutouts/stars.webp') 0 0 / 1000% 800% no-repeat;
-  filter: drop-shadow(2px 3px 0 rgb(0 0 0 / .55));
+  background: url('Images/chalk-stars.webp') 0 0 / 300% 1200% no-repeat;
+  opacity: .92;
 }
 @media print { .cut-stars { display: none; } }
 /* Every section laid out up front, so the page's height (and the sky
@@ -162,3 +162,9 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 /* No dot grid on the homepage: plain space black (kinetic.css adds one
    for dark pages). */
 :root.psy[data-theme="dark"] body { background-image: none; }
+
+/* Gold buttons get black accents (on the dark page their icons inherited
+   the near-white ink): the music button, the scroll-down cue, and the
+   play circles when they light up gold. */
+:root.psy .fab-music, :root.psy .hero-scroll { color: #120E08; border-color: rgb(18 14 8 / .6); }
+:root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover)), .rel-card:focus-visible:not(:has(.rel-btn:focus-visible)), .featured-play-overlay:hover, .featured-play-overlay:focus-visible) .rel-play-circle svg { color: #120E08; }
