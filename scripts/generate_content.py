@@ -288,7 +288,16 @@ def gen_lyrics(releases):
     out = {}
     album_txt = {}
     for rel in releases:
+        # links.txt "no-lyrics: 15, 16": those tracks show no lyrics at all
+        # (no Lyrics button, no lyrics page), whatever .lrc / lyrics.txt hold.
+        skip = set()
+        if rel['tracks']:
+            lk = parse_links_txt(os.path.join(ROOT, os.path.dirname(rel['tracks'][0]['file']), 'links.txt'))
+            skip = {int(n) for n in re.findall(r'\d+', lk.get('no-lyrics', '') or lk.get('no lyrics', ''))}
         for t in rel['tracks']:
+            mnum = re.match(r'(\d+)\.', os.path.basename(t['file']))
+            if mnum and int(mnum.group(1)) in skip:
+                continue
             lrc = os.path.join(ROOT, os.path.splitext(t['file'])[0] + '.lrc')
             if not os.path.isfile(lrc):
                 # No timing file: fall back to the album's lyrics.txt

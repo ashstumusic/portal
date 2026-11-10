@@ -182,6 +182,53 @@ ARTIST_NODE = {'@type': ['MusicGroup', 'Person'], '@id': f'{SITE}/#artist', 'nam
                'alternateName': ARTIST_FULL, 'url': f'{SITE}/', 'genre': GENRE}
 
 
+HOME_HTML = None
+def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title):
+    """A song's page is the whole site with that song opened: the built
+    homepage (index.html) with this song's title, description, canonical
+    address, Open Graph / Twitter tags and JSON-LD, <base href="/"> so every
+    asset and data file resolves from the root, a small script so in-page
+    links (#music, #epk...) scroll here instead of loading the homepage, and
+    <meta name="deep-song"> for the homepage script, which opens the song's
+    tracklist and lyrics and loads it in the player. Its lyrics are also
+    open in the page's own HTML. Returns None if index.html isn't built."""
+    global HOME_HTML
+    if HOME_HTML is None:
+        hp = os.path.join(ROOT, 'index.html')
+        HOME_HTML = open(hp, encoding='utf-8').read() if os.path.isfile(hp) else ''
+    h = HOME_HTML
+    if not h or not deep_key:
+        return None
+    def sub(pattern, repl, text):
+        out, n = re.subn(pattern, lambda m: repl, text, count=1)
+        return out
+    a = esc(title); d = esc(description)
+    h = sub(r'<title>.*?</title>', f'<title>{a}</title>', h)
+    h = sub(r'<meta name="description" content="[^"]*"\s*/?>', f'<meta name="description" content="{d}"/>', h)
+    h = sub(r'<link rel="canonical" href="[^"]*"\s*/?>', f'<link rel="canonical" href="{url}"/>', h)
+    h = sub(r'<meta property="og:title" content="[^"]*"\s*/?>', f'<meta property="og:title" content="{a}"/>', h)
+    h = sub(r'<meta property="og:description" content="[^"]*"\s*/?>', f'<meta property="og:description" content="{d}"/>', h)
+    h = sub(r'<meta property="og:type" content="[^"]*"\s*/?>', '<meta property="og:type" content="music.song"/>', h)
+    h = sub(r'<meta property="og:url" content="[^"]*"\s*/?>', f'<meta property="og:url" content="{url}"/>', h)
+    h = sub(r'<meta property="og:image" content="[^"]*"\s*/?>', f'<meta property="og:image" content="{esc(art)}"/>', h)
+    h = sub(r'<meta name="twitter:title" content="[^"]*"\s*/?>', f'<meta name="twitter:title" content="{a}"/>', h)
+    h = sub(r'<meta name="twitter:description" content="[^"]*"\s*/?>', f'<meta name="twitter:description" content="{d}"/>', h)
+    head_add = ('<base href="/"/>\n'
+                f'<meta name="deep-song" content="{esc(deep_key)}"/>\n' + extra +
+                '<script type="application/ld+json">' + json.dumps(jsonld, ensure_ascii=False).replace('</', '<\\/') + '</script>\n'
+                # with <base href="/">, "#music" would point at the homepage:
+                # keep in-page links scrolling on this page
+                '<script>addEventListener("click",function(e){if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey)return;'
+                'var a=e.target.closest&&e.target.closest("a[href^=\'#\']");if(!a||a.target)return;e.preventDefault();'
+                'var id=decodeURIComponent(a.getAttribute("href").slice(1)),t=id&&document.getElementById(id);'
+                'var sm=matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";'
+                't?t.scrollIntoView({behavior:sm,block:"start"}):scrollTo({top:0,behavior:sm});});</script>\n')
+    h = sub(r'(<meta charset="[^"]*"\s*/?>)', None, h) if False else re.sub(r'(<meta charset="[^"]*"\s*/?>)', lambda m: m.group(1) + '\n' + head_add, h, count=1)
+    # the song's lyrics already open in the static HTML
+    h = h.replace(f'{esc(song_title)}<details class="rel-lyrics-static">', f'{esc(song_title)}<details class="rel-lyrics-static" open>', 1)
+    return h
+
+
 def main():
     with open(os.path.join(ROOT, 'releases.json'), encoding='utf-8') as f:
         releases = json.load(f)
@@ -200,7 +247,7 @@ def main():
             if slug in used:
                 slug = f"{slug}-{slugify(rel['name'])}"
             used.add(slug)
-            songs.append({'title': t['title'], 'slug': slug, 'release': rel, 'position': t.get('num', i + 1),
+            songs.append({'key': t['file'], 'title': t['title'], 'slug': slug, 'release': rel, 'position': t.get('num', i + 1),
                           'total': len(rel.get('tracks', [])) + len(rel.get('upcoming', [])),
                           'date': rdate, 'verses': stanzas(entry, t['file'])})
         # Songs not out yet (upcoming.txt) whose words are in lyrics.txt:
@@ -213,7 +260,7 @@ def main():
             if slug in used:
                 slug = f"{slug}-{slugify(rel['name'])}"
             used.add(slug)
-            songs.append({'title': u['title'], 'slug': slug, 'release': rel, 'position': u['num'],
+            songs.append({'key': u.get('lyrics'), 'title': u['title'], 'slug': slug, 'release': rel, 'position': u['num'],
                           'total': len(rel.get('tracks', [])) + len(rel.get('upcoming', [])),
                           'date': None, 'verses': stanzas(entry, None),
                           'unreleased': True, 'traditional': bool(u.get('traditional'))})
@@ -321,8 +368,10 @@ def main():
                  f'<meta property="article:modified_time" content="{modified}">\n'
                  f'<meta property="music:musician" content="{SITE}/">\n')
         os.makedirs(os.path.dirname(path), exist_ok=True)
+        deep_key = s.get('key')
+        html = clone_page(title, description, url, art, alt, jsonld, extra, deep_key, s['title'])
         with open(path, 'w', encoding='utf-8') as f:
-            f.write(page(title, description, url, 'music.song', art, alt, body, jsonld, extra))
+            f.write(html or page(title, description, url, 'music.song', art, alt, body, jsonld, extra))
         written.append((url, modified))
 
     # Index of every song, grouped by release.

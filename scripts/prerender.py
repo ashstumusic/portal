@@ -278,3 +278,8 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # Song pages are copies of this page (one per song, with that song
+    # opened): rebuild them whenever index.html changes, so they never point
+    # at bundles that no longer exist.
+    import subprocess, sys
+    subprocess.run([sys.executable, os.path.join('scripts', 'build_lyrics_pages.py')], check=True)
