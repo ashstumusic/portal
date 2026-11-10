@@ -1406,7 +1406,8 @@ else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); f
 (function() {
 const cvs = document.getElementById('confetti-canvas');
 if (!cvs || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-const COLORS = ['#F7C549','#DF2B2C','#4E97AD','#FFFFFF','#9FBFCB'];
+/* Saturated so they read on the light panel: gold, red, deep teal, blue, orange. */
+const COLORS = ['#F2B33D','#DF2B2C','#084C61','#1E63D6','#E8641B'];
 const COUNT = window.matchMedia('(min-width: 601px)').matches ? 45 : 20;
 const ctx = cvs.getContext('2d', { desynchronized: true, alpha: true });
 const TWO_PI = Math.PI * 2, DEG2RAD = Math.PI / 180;
@@ -1420,7 +1421,7 @@ function resize() { const r = cvs.parentElement.getBoundingClientRect(); cw = r.
 resize();
 let resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); }, { passive: true });
-for (let i = 0; i < COUNT; i++) pieces.push({ x: Math.random()*cw, y: Math.random()*ch, w: 3+Math.random()*4, h: 8+Math.random()*14, rot: Math.random()*TWO_PI, dx: (Math.random()-.5)*.5, dy: .5+Math.random()*1.2, dr: (Math.random()-.5)*3*DEG2RAD, wobble: Math.random()*TWO_PI, wobbleSpeed: .02+Math.random()*.03, flex: Math.random()*TWO_PI, flexSpeed: .03+Math.random()*.04, color: COLORS[Math.floor(Math.random()*COLORS.length)], opacity: .2+Math.random()*.35 });
+for (let i = 0; i < COUNT; i++) pieces.push({ x: Math.random()*cw, y: Math.random()*ch, w: 3+Math.random()*4, h: 8+Math.random()*14, rot: Math.random()*TWO_PI, dx: (Math.random()-.5)*.5, dy: .5+Math.random()*1.2, dr: (Math.random()-.5)*3*DEG2RAD, wobble: Math.random()*TWO_PI, wobbleSpeed: .02+Math.random()*.03, flex: Math.random()*TWO_PI, flexSpeed: .03+Math.random()*.04, color: COLORS[Math.floor(Math.random()*COLORS.length)], opacity: .8+Math.random()*.2 });
 const bursts = [];
 window.partyBurst = function() {
 if (!running) return;
