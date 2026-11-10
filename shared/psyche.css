@@ -150,8 +150,12 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 }
 .chalk-star {
   position: absolute; display: block;
-  background: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
-  opacity: .92;
+  /* The white chalk sheet is used as a stencil; the script gives each star
+     its colour (background-color) and design/frame (mask-position). */
+  background-color: #F4EDE4;
+  -webkit-mask: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
+          mask: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
+  opacity: .9;
 }
 @media print { .cut-stars { display: none; } }
 /* Every section laid out up front, so the page's height (and the sky
@@ -195,10 +199,8 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
    content); the confetti canvas stays in front. */
 .hero-split-right > .fireworks-canvas { z-index: 0; pointer-events: none; }
 
-/* Under each song's lyrics in the Music section: a link to its own page. */
-.rel-lyrics-page {
-  display: inline-block; margin-top: .9rem;
-  font: 600 .72rem var(--plain-sans, sans-serif); letter-spacing: .08em; text-transform: uppercase;
-  color: inherit; opacity: .75; text-decoration: underline; text-underline-offset: 3px;
-}
-.rel-lyrics-page:hover, .rel-lyrics-page:focus-visible { opacity: 1; }
+
+/* Stronger (Nov 2026): the rainbow fog comes back up - still blurred so
+   the bands melt, but clearly visible behind the space-black page. */
+.psy-field { opacity: .22; filter: blur(24px) saturate(.95); }
+:root[data-theme="dark"] .psy-field { opacity: .22; }

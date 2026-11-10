@@ -979,7 +979,6 @@ var lInner = document.createElement('div');
 lInner.className = 'rel-lyrics-inner';
 fillCardLyrics(lInner, entry, t.file);
 lDiv.appendChild(lInner);
-var pg = lyricsPageLink(t.file, t.title); if (pg) lInner.appendChild(pg);
 wrap.appendChild(btn);
 wrap.appendChild(lDiv);
 var btns = card.querySelector('.rel-btns');
@@ -1037,7 +1036,6 @@ lDiv.className = 'rel-lyrics';
 var lInner = document.createElement('div');
 lInner.className = 'rel-lyrics-inner';
 fillCardLyrics(lInner, lyricsEntry, t.file);
-var pg = lyricsPageLink(t.file, t.title); if (pg) lInner.appendChild(pg);
 lDiv.appendChild(lInner);
 wrap.appendChild(lDiv);
 }
@@ -1069,17 +1067,6 @@ setTimeout(initMarquees, 50);
 }
 });
 }).observe(_relGrid, { attributes: true, subtree: true, attributeFilter: ['class'] });
-}
-var LYRICS_PAGES = (function() { try { return JSON.parse(document.getElementById('lyrics-pages').textContent); } catch (e) { return {}; } })();
-function lyricsPageLink(file, title) {
-var url = LYRICS_PAGES[file];
-if (!url) return null;
-var a = document.createElement('a');
-a.className = 'rel-lyrics-page';
-a.href = url;
-a.textContent = 'Lyrics page';
-a.setAttribute('aria-label', title + ' lyrics page');
-return a;
 }
 function fillCardLyrics(inner, entry, file) {
 inner.textContent = '';

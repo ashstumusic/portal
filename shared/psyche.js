@@ -167,6 +167,9 @@
   // pop-in), and stars added later are only ever placed off screen. Still under reduced motion or with effects off.
   const stars = (() => {
     const FRAMES = 3, DESIGNS = 6;   // six hand-drawn hollow stars
+    // Each star is chalked in a faint version of one of these colours
+    // (#FBB669 #F88FA8 #F37C78 #E7AD8B #E1D0C4 #A9CBC4 #6B2222, each 40% of the way to white).
+    const COLORS = ['#FDD3A5', '#FBBCCB', '#F8B0AE', '#F1CEB9', '#EDE3DC', '#CBE0DC', '#A67A7A'];
     let seed = 11;   // fixed seed: the same sky on every visit
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const snap = (v, s) => Math.round(v / s) * s;
@@ -267,7 +270,7 @@
         const el = doc.createElement('i');
         el.className = 'chalk-star';
         // Always there from the start (no pop-in): a star never appears late.
-        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;transform:rotate(${o0base}deg)`;
+        el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;transform:rotate(${o0base}deg);background-color:${COLORS[Math.floor(rnd() * COLORS.length)]}`;
         layer.append(el);
         const o = { el, d, cls, sec: sec.el, off: best.cy - sec.top, cx: best.x, cy: best.cy, R, base: o0base, spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES) };
         setFrame(o); placed.push(o);
@@ -309,7 +312,8 @@
       fill(map, true);
     }
 
-    function setFrame(o) { o.el.style.backgroundPosition = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; }
+    // The chalk sheet is a stencil (mask): show this star's design and boil frame.
+    function setFrame(o) { const p = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; o.el.style.webkitMaskPosition = p; o.el.style.maskPosition = p; }
 
     // ── stop motion: 8 frames a second ("on threes") ──
     let raf = 0, lastT = 0, shake = 0;
