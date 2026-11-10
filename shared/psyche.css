@@ -142,7 +142,7 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 /* ── STARS (see shared/psyche.js) ───────────────────────────────────────
    Hand-drawn chalk stars on the space-black page. The layer spans the
    page, clips at its sides (no sideways scroll) and never takes the
-   pointer. Each star shows one cell of the sheet (12 designs down, 3 boil
+   pointer. Each star shows one cell of the sheet (6 designs down, 3 boil
    frames across); the script flips frames and jitters it 8 times a second. */
 .cut-stars {
   position: absolute; top: 0; left: 0; width: 100%; height: 0;
@@ -150,7 +150,7 @@ html.nes :is(.fs-ctrl, .np-ctrl, .np-close, .f-btn, .rel-btn, .k-tool, .fs-colla
 }
 .chalk-star {
   position: absolute; display: block;
-  background: url('Images/chalk-stars.webp') 0 0 / 300% 1200% no-repeat;
+  background: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
   opacity: .92;
 }
 @media print { .cut-stars { display: none; } }

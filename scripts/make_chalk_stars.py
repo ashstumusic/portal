@@ -1,6 +1,6 @@
 """Draw the homepage's chalk stars: Images/chalk-stars.webp.
 
-Twelve hand-drawn star designs, each drawn three times ("boil" frames:
+Six hand-drawn hollow five-point stars, each drawn three times ("boil" frames:
 the same drawing redone with fresh hand wobble and chalk grain, so the
 line shimmers like hand-drawn stop motion when the frames cycle). White
 chalk with pressure variation, broken by the board's grain, with a little
@@ -81,8 +81,12 @@ def shooting():
 def cross():
     return [[(0, -.62), (0, .62)], [(-.62, 0), (.62, 0)], [(-.08, -.04), (.06, .05), (-.02, .08), (-.07, -.03)]]
 
-DESIGNS = [outline_star(), pentagram(), asterisk(3), asterisk(4, wob=.2), twinkle(), burst(), sparkle(),
-           shine_star(), sun_star(), scribble_star(), shooting(), cross()]
+# Just basic hollow five-point stars: six hand-drawn variations (fatter or
+# skinnier points, a little tilt, the stroke closing short or long).
+def tilted(strokes, t):
+    return [[(x * math.cos(t) - y * math.sin(t), x * math.sin(t) + y * math.cos(t)) for x, y in st] for st in strokes]
+DESIGNS = [outline_star(5, .86, .38, .30), tilted(outline_star(5, .86, .42, .18), .12), outline_star(5, .88, .34, .45),
+           tilted(outline_star(5, .84, .40, .25), -.10), outline_star(5, .86, .44, .12), tilted(outline_star(5, .87, .36, .38), .2)]
 
 # ── chalk ──
 def resample(pts, step):

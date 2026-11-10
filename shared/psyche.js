@@ -149,7 +149,7 @@
   }, { capture: true, passive: true });
 
   // ── STARS: hand-drawn in white chalk, boiling like stop motion ──
-  // Twelve star designs drawn in chalk, each drawn three times with fresh
+  // Six basic hollow stars drawn in chalk, each drawn three times with fresh
   // hand wobble and grain (Images/chalk-stars.webp, made by
   // scripts/make_chalk_stars.py: rows are designs, columns the three
   // frames). Cycling the frames makes the lines "boil" the way hand-drawn
@@ -166,8 +166,7 @@
   // up over two frames the first time it's seen; a fast scroll knocks them
   // about. Still under reduced motion or with effects off.
   const stars = (() => {
-    const FRAMES = 3, DESIGNS = 12;
-    const BIG = [0, 1, 4, 7, 9, 10], SMALL = [2, 3, 5, 6, 8, 11];   // outline stars large, sparkles and asterisks small
+    const FRAMES = 3, DESIGNS = 6;   // six hand-drawn hollow stars
     let seed = 11;   // fixed seed: the same sky on every visit
     const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const snap = (v, s) => Math.round(v / s) * s;
@@ -246,7 +245,7 @@
       const plan = [[56, 72, Math.round(area * 1.3)], [32, 46, Math.round(area * 3.6)], [16, 24, Math.round(area * 5)]];   // [min px, max px, count]
       for (const [lo, hi, count] of plan) {
         for (let k = 0; k < count; k++) {
-          const d = (hi > 50 || rnd() < 0.3 ? BIG : SMALL)[Math.floor(rnd() * 6)];
+          const d = Math.floor(rnd() * DESIGNS);
           const size = (lo + rnd() * (hi - lo)) * s, R = size / 2, gap = size * 1.4 + 18 * s;
           let best = null;
           for (let tries = 0; tries < 260; tries++) {
