@@ -535,8 +535,8 @@ html {
   padding: clamp(3rem,7vw,6rem) clamp(2rem,5vw,4rem) 132px;
   gap: 1.25rem;
   /* Orange panel for the featured release. */
-  /* The site's yellow, same as the hero name. */
-  background: #F7C549;
+  /* The toolbar's deep teal blue. */
+  background: #084C61;
   border-left: 1px solid rgba(8,76,97,.06);
   border-left: 1px solid rgb(from var(--ink) r g b / .06);
   overflow: hidden;
@@ -552,8 +552,8 @@ html {
 .hero-split-right > * { position: relative; z-index: 1; }
 /* On the light panel everything goes high contrast: a near-black title,
    the site's red for the kicker and the badge, solid black buttons. */
-.hero-split-right .featured-title { color: #111; text-shadow: none; }
-.hero-split-right .featured-kicker { color: #8E0B12; }   /* deep red: reads on the yellow */
+.hero-split-right .featured-title { color: #fff; text-shadow: none; }
+.hero-split-right .featured-kicker { color: var(--gold); }   /* gold reads on the teal */
 .hero-split-right .featured-badge { background: #C8161E; color: #fff; }
 .hero-split-right .f-btn {
   background: #111; color: #fff;
