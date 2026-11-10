@@ -600,3 +600,5 @@ html { overscroll-behavior-y: none; }
   width: min(1060px, calc(100% - 2 * var(--s4))); height: 1px;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / .24) 18%, rgb(255 255 255 / .24) 82%, transparent);
 }
+/* The About card's "Ash Stu" in the same yellow as the hero and toolbar names. */
+:root.psy .bio-name { color: var(--gold) !important; -webkit-text-fill-color: var(--gold) !important; }
