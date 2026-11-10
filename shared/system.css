@@ -556,3 +556,29 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-name { will-change: opacity; }
 /* The toolbar logo follows the scroll exactly (no opacity easing), like the hero and About names. */
 .nav-logo { transition: none !important; }
+
+
+/* LYRICS / SOON pills: one fixed size, contents centred with even
+   breathing room; the chevron is a small, quiet mark after the label. */
+:root.psy :is(.rel-lyrics-toggle, .rel-track-soon) {
+  box-sizing: border-box !important; width: 88px !important; min-width: 0 !important; height: 28px !important;
+  padding: 0 10px !important; gap: 6px !important; margin-right: 6px !important;
+  font-size: 11px !important; letter-spacing: .08em !important; font-weight: 600 !important;
+}
+:root.psy .rel-lyrics-toggle svg { width: 10px !important; height: 10px !important; stroke-width: 2.6; opacity: .85; }
+
+:root.psy .rel-track-soon { margin-right: -6px !important; }   /* lines up with the Lyrics pill (it sits inside the row's padding) */
+
+/* Featured panel, balanced: the release type reads as a proper label
+   (14px, wider tracking) and everything sits on one rhythm - 24px
+   between blocks, 8px between the label and its title. */
+:root.psy .hero-split-right { gap: var(--s3) !important; }
+:root.psy .hero-split-right .featured-kicker {
+  font-size: 14px !important; letter-spacing: .16em !important; font-weight: 600 !important;
+  margin: 0 0 calc(var(--s1) - var(--s3)) !important; line-height: 1 !important;
+  text-box: trim-both cap alphabetic;
+}
+:root.psy .hero-split-right .featured-title { margin: 0 !important; text-box: trim-both cap alphabetic; }
+:root.psy .hero-split-right .featured-btns { margin: 0 !important; }
+:root.psy .hero-split-right .featured-badge { margin: 0 !important; }
+@media (max-width: 767px) { :root.psy .hero-split-right .featured-kicker { font-size: 13px !important; } }
