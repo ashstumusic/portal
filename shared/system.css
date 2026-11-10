@@ -710,3 +710,71 @@ html { overscroll-behavior-y: none; }
 :root .nav-links a[aria-current]:not(:hover, :focus-visible)::after { background: #111 !important; box-shadow: inset 0 0 0 2px #111 !important; }
 :root .nav-links a:active:not(:hover, :focus-visible, [aria-current]) { color: #111 !important; }
 :root .nav-links a:active:not(:hover, :focus-visible, [aria-current])::after { background: transparent !important; box-shadow: inset 0 0 0 2px #111 !important; }
+
+/* ── Toolbar: glass ───────────────────────────────────────────────────
+   Frosted translucent bar (the page blurs through it), hairline edge.
+   Links are plain sentence-case labels with no outlines; a single black
+   squircle glides under the current section on a spring; gold squircle
+   on mouse-over; a soft spring squish when pressed. */
+:root {
+  --spring: linear(0, .06 2%, .24 5%, .53 10%, .82 16%, .98 22%, 1.04 28%, 1.05 33%, 1.03 42%, 1.005 55%, .998 70%, 1);
+  --spring-t: 520ms;
+}
+:root.psy .nav, :root[data-theme="dark"].psy .nav {
+  background: rgb(255 255 255 / .62) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.8) !important; backdrop-filter: blur(28px) saturate(1.8) !important;
+  border-bottom: 1px solid rgb(0 0 0 / .08) !important;
+  box-shadow: inset 0 -1px 0 rgb(255 255 255 / .5), 0 8px 30px rgb(0 0 0 / .14) !important;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root.psy .nav { background: rgb(255 255 255 / .94) !important; }
+}
+:root .nav-links { position: relative; gap: 4px !important; }
+:root .nav-links a {
+  position: relative; z-index: 1; isolation: isolate;
+  text-transform: none !important; letter-spacing: -.005em !important;
+  font-size: 14px !important; font-weight: 600 !important;
+  padding-inline: 14px !important;
+  transition: color .2s var(--ease-ui), transform var(--spring-t) var(--spring) !important;
+}
+:root .nav-links a::after {
+  height: 34px !important; border-radius: 12px !important; corner-shape: squircle;
+  transition: background-color .2s var(--ease-ui), box-shadow .2s var(--ease-ui), opacity .2s var(--ease-ui) !important;
+}
+/* idle and current: no outline, no fill (the glider shows the current one) */
+:root .nav-links a:not(:hover, :focus-visible) { color: #1d1d1f !important; }
+:root .nav-links a:not(:hover, :focus-visible)::after { background: transparent !important; box-shadow: none !important; }
+:root .nav-links a[aria-current]:not(:hover, :focus-visible) { color: #fff !important; }
+:root .nav-links:not(:has(.nav-glider)) a[aria-current]:not(:hover, :focus-visible)::after { background: #111 !important; }
+:root .nav-links a:is(:hover, :focus-visible) { color: #111 !important; }
+:root .nav-links a:is(:hover, :focus-visible)::after { background: var(--gold) !important; box-shadow: none !important; }
+:root .nav-links a:active { transform: scale(.95) !important; transition-duration: .12s !important; }
+:root .nav-links a:focus-visible::after { outline: 2px solid #111; outline-offset: 2px; }
+.nav-glider {
+  position: absolute; top: 50%; left: 0; z-index: 0; height: 34px;
+  width: var(--gw, 0); translate: var(--gx, 0) -50%;
+  background: #111; border-radius: 12px; corner-shape: squircle;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .2), 0 4px 12px rgb(0 0 0 / .15);
+  opacity: 0; pointer-events: none;
+  transition: translate var(--spring-t) var(--spring), width var(--spring-t) var(--spring), opacity .25s var(--ease-ui);
+}
+.nav-glider.on { opacity: 1; }
+.nav-glider.instant { transition: none; }
+/* icon buttons: bare glyphs, gold circle on mouse-over, spring press */
+:root.psy .nav :is(.k-tool, .nav-toggle) { border-color: transparent !important; transition: var(--btn-fade), transform var(--spring-t) var(--spring) !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle):not(:hover, :focus-visible) { background: transparent !important; border-color: transparent !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle):is(:hover, :focus-visible) { border-color: var(--gold) !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle):active { transform: scale(.92) !important; transition-duration: .12s !important; }
+:root.psy .nav .nav-platform { transition: transform var(--spring-t) var(--spring) !important; }
+:root.psy .nav .nav-platform:active { transform: scale(.92) !important; }
+@media (prefers-reduced-motion: reduce) {
+  .nav-glider, :root .nav-links a, :root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform) { transition: none !important; }
+}
+
+/* Streaming buttons (Apple Music, Spotify, YouTube): white with black
+   text at rest; gold on mouse-over / focus as before. */
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):not(:hover, :focus-visible),
+:root.psy .vid-lightbox .vid-yt:not(:hover, :focus-visible) {
+  background: #fff !important; border-color: #fff !important; color: #111 !important;
+}
+:root.psy :is(.f-btn, .rel-btn:not(.rel-btn--label), .vid-yt):not(:hover, :focus-visible) :is(span, svg) { color: #111 !important; }
