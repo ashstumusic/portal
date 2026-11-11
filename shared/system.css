@@ -1976,16 +1976,31 @@ html { overscroll-behavior-y: none; }
 :root.psy.psy-calm .hero-split { animation: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy .hero-split { animation: none; } }
 
-/* Featured release: the Apple Music and Spotify buttons are larger, as a
-   matched pair (same height, type and icon size), and stay side by side. */
+/* Featured release: the Apple Music and Spotify buttons are large, as a
+   matched pair (same height, type and icon size), and stay side by side.
+   60px tall with 19px labels and 28px logos; a step smaller on phones so the
+   pair still fits the panel on one line. */
 :root.psy #party .featured-btns:not(#\#):not(#\#) { gap: 12px !important; flex-wrap: nowrap; justify-content: center; }
 :root.psy #party .featured-btns .f-btn:not(#\#):not(#\#) {
-  min-height: 52px !important; padding-inline: 22px !important; gap: 10px !important;
-  font-size: 17px !important; line-height: 1.2 !important; white-space: nowrap;
+  min-height: 60px !important; padding-inline: 22px !important; gap: 10px !important;
+  font-size: 19px !important; line-height: 1.2 !important; white-space: nowrap;
 }
-:root.psy #party .featured-btns .f-btn .pt:not(#\#):not(#\#) { width: 24px !important; height: 24px !important; flex: none; }
+:root.psy #party .featured-btns .f-btn .pt:not(#\#):not(#\#) { width: 28px !important; height: 28px !important; flex: none; }
+/* iPad and small-laptop widths: the featured panel is narrow there (300-360px), so the pair is sized to fit inside it */
+@media (min-width: 768px) and (max-width: 1299px) {
+  :root.psy #party .featured-btns:not(#\#):not(#\#) { gap: 8px !important; }
+  :root.psy #party .featured-btns .f-btn:not(#\#):not(#\#) { min-height: 52px !important; padding-inline: 13px !important; font-size: 16px !important; gap: 7px !important; }
+  :root.psy #party .featured-btns .f-btn .pt:not(#\#):not(#\#) { width: 24px !important; height: 24px !important; }
+}
+@media (max-width: 479px) {
+  :root.psy #party .featured-btns:not(#\#):not(#\#) { gap: 10px !important; }
+  :root.psy #party .featured-btns .f-btn:not(#\#):not(#\#) { min-height: 56px !important; padding-inline: 16px !important; font-size: 17.5px !important; gap: 8px !important; }
+  :root.psy #party .featured-btns .f-btn .pt:not(#\#):not(#\#) { width: 26px !important; height: 26px !important; }
+}
 @media (max-width: 359px) {
-  :root.psy #party .featured-btns .f-btn:not(#\#):not(#\#) { padding-inline: 14px !important; font-size: 15px !important; gap: 8px !important; }
+  :root.psy #party .featured-btns .f-btn:not(#\#):not(#\#) { min-height: 52px !important; padding-inline: 12px !important; font-size: 15.5px !important; gap: 7px !important; }
+  :root.psy #party .featured-btns .f-btn .pt:not(#\#):not(#\#) { width: 24px !important; height: 24px !important; }
+}
 }
 
 
@@ -2056,6 +2071,9 @@ html { overscroll-behavior-y: none; }
 /* turning round: the drawing closes to a sliver and opens facing the other way, about its own middle */
 .nav-doodle .dz-face { transform-origin: 50% 50%; transition: transform .26s cubic-bezier(.45, 0, .55, 1); }
 .nav-doodle .dz { display: block; width: 100%; height: 100%; overflow: visible; color: #F2F4F6; }
+/* filled with the name's flowing gradient (defined inside the drawing); plain off-white if a browser cannot resolve it */
+.nav-doodle .dz [fill="currentColor"] { fill: url(#dz-grad) #F2F4F6; }
+.nav-doodle .dz [stroke="currentColor"] { stroke: url(#dz-grad) #F2F4F6; }
 /* a rule elsewhere keeps icon lines one thickness whatever their size (non-scaling-stroke); the bird's lines must scale with it */
 .nav-doodle svg * { vector-effect: none !important; }
 /* only the current drawing shows (the hidden attribute does nothing on SVG groups by itself) */
@@ -2153,6 +2171,19 @@ html { overscroll-behavior-y: none; }
 :root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):focus-visible:not(#\#)::after { width: calc(var(--pt) + 12px); height: calc(var(--pt) + 12px); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--gold); }
 :root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#) .pt { filter: url(#pt-gold) !important; outline: 0 !important; }
 @media (forced-colors: active) { :root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):is(:hover, :focus-visible)::after { border-color: Highlight; } }
+
+/* About card on phones: the text is sandwiched between the photos - the
+   colour portrait on top, then "Ash Stu", the tagline and the description,
+   then the two black-and-white photos side by side underneath. (The photo
+   group is dissolved into the card's own grid so the text can sit between
+   its members.) */
+@media (max-width: 767px) {
+  :root.psy .bio-card:not(#\#):not(#\#):not(#\#) { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0 2px !important; }
+  :root.psy .bio-card > .bio-card-media:not(#\#):not(#\#) { display: contents !important; }
+  :root.psy .bio-card-media > .bio-media-main:not(#\#):not(#\#) { grid-column: 1 / -1; order: 0; }
+  :root.psy .bio-card > .bio-card-text:not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; order: 1; }
+  :root.psy .bio-card-media > img:not(.bio-media-main):not(#\#):not(#\#) { order: 2; grid-column: auto; width: 100%; }
+}
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
