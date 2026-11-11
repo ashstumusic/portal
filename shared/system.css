@@ -1772,23 +1772,22 @@ html { overscroll-behavior-y: none; }
 /* About card: one "Ash Stu" and one tagline line (the script no longer
    adds repeated rows), each filled with the flowing logo gradient set
    above. */
-/* Photos always fill their panel: when the text side is the taller one
-   (tablet widths) the portrait grows to meet it instead of leaving an
-   empty strip under the two small photos. */
-@media (min-width: 768px) {
-  :root.psy .bio-card-media { grid-template-rows: 1fr auto; align-content: stretch; }
-  :root.psy .bio-card-media .bio-media-main { height: 100%; min-height: 0; }
-}
+/* The portrait is always its own natural square, sized from its width.
+   (A tablet-and-up rule used to stretch it to "100% of a flexible grid row";
+   browsers disagree on how tall that row is, and on iPad the photo came out
+   a different shape from its box and was cropped. The text beside it is
+   short now, so there is no gap for it to fill anyway.) */
+:root.psy .bio-card-media:not(#\#) { grid-template-rows: auto auto; align-content: start; }
+:root.psy .bio-card-media .bio-media-main:not(#\#) { width: 100%; height: auto !important; aspect-ratio: 1 / 1; min-height: 0; }
 
-/* Albums: small covers side by side; clicking one (its cover or Tracks)
-   grows that card to the full lyric-width for its tracklist, and it
-   shrinks back when closed. */
+/* Albums: small covers side by side, and they stay that way. Opening a
+   tracklist only unfolds the list downward inside its own card: the card
+   keeps its width and its full square cover, and the other cards do not
+   move. (It used to grow to more than twice its width and crop its cover
+   to a banner, which shoved the neighbouring albums around on every open
+   and close.) */
 :root.psy .releases-grid > *:not(#\#) { flex: 0 0 min(100%, 20rem) !important; max-width: min(100%, 20rem) !important; }
-:root.psy .releases-grid > .tracks-open:not(#\#) { flex: 0 0 min(100%, 43rem) !important; max-width: min(100%, 43rem) !important; }
-/* an opened album shows a banner crop of its cover, so the tracklist
-   starts near the top instead of below a huge square */
-:root.psy .releases-grid > .tracks-open .rel-art-wrap:not(#\#) { padding-top: 40% !important; }
-:root.psy .releases-grid > .tracks-open .rel-art:not(#\#) { width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: 50% 30%; aspect-ratio: auto !important; }
+:root.psy .releases-grid:not(#\#) { align-items: flex-start !important; }
 
 /* Press Kit photos: evenly spaced (12px between all four, 10px on
    phones), rounded, and held inside the page margin on the right instead
@@ -1801,7 +1800,13 @@ html { overscroll-behavior-y: none; }
   max-width: none !important; margin-inline: 0 !important; --epk-pad: 0px !important;
 }
 :root.psy .epk-photos:not(#\#) { gap: 12px !important; }
-:root.psy .epk-photos img { border-radius: 10px; }
+/* each photo sits in its own rounded window, so it can slide up and out
+   of it (the reel) without crossing its neighbours */
+:root.psy .epk-photos .epk-slot { display: block; overflow: hidden; border-radius: 10px; min-width: 0; }
+/* the photo keeps its own square size (width and height attributes) and
+   the window takes its size from it; sizing the window first and the
+   photo as 100% of it collapsed to nothing in Safari */
+:root.psy .epk-photos .epk-slot img:not(#\#) { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 0; will-change: transform; }
 @media (max-width: 767px) {
   :root.psy .epk-section:not(#\#) { padding-inline: max(20px, 5vw) !important; row-gap: 10px !important; }
   :root.psy .epk-photos:not(#\#) { gap: 10px !important; }
@@ -1899,3 +1904,15 @@ html { overscroll-behavior-y: none; }
    arrow readable and the text behind it from tangling with it. */
 :root.psy .hero-scroll:not(#\#) { background: rgb(8 12 18 / .84) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 :root.psy .hero-scroll:not(#\#):is(:hover, :focus-visible) { background: rgb(8 12 18 / .92) !important; }
+
+/* ── Home section: its bottom edge is cut as a wave ───────────────────
+   A mask in two pieces: a solid block for everything above the last few
+   dozen pixels, and a wave-shaped strip (two full swells across the
+   width) for the bottom edge. The page behind shows through the troughs.
+   The wave's height scales with the screen. */
+:root.psy .hero-split {
+  --wave-h: clamp(18px, 3.2vw, 46px);
+  -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H1440V22Q1260%2044%201080%2022T720%2022T360%2022T0%2022Z'/%3E%3C/svg%3E") bottom / 100% var(--wave-h) no-repeat;
+  mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H1440V22Q1260%2044%201080%2022T720%2022T360%2022T0%2022Z'/%3E%3C/svg%3E") bottom / 100% var(--wave-h) no-repeat;
+}
+@media (forced-colors: active) { :root.psy .hero-split { -webkit-mask: none; mask: none; } }
