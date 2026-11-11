@@ -185,6 +185,12 @@
 <link rel="stylesheet" href="styles.css?v=76">
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
 <link rel="preload" as="image" href="Images/embedded/featured-only-a-baby-vol-2.webp" fetchpriority="high">
+<script>/* Touch vs mouse: a finger press marks the page .touch (hover styles off, so
+   a tapped button never keeps a stuck hover look); moving a mouse clears it. */
+(function(r){function on(e){if(e.pointerType==='touch')r.classList.add('touch');}
+function off(e){if(e.pointerType==='mouse')r.classList.remove('touch');}
+addEventListener('pointerdown',on,true);addEventListener('pointermove',off,true);
+addEventListener('touchstart',function(){r.classList.add('touch');},{capture:true,passive:true});})(document.documentElement);</script>
 <script data-goatcounter="https://ashstu.goatcounter.com/count" defer src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -198,7 +204,7 @@
     </div>
   </a>
   <ul class="nav-links" role="list">
-    <li><a href="#epk" data-epk-download aria-label="Press Kit (also downloads it)" title="Go to the press kit and download it">Press Kit</a></li>
+    <li><a href="#epk">Press Kit</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#music">Music</a></li>
     <li><a href="#videos">Videos</a></li>
@@ -228,7 +234,7 @@
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span></a>
   </div>
-  <a href="#epk" data-epk-download aria-label="Press Kit (also downloads it)">Press Kit</a>
+  <a href="#epk">Press Kit</a>
   <a href="#contact">Contact</a>
   <a href="#music">Music</a>
   <a href="#videos">Videos</a>
@@ -443,8 +449,6 @@
     </div>
   </div>
 </div>
-<nav aria-label="Page sections">
-    <a href="#epk" class="hero-scroll" id="hero-scroll" aria-label="Scroll to next section" title="Next section"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></a></nav>
 <div class="vid-lightbox" id="vid-lightbox" role="dialog" aria-modal="true" aria-label="Video player" aria-hidden="true" inert>
   <div class="lb-inner">
     <div class="lb-bar">
@@ -810,6 +814,14 @@ var rel = RELEASE_LIST[item.releaseIdx];
 npLoad(item.title, rel ? rel.name : '', item.file, true);
 updatePlayUI();
 }
+// Shuffle/repeat buttons (bar and full-screen player): class and
+// aria-pressed always follow the real state, on every one of the four.
+function npModeSync() {
+[['np-shuffle', pState.shuffle], ['fs-shuffle', pState.shuffle], ['np-repeat', pState.repeat], ['fs-repeat', pState.repeat]].forEach(function (p) {
+  var b = document.getElementById(p[0]); if (!b) return;
+  b.classList.toggle('active', !!p[1]); b.setAttribute('aria-pressed', p[1] ? 'true' : 'false');
+});
+}
 function npShuffleToggle() {
 pState.shuffle = !pState.shuffle;
 if (pState.shuffle && pState.repeat) { pState.repeat = false; }
@@ -823,6 +835,7 @@ if (pState.repeat === false) {
   var fsRBtn = document.getElementById('fs-repeat');
   if (fsRBtn) fsRBtn.classList.remove('active');
 }
+npModeSync();
 }
 function npRepeatToggle() {
 pState.repeat = !pState.repeat;
@@ -837,6 +850,7 @@ if (pState.shuffle === false) {
   var fsSBtn = document.getElementById('fs-shuffle');
   if (fsSBtn) fsSBtn.classList.remove('active');
 }
+npModeSync();
 }
 var VOL_ON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="none"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none"/>';
 var VOL_OFF = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="none"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
@@ -1479,10 +1493,6 @@ var RELEASE_LIST = [];
 // The hero features the release links.txt marks as featured (generator sets
 // r.featured); the discography keeps its own order around it.
 var FEATURED_IDX = 0;
-// Scroll-cue dodge targets (see the hero-scroll IIFE below). Cached here so
-// renderAllContent can invalidate it when cards/entries are re-injected -
-// the alternative was an 8-selector querySelectorAll on every scroll frame.
-var _dodgeEls = null;
 var pState = {
 playlist: [],
 plIdx: -1,
@@ -2027,7 +2037,6 @@ if (!el) return null;
 try { return JSON.parse(el.textContent); } catch(e) { return null; }
 }
 function renderAllContent(results, isRefresh) {
-_dodgeEls = null; // cards/entries below are about to be replaced
 RELEASE_LIST = results[0] || [];
 FEATURED_IDX = Math.max(0, RELEASE_LIST.findIndex(function(r) { return r.featured; }));
 VIDEO_LIST = results[1] || [];
@@ -2173,68 +2182,6 @@ document.getElementById('lb-next').addEventListener('click', function() { lbNav(
 document.getElementById('vid-lightbox').addEventListener('click', function(e) {
 if (e.target === this) closeLightbox();
 });
-(function() {
-var arrow = document.getElementById('hero-scroll');
-if (!arrow) return;
-var SECTIONS = ['epk','contact','music','videos','about'];
-function nextTarget() {
-var y = scrollY + 80;
-for (var i = 0; i < SECTIONS.length; i++) {
-var el = document.getElementById(SECTIONS[i]);
-if (el && el.offsetTop > y) return SECTIONS[i];
-}
-return null;
-}
-var _arrowTick = false;
-/* This arrow is position:fixed and persists across the whole page, not
-   just the hero - it can end up hovering over a release/video card's
-   play button, a streaming link, anywhere, as the user scrolls. The
-   list is cached (renderAllContent nulls _dodgeEls whenever it replaces
-   cards/entries) - re-running an 8-selector querySelectorAll on every
-   scroll frame was pure waste. */
-function getDodgeEls() {
-if (_dodgeEls === null) {
-_dodgeEls = Array.prototype.slice.call(document.querySelectorAll(
-'.hero-split-right > *:not(canvas), .rel-play-circle, .vid-play-circle, ' +
-'.rel-btn, .vid-yt, .f-btn, .btn-epk-dl, .contact-email-link'
-));
-}
-return _dodgeEls;
-}
-var _lastHref = '';
-function updateArrow() {
-var atBottom = innerHeight + scrollY >= document.body.scrollHeight - 40;
-var t = nextTarget();
-/* Stays on every section and steps to the next one on each press; hidden
-   only once there's no section left below (About, the end of the page).
-   Over a card's button it fades down ('soft') rather than vanishing. */
-if (!t || atBottom) {
-arrow.classList.add('hidden');
-return;
-}
-arrow.classList.remove('hidden');
-if (t !== _lastHref) { arrow.setAttribute('href', '#' + t); _lastHref = t; }
-var a = arrow.getBoundingClientRect();
-var els = getDodgeEls();
-var covering = false;
-for (var i = 0; i < els.length; i++) {
-var b = els[i].getBoundingClientRect();
-if (!b.width || !b.height) continue;
-if (b.bottom > a.top - 2 && b.top < a.bottom + 2 && b.right > a.left && b.left < a.right) { covering = true; break; }
-}
-arrow.classList.toggle('soft', covering);
-}
-window.addEventListener('scroll', function() {
-if (_arrowTick) return;
-_arrowTick = true;
-requestAnimationFrame(function() { updateArrow(); _arrowTick = false; });
-}, { passive: true });
-window.addEventListener('resize', function() { setTimeout(updateArrow, 160); }, { passive: true });
-new MutationObserver(function() { setTimeout(updateArrow, 420); setTimeout(updateArrow, 900); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-// First check after first paint, in idle time: reading scrollHeight and
-// element rects before then forced a full-page layout (~200ms) on load.
-(window.requestIdleCallback || function(f) { setTimeout(f, 200); })(function() { requestAnimationFrame(updateArrow); }, { timeout: 1000 });
-})();
 document.getElementById('vid-lightbox').addEventListener('keydown', function(e) {
 if (e.key !== 'Tab') return;
 var focusable = this.querySelectorAll('button:not([disabled]), a[href], video, [tabindex]:not([tabindex="-1"])');
@@ -2659,14 +2606,6 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
-<script>/* Toolbar "Press Kit": scroll to the section, then press its download
-   button for you (it visibly presses) and the ZIP starts downloading. */
-(function(){var dl=document.querySelector('.btn-epk-dl');if(!dl)return;
-function press(){dl.classList.add('auto-press');setTimeout(function(){dl.classList.remove('auto-press');},700);dl.click();window.kinetic&&kinetic.announce&&kinetic.announce('Downloading the press kit');}
-document.querySelectorAll('a[data-epk-download]').forEach(function(a){a.addEventListener('click',function(){
-var done=false,go=function(){if(done)return;done=true;removeEventListener('scrollend',go);press();};
-if('onscrollend' in window){addEventListener('scrollend',go,{once:true});setTimeout(go,1600);}else setTimeout(go,900);
-});});})();</script>
 <script>/* About card: "Ash Stu" above the description and the tagline below it,
    one line each, sized to span the panel; both gradients run in step.
    (n below can repeat each line in extra decorative rows, hidden from
@@ -2699,8 +2638,8 @@ var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,
 if(document.readyState==='complete')build();else addEventListener('load',build);
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
 <script>/* Press Kit photos: a sideways shuffle. Every few seconds each photo slides right out
-   of its window and the next one slides in from the left, window after window,
-   left to right. Each photo moves one window along per turn.
+   of its window and the next one slides in from the left, all four windows at once
+   as one body. Each photo moves one window along per turn.
    A photo only enters its new window once it has completely left its old
    one, so the same picture is never on screen twice.
    Only while the section is on screen and the tab is visible; no movement
@@ -2716,7 +2655,7 @@ var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').match
 var onScreen=true,sec=document.getElementById('epk');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
 if(!imgs[0].animate)return;
-var GAP=60,OUT=110,IN=130,busy=false;   // near-instant: each photo flicks out and the next flicks in
+var GAP=0,OUT=110,IN=130,busy=false;   // near-instant: all photos flick out together, then the next set flicks in together
 function slide(im,from,to,dur,ease){var a=im.animate([{transform:'translateX('+from+')'},{transform:'translateX('+to+')'}],{duration:dur,easing:ease,fill:'forwards'});
 return a.finished.then(function(){return a;},function(){return a;});}
 function turn(){if(busy||still()||!onScreen||document.hidden)return;busy=true;
