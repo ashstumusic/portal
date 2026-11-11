@@ -1980,3 +1980,288 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 359px) {
   :root.psy #party .featured-btns .f-btn:not(#\#):not(#\#) { padding-inline: 14px !important; font-size: 15px !important; gap: 8px !important; }
 }
+
+
+/* ══ Button system ═════════════════════════════════════════════════════
+   Every control on the site shares one design: a glass material (a
+   translucent fill that blurs what is behind it), a hairline edge that
+   catches light at the top instead of a hard 2px border, one soft ambient
+   shadow, squircle corners, and sizes on the 8px grid.
+
+   Two materials:
+     light glass - links out to a service (Apple Music, Spotify, YouTube)
+                   and the toolbar's Search / menu buttons. Dark label.
+     dark glass  - controls that act on the page (player, lightbox, close,
+                   lyrics, email). Off-white label.
+   Filled buttons (play / pause, Download Press Kit) keep their solid fill
+   and take the same shape.
+
+   States, the same everywhere: hover and keyboard focus turn the button
+   gold with a dark label (focus also keeps the site's focus ring, set
+   elsewhere); a toggle that is ON is solid white with a dark icon and
+   carries aria-pressed, so state is never colour alone; press settles to
+   96% with a spring; disabled is 40% and ignores the pointer.
+   Reduced motion: no scaling. Reduced transparency / no blur support:
+   solid fills. Forced colours: system border.
+   Sizes: text buttons 40px tall, 15px/600 label, 16px side padding;
+   icon buttons 40px square (32px for the per-track lyrics button). */
+:root.psy {
+  --btn-r: 12px; --btn-r-ico: 12px; --btn-r-sm: 10px;
+  --btn-blur: blur(20px) saturate(180%);
+  --btn-l-bg: rgb(255 255 255 / .74); --btn-l-fg: #1d1d1f;
+  --btn-l-edge: inset 0 0 0 1px rgb(255 255 255 / .55), inset 0 1px 0 rgb(255 255 255 / .9), 0 0 0 1px rgb(0 0 0 / .1), 0 1px 2px rgb(0 0 0 / .16), 0 8px 24px -10px rgb(0 0 0 / .45);
+  --btn-d-bg: rgb(255 255 255 / .1); --btn-d-fg: #F5F5F7;
+  --btn-d-edge: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .3), 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px -10px rgb(0 0 0 / .55);
+  --btn-on-bg: #fff; --btn-on-fg: #111;
+  --btn-hov-bg: var(--gold); --btn-hov-fg: #111;
+  --btn-hov-edge: inset 0 0 0 1px rgb(255 255 255 / .4), inset 0 1px 0 rgb(255 255 255 / .6), 0 1px 2px rgb(0 0 0 / .2), 0 10px 28px -10px rgb(0 0 0 / .5);
+}
+@supports (corner-shape: squircle) {
+  :root.psy { --btn-r: 18px; --btn-r-ico: 16px; --btn-r-sm: 13px; }
+  :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-play-circle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .vid-play-circle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-tl-chev:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .skip:not(#\#):not(#\#):not(#\#):not(#\#) { corner-shape: squircle; }
+}
+/* shape, edge, motion: every button */
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#) {
+  border: 0 !important; border-radius: var(--btn-r) !important;
+  -webkit-backdrop-filter: var(--btn-blur); backdrop-filter: var(--btn-blur);
+  text-transform: none !important; text-shadow: none !important;
+  transition: transform .4s var(--k-spring-press, cubic-bezier(.2, .9, .3, 1.2)), background-color .2s ease, color .2s ease, box-shadow .2s ease !important;
+}
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: var(--btn-r-ico) !important; }
+/* size and type: text buttons */
+:root.psy .f-btn:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-btn:not(.rel-btn--label):not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .vid-yt:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-search-btn:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .contact-email-link:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-collapse:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-palette-close:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 15px !important; font-weight: 600 !important; letter-spacing: -.01em !important; line-height: 1.2 !important; }
+:root.psy .f-btn:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-btn:not(.rel-btn--label):not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .vid-yt:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-search-btn:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .contact-email-link:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-collapse:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-palette-close:not(.featured-btns > *):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 40px !important; padding-inline: 16px !important; }
+/* size: icon buttons */
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; padding: 0 !important; }
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#) { width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; padding: 0 !important; border-radius: var(--btn-r-sm) !important; }
+/* light glass, at rest */
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) { background: var(--btn-l-bg) !important; color: var(--btn-l-fg) !important; box-shadow: var(--btn-l-edge) !important; }
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)) { color: var(--btn-l-fg) !important; }
+/* dark glass, at rest */
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) { background: var(--btn-d-bg) !important; color: var(--btn-d-fg) !important; box-shadow: var(--btn-d-edge) !important; }
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not(.active):not(.open):not([aria-pressed="true"]) :is(svg, span:not(.pt)) { color: var(--btn-d-fg) !important; }
+/* the lightbox arrows sit on top of the video, so their glass is darkened
+   to keep the chevron readable over any frame */
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) { background: rgb(8 12 18 / .6) !important; opacity: 1 !important; }
+/* a toggle that is on */
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(.active, .open, [aria-pressed="true"]):not(:hover):not(:focus-visible),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(.active, .open, [aria-pressed="true"]):not(:hover):not(:focus-visible),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(.active, .open, [aria-pressed="true"]):not(:hover):not(:focus-visible) { background: var(--btn-on-bg) !important; color: var(--btn-on-fg) !important; box-shadow: var(--btn-l-edge) !important; }
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(.active, .open, [aria-pressed="true"]):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(.active, .open, [aria-pressed="true"]):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(.active, .open, [aria-pressed="true"]):not(:hover):not(:focus-visible) :is(svg, span:not(.pt)) { color: var(--btn-on-fg) !important; }
+/* hover and keyboard focus */
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) { background: var(--btn-hov-bg) !important; color: var(--btn-hov-fg) !important; box-shadow: var(--btn-hov-edge) !important; }
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span:not(.pt)) { color: var(--btn-hov-fg) !important; }
+/* keyboard focus ring: a white line with a dark line inside it, so it shows
+   on the dark page and on the light toolbar alike */
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible { outline: 3px solid #fff !important; outline-offset: 3px !important; box-shadow: var(--btn-hov-edge), 0 0 0 3px #111 !important; }
+/* press (mouse only: on a touch screen the pressed look could outlast the
+   tap, the same way hover does), disabled */
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { transform: scale(.96) !important; transition-duration: .1s, .1s, .1s, .1s !important; }
+:root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]) { opacity: .4 !important; pointer-events: none; }
+/* filled buttons (play / pause): same shape, no hard border */
+:root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#) { border: 0 !important; border-radius: var(--btn-r-ico) !important; box-shadow: inset 0 1px 0 rgb(255 255 255 / .5), 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px -10px rgb(0 0 0 / .55) !important; }
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: calc(var(--btn-r-ico) * 1.5) !important; }
+/* play discs over covers and video thumbnails, and the Tracks chevron:
+   same curve and material; their fills and hover (driven by the card) stay. */
+:root.psy :is(.rel-play-circle, .vid-play-circle):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: var(--btn-r-ico) !important; border-width: 1.5px !important; -webkit-backdrop-filter: var(--btn-blur); backdrop-filter: var(--btn-blur); }
+:root.psy .rel-tl-chev:not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: var(--btn-r-sm) !important; }
+/* toolbar links: the outline that draws each one becomes a hairline */
+:root .nav-links a:not(:hover, :focus-visible, [aria-current]):not(#\#)::after { box-shadow: inset 0 0 0 1px var(--bar-rim) !important; }
+/* skip link */
+:root.psy .skip:not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: var(--btn-r) !important; text-transform: none !important; letter-spacing: -.01em !important; font-size: 15px !important; font-weight: 600 !important; padding: 8px 16px !important; min-height: 40px; display: inline-flex; align-items: center; }
+/* the Search button inside the phone menu keeps its taller touch size */
+:root.psy .drawer-search:not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 48px !important; }
+@media (prefers-reduced-motion: reduce) {
+  :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { transform: none !important; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root.psy { --btn-l-bg: #E9ECEF; --btn-d-bg: #2C2F36; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root.psy { --btn-l-bg: #E9ECEF; --btn-d-bg: #2C2F36; --btn-blur: none; }
+}
+@media (forced-colors: active) {
+  :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .contact-email-link:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-close:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
+  :root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#) { border: 2px solid ButtonText !important; }
+}
