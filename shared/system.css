@@ -1557,6 +1557,48 @@ html { overscroll-behavior-y: none; }
    minimum target size) with less space around it. */
 :root.psy .rel-tl-toggle:not(#\#):not(#\#) { min-height: 30px !important; height: 30px; margin: 0 12px 6px !important; }
 
+/* ── Tracks row, rethought ────────────────────────────────────────────
+   What it is: the door to the songs, and the one control every card has.
+   It used to be the faintest thing on the card (a 30px line of grey text
+   under the streaming buttons). Now it is the card's footer:
+   - flush to the card's edges on its own lighter band, so it reads as part
+     of the card's structure and not as a third, weaker button;
+   - it says what is inside ("9 tracks") with a list icon, instead of a
+     bare "Tracks";
+   - label on the left where reading starts, chevron in a disc on the
+     right where the thumb is; the whole 48px band is the target;
+   - open, the band stays put as the list's header and the chevron turns.
+   Hover is the same gold as every other button. */
+:root.psy .rel-tl-toggle:not(#\#):not(#\#):not(#\#) {
+  width: 100% !important; margin: 0 !important; height: 48px; min-height: 48px !important; padding: 0 10px 0 16px !important;
+  justify-content: flex-start !important; gap: 10px !important; text-align: left;
+  border: 0 !important; border-radius: 0 !important; corner-shape: round;
+  font: 600 15px/1 var(--font-ui) !important; letter-spacing: 0 !important; text-transform: none !important;
+}
+:root.psy .rel-tl-toggle:not(:hover):not(#\#):not(#\#):not(#\#) {
+  background: rgb(240 245 246 / .07) !important; color: rgb(240 245 246 / .96) !important;
+  box-shadow: inset 0 1px 0 rgb(240 245 246 / .16) !important;
+}
+:root.psy .rel-card.tracks-open .rel-tl-toggle:not(:hover):not(#\#):not(#\#):not(#\#) {
+  background: rgb(240 245 246 / .11) !important; box-shadow: inset 0 1px 0 rgb(240 245 246 / .16), inset 0 -1px 0 rgb(240 245 246 / .16) !important;
+}
+:root.psy .rel-tl-toggle:hover:not(#\#):not(#\#):not(#\#) { outline-offset: -3px !important; }   /* the gold ring stays inside the card's clipped edge */
+:root.psy .rel-tl-toggle:focus-visible:not(#\#):not(#\#):not(#\#) { outline-offset: -4px !important; }
+:root.psy .rel-tl-toggle .rel-tl-label { flex: 1 1 auto; min-width: 0; font-variant-numeric: tabular-nums; }
+:root.psy .rel-tl-toggle .rel-tl-ico { flex: none; width: 18px; height: 18px; opacity: .8; }
+:root.psy .rel-tl-toggle .rel-tl-chev:not(#\#) {
+  flex: none; width: 30px; height: 30px; padding: 7px; margin: 0; border-radius: 50%; opacity: 1;
+  background: rgb(240 245 246 / .12); box-shadow: inset 0 0 0 1px rgb(240 245 246 / .22);
+}
+:root.psy .rel-tl-toggle:hover .rel-tl-chev:not(#\#) { background: rgb(0 0 0 / .12); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .3); }
+/* Every card's button row is the same height (the "Distributing Soon" tag
+   row was 9px shorter than the streaming buttons), so the three footers
+   sit on one line. */
+:root.psy .rel-card .rel-btns { min-height: 64px; align-items: center; }
+/* Closed, the band is the card's last line: the hidden tracklist's own
+   padding used to leave a 12px dark strip under it. */
+:root.psy .rel-card:not(.tracks-open) .rel-tracklist:not(#\#) { padding-block: 0 !important; margin-block: 0 !important; border-block-width: 0 !important; min-height: 0 !important; }
+
 /* Press Kit download button: bright red, glowing like a lit screen. White
    label and icon (5.5:1 on the red, and still above 4.5:1 at the brightest
    point of the glow - the old, lighter red measured 4.3-4.5:1); a red halo that breathes slowly. Hover
