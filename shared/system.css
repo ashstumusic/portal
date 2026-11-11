@@ -2111,6 +2111,10 @@ html { overscroll-behavior-y: none; }
   /* the home name's red offset edge, scaled to this size (the toolbar is dark now, so the same red reads the same) */
   filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .7)) !important;
   animation: name-flow 9s linear infinite;
+  /* The gradient is painted only inside the text's own box, and this face's letters rise above (and dip below) a
+     box that is exactly one line tall - their tops were being sliced flat. The box is made taller with padding and
+     pulled back with an equal negative margin, so the letters are whole and nothing else moves. */
+  padding-block: .2em !important; margin-block: -.2em !important; box-sizing: content-box;
 }
 :root.psy.psy-calm .nav .nav-logo .hero-name:not(#\#):not(#\#) { animation: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#) { animation: none; } }
