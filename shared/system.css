@@ -1826,17 +1826,12 @@ html { overscroll-behavior-y: none; }
    move. (It used to grow to more than twice its width and crop its cover
    to a banner, which shoved the neighbouring albums around on every open
    and close.) */
-:root.psy .releases-grid > *:not(#\#) { flex: 0 0 min(100%, 28rem) !important; max-width: min(100%, 28rem) !important; }
-/* Three cards per row from 900px up, as large as the screen allows: the
-   row of cards reaches out past the section's side margins to 24px from
-   each edge of the window, and each card takes a third of it (up to 28rem).
-   The lyric type does not grow with the cards. Narrower than 900px: two
-   per row; phones: one. */
-@media (min-width: 900px) {
-  :root.psy .releases-grid:not(#\#):not(#\#) { margin-inline: calc(50% - 50vw + 24px) !important; width: auto !important; max-width: none !important; flex-wrap: nowrap !important; justify-content: center !important; }
-  :root.psy .releases-grid > *:not(#\#) { flex: 0 1 min(28rem, calc((100% - 48px) / 3)) !important; max-width: min(28rem, calc((100% - 48px) / 3)) !important; min-width: 0; }
-}
-@media (min-width: 700px) and (max-width: 899px) { :root.psy .releases-grid > *:not(#\#) { flex-basis: min(28rem, calc(50% - 12px)) !important; max-width: min(28rem, calc(50% - 12px)) !important; } }
+:root.psy .releases-grid > *:not(#\#) { flex: 0 0 min(100%, 26rem) !important; max-width: min(100%, 26rem) !important; }
+/* Cards are up to 26rem (416px) wide, to give lyrics room; the lyric type
+   itself does not grow with them. Wide screens keep all three in one row
+   (each takes a third, up to 26rem); below that two sit side by side. */
+@media (min-width: 1280px) { :root.psy .releases-grid > *:not(#\#) { flex-basis: min(26rem, calc((100% - 48px) / 3)) !important; max-width: min(26rem, calc((100% - 48px) / 3)) !important; } }
+@media (min-width: 700px) and (max-width: 1279px) { :root.psy .releases-grid > *:not(#\#) { flex-basis: min(26rem, calc(50% - 12px)) !important; max-width: min(26rem, calc(50% - 12px)) !important; } }
 :root.psy .releases-grid:not(#\#) { align-items: flex-start !important; }
 
 /* Press Kit photos: evenly spaced (12px between all four, 10px on
@@ -2032,6 +2027,37 @@ html { overscroll-behavior-y: none; }
 
 /* Lyrics in the album cards. */
 :root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: 15.5px !important; line-height: 1.55 !important; }
+
+/* Toolbar doodle (see the script in the page): a 40px sketch character that
+   lives in the space the toolbar's "Ash Stu" leaves when it fades out.
+   The line "boils" (three wobble filters cycled in steps), legs swap
+   between two drawings while walking, and it bobs and blinks when idle. */
+.nav-doodle { position: absolute; height: 40px; pointer-events: none; z-index: 1; contain: layout style; }
+.nav-doodle[hidden] { display: none; }
+.nav-doodle .dz-x { position: absolute; left: 0; top: 0; width: 40px; height: 40px; will-change: transform; }
+.nav-doodle .dz-face { width: 40px; height: 40px; transform-origin: 50% 50%; }
+.nav-doodle .dz { display: block; overflow: visible; animation: dz-boil .42s steps(1) infinite; }
+@keyframes dz-boil { 0% { filter: url(#dz-boil-1); } 33% { filter: url(#dz-boil-2); } 66% { filter: url(#dz-boil-3); } }
+.nav-doodle .dz-lb { visibility: hidden; }
+.nav-doodle .dz-walk .dz-la { animation: dz-leg-a .26s steps(1) infinite; }
+.nav-doodle .dz-walk .dz-lb { animation: dz-leg-b .26s steps(1) infinite; }
+.nav-doodle .dz-dash .dz-la { animation-duration: .1s; }
+.nav-doodle .dz-dash .dz-lb { animation-duration: .1s; }
+@keyframes dz-leg-a { 0% { visibility: visible; } 50% { visibility: hidden; } }
+@keyframes dz-leg-b { 0% { visibility: hidden; } 50% { visibility: visible; } }
+.nav-doodle .dz-walk .dz-body { animation: dz-step .26s steps(1) infinite; }
+@keyframes dz-step { 0% { transform: translateY(0); } 50% { transform: translateY(-1px); } }
+.nav-doodle .dz-idle .dz-body, .nav-doodle .dz-float .dz-body { animation: dz-bob 1.6s ease-in-out infinite; }
+@keyframes dz-bob { 50% { transform: translateY(-1.6px); } }
+.nav-doodle .dz-slide .dz-body { animation: dz-squash .9s ease-in-out infinite; transform-origin: 50% 100%; transform-box: fill-box; }
+@keyframes dz-squash { 50% { transform: scaleX(1.06) scaleY(.95); } }
+.nav-doodle .dz-dash .dz { transform: skewX(-10deg); }
+.nav-doodle .dz-eye { transform-box: fill-box; transform-origin: 50% 50%; animation: dz-blink 3.4s steps(1) infinite; }
+@keyframes dz-blink { 0%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.1); } 97% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .nav-doodle { display: none !important; } }
+:root.psy-calm .nav-doodle { display: none !important; }
+@media (forced-colors: active) { .nav-doodle { display: none !important; } }
+@media print { .nav-doodle { display: none !important; } }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a

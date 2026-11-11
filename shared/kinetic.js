@@ -141,8 +141,9 @@
     if (litCard && !litRect) litRect = litCard.getBoundingClientRect();
     // WRITE
     if (header) {
-      if (y < 120 || dy < -3 || headerPinned()) header.classList.remove('k-hide');
-      else if (dy > 6) header.classList.add('k-hide');
+      // The toolbar stays on screen at all times: it used to slide away on
+      // scroll-down and return on scroll-up (class k-hide). Not any more.
+      if (header.classList.contains('k-hide')) header.classList.remove('k-hide');
       if (!timelineCSS) root.style.setProperty('--k-recess', Math.min(1, y / 240).toFixed(3));
     }
     lastY = y;

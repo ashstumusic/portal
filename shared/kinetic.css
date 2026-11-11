@@ -129,9 +129,10 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
 [data-k-alt] > .k-label, [data-k-alt]::after { grid-area: 1 / 1; }
 [data-k-alt]::after { content: attr(data-k-alt); visibility: hidden; height: 0; }
 
-/* ── HEADER: glass, recess with scroll, recede on scroll-down ────────── */
-.masthead, .nav { transition: transform .45s var(--k-spring-settle); will-change: transform; }
-.k-hide.masthead, .k-hide.nav { transform: translateY(calc(-100% - 6px)); }
+/* ── HEADER: glass, recess with scroll ───────────────────────────────── */
+/* The toolbar is always on screen: it no longer slides away on scroll-down
+   (and so can no longer overshoot on the way back). */
+.k-hide.masthead, .k-hide.nav { transform: none; }
 /* Masked backdrop blur on a layer *behind* the header content, so the
    text stays sharp while content fades into blur at the lower edge. */
 .masthead::before {

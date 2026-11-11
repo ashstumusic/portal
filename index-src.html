@@ -227,6 +227,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </nav>
 <!-- Hover filters for the streaming logos (pt-gold in use): the coloured shape turns
      solid gold (pt-mono: black); white details stay white and cut-outs stay transparent. -->
+<!-- "Boiling line" for the toolbar doodles: three slightly different wobbles,
+     cycled a few times a second so the drawing looks hand-animated. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="dz-boil-1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="1" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter><filter id="dz-boil-2" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="1" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter><filter id="dz-boil-3" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="1" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter></svg>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter><filter id="pt-gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".969 .969 .969 .969 .969 .969 .969 .98 1 1"/><feFuncG type="table" tableValues=".773 .773 .773 .773 .773 .773 .773 .88 1 1"/><feFuncB type="table" tableValues=".286 .286 .286 .286 .286 .286 .286 .62 1 1"/></feComponentTransfer></filter></svg>
 <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile menu" aria-hidden="true">
   <div class="drawer-platforms">
@@ -549,24 +552,25 @@ if (cur && links[cur]) links[cur].setAttribute('aria-current','true');
 _lastCur = cur;
 }
 const h = heroH;
+// Cross-fades, at both ends of the page: one "Ash Stu" fades out exactly
+// while the other fades in, over the same stretch of scrolling.
+// Top: the hero's name fades out as the toolbar's fades in.
 const heroOut = Math.min(1, Math.max(0, (scrollY - h * 0.15) / (h * 0.2)));
-const navIn = Math.min(1, Math.max(0, (scrollY - h * 0.25) / (h * 0.2)));
-// The same hand-off at the other end: as the About card's "Ash Stu"
-// rises into view, the toolbar logo fades out and the About one fades in,
-// over the same distances (measured from the bottom of the screen), so only
-// one logo is ever on screen. At the very bottom the About one is fully in.
+const navIn = heroOut;
+// Bottom: as the About card's "Ash Stu" rises into view, the toolbar's
+// fades out while the About one fades in (measured from the bottom of the
+// screen, same fade length as at the top). At the very bottom the About
+// one is fully in.
 let navOut = 0, aboutIn = 1;
 if (aboutName) {
 const rise = innerHeight - aboutName.getBoundingClientRect().top;   /* how far it has come up into view */
 const atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
-/* same fade length as the hero hand-off (0.2 of the hero's height), but
-   back to back: the toolbar logo is fully gone before the About one starts */
 navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.2)));
-aboutIn = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.25) / (h * 0.2)));
+aboutIn = navOut;
 }
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
-if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; navLogo.style.pointerEvents = navShow < .05 ? 'none' : ''; navLogo.tabIndex = navShow < .05 ? -1 : 0; _lastNavIn = navShow; }
+if (navLogo && navShow !== _lastNavIn) { if (window.__navDoodle) window.__navDoodle(navShow); navLogo.style.opacity = navShow; navLogo.style.pointerEvents = navShow < .05 ? 'none' : ''; navLogo.tabIndex = navShow < .05 ? -1 : 0; _lastNavIn = navShow; }
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
@@ -2610,6 +2614,66 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
+<script>/* Toolbar doodle. Whenever the toolbar's "Ash Stu" has faded away (at the top
+   of the page, where the big name is showing, and at the bottom, where the
+   About one is), a small sketchbook character - one of six, picked at
+   random - walks in from the left edge of the screen and potters about in
+   the space the name left. When the name starts to come back it turns and
+   dashes off to the left.
+   Drawn as vector line art (sharp at any size), with a "boiling" pencil
+   line and two-frame legs. Purely decorative: hidden from assistive tech,
+   never focusable, never in the way of a click. Does not appear at all
+   with reduced motion or with background effects switched off. */
+(function(){
+var nav=document.querySelector('.nav'),logo=nav&&nav.querySelector('.nav-logo');
+if(!nav||!logo||!document.body.animate)return;
+var calm=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
+var S='fill="#fff" stroke="#1d1d1f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
+var L='fill="none" stroke="#1d1d1f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
+var eye=function(x,y){return '<ellipse class="dz-eye" cx="'+x+'" cy="'+y+'" rx="1.3" ry="1.5" fill="#1d1d1f"/>';};
+/* each: [name, legs frame A, legs frame B, body (drawn over the legs), style: walk|float|slide] - all face right, 40x40 */
+var CAST=[
+['bird','<path '+L+' d="M17 29l-3 8M14 37h-3M23 29l3 8M26 37h3"/>','<path '+L+' d="M18 29v8M18 37h-3M22 29v8M22 37h3"/>',
+ '<path '+S+' d="M8 20c0-7 5-12 12-12s11 5 11 12-5 10-11 10S8 27 8 20z"/><path '+S+' d="M30 17l7 2-7 3z"/><path '+L+' d="M13 21c2 4 7 4 9-1M8 22l-5 2M8 19l-5-1"/>'+eye(25,16),'walk'],
+['cat','<path '+L+' d="M12 29l-2 8M17 30l-1 7M25 30l1 7M30 29l2 8"/>','<path '+L+' d="M13 29v8M17 30v7M25 30v7M29 29v8"/>',
+ '<path '+L+' d="M8 24C3 23 2 17 5 13"/><path '+S+' d="M8 24c0-5 4-7 10-7h6c5 0 8 3 8 7s-3 7-8 7h-8c-5 0-8-2-8-7z"/><path '+S+' d="M22 14l1-7 5 4 4-0 3-5 2 8c1 5-2 9-7 9s-8-4-8-9z"/><path '+L+' d="M31 16l-1 1 1 1M37 15l4-1M37 17l4 1"/>'+eye(27,13)+eye(33,13),'walk'],
+['ghost','','',
+ '<path '+S+' d="M9 34V18C9 11 14 6 20 6s11 5 11 12v16l-4-3-3.5 3-3.5-3-3.5 3-3.500-3z"/><path '+L+' d="M22 22c1.500 1.500 3.500 1.500 5 0M31 20l5-2"/>'+eye(21,16)+eye(27,16),'float'],
+['snail','','',
+ '<path '+S+' d="M3 34c8 0 22 1 30-1 3-1 4-4 3-8l-1-5-4 1c1 5-1 8-5 8H3z"/><path '+S+' d="M7 29C4 21 9 12 17 12s12 7 10 14c-1 3-4 4-7 3"/><path '+L+' d="M12 27c-2-5 1-10 5-10s6 4 5 7c-1 2-4 2-5 0M34 20l1-7M31 21l-2-6"/><circle cx="35" cy="12" r="1.3" fill="#1d1d1f"/><circle cx="29" cy="14" r="1.3" fill="#1d1d1f"/>','slide'],
+['star','<path '+L+' d="M16 30l-3 7M24 30l3 7"/>','<path '+L+' d="M17 30v7M23 30v7"/>',
+ '<path '+S+' d="M20 3l4.600 9.400 10.400 1.500-7.500 7.300 1.800 10.300L20 26.600l-9.300 4.900 1.800-10.300L5 13.900l10.400-1.500z"/><path '+L+' d="M17 21c2 2 4 2 6 0"/>'+eye(17,16)+eye(23,16),'walk'],
+['strummer','<path '+L+' d="M19 27l-5 10M21 27l5 10"/>','<path '+L+' d="M19 27l-1 10M21 27l1 10"/>',
+ '<path '+L+' d="M20 14v13M20 18l-7 5M20 18l8 2"/><circle '+S+' cx="20" cy="8" r="5.500"/><path '+S+' d="M11 22c3-2 6-1 7 1 2-1 4 0 4 2s-2 4-5 4-4 1-6 0-2-5 0-7z"/><path '+L+' d="M21 22l12-8M32 12l3 3M16 5c2-3 6-3 8 0"/>'+eye(22,8),'walk']
+];
+var box=null,xw=null,face=null,cur=null,anim=null,timer=0,on=false,last=-1,x=0;
+function clear(){clearTimeout(timer);timer=0;}
+function geom(){var n=nav.getBoundingClientRect(),l=logo.getBoundingClientRect();var w=Math.max(l.width,96);
+box.style.left=(l.left-n.left)+'px';box.style.width=w+'px';box.style.top=((n.height-40)/2+1)+'px';return {off:-(l.left+60),max:Math.max(8,w-40)};}
+function go(to,dur,ease,cls){if(anim)try{anim.cancel();}catch(e){}
+face.style.transform=to<x?'scaleX(-1)':'';xw.className='dz-x '+cls;
+anim=xw.animate([{transform:'translateX('+x+'px)'},{transform:'translateX('+to+'px)'}],{duration:dur,easing:ease,fill:'forwards'});
+var a=anim;x=to;return a.finished.then(function(){return a===anim;},function(){return false;});}
+function idle(g){xw.className='dz-x dz-idle';timer=setTimeout(function(){wander(g);},700+Math.random()*2200);}
+function wander(g){if(!on)return;var to=Math.round(Math.random()*g.max),d=Math.abs(to-x);if(d<10){idle(g);return;}
+var speed=cur==='slide'?18:cur==='float'?40:55;
+go(to,d/speed*1000,'linear',cur==='walk'?'dz-walk':'dz-'+cur).then(function(ok){if(ok&&on)idle(g);});}
+function show(){if(on||calm())return;on=true;clear();
+if(!box){box=document.createElement('div');box.className='nav-doodle';box.setAttribute('aria-hidden','true');
+box.innerHTML='<div class="dz-x"><div class="dz-face"></div></div>';nav.appendChild(box);xw=box.firstChild;face=xw.firstChild;}
+var i;do{i=Math.floor(Math.random()*CAST.length);}while(CAST.length>1&&i===last);last=i;var c=CAST[i];cur=c[4];
+face.innerHTML='<svg class="dz dz--'+c[0]+'" viewBox="0 0 40 40" width="40" height="40" focusable="false"><g class="dz-la">'+c[1]+'</g><g class="dz-lb">'+c[2]+'</g><g class="dz-body">'+c[3]+'</g></svg>';
+var g=geom();x=g.off;box.hidden=false;
+var to=Math.round(g.max*(.25+Math.random()*.5)),d=to-x,speed=cur==='slide'?90:cur==='float'?150:190;
+go(to,Math.max(500,d/speed*1000),'cubic-bezier(.2,.7,.3,1)',cur==='walk'?'dz-walk':'dz-'+cur).then(function(ok){if(ok&&on)idle(g);});}
+function hide(){if(!on)return;on=false;clear();var g=geom();
+go(g.off,cur==='slide'?520:340,'cubic-bezier(.6,0,.9,.4)','dz-dash'+(cur==='walk'?' dz-walk':' dz-'+cur)).then(function(ok){if(ok&&!on)box.hidden=true;});}
+/* called by the toolbar logic with the logo's opacity (0 = name gone) */
+window.__navDoodle=function(o){if(o<=.02)show();else hide();};
+addEventListener('resize',function(){if(on&&box){var g=geom();if(x>g.max){x=g.max;xw.style.transform='translateX('+x+'px)';}}},{passive:true});
+/* the page may load with the name already gone (top of the page): arrive after a beat */
+setTimeout(function(){var o=parseFloat(logo.style.opacity===''?getComputedStyle(logo).opacity:logo.style.opacity);if(!(o>.02))show();},900);
+})();</script>
 <script>/* About card: "Ash Stu" and the tagline, one line each, sized to span the
    text panel (scaled down if the group would be taller than the photo
    column beside it); the description follows. Both gradients run in step.
