@@ -224,7 +224,7 @@ h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', 
    the title). */
 .rel-track:not(.rel-track--upcoming) .rel-track-title { font-weight: 650; color: rgb(242 242 247); }
 .rel-track-wrap .rel-lyrics-inner, .rel-track-wrap .rel-lyric-line {
-  font-family: 'BodySerif', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
+  font-family: 'BodyText', 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px; line-height: 1.65; letter-spacing: 0; color: rgb(235 235 245 / .66);
 }
 .rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
@@ -1991,41 +1991,42 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-lyrics:not(#\#):not(#\#):not(#\#) { margin-right: -6px !important; }
 :root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { margin-left: 0 !important; margin-right: 0 !important; padding-left: 24px !important; padding-right: 6px !important; }   /* 24px = the 8px edge + the lines' 16px hanging indent */
 
-/* About card text: two blocks that line up with the photos beside them.
-   Top: "Ash Stu" and the tagline, in a block exactly as tall as the big
-   photo (--bio-split, set by the page; auto when the photos stack above).
-   Below it, beside the two small photos: the rest of the text. No visible
-   line; each block hugs the boundary (the name block sits at its bottom,
-   the rest starts at its top), level with the bottom of the big photo. */
-:root.psy .bio-card-text:not(#\#):not(#\#) { display: grid !important; grid-template-rows: var(--bio-split, auto) 1fr; padding: 0 !important; gap: 0 !important; align-content: stretch; }
-:root.psy .bio-head { display: flex; flex-direction: column; justify-content: flex-end; min-width: 0; min-height: 0; padding: 32px 32px 14px; overflow: hidden; }
-:root.psy .bio-rest { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding: 14px 32px 32px; }
+/* About card: the three photos are stacked in one narrow column on the
+   right (big portrait, then the two black-and-white ones), and the text on
+   the left - "Ash Stu", the tagline, then the description - is one group
+   centred vertically in the card. On phones the card is a single column
+   and the photos keep their mosaic (portrait on top, two beneath). */
+@media (min-width: 768px) {
+  :root.psy .bio-card:not(#\#):not(#\#) { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr) !important; }
+  :root.psy .bio-card-media:not(#\#):not(#\#) { grid-template-columns: 1fr !important; }
+}
+:root.psy .bio-card-text:not(#\#):not(#\#) { display: flex !important; flex-direction: column; justify-content: center; padding: 0 !important; gap: 0 !important; }
+:root.psy .bio-head { display: flex; flex-direction: column; min-width: 0; padding: 32px 32px 14px; }
+:root.psy .bio-rest { min-width: 0; padding: 14px 32px 32px; }
 :root.psy .bio-head .bio-wall--top:not(#\#) { margin: 0 0 10px !important; }
 :root.psy .bio-head .bio-wall--bottom:not(#\#) { margin: 14px 0 0 !important; }
 :root.psy .bio-rest .bio-desc:not(#\#) { margin: 0 !important; }
 @media (max-width: 1023px) { :root.psy .bio-head { padding: 20px 20px 10px; } :root.psy .bio-rest { padding: 10px 20px 20px; } }
 @media (max-width: 767px) { :root.psy .bio-head { padding: 18px 18px 8px; } :root.psy .bio-rest { padding: 8px 18px 18px; } }
 
-/* Body text is set in Gupter: the sentences people read (the About
-   description, the Press Kit and Contact lines). A narrow serif that runs
-   small for its point size, so body sizes are a step larger than they were
-   in the sans. Only the regular weight is shipped (the face has no italic).
-   Lyrics use it too (in the album cards and the full-screen player).
+/* Body text is set in Source Sans 3: the sentences people read (the About
+   description, the Press Kit and Contact lines) and the lyrics (album cards
+   and the full-screen player). Only the regular weight is shipped.
    Buttons, labels and titles keep their own faces. */
-@font-face { font-family: 'BodySerif'; src: url('Fonts/gupter/Gupter-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
-:root.psy { --font-body: 'BodySerif', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif; }
+@font-face { font-family: 'BodyText'; src: url('Fonts/sourcesans3/SourceSans3-VF.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+:root.psy { --font-body: 'BodyText', 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
 :root.psy :is(.bio-text, .bio-desc, .contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) {
   font-family: var(--font-body) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important;
 }
-:root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.35 !important; }
-:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 26px !important; line-height: 1.3 !important; }
+:root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 18px !important; line-height: 1.45 !important; }
+:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 22px !important; line-height: 1.42 !important; }
 @media (max-width: 767px) {
-  :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 20px !important; }
-  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.32 !important; }
+  :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; }
+  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 18px !important; line-height: 1.45 !important; }
 }
 
-/* Lyrics in the album cards: Gupter runs small, so a point larger than before. */
-:root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: 16.5px !important; line-height: 1.5 !important; }
+/* Lyrics in the album cards. */
+:root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: 15.5px !important; line-height: 1.55 !important; }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
