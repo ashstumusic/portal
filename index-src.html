@@ -2654,8 +2654,9 @@ document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(f
    loads. Clicking the bird turns him round and, like clicking the name,
    takes you back to the top. The lettering
    fades in and out beside it as before, and is always drawn above the notes.
-   It is a one-colour silhouette of a perched songbird in profile (the eye
-   and one wing line cut out as negative space) and it is still a flip-book:
+   It is a flat silhouette of a perched songbird in profile, filled with the
+   same flowing gradient as the name (the eye and one wing line cut out as
+   negative space) and it is still a flip-book:
    each frame is the same exact drawing in a new pose - leaning back to
    whistle with its beak open, flicking its tail, a small hop. The drawings are vector, made on a 200-unit sheet.
    Purely decorative: hidden from assistive tech (the link keeps its own
@@ -2731,7 +2732,12 @@ var rec={el:el,a:a,fr:[].slice.call(el.querySelectorAll('svg > g > g')),n:0};not
 var done=function(){var i=notes.indexOf(rec);if(i>=0)notes.splice(i,1);el.remove();};a.finished.then(done,done);}
 function jitterNotes(){for(var i=0;i<notes.length;i++){var r=notes[i];r.n++;for(var k=0;k<r.fr.length;k++){if(k===r.n%r.fr.length)r.fr[k].removeAttribute('hidden');else r.fr[k].setAttribute('hidden','');}}}
 function hush(){while(notes.length){notes.pop().el.remove();}}
-function wrap(walk,idle){return '<svg class="dz" viewBox="-13 -32 226 226" focusable="false"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
+/* The toolbar bird is filled with the name's gradient, flowing at the same 9-second pace: one gradient the width of the
+   sheet, repeating, slid sideways forever. (The stylesheet points the bird's fill and its legs' stroke at it.) */
+function wrap(walk,idle){return '<svg class="dz" viewBox="-13 -32 226 226" focusable="false"><defs><linearGradient id="dz-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="226" y2="40" spreadMethod="repeat">'
++'<stop offset="0" stop-color="#F7C549"/><stop offset=".25" stop-color="#FF8AC8"/><stop offset=".5" stop-color="#FFA36B"/><stop offset=".75" stop-color="#8FE6FF"/><stop offset="1" stop-color="#F7C549"/>'
++'<animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="-226 -40" dur="9s" repeatCount="indefinite"/></linearGradient></defs>'
++'<g fill="none" stroke-linecap="round" stroke-linejoin="round"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
 function birdSheet(){var a='',c='',i,k;
 for(k=0;k<2;k++)for(i=0;i<PERCH.length;i++){seed=8101+i*23+k*557;c+='<g hidden>'+bird(PERCH[i])+'</g>';}return wrap(a,c);}
 /* ── where the bird stands ── */
