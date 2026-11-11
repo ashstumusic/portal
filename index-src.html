@@ -2694,8 +2694,8 @@ requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline')
 var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
 if(document.readyState==='complete')build();else addEventListener('load',build);
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
-<script>/* Press Kit photos: they reshuffle live, one at a time with a hard cut;
-   every photo ends each round in a different slot.
+<script>/* Press Kit photos: they reshuffle live, two trading places at a time
+   with a hard cut, so no photo is ever on screen twice.
    Only while the section is on screen and the tab is visible; no live
    shuffling with reduced motion or background effects off (one random
    order per visit instead). */
@@ -2708,13 +2708,15 @@ apply(next());
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
 var onScreen=true,sec=document.getElementById('epk');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
-// one photo at a time: every 0.6s the next slot (in a random slot order)
-// cuts straight to its new picture, no fade; when all four have changed, a
-// new arrangement is drawn and it goes round again
-var target=null,queue=[];
+// Two photos trade places at a time (a hard cut, no fade), every 1.2s.
+// Changing one slot on its own always showed some photo twice, because
+// there are exactly as many photos as slots; a swap never can. The same
+// pair is not swapped twice in a row (that would just undo the last move).
+var last=-1;
 setInterval(function(){if(still()||!onScreen||document.hidden)return;
-if(!queue.length){target=next();queue=[0,1,2,3].slice(0,n).sort(function(){return Math.random()-.5;});}
-var k=queue.shift();cur[k]=target[k];imgs[k].src=items[target[k]].src;imgs[k].alt=items[target[k]].alt;},600);})();</script>
+var a,b,key;do{a=Math.floor(Math.random()*n);b=Math.floor(Math.random()*n);key=Math.min(a,b)*n+Math.max(a,b);}while(a===b||(key===last&&n>2));
+last=key;var x=cur[a];cur[a]=cur[b];cur[b]=x;
+[a,b].forEach(function(k){imgs[k].src=items[cur[k]].src;imgs[k].alt=items[cur[k]].alt;});},1200);})();</script>
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
