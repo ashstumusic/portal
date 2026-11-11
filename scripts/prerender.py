@@ -24,7 +24,6 @@ import os
 import re
 import sys
 
-from buildutil import img_b64
 from build_lyrics_pages import stanzas, slugify
 
 LYRICS = {}   # lyrics.json, loaded in main()
@@ -85,7 +84,7 @@ def render_release_card(rel, r_idx):
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-art-wrap">'
             f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
-            f'class="rel-art" width="560" height="560" itemprop="image"/>'
+            f'class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>'
             f'<div class="rel-overlay"><div class="rel-overlay-inner">'
             f'<p class="rel-cat">{esc(rel["type"])}</p>'
             f'<h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>'
@@ -103,7 +102,7 @@ def render_video_card(v, v_idx):
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
                    f'<span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>')
     if v.get('thumb'):
-        thumb_el = f'<img src="{esc(v["thumb"])}" alt="Music video: {esc(v["title"])} by Ash Stu" width="640" height="360"/>'
+        thumb_el = f'<img src="{esc(v["thumb"])}" alt="Music video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
     return (f'<div class="vid-card-wrap">'
@@ -193,16 +192,11 @@ def main():
     with open('lyrics.json', encoding='utf-8') as f:
         LYRICS.update(json.load(f))
 
-    # Single-file build: bake raster art/thumb paths as 90%-scale base64
-    # WebP data URIs so the prerendered cards AND the embedded data-all JSON
-    # make zero image requests. (Audio/video file paths stay external - they
-    # are user-triggered media, not initial-render assets.)
-    for r in releases:
-        if r.get('art'):
-            r['art'] = img_b64(r['art'])
-    for v in videos:
-        if v.get('thumb'):
-            v['thumb'] = img_b64(v['thumb'])
+    # Cover art and video thumbnails stay ordinary image files (lazy-loaded,
+    # cached, shared by the homepage and every song page). They used to be
+    # baked in as base64, twice (cards + data-all): 620KB of an 800KB page,
+    # and because the embedded copy then never matched the live .json files,
+    # the script re-rendered everything and downloaded the images anyway.
 
     with open('index.html', encoding='utf-8') as f:
         page = f.read()

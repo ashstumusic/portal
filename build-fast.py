@@ -4,7 +4,6 @@
 Edit index-src.html + styles.css, then run: python3 build-fast.py && python3 scripts/prerender.py"""
 import base64, io, json, re, sys, os
 from fontTools.subset import Subsetter, Options, load_font, save_font
-from PIL import Image
 
 ROOT = "/home/oem/Documents/Websites/Ash Music"
 os.chdir(ROOT)
@@ -37,6 +36,17 @@ for f in FONT_FILES:
     opts.hinting = False
     opts.drop_tables += ["FFTM", "meta"]
     font = load_font(f, opts)
+    # Bricolage ships a width axis (75-100%) the site never uses: every rule
+    # sets it at normal width. Pinning it drops the unused condensed outlines
+    # from the file (weight and optical size stay variable).
+    if f.endswith("BricolageGrotesque-VF.ttf"):
+        from fontTools.varLib import instancer
+        font = instancer.instantiateVariableFont(font, {"wdth": 100})
+    # The quote face is only ever set at regular weight: ship that one
+    # weight instead of the whole 200-900 range.
+    if f.endswith("CrimsonPro-Italic-VF.ttf"):
+        from fontTools.varLib import instancer
+        font = instancer.instantiateVariableFont(font, {"wght": 400})
     exact = FIGMENT_TEXT if f == "Fonts/j.d.ttf" else None
     if exact is not None:
         codes = sorted(set(ord(c) for c in exact))
@@ -62,27 +72,6 @@ for f in FONT_FILES:
     print(f"  font {f}: {os.path.getsize(f)//1024}KB -> {len(woff2_data)//1024}KB woff2 -> {out_path}")
     FONT_RELPATHS[f] = f"{SUBSET_DIR}/{out_name}"
 
-# ---------- images: decode -> 90% scale -> webp -> base64 ----------
-IMG_CACHE = {}
-def img_b64(path, quality=80):
-    if path in IMG_CACHE:
-        return IMG_CACHE[path]
-    im = Image.open(path)
-    w, h = im.size
-    nw, nh = max(1, round(w * 0.90)), max(1, round(h * 0.90))
-    im = im.resize((nw, nh), Image.LANCZOS)
-    buf = io.BytesIO()
-    if im.mode in ("RGBA", "LA", "P"):
-        im = im.convert("RGBA")
-        im.save(buf, "WEBP", quality=quality, method=6)
-    else:
-        im.convert("RGB").save(buf, "WEBP", quality=quality, method=6)
-    data = buf.getvalue()
-    uri = "data:image/webp;base64," + base64.b64encode(data).decode()
-    IMG_CACHE[path] = uri
-    print(f"  img {path}: {w}x{h} -> {nw}x{nh}, {os.path.getsize(path)//1024}KB -> {len(data)//1024}KB")
-    return uri
-
 # ---------- CSS ----------
 css = open("styles.css").read()
 # Shared interaction/material layer used by every page (theme, palette,
@@ -94,10 +83,12 @@ css += "\n" + open("shared/system.css").read()   # design system: type, spacing,
 # holding an older copy under the same name fetches the new one (a stale
 # star sheet showed the old textures as squares).
 import hashlib as _hl, re as _re
+_CSS_IMG_V = {}   # path -> version tag, reused for the same image in the HTML
 def _bust(m):
     path = m.group(2)
     if path.startswith(("data:", "http")) or "?" in path or not __import__("os").path.isfile(path): return m.group(0)
-    return f"url({m.group(1)}{path}?v={_hl.sha256(open(path, 'rb').read()).hexdigest()[:8]}{m.group(1)})"
+    _CSS_IMG_V[path] = _hl.sha256(open(path, 'rb').read()).hexdigest()[:8]
+    return f"url({m.group(1)}{path}?v={_CSS_IMG_V[path]}{m.group(1)})"
 css = _re.sub(r"""url\((['"]?)(Images/[^'")]+)\1\)""", _bust, css)
 for src_path, rel_path in FONT_RELPATHS.items():
     css = css.replace(f"url('{src_path}') format('truetype')", f"url('{rel_path}') format('woff2')")
@@ -143,7 +134,10 @@ html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 # fold and load lazily on first use via font-display: swap - preloading
 # them all just burns ~90KB of rural-cell-tower bandwidth on a race the
 # first paint never waits on.
-_PRELOAD_FONTS = {"Fonts/youngserif/YoungSerif-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/outfit/Outfit-VF.ttf"}
+# (UI = Bricolage is the nav and all body text; Outfit used to be preloaded
+# here but nothing on the page renders in it any more, so that preload was
+# 20KB fetched at top priority and thrown away.)
+_PRELOAD_FONTS = {"Fonts/youngserif/YoungSerif-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/bricolage/BricolageGrotesque-VF.ttf"}
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS
@@ -161,44 +155,20 @@ def min_jsonld(m):
     return '<script type="application/ld+json">' + json.dumps(json.loads(m.group(1)), separators=(",", ":")) + "</script>"
 html = re.sub(r'<script type="application/ld\+json">(.*?)</script>', min_jsonld, html, flags=re.S)
 
-# inline all local raster imgs referenced in src="..." - but only in real
-# HTML markup, never inside <script> blocks. Dynamic card renderers
-# (renderReleaseCard, renderFeatured, etc.) hold icon/art paths as literal
-# strings in their JS template code, e.g. '<img src="Icons/Apple_Music.webp"
-# ...'; blindly inlining those turns every small icon into a duplicated
-# base64 blob baked directly into the page's JS payload, once per render
-# function that happens to reference it, instead of one small file the
-# browser fetches once and reuses from cache across every card.
-def repl_src(m):
-    path = m.group(1)
-    if path.startswith("data:") or path.startswith("http"):
-        return m.group(0)
-    # These small icons appear repeatedly across the page (nav, hero,
-    # platform buttons, fullscreen player...) - one cached file the
-    # browser fetches once beats several duplicated inline copies.
-    if path.startswith("Icons/") or path in ("Images/Icon.webp", "Images/logo-star.webp"):
-        return m.group(0)
-    # The hero is preloaded in <head> with fetchpriority="high", so shipping
-    # it as an external file costs no LCP round-trip while keeping the
-    # critical HTML payload lean (an inline 60-80KB base64 hero bloats the
-    # first byte more than the extra request saves).
-    if "hero-" in path:
-        return m.group(0)
-    # Below-the-fold photos (press kit strip, about section) stay external:
-    # inlining them as base64 bloats the critical HTML payload ~95KB for
-    # images the browser wouldn't need until scroll - loading="lazy" only
-    # helps if they're actually separate fetches. They also skip this
-    # script's 90%-downscale re-encode, so they ship at full original
-    # quality. Only above-the-fold LCP images (hero, featured) stay inline.
-    if "/epk-" in path or path.startswith("Images/Profile-"):
-        return m.group(0)
-    q = 65 if "hero-" in path else 78
-    return f'src="{img_b64(path, quality=q)}"'
-print("Inlining images...")
+# Images stay ordinary files: lazy-loaded where they sit below the fold,
+# cached by the browser, and shared with every song page (each of those is a
+# copy of this page). Nothing is inlined as base64 any more.
+#
+# An image the stylesheet also draws (the hero photo is both an <img> and a
+# CSS background) must use the very same URL in the HTML, version tag and
+# all: with two different URLs the browser downloaded the hero twice.
+def _same_url_as_css(m):
+    v = _CSS_IMG_V.get(m.group(2))
+    return f'{m.group(1)}="{m.group(2)}?v={v}"' if v else m.group(0)
 _script_re = re.compile(r'(<script\b[^>]*>.*?</script>)', re.S)
 _parts = _script_re.split(html)
 for _i in range(0, len(_parts), 2):  # even indices = markup outside <script>
-    _parts[_i] = re.sub(r'src="([^"]+\.(?:webp|png|jpg))"', repl_src, _parts[_i])
+    _parts[_i] = re.sub(r'(src|href)="(Images/[^"?]+)"', _same_url_as_css, _parts[_i])
 html = "".join(_parts)
 
 # Externalize the main script: one hashed, cached file instead of an

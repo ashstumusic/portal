@@ -1786,7 +1786,9 @@ body.player-active { padding-bottom: 68px; }
   .np-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
   body.player-active { padding-bottom: 190px; }
   #player-bar .np-ctrl, #player-bar #np-play, #player-bar .np-close { position: relative; }
-  #player-bar .np-ctrl::before, #player-bar #np-play::before, #player-bar .np-close::before {
+  /* (Close uses ::after: its ::before is the drawn × itself, and sharing it
+     pulled the × out of the circle to the top-left corner on phones.) */
+  #player-bar .np-ctrl::before, #player-bar #np-play::before, #player-bar .np-close::after {
     content: ''; position: absolute; top:-7px;right:-7px;bottom:-7px;left:-7px;
   }
 }
@@ -2699,6 +2701,9 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 @media (hover: hover) {
   .featured-play-overlay { opacity: 0; }
   .featured-art-wrap:hover .featured-play-overlay { opacity: 1; }
+  /* keyboard focus must reveal it too: the focus ring is drawn on this
+     element, so at opacity 0 the ring was invisible (WCAG 2.4.7) */
+  .featured-play-overlay:focus-visible { opacity: 1; }
 }
 @media (hover: none) {
   .rel-play-overlay { opacity: 1; background: rgba(0,0,0,.18); }
@@ -3354,7 +3359,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
      quote          Crimson Pro Italic (variable weight) */
 @font-face { font-family: 'Text'; src: url('Fonts/outfit/Outfit-VF.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Labels'; src: url('Fonts/archivonarrow/ArchivoNarrow-VF.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
-@font-face { font-family: 'Quote'; src: url('Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf') format('truetype'); font-weight: 200 900; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Quote'; src: url('Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
 :root { --plain-sans: 'Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 .nav-links a, .nav-drawer a { font-family: var(--plain-sans); font-weight: 600; letter-spacing: .06em; }
 .featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label {

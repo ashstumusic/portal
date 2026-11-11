@@ -202,7 +202,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
    font. */
 @font-face {
   font-family: 'UI'; src: url('Fonts/bricolage/BricolageGrotesque-VF.ttf') format('truetype');
-  font-weight: 200 800; font-stretch: 75% 100%; font-display: swap;
+  font-weight: 200 800; font-display: swap;
 }
 :root {
   --font-ui: 'UI', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
@@ -1046,7 +1046,16 @@ html { overscroll-behavior-y: none; }
    gold so it clears 4.5:1 on the slate. */
 :root.psy #party.hero-split-right { background: #4b6478 !important; }
 :root.psy #party .featured-title { color: #fff !important; -webkit-text-fill-color: #fff !important; }
+/* Featured release name: a grey copy of the same letters sits underneath,
+   pushed a little to the left (and a touch down), like a hard-edged shadow.
+   Sized in em so it scales with the title. */
+:root.psy #party .featured-title:not(#\#) { text-shadow: -.11em .07em 0 #4A4F58 !important; }
+@media (forced-colors: active) { :root.psy #party .featured-title:not(#\#) { text-shadow: none !important; } }
 :root.psy #party .featured-kicker { color: #FFE08A !important; }
+/* The release-type tag ("Album") is not shown in the featured panel. The
+   element stays in the HTML because the page script and the prerender
+   step still write the type into it. */
+:root.psy #party .featured-kicker:not(#\#) { display: none !important; }
 :root.psy #party .f-btn:not(:hover, :focus-visible) { background: rgb(255 255 255 / .72) !important; border-color: rgb(255 255 255 / .7) !important; }
 :root.psy #party .f-btn:focus-visible:not(#\#) { background: rgb(255 255 255 / .72) !important; border-color: rgb(255 255 255 / .7) !important; }
 
@@ -1241,12 +1250,15 @@ html { overscroll-behavior-y: none; }
    same side padding as every other section, max(20px, 5vw), with no
    centred max-width, so all headings and content start on one line. */
 :root.psy :is(.bio-section-header, .bio-body) { max-width: none !important; margin-inline: 0 !important; padding-inline: max(20px, 5vw) !important; }
-:root.psy .epk-body { padding-inline: max(20px, 5vw) !important; }
 /* ...and on very wide screens, the same centred 1248px content width the
    other sections use. */
 :root.psy :is(.bio-section-header, .bio-body) { padding-inline: max(20px, 5vw, (100% - 1248px) / 2) !important; }
-:root.psy .epk-section { container-type: inline-size; }
-:root.psy .epk-body { padding-left: max(20px, 5vw, (100cqw - 1248px) / 2) !important; }
+/* Press Kit: the page margin sits on the section itself (both sides, see
+   "Press Kit photos" below), so the text block adds none on the left -
+   only a gap toward the photos. (It used to compute its own left margin
+   from 100cqw, which is the section's width MINUS its right padding, so
+   above ~1390px the heading drifted left of every other section.) */
+:root.psy .epk-body { padding-left: 0 !important; padding-right: clamp(20px, 5vw, 40px) !important; }
 
 /* One body size: all running text (Press Kit, Contact and About copy,
    track titles, lyrics) is 17px with a 1.47 line height, at every width.
@@ -1318,7 +1330,7 @@ html { overscroll-behavior-y: none; }
 :root.psy #player-bar #np-album { color: rgb(29 29 31 / .72) !important; }
 :root.psy #player-bar .np-time { color: #3a3a3c !important; }
 :root.psy #player-bar .np-bar-track { background: rgb(0 0 0 / .16) !important; }
-:root.psy #player-bar #np-fill, :root.psy #player-bar .seek-thumb { background: #111 !important; }
+:root.psy #player-bar #np-fill, :root.psy #player-bar .seek-thumb::before { background: #111 !important; }
 :root.psy #player-bar .vol-slider { background: linear-gradient(to right, #111 var(--vol, 100%), rgb(0 0 0 / .18) var(--vol, 100%)) !important; }
 :root.psy #player-bar .vol-slider::-webkit-slider-thumb { background: #111; box-shadow: 0 0 0 2px #fff, 0 1px 4px rgb(0 0 0 / .35); }
 :root.psy #player-bar .vol-slider::-moz-range-thumb { background: #111; box-shadow: 0 0 0 2px #fff, 0 1px 4px rgb(0 0 0 / .35); }
@@ -1546,10 +1558,11 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-tl-toggle:not(#\#):not(#\#) { min-height: 30px !important; height: 30px; margin: 0 12px 6px !important; }
 
 /* Press Kit download button: bright red, glowing like a lit screen. White
-   label and icon (5:1 on the red); a red halo that breathes slowly. Hover
+   label and icon (5.5:1 on the red, and still above 4.5:1 at the brightest
+   point of the glow - the old, lighter red measured 4.3-4.5:1); a red halo that breathes slowly. Hover
    is the usual gold. The pulse stops with reduced motion / effects off. */
 :root.psy .epk-section .btn-epk:not(:hover):not(.auto-press):not(#\#):not(#\#) {
-  background: linear-gradient(180deg, #E01828 0%, #CC0E1E 100%) !important;
+  background: linear-gradient(180deg, #D01222 0%, #BC0C1B 100%) !important;
   color: #fff !important; border: 2px solid #FF6B74 !important;
   box-shadow: 0 0 0 1px rgb(255 60 70 / .5), 0 0 18px rgb(255 40 55 / .75), 0 0 46px rgb(255 30 45 / .45), inset 0 1px 0 rgb(255 255 255 / .35) !important;
   animation: tv-glow 2.8s ease-in-out infinite;
@@ -1635,7 +1648,7 @@ html { overscroll-behavior-y: none; }
   100%     { color: #FF2E7E; }
 }
 :root.psy .bio-wall > *:not(#\#):not(#\#) {
-  color: inherit !important; background: none !important; -webkit-text-fill-color: currentColor !important;
+  color: inherit !important; background-image: none !important; -webkit-text-fill-color: currentColor !important;
   filter: none !important; text-shadow: none !important; animation: none !important; transform: none !important;
 }
 :root.psy .bio-wall--top > :nth-child(n+2):not(#\#):not(#\#) { -webkit-text-fill-color: transparent !important; -webkit-text-stroke: 1.1px currentColor; }
@@ -1649,6 +1662,11 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-wall--top { margin-bottom: 28px !important; }
 :root.psy .bio-wall--bottom { margin-top: 28px !important; }
 :root.psy .bio-card-text .bio-desc { max-width: 34em; }
+/* The About line is the one sentence that says who this is, so it is set
+   a step above the 17px body size on larger screens: 21px. Phones keep
+   the 17px body size. */
+:root.psy .bio-card-text .bio-desc:not(#\#) { font-size: 21px !important; line-height: 1.45 !important; max-width: 30em; }
+@media (max-width: 767px) { :root.psy .bio-card-text .bio-desc:not(#\#) { font-size: 17px !important; line-height: var(--body-lh) !important; } }
 :root.psy.psy-calm .bio-wall { animation: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy .bio-wall { animation: none; } }
 @media (forced-colors: active) { :root.psy .bio-wall { color: CanvasText; animation: none; } :root.psy .bio-wall > * { opacity: 1 !important; -webkit-text-stroke: 0 !important; -webkit-text-fill-color: currentColor !important; } }
@@ -1669,7 +1687,11 @@ html { overscroll-behavior-y: none; }
    single accent. Still with reduced motion / effects off. */
 :root.psy .bio-wall { animation: none !important; color: #F7C549; }
 :root.psy .bio-wall > *:not(#\#):not(#\#):not(#\#) {
-  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) 0% 50% / 200% 100% repeat-x !important;
+  /* longhands, and no !important background-position: an !important
+     declaration outranks a running animation, so the old `background`
+     shorthand pinned the gradient in place and it never actually moved */
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) !important;
+  background-size: 200% 100% !important; background-repeat: repeat-x !important; background-color: transparent !important;
   -webkit-background-clip: text !important; background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   animation: name-flow 9s linear infinite !important;
@@ -1685,6 +1707,36 @@ html { overscroll-behavior-y: none; }
    rows a little tighter together. */
 :root.psy .bio-wall--bottom:not(#\#) { flex-direction: column !important; }
 :root.psy .bio-wall--top .bio-name:not(#\#):not(#\#) { line-height: .93 !important; }
+/* The rows' boxes are shorter than the letters (line-height under 1), and
+   the gradient is only painted inside a row's box, so the letter tops were
+   sliced off flat. Padding grows the painted box past the letters; the
+   matching negative margin keeps the rows exactly where they were. */
+:root.psy .bio-wall--top .bio-name:not(#\#):not(#\#) { padding-block: .16em !important; margin-block: -.16em !important; }
+/* The text panel must not be widened by its own no-wrap rows: on phones it
+   grew a few px past the card, the name was sized to that wider panel, and
+   its last letter was cut off at the right. */
+:root.psy .bio-card-text { min-width: 0; }
+
+/* About card, refined.
+   Optical spacing: the logo face sits high in its (tight) row box, so the
+   name's ink hugged the top of the panel and left a hole above the
+   description. Each row is nudged down to sit centred in its own box, which
+   evens the panel's top and bottom margins and makes the gaps either side of
+   the description match. */
+:root.psy .bio-wall--top .bio-name { position: relative; top: .1em; }
+/* Tagline rows a touch looser, so the g/y tails clear the row beneath. */
+:root.psy .bio-wall .bio-tagline:not(#\#):not(#\#) { line-height: 1.22 !important; }
+
+/* About card: one "Ash Stu" and one tagline line (the script no longer
+   adds repeated rows), each filled with the flowing logo gradient set
+   above. */
+/* Photos always fill their panel: when the text side is the taller one
+   (tablet widths) the portrait grows to meet it instead of leaving an
+   empty strip under the two small photos. */
+@media (min-width: 768px) {
+  :root.psy .bio-card-media { grid-template-rows: 1fr auto; align-content: stretch; }
+  :root.psy .bio-card-media .bio-media-main { height: 100%; min-height: 0; }
+}
 
 /* Albums: small covers side by side; clicking one (its cover or Tracks)
    grows that card to the full lyric-width for its tracklist, and it
@@ -1699,7 +1751,13 @@ html { overscroll-behavior-y: none; }
 /* Press Kit photos: evenly spaced (12px between all four, 10px on
    phones), rounded, and held inside the page margin on the right instead
    of running to the screen edge. */
-:root.psy .epk-section:not(#\#) { column-gap: 12px !important; padding-right: max(20px, 5vw, (100% - 1248px) / 2) !important; }
+:root.psy .epk-section:not(#\#) {
+  column-gap: 12px !important; padding-inline: max(20px, 5vw, (100% - 1248px) / 2) !important;
+  /* same full-width box as the other sections (an old ultra-wide rule
+     capped it at 2200px and centred it, shifting both edges), and no
+     margin baked into the text column's minimum width */
+  max-width: none !important; margin-inline: 0 !important; --epk-pad: 0px !important;
+}
 :root.psy .epk-photos:not(#\#) { gap: 12px !important; }
 :root.psy .epk-photos img { border-radius: 10px; }
 @media (max-width: 767px) {
@@ -1724,7 +1782,12 @@ html { overscroll-behavior-y: none; }
 :root.psy #player-bar #np-album:not(#\#) { color: rgb(242 244 246 / .72) !important; }
 :root.psy #player-bar .np-time:not(#\#) { color: rgb(242 244 246 / .8) !important; }
 :root.psy #player-bar .np-bar-track:not(#\#) { background: rgb(255 255 255 / .2) !important; }
-:root.psy #player-bar :is(#np-fill, .seek-thumb):not(#\#) { background: #fff !important; }
+/* The dot is .seek-thumb::before; .seek-thumb itself is an invisible rail as
+   wide as the track that slides along with it. Colouring the rail painted a
+   solid white line over the whole bar (so it always looked full) that slid
+   out past the end, over the duration. */
+:root.psy #player-bar #np-fill:not(#\#), :root.psy #player-bar .seek-thumb:not(#\#)::before { background: #fff !important; }
+:root.psy #player-bar .seek-thumb:not(#\#) { background: none !important; }
 :root.psy #player-bar .vol-slider:not(#\#) { background: linear-gradient(to right, #fff var(--vol, 100%), rgb(255 255 255 / .22) var(--vol, 100%)) !important; }
 :root.psy #player-bar .vol-slider::-webkit-slider-thumb { background: #fff; box-shadow: 0 0 0 2px #14161C, 0 1px 4px rgb(0 0 0 / .5); }
 :root.psy #player-bar .vol-slider::-moz-range-thumb { background: #fff; box-shadow: 0 0 0 2px #14161C, 0 1px 4px rgb(0 0 0 / .5); }
@@ -1782,3 +1845,15 @@ html { overscroll-behavior-y: none; }
   color: #F2F4F6;
 }
 :root.psy .fs-collapse:not(#\#):not(#\#):not(#\#) { left: 50% !important; transform: translateX(-50%) !important; }
+
+/* The video dialog is modal, so it covers everything: it used to sit under
+   the player bar, the header and the "next section" arrow, which stayed on
+   top of the video (on phones the bar hid the lower part of the dialog). */
+.vid-lightbox:not(#\#) { z-index: 450 !important; }
+
+/* "Next section" arrow: it floats over lyrics, titles and buttons as the
+   page scrolls, and with a half-transparent disc the text underneath showed
+   straight through the chevron. A denser, lightly frosted disc keeps the
+   arrow readable and the text behind it from tangling with it. */
+:root.psy .hero-scroll:not(#\#) { background: rgb(8 12 18 / .84) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+:root.psy .hero-scroll:not(#\#):is(:hover, :focus-visible) { background: rgb(8 12 18 / .92) !important; }
