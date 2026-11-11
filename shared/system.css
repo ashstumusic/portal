@@ -224,7 +224,7 @@ h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', 
    the title). */
 .rel-track:not(.rel-track--upcoming) .rel-track-title { font-weight: 650; color: rgb(242 242 247); }
 .rel-track-wrap .rel-lyrics-inner, .rel-track-wrap .rel-lyric-line {
-  font-family: 'BodyText', 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'LyricsText', 'Roboto Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px; line-height: 1.65; letter-spacing: 0; color: rgb(235 235 245 / .66);
 }
 .rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
@@ -2032,10 +2032,13 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 767px) { :root.psy .bio-head { padding: 18px 18px 8px; } :root.psy .bio-rest { padding: 8px 18px 18px; } }
 
 /* Body text is set in Source Sans 3: the sentences people read (the About
-   description, the Press Kit and Contact lines) and the lyrics (album cards
-   and the full-screen player). Only the regular weight is shipped.
+   description, the Press Kit and Contact lines). Only the regular weight is
+   shipped. (Lyrics have their own face, below.)
    Buttons, labels and titles keep their own faces. */
 @font-face { font-family: 'BodyText'; src: url('Fonts/sourcesans3/SourceSans3-VF.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+/* Lyrics (album cards, the full-screen player, lyrics pages) are set in Roboto Condensed: a narrow face, so long
+   lyric lines fit their card at a larger size. Regular weight only. */
+@font-face { font-family: 'LyricsText'; src: url('Fonts/robotocondensed/RobotoCondensed-VF.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 :root.psy { --font-body: 'BodyText', 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
 :root.psy :is(.bio-text, .bio-desc, .contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) {
   font-family: var(--font-body) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important;
@@ -2339,6 +2342,30 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 767px) { :root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; } }
 /* tablet widths: three narrow cards per row, where the larger size wrapped titles onto four or five lines - kept at 17px */
 @media (min-width: 768px) and (max-width: 1099px) { :root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: 1.25 !important; } }
+
+/* A release with lyrics open (class lyrics-open, set by the page while one
+   of its songs' lyrics is showing): the card takes a row to itself and
+   fills the section's width; the other releases sit on the rows around it.
+   From 900px up it becomes two columns - cover, streaming buttons and the
+   Tracks bar on the left at their usual size, the track list and lyrics on
+   the right - so the cover does not balloon. Narrower than that it stays
+   one column with the cover held to its usual size.
+   Lyrics are set larger (--lyr-fs, chosen by the page so the song's longest
+   line fits) and each line stays on one line.
+   (This block was lost in an earlier edit of this file and is restored here.) */
+:root.psy .releases-grid > .rel-card.lyrics-open:not(#\#):not(#\#) { flex: 0 0 100% !important; max-width: 100% !important; }
+@media (min-width: 900px) {
+  :root.psy .rel-card.lyrics-open:not(#\#) { display: grid !important; grid-template-columns: minmax(0, min(26rem, 34%)) minmax(0, 1fr); grid-template-rows: auto auto auto 1fr; align-items: start; }
+  :root.psy .rel-card.lyrics-open > .rel-art-wrap { grid-column: 1; grid-row: 1; }
+  :root.psy .rel-card.lyrics-open > .rel-btns { grid-column: 1; grid-row: 2; }
+  :root.psy .rel-card.lyrics-open > .rel-tl-toggle { grid-column: 1; grid-row: 3; }
+  :root.psy .rel-card.lyrics-open > .rel-tracklist:not(#\#) { grid-column: 2; grid-row: 1 / -1; min-width: 0; border-left: 1px solid var(--hair, rgb(255 255 255 / .08)); }
+}
+@media (max-width: 899px) {
+  :root.psy .rel-card.lyrics-open > .rel-art-wrap { width: min(100%, 26rem); align-self: center; }
+}
+:root.psy .rel-card.lyrics-open .rel-lyrics-inner:not(.lyr-wrap) .rel-lyric-line:not(#\#):not(#\#):not(#\#) { white-space: nowrap !important; overflow: hidden; text-indent: 0 !important; padding-left: 8px !important; }
+:root.psy .rel-card.lyrics-open .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: var(--lyr-fs, 19px) !important; line-height: 1.5 !important; }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
