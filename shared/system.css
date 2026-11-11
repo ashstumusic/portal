@@ -2135,8 +2135,8 @@ html { overscroll-behavior-y: none; }
    here as it does in the home section. Everything on the bar is light:
    link labels and outlines, the Search and menu buttons (dark glass, a
    hairline edge, no drop shadow), the divider, and the bird (light line).
-   The current section is a solid white squircle with a dark label; hover
-   and keyboard focus are still gold with a dark label. */
+   The current section is a black squircle with a white edge and a white
+   label; hover and keyboard focus are still gold with a dark label. */
 :root.psy .nav:not(#\#):not(#\#), :root[data-theme="dark"].psy .nav:not(#\#):not(#\#) {
   --bar-rim: rgb(255 255 255 / .46); --focus-ring: 0 0 0 2px #14161C, 0 0 0 5px #fff;
   background: rgb(16 18 24 / .84) !important;
@@ -2147,11 +2147,15 @@ html { overscroll-behavior-y: none; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { :root.psy .nav:not(#\#):not(#\#) { background: #14161C !important; } }
 :root .nav .nav-links a:not(:hover, :focus-visible, [aria-current], :active):not(#\#):not(#\#) { color: #F2F4F6 !important; }
 :root .nav .nav-links a:not(:hover, :focus-visible, [aria-current]):not(#\#):not(#\#)::after { box-shadow: inset 0 0 0 1px var(--bar-rim) !important; background: transparent !important; }
-:root .nav .nav-links a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#) { color: #111 !important; }
+/* the current section's label stays light, like the others: only the fill behind it changes. (It used to turn dark
+   to sit on a white fill, and while that fill was still sliding over from the previous link the dark label sat on
+   the dark bar and could not be read.) */
+:root .nav .nav-links a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#) { color: #fff !important; }
 :root .nav .nav-links:has(.nav-glider) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { box-shadow: none !important; background: transparent !important; }   /* the white glider behind it is the highlight */
 :root .nav .nav-links:not(:has(.nav-glider)) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { box-shadow: none !important; }
-:root .nav .nav-links:not(:has(.nav-glider)) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { background: #fff !important; }
-:root.psy .nav .nav-links .nav-glider:not(#\#):not(#\#):not(#\#) { background: #fff !important; background-color: #fff !important; box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 4px 12px rgb(0 0 0 / .25) !important; }
+:root .nav .nav-links:not(:has(.nav-glider)) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { background: #000 !important; box-shadow: inset 0 0 0 2px #fff !important; }
+/* the highlight: a black fill with a solid white edge, so it shows on the dark bar */
+:root.psy .nav .nav-links .nav-glider:not(#\#):not(#\#):not(#\#) { background: #000 !important; background-color: #000 !important; box-shadow: inset 0 0 0 2px #fff !important; }
 :root.psy .nav .k-tools:not(#\#)::before { background: rgb(255 255 255 / .22) !important; border-color: rgb(255 255 255 / .22) !important; }
 :root.psy .nav :is(.k-search-btn, .nav-toggle):not(:hover):not(:focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
   background: var(--btn-d-bg) !important; color: var(--btn-d-fg) !important;
@@ -2285,7 +2289,7 @@ html { overscroll-behavior-y: none; }
   font: 600 16px/1.2 var(--font-ui, system-ui, sans-serif); letter-spacing: -.01em;
 }
 @supports (corner-shape: squircle) { .k-menu-link { corner-shape: squircle; } }
-.k-menu-link[aria-current="true"] { background: #fff; color: #111; box-shadow: none; }
+.k-menu-link[aria-current="true"] { background: #000; color: #fff; box-shadow: inset 0 0 0 2px #fff; }
 .k-menu-link:is(:hover, :focus-visible) { background: var(--gold); color: #111; box-shadow: none; }
 .k-menu-link:focus-visible, .k-menu-plat:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .k-menu-plats { display: flex; justify-content: space-around; align-items: center; padding: 8px 0 4px; }

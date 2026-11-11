@@ -388,7 +388,7 @@
 
     // ── pixel art: downscale, ordered-dither, snap to the palette ──
     // Sprites (logo, streaming icons) get hard on/off transparency too.
-    function toPixels(src, sw, sh, LONG) {
+    function toPixels(src, sw, sh, LONG, levels) {
       const k = LONG / Math.max(sw, sh);
       const w = Math.max(8, Math.round(sw * k)), h = Math.max(8, Math.round(sh * k));
       const c = doc.createElement('canvas'); c.width = w; c.height = h;
@@ -396,9 +396,21 @@
       x.imageSmoothingQuality = 'high';
       x.drawImage(src, 0, 0, w, h);
       const d = x.getImageData(0, 0, w, h), px = d.data;
+      // Photos: stretch the picture's own range of brightness before snapping to the palette. The palette has few
+      // dark colours, so a dim photo (a stage shot, an alley at dusk) used to collapse into near-black; lifted
+      // first, it keeps its shapes. Never more than 3x, and bright photos are left as they are.
+      let lo = 0, gain = 1;
+      if (levels) {
+        const hist = new Uint32Array(256); let n = 0;
+        for (let i = 0; i < px.length; i += 4) { if (px[i + 3] > 110) { hist[(px[i] * 77 + px[i + 1] * 150 + px[i + 2] * 29) >> 8]++; n++; } }
+        let acc = 0, p2 = 0, p98 = 255;
+        for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc >= n * .02) { p2 = v; break; } }
+        acc = 0; for (let v = 255; v >= 0; v--) { acc += hist[v]; if (acc >= n * .02) { p98 = v; break; } }
+        if (p98 < 205 && p98 > p2 + 8) { lo = Math.min(p2, 24); gain = Math.min(3, 235 / (p98 - lo)); }
+      }
       for (let i = 0; i < px.length; i += 4) {
         const p = i / 4, t = (BAYER[((p / w | 0) % 4) * 4 + (p % w) % 4] / 16 - 0.5) * 28;
-        const r = px[i] + t, g = px[i + 1] + t, b = px[i + 2] + t;
+        const r = (px[i] - lo) * gain + t, g = (px[i + 1] - lo) * gain + t, b = (px[i + 2] - lo) * gain + t;
         let best = 0, bd = Infinity;
         for (let j = 0; j < PAL.length; j++) { const q = PAL[j], dd = (r - q[0]) ** 2 * 0.3 + (g - q[1]) ** 2 * 0.59 + (b - q[2]) ** 2 * 0.11; if (dd < bd) { bd = dd; best = j; } }
         px[i] = PAL[best][0]; px[i + 1] = PAL[best][1]; px[i + 2] = PAL[best][2];
@@ -409,12 +421,26 @@
     }
     const SPRITE = 16;   // the logo: a 16×16 sprite
     function pixelate(img) {
-      if (!img.complete || !img.naturalWidth || img.dataset.nesOut === img.currentSrc) return;
+      if (!img.complete || !img.naturalWidth) return;
       if (img.closest('.k-palette')) return;
-      const LONG = img.matches('.hero-icon, .footer-logo img') ? SPRITE
-        : img.classList.contains('hero-split-photo') ? 160 : 96;   // pixel art, but still recognisable
+      // One pixel size for every picture on the page: each art pixel is drawn about BLOCK screen pixels wide,
+      // whatever size the picture is shown at. (Every photo used to be cut to the same 96 pixels across, so a big
+      // portrait came out in 6px slabs while a small photo beside it, at 2px, hardly looked pixelated at all.)
+      // The art is never coarser than 28 pixels across nor finer than 240, so the smallest thumbnails are still
+      // readable and the largest photo still clearly pixel art.
+      const BLOCK = 4, sprite = img.matches('.hero-icon, .footer-logo img');
+      const box = img.getBoundingClientRect(), cover = getComputedStyle(img).objectFit === 'cover';
+      const fit = box.width && box.height ? (cover ? Math.max : Math.min)(box.width / img.naturalWidth, box.height / img.naturalHeight) : 0;
+      const shownLong = fit ? Math.max(img.naturalWidth, img.naturalHeight) * fit : 0;
+      const LONG = sprite ? SPRITE : shownLong ? Math.max(28, Math.min(240, Math.round(shownLong / BLOCK))) : 96;
+      // already done at this size (or near enough)? leave it; otherwise redo from the original picture
+      if (img.dataset.nesOut === img.currentSrc && Math.abs((+img.dataset.nesLong || 0) - LONG) <= LONG * .2) return;
+      if (img.dataset.nesOut === img.currentSrc && img.dataset.nesOrig && !img.dataset.nesRedo) {
+        img.dataset.nesRedo = '1'; const again = () => { delete img.dataset.nesRedo; if (on) pixelate(img); };
+        img.addEventListener('load', again, { once: true }); img.dataset.nesOut = ''; img.src = img.dataset.nesOrig; return;
+      }
       try {
-        const c = toPixels(img, img.naturalWidth, img.naturalHeight, LONG);
+        const c = toPixels(img, img.naturalWidth, img.naturalHeight, LONG, !sprite);
         // Blow the pixel art back up to the photo's own dimensions (hard
         // square pixels, no smoothing): layouts that size an image from
         // its natural pixels (like the press kit photo columns) would
@@ -427,7 +453,7 @@
         ux.drawImage(c, 0, 0, up.width, up.height);
         const out = up.toDataURL('image/png');
         if (!img.dataset.nesOrig) { img.dataset.nesOrig = img.getAttribute('src') || ''; if (img.srcset) { img.dataset.nesSrcset = img.srcset; img.removeAttribute('srcset'); } }
-        img.dataset.nesOut = out;
+        img.dataset.nesOut = out; img.dataset.nesLong = LONG;
         img.src = out;
         img.classList.add('nes-px');
       } catch { /* a cross-origin image can't be read back; leave it */ }
@@ -459,11 +485,14 @@
         if (img.complete) pixelate(img); else img.addEventListener('load', () => on && pixelate(img), { once: true });
       }
     }
+    // pictures change size with the window (and when a release opens to full width): re-cut them to keep one pixel size
+    let rePxT = 0;
+    addEventListener('resize', () => { if (!on) return; clearTimeout(rePxT); rePxT = setTimeout(() => on && pixelateAll(), 400); }, { passive: true });
     function restoreAll() {
       for (const img of $$('img[data-nes-orig]')) {
         img.src = img.dataset.nesOrig;
         if (img.dataset.nesSrcset) img.srcset = img.dataset.nesSrcset;
-        delete img.dataset.nesOrig; delete img.dataset.nesOut; delete img.dataset.nesSrcset;
+        delete img.dataset.nesOrig; delete img.dataset.nesOut; delete img.dataset.nesSrcset; delete img.dataset.nesLong; delete img.dataset.nesRedo;
         img.classList.remove('nes-px');
       }
     }
