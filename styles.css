@@ -628,9 +628,9 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
    context (nav/drawer/card buttons) via the .nav-platform .pt & co rules.
    Keeps brand art exact while dropping dozens of duplicate <img> tags. */
 .pt { display: inline-block; flex-shrink: 0; background: center/contain no-repeat; }
-.pt--apple { background-image: url('Icons/Apple_Music.webp'); }
-.pt--spotify { background-image: url('Icons/Spotify.webp'); }
-.pt--youtube { background-image: url('Icons/Youtube.webp'); }
+.pt--apple { background-image: url('Icons/Apple_Music.svg'); }
+.pt--spotify { background-image: url('Icons/Spotify.svg'); }
+.pt--youtube { background-image: url('Icons/Youtube.svg'); }
 .btn-fill {
   background: var(--ink);
   color: var(--paper); border: 1px solid var(--ink);

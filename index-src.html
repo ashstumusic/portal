@@ -331,9 +331,13 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
          small thumbnails under the copy. -->
     <div class="bio-card">
       <div class="bio-card-text">
-        <div class="bio-wall bio-wall--top"><p class="bio-name"><a href="#" class="bio-name-link" aria-label="Ash Stu, back to the top of the page" title="Back to the top">Ash Stu</a></p></div>
-        <p class="bio-text bio-desc">Outsider-folk singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
-        <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
+        <div class="bio-head">
+          <div class="bio-wall bio-wall--top"><p class="bio-name"><a href="#" class="bio-name-link" aria-label="Ash Stu, back to the top of the page" title="Back to the top">Ash Stu</a></p></div>
+          <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
+        </div>
+        <div class="bio-rest">
+          <p class="bio-text bio-desc">Outsider-folk singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
+        </div>
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider-folk singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
@@ -2606,8 +2610,10 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
-<script>/* About card: "Ash Stu" above the description and the tagline below it,
-   one line each, sized to span the panel; both gradients run in step.
+<script>/* About card: "Ash Stu" and the tagline come first, one line each, sized to
+   span the panel, in a block exactly as tall as the big photo beside it
+   (--bio-split). The rest of the text sits below that line, beside the two
+   small photos. Both gradients run in step.
    (n below can repeat each line in extra decorative rows, hidden from
    screen readers; it is 1, so there are none.) */
 (function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
@@ -2623,14 +2629,17 @@ var b=tag.cloneNode(true);b.setAttribute('aria-hidden','true');b.dataset.copy='1
 var rows=function(w){return [].slice.call(w.children);};
 var setSize=function(w,px){rows(w).forEach(function(r){r.style.setProperty('font-size',px+'px','important');});};
 var nat=function(el){el.style.setProperty('font-size','100px','important');var rg=document.createRange();rg.selectNodeContents(el);var wd=rg.getBoundingClientRect().width;return wd/100;};
-var cs=getComputedStyle(text),inner=text.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+var head=text.querySelector('.bio-head')||text,main=media&&media.querySelector('.bio-media-main');
+var cs=getComputedStyle(head),inner=head.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
 // each wall's type is sized so one row spans the panel
 var f1=inner*.98/nat(name),f2=inner*.95/nat(tag);
 setSize(top,f1);setSize(bot,f2);
 var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
-if(side){var avail=media.offsetHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
-for(var k=0;k<4;k++){var used=top.offsetHeight+bot.offsetHeight+(desc?desc.offsetHeight:0)+parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop);
-if(used<=avail)break;var sc=Math.max(.5,(avail-(desc?desc.offsetHeight:0)-32)/(used-(desc?desc.offsetHeight:0)-32))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
+if(side&&main){var split=main.offsetHeight;text.style.setProperty('--bio-split',split+'px');
+var avail=split-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+for(var k=0;k<4;k++){var gap=parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop),used=top.offsetHeight+bot.offsetHeight+gap;
+if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
+else text.style.removeProperty('--bio-split');
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
 }
