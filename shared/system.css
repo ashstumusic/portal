@@ -1982,6 +1982,30 @@ html { overscroll-behavior-y: none; }
 }
 
 
+/* Track lists: numbers, titles and lyrics sit close to the card's edges
+   (numbers about 8px from the left, the lyrics button 6px from the right, and the
+   opened lyrics start in line with the track numbers). */
+:root.psy .rel-track:not(#\#):not(#\#):not(#\#) { padding-left: 2px !important; padding-right: 4px !important; }   /* the number box is 16px wide and right-aligned, so single digits land about 8px in */
+:root.psy .rel-track-wrap:not(#\#):not(#\#):not(#\#) { padding-right: 6px !important; }
+:root.psy .rel-lyrics-inner:not(#\#):not(#\#):not(#\#) { padding-left: 0 !important; padding-right: 8px !important; }
+:root.psy .rel-lyrics:not(#\#):not(#\#):not(#\#) { margin-right: -6px !important; }
+:root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { margin-left: 0 !important; margin-right: 0 !important; padding-left: 24px !important; padding-right: 6px !important; }   /* 24px = the 8px edge + the lines' 16px hanging indent */
+
+/* About card text: two blocks that line up with the photos beside them.
+   Top: "Ash Stu" and the tagline, in a block exactly as tall as the big
+   photo (--bio-split, set by the page; auto when the photos stack above).
+   Below it, beside the two small photos: the rest of the text. No visible
+   line; each block hugs the boundary (the name block sits at its bottom,
+   the rest starts at its top), level with the bottom of the big photo. */
+:root.psy .bio-card-text:not(#\#):not(#\#) { display: grid !important; grid-template-rows: var(--bio-split, auto) 1fr; padding: 0 !important; gap: 0 !important; align-content: stretch; }
+:root.psy .bio-head { display: flex; flex-direction: column; justify-content: flex-end; min-width: 0; min-height: 0; padding: 32px 32px 14px; overflow: hidden; }
+:root.psy .bio-rest { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding: 14px 32px 32px; }
+:root.psy .bio-head .bio-wall--top:not(#\#) { margin: 0 0 10px !important; }
+:root.psy .bio-head .bio-wall--bottom:not(#\#) { margin: 14px 0 0 !important; }
+:root.psy .bio-rest .bio-desc:not(#\#) { margin: 0 !important; }
+@media (max-width: 1023px) { :root.psy .bio-head { padding: 20px 20px 10px; } :root.psy .bio-rest { padding: 10px 20px 20px; } }
+@media (max-width: 767px) { :root.psy .bio-head { padding: 18px 18px 8px; } :root.psy .bio-rest { padding: 8px 18px 18px; } }
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
