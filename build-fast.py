@@ -79,6 +79,14 @@ css = open("styles.css").read()
 css += "\n" + open("shared/kinetic.css").read()
 css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
 css += "\n" + open("shared/system.css").read()   # design system: type, spacing, radii, states (last word)
+# Hover styles only while a mouse/trackpad is in use. A touch screen keeps
+# :hover on the last thing tapped, so a tapped toggle (shuffle, repeat...)
+# kept its hover look and seemed stuck "on" until you tapped elsewhere.
+# The page sets .touch on <html> on a finger press and clears it when a
+# mouse moves; every :hover (including :not(:hover)) is tied to that here.
+# :where() adds no specificity, so the cascade is unchanged.
+import re as _re0
+css = _re0.sub(r"(?<!hover):hover(?![\w-])", ":hover:where(:root:not(.touch) *)", css)
 # Images the stylesheet references get a content-hash query, so a browser
 # holding an older copy under the same name fetches the new one (a stale
 # star sheet showed the old textures as squares).
