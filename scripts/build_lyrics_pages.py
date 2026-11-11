@@ -26,7 +26,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = 'https://ashstu.art'
 ARTIST = 'Ash Stu'
 ARTIST_FULL = 'Ashton Stubblefield'
-GENRE = 'Outsider-Folk'
+GENRE = 'Outsider'
 OUT = os.path.join(ROOT, 'lyrics')
 TODAY = datetime.date.today().isoformat()
 
@@ -398,10 +398,10 @@ def main():
          'mainEntity': {'@type': 'ItemList', 'numberOfItems': len(songs), 'itemListElement': [
              {'@type': 'ListItem', 'position': n + 1, 'url': f"{SITE}/lyrics/{s['slug']}/", 'name': s['title']} for n, s in enumerate(songs)]}}]}
     index_body = (f'<main>\n  <h1>{ARTIST} Lyrics</h1>\n  <p class="byline">Full lyrics to every released song by {ARTIST} '
-                  f'({ARTIST_FULL}), outsider-folk singer-songwriter from Guthrie, Oklahoma.</p>\n' + '\n'.join(groups) + '\n</main>')
+                  f'({ARTIST_FULL}), outsider singer-songwriter from Guthrie, Oklahoma.</p>\n' + '\n'.join(groups) + '\n</main>')
     with open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(page(f'{ARTIST} Lyrics | All Songs', f'Full lyrics to every released song by {ARTIST} ({ARTIST_FULL}), outsider-folk singer-songwriter from Guthrie, Oklahoma.',
-                     index_url, 'website', f'{SITE}/Images/social-card.png', f'{ARTIST}, outsider-folk singer-songwriter', index_body, index_jsonld))
+        f.write(page(f'{ARTIST} Lyrics | All Songs', f'Full lyrics to every released song by {ARTIST} ({ARTIST_FULL}), outsider singer-songwriter from Guthrie, Oklahoma.',
+                     index_url, 'website', f'{SITE}/Images/social-card.png', f'{ARTIST}, outsider singer-songwriter', index_body, index_jsonld))
 
     # Remove pages for songs that no longer exist (only folders this script made).
     live = {s['slug'] for s in songs}

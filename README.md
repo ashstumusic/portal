@@ -1,6 +1,6 @@
 # ashstu.art
 
-Website of Ash Stu, outsider-folk singer-songwriter from Guthrie, Oklahoma.
+Website of Ash Stu, outsider singer-songwriter from Guthrie, Oklahoma.
 
 ## How it fits together
 
