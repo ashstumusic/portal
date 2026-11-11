@@ -351,8 +351,8 @@ requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline')
 var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
 if(document.readyState==='complete')build();else addEventListener('load',build);
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
-<script>/* Press Kit photos: a reel. Every few seconds each photo slides up out
-of its window and the next one slides up into it, window after window,
+<script>/* Press Kit photos: a sideways shuffle. Every few seconds each photo slides right out
+of its window and the next one slides in from the left, window after window,
 left to right. Each photo moves one window along per turn.
 A photo only enters its new window once it has completely left its old
 one, so the same picture is never on screen twice.
@@ -370,15 +370,15 @@ var onScreen=true,sec=document.getElementById('epk');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
 if(!imgs[0].animate)return;
 var GAP=60,OUT=110,IN=130,busy=false;   // near-instant: each photo flicks out and the next flicks in
-function slide(im,from,to,dur,ease){var a=im.animate([{transform:'translateY('+from+')'},{transform:'translateY('+to+')'}],{duration:dur,easing:ease,fill:'forwards'});
+function slide(im,from,to,dur,ease){var a=im.animate([{transform:'translateX('+from+')'},{transform:'translateX('+to+')'}],{duration:dur,easing:ease,fill:'forwards'});
 return a.finished.then(function(){return a;},function(){return a;});}
 function turn(){if(busy||still()||!onScreen||document.hidden)return;busy=true;
 var old=cur.slice(),left=n;
 // window k: its photo slides out, starting a beat after the window before it
-var gone=imgs.map(function(im,k){return new Promise(function(res){setTimeout(function(){slide(im,'0','-106%',OUT,'cubic-bezier(.55,0,.85,.35)').then(res);},k*GAP);});});
+var gone=imgs.map(function(im,k){return new Promise(function(res){setTimeout(function(){slide(im,'0','106%',OUT,'cubic-bezier(.55,0,.85,.35)').then(res);},k*GAP);});});
 imgs.forEach(function(im,k){var from=(k-1+n)%n;   // it receives the photo from the window before it
 Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
-return slide(im,'106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
+return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
 setInterval(turn,5200);})();</script>
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
 can't change it), so the slider is hidden there and only mute stays. */
