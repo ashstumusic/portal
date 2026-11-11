@@ -2330,6 +2330,12 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 30px !important; line-height: 1.12 !important; }
 @media (max-width: 1023px) { :root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 27px !important; } }
 
+/* Videos section: each video's title, larger (21px, was 17px; 20px on phones). */
+:root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.2 !important; }
+@media (max-width: 767px) { :root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; } }
+/* tablet widths: three narrow cards per row, where the larger size wrapped titles onto four or five lines - kept at 17px */
+@media (min-width: 768px) and (max-width: 1099px) { :root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: 1.25 !important; } }
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
