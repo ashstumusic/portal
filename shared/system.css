@@ -1826,7 +1826,12 @@ html { overscroll-behavior-y: none; }
    move. (It used to grow to more than twice its width and crop its cover
    to a banner, which shoved the neighbouring albums around on every open
    and close.) */
-:root.psy .releases-grid > *:not(#\#) { flex: 0 0 min(100%, 20rem) !important; max-width: min(100%, 20rem) !important; }
+:root.psy .releases-grid > *:not(#\#) { flex: 0 0 min(100%, 26rem) !important; max-width: min(100%, 26rem) !important; }
+/* Cards are up to 26rem (416px) wide, to give lyrics room; the lyric type
+   itself does not grow with them. Wide screens keep all three in one row
+   (each takes a third, up to 26rem); below that two sit side by side. */
+@media (min-width: 1280px) { :root.psy .releases-grid > *:not(#\#) { flex-basis: min(26rem, calc((100% - 48px) / 3)) !important; max-width: min(26rem, calc((100% - 48px) / 3)) !important; } }
+@media (min-width: 700px) and (max-width: 1279px) { :root.psy .releases-grid > *:not(#\#) { flex-basis: min(26rem, calc(50% - 12px)) !important; max-width: min(26rem, calc(50% - 12px)) !important; } }
 :root.psy .releases-grid:not(#\#) { align-items: flex-start !important; }
 
 /* Press Kit photos: evenly spaced (12px between all four, 10px on
@@ -1991,15 +1996,10 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-lyrics:not(#\#):not(#\#):not(#\#) { margin-right: -6px !important; }
 :root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { margin-left: 0 !important; margin-right: 0 !important; padding-left: 24px !important; padding-right: 6px !important; }   /* 24px = the 8px edge + the lines' 16px hanging indent */
 
-/* About card: the three photos are stacked in one narrow column on the
-   right (big portrait, then the two black-and-white ones), and the text on
-   the left - "Ash Stu", the tagline, then the description - is one group
-   centred vertically in the card. On phones the card is a single column
-   and the photos keep their mosaic (portrait on top, two beneath). */
-@media (min-width: 768px) {
-  :root.psy .bio-card:not(#\#):not(#\#) { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr) !important; }
-  :root.psy .bio-card-media:not(#\#):not(#\#) { grid-template-columns: 1fr !important; }
-}
+/* About card: the photos on the right are a mosaic (the big portrait on
+   top, the two black-and-white ones side by side beneath it), and the text
+   on the left - "Ash Stu", the tagline, then the description - is one group
+   centred vertically in the card. */
 :root.psy .bio-card-text:not(#\#):not(#\#) { display: flex !important; flex-direction: column; justify-content: center; padding: 0 !important; gap: 0 !important; }
 :root.psy .bio-head { display: flex; flex-direction: column; min-width: 0; padding: 32px 32px 14px; }
 :root.psy .bio-rest { min-width: 0; padding: 14px 32px 32px; }
