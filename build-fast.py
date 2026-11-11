@@ -23,9 +23,9 @@ FONT_FILES = [
     "Fonts/archivonarrow/ArchivoNarrow-VF.ttf",  # small labels (OFL)
     "Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf",  # quote (OFL)
     "Fonts/youngserif/YoungSerif-Regular.ttf",   # release/video titles (OFL, see Fonts/youngserif/OFL.txt)
-    "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # no longer used by the site's stylesheet (lyrics are in Gupter); still read by scripts/build_lyrics_pages.py
+    "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # no longer used by the site's stylesheet (lyrics are in Source Sans 3); still read by scripts/build_lyrics_pages.py
     "Fonts/bricolage/BricolageGrotesque-VF.ttf", # UI (OFL, see Fonts/bricolage/OFL.txt)
-    "Fonts/gupter/Gupter-Regular.ttf",  # body text and lyrics (OFL, see Fonts/gupter/OFL.txt)
+    "Fonts/sourcesans3/SourceSans3-VF.ttf",  # body text and lyrics (OFL, see Fonts/sourcesans3/OFL.txt)
 ]
 FONT_RELPATHS = {}
 
@@ -46,6 +46,10 @@ for f in FONT_FILES:
     # The quote face is only ever set at regular weight: ship that one
     # weight instead of the whole 200-900 range.
     if f.endswith("CrimsonPro-Italic-VF.ttf"):
+        from fontTools.varLib import instancer
+        font = instancer.instantiateVariableFont(font, {"wght": 400})
+    # Body text and lyrics are only ever set at regular weight too.
+    if f.endswith("SourceSans3-VF.ttf"):
         from fontTools.varLib import instancer
         font = instancer.instantiateVariableFont(font, {"wght": 400})
     exact = FIGMENT_TEXT if f == "Fonts/j.d.ttf" else None
