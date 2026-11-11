@@ -2006,6 +2006,23 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 1023px) { :root.psy .bio-head { padding: 20px 20px 10px; } :root.psy .bio-rest { padding: 10px 20px 20px; } }
 @media (max-width: 767px) { :root.psy .bio-head { padding: 18px 18px 8px; } :root.psy .bio-rest { padding: 8px 18px 18px; } }
 
+/* Body text is set in Gupter: the sentences people read (the About
+   description, the Press Kit and Contact lines). A narrow serif that runs
+   small for its point size, so body sizes are a step larger than they were
+   in the sans. Only the regular weight is shipped (the face has no italic).
+   Buttons, labels, titles and lyrics keep their own faces. */
+@font-face { font-family: 'BodySerif'; src: url('Fonts/gupter/Gupter-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+:root.psy { --font-body: 'BodySerif', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif; }
+:root.psy :is(.bio-text, .bio-desc, .contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) {
+  font-family: var(--font-body) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important;
+}
+:root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.35 !important; }
+:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 26px !important; line-height: 1.3 !important; }
+@media (max-width: 767px) {
+  :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 20px !important; }
+  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.32 !important; }
+}
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
