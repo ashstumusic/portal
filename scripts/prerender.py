@@ -77,7 +77,8 @@ def render_release_card(rel, r_idx):
         tracklist = (f'<div class="rel-tracklist" id="tracklist-{r_idx}">'
                      f'<ol aria-label="Tracklist for {esc(rel["name"])}">{items}</ol></div>')
     tl_toggle = (f'<button type="button" class="rel-tl-toggle" aria-expanded="false" aria-controls="tracklist-{r_idx}">'
-                 '<span class="rel-tl-label">Tracks</span>'
+                 '<svg class="rel-tl-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>'
+                 f'<span class="rel-tl-label">{len(rel["tracks"]) + len(upcoming)} tracks</span>'
                  '<svg class="rel-tl-chev" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
                  'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>') if tracklist else ''
     return (f'<article class="rel-card" aria-label="{esc(rel["name"])} - {esc(rel["type"])} by Ash Stu" '
