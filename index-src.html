@@ -1947,7 +1947,7 @@ function fitLyrics(inner) { if (inner) sizeCardForLyrics(inner.closest('.rel-car
 // (the fallback serif is narrower, so a fit made with it can overflow).
 function fitLyricsSoon(inner) {
 fitLyrics(inner);
-if (document.fonts && document.fonts.load) document.fonts.load('16px BodyText').then(function() { fitLyrics(inner); recalcTracklistHeight(inner.closest('.rel-tracklist')); });
+if (document.fonts && document.fonts.load) document.fonts.load('16px LyricsText').then(function() { fitLyrics(inner); recalcTracklistHeight(inner.closest('.rel-tracklist')); });
 }
 function refitOpenLyrics() {
 document.querySelectorAll('.rel-card').forEach(sizeCardForLyrics);
