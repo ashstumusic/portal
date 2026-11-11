@@ -2505,8 +2505,7 @@ the spot and whistling - small hand-drawn music notes in bright colours
 rise from its beak in a little plume.
 It sits inside the name's link, in room the stylesheet reserves beside the
 lettering: bird and name never overlap and nothing moves as the page
-loads. While the name is showing, the bird is off flying around the
-screen; when the name goes it flies back and lands on its spot. Clicking the bird turns him round and, like clicking the name,
+loads. It stays on its perch whether or not the name is showing. Clicking the bird turns him round and, like clicking the name,
 takes you back to the top. The lettering
 fades in and out beside it as before, and is always drawn above the notes.
 It is a flat silhouette of a perched songbird in profile, filled with the
@@ -2596,8 +2595,6 @@ function wrap(walk,idle){return '<svg class="dz" viewBox="-13 -32 226 226" focus
 +'<animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="-226 -40" dur="9s" repeatCount="indefinite"/></linearGradient></defs>'
 +'<g fill="none" stroke-linecap="round" stroke-linejoin="round"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
 function birdSheet(){var a='',c='',i,k;
-/* in the air: wings up, level, down, level */
-[{fly:'up',lean:8,bob:3},{fly:'mid',lean:8},{fly:'down',lean:8,bob:-4},{fly:'mid',lean:8,bob:-1}].forEach(function(P){a+='<g hidden>'+bird(P)+'</g>';});
 for(k=0;k<2;k++)for(i=0;i<PERCH.length;i++){seed=8101+i*23+k*557;c+='<g hidden>'+bird(PERCH[i])+'</g>';}return wrap(a,c);}
 /* ── where the bird stands ── */
 /* Its place, size and level are all set in the stylesheet (see "Toolbar songbird" in shared/system.css): it sits inside
@@ -2615,30 +2612,16 @@ function show(el){if(el===shown)return;if(shown)shown.setAttribute('hidden','');
 longer), taking about a quarter of a second to turn. */
 var turned=false,turnT=0;
 function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden&&!inAir()){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';}turnSoon();},3000+Math.random()*5000);}
-/* While the name is in the toolbar the bird is off flying: it leaves its perch and roams the screen, from one random
-spot to the next, wings beating. When the name goes, it flies back and lands on its spot. In the air it cannot be
-clicked and never blocks a click on the page. */
-function inAir(){return box.classList.contains('flying');}
-function at(){try{var m=new DOMMatrix(getComputedStyle(xw).transform);return [m.m41,m.m42];}catch(e){return [0,0];}}
-function flyTo(tx,ty,speed,ease,done){var c=at(),d=Math.hypot(tx-c[0],ty-c[1]);if(flyA)try{flyA.cancel();}catch(e){}
-if(Math.abs(tx-c[0])>4)face.style.transform=tx<c[0]?'scaleX(-1)':'';
-var a=flyA=xw.animate([{transform:'translate('+f1(c[0])+'px,'+f1(c[1])+'px)'},{transform:'translate('+f1(tx)+'px,'+f1(ty)+'px)'}],{duration:Math.max(450,d/speed*1000),easing:ease,fill:'forwards'});
-a.finished.then(function(){if(a!==flyA)return;xw.style.transform='translate('+f1(tx)+'px,'+f1(ty)+'px)';a.cancel();flyA=null;if(done)done();},function(){});}
-function roam(){if(!flying)return;var r=box.getBoundingClientRect(),sz=r.width,top=nav.getBoundingClientRect().bottom+8,pb=document.getElementById('player-bar'),bot=innerHeight-sz-12-(pb&&pb.offsetHeight?pb.offsetHeight:0);
-var vx=12+Math.random()*Math.max(40,innerWidth-sz-24),vy=top+Math.random()*Math.max(40,bot-top);
-flyTo(vx-r.left,vy-r.top,150+Math.random()*90,'cubic-bezier(.45,.05,.55,.95)',function(){setTimeout(roam,150+Math.random()*900);});}
-function takeoff(){if(flying||!xw.animate)return;flying=true;hush();box.classList.add('flying');roam();}
-function land(){if(!flying)return;flying=false;flyTo(0,0,520,'cubic-bezier(.3,.6,.3,1)',function(){box.classList.remove('flying');xw.style.transform='';face.style.transform=turned?'scaleX(-1)':'';});}
+/* (The bird stays on its perch at all times; it no longer flies off while the name is showing.) */
+function inAir(){return false;}
 function play(ms){if(loopT)return;turnSoon();loopT=setInterval(function(){if(document.hidden||!fi)return;loopN++;
-if(inAir()){show(ff[loopN%ff.length]);return;}
 show(fi[loopN%fi.length]);jitterNotes();if(PERCH[loopN%PERCH.length].sing)whistle();},ms);}
-function hide(){if(loopT){clearInterval(loopT);loopT=0;}clearTimeout(turnT);turnT=0;hush();if(flyA)try{flyA.cancel();}catch(e){}flyA=null;flying=false;if(box){box.classList.remove('flying');xw.style.transform='';if(!box.hidden)box.hidden=true;}}
+function hide(){if(loopT){clearInterval(loopT);loopT=0;}clearTimeout(turnT);turnT=0;hush();if(box&&!box.hidden)box.hidden=true;}
 function update(){tick=false;
 if(calm()){hide();return;}
 if(!box)build();box.hidden=false;G.size=box.getBoundingClientRect().width||50;
 beside=parseFloat(brand.style.opacity||0)>.001?1:0;
-if(!loopT){show(fi[0]);play(150);}
-if(beside)takeoff();else land();}
+if(!loopT){show(fi[0]);play(190);}}
 function ask(){if(!tick){tick=true;requestAnimationFrame(update);}}
 addEventListener('scroll',ask,{passive:true});addEventListener('resize',ask,{passive:true});
 update();
