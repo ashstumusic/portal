@@ -241,7 +241,7 @@
   <div class="hero-split-left">
     <div class="hero-photo-track" id="hero-photo-track">
       <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="950"/>
-      <div class="hero-photo-frame" role="img" aria-label="Ash Stu with guitar"></div>
+      <div class="hero-photo-frame" aria-hidden="true"></div>
     </div>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
@@ -252,7 +252,7 @@
   <div class="hero-split-right" id="party">
     <div class="party-aurora" aria-hidden="true"></div>
     <canvas class="confetti-canvas fireworks-canvas" id="fireworks-canvas" aria-hidden="true"></canvas>
-    <canvas class="confetti-canvas" id="confetti-canvas"></canvas>
+    <canvas class="confetti-canvas" id="confetti-canvas" aria-hidden="true"></canvas>
     <span class="featured-badge" id="featured-badge"><span class="party-dot" aria-hidden="true"></span> Latest Release</span>
     <div class="featured-art-wrap featured-art-hero">
       <span class="party-eq" aria-hidden="true"><i></i><i></i><i></i><i></i> Now playing</span>
@@ -277,12 +277,12 @@
     </a>
   </div>
   <div class="epk-photos epk-photos-top">
-    <img width="534" height="534" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/>
-    <img width="534" height="534" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/>
+    <img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/>
+    <img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/>
   </div>
   <div class="epk-photos epk-photos-bottom">
-    <img width="534" height="534" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/>
-    <img width="534" height="534" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/>
+    <img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/>
+    <img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/>
   </div>
 </section>
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">
@@ -330,9 +330,9 @@
         <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
       </div>
       <div class="bio-card-media">
-        <img class="bio-media-main" src="Images/Profile-3.webp" alt="Ash Stu - Outsider-folk singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
-        <img src="Images/Profile-4.webp" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/>
-        <img src="Images/Profile-6.webp" alt="Ash Stu at the piano" width="360" height="402"/>
+        <img class="bio-media-main" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider-folk singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
+        <img loading="lazy" decoding="async" src="Images/Profile-4.webp" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/>
+        <img loading="lazy" decoding="async" src="Images/Profile-6.webp" alt="Ash Stu at the piano" width="360" height="402"/>
       </div>
     </div>
   </div>
@@ -487,6 +487,14 @@ _navToggle.addEventListener('click', toggleNav);
 var _desktopMq = window.matchMedia('(min-width: 901px)');
 _desktopMq.addEventListener('change', function(e) { if (e.matches) closeNav(); });
 _navDrawer.querySelectorAll('a, .drawer-search').forEach(function(a) { a.addEventListener('click', closeNav); });
+// Tabbing past the last (or before the first) menu item closes the menu,
+// so keyboard focus never moves onto the page hidden behind the open menu.
+function _navFocusLeft(e) {
+var to = e.relatedTarget;
+if (to && !_navDrawer.contains(to) && to !== _navToggle && _navDrawer.classList.contains('open')) closeNav();
+}
+_navDrawer.addEventListener('focusout', _navFocusLeft);
+_navToggle.addEventListener('focusout', _navFocusLeft);
 document.addEventListener('keydown', e => {
 if (e.key === 'Escape') {
 var wasOpen = _navDrawer.classList.contains('open');
@@ -627,7 +635,7 @@ if (_npMarqueeTokens.get(el) !== token) return;
 if (el.scrollWidth > el.clientWidth + 2) {
 el.classList.add('marquee');
 el.style.setProperty('--marquee-duration', Math.max(6, t.length * 0.35) + 's');
-el.innerHTML = '<span>' + t + '   •   ' + t + '</span>';
+var sp = document.createElement('span'); sp.textContent = t + '   •   ' + t; el.textContent = ''; el.appendChild(sp);
 }
 }
 // Double rAF: a single frame can fire before layout has fully settled
@@ -704,7 +712,10 @@ if (_srAnnounce) _srAnnounce.textContent = 'Now playing: ' + track + (album ? ' 
 // instead of waiting for play() - so rapid skipping never queues up.
 _playIntent++;
 npAudio.pause();
-npAudio.preload = 'auto';
+// (Only when it is about to play. A song that is merely cued up, such as
+// the one a song page opens with, fetches nothing until Play is pressed:
+// the files are 10-15MB each.)
+npAudio.preload = autoplay ? 'auto' : 'none';
 npAudio.src = _safeAudioSrc(src); _src = src;
 _npFill.style.transform = 'scaleX(0)';
 if (_npThumb) _npThumb.style.transform = 'translateX(0)';
@@ -716,7 +727,6 @@ npUpdateMediaSession(track, album, art);
 try { sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
 npShow();
 if (autoplay) { var intent = ++_playIntent; npAudio.play().then(function() { if (intent === _playIntent) npSetPlaying(true); }).catch(function(){}); }
-preloadNextTrack();
 }
 var _npResizeTimer;
 window.addEventListener('resize', function() {
@@ -731,14 +741,25 @@ var _playIntent = 0;
 var _preAudio = new Audio();
 _preAudio.preload = 'auto';
 _preAudio.setAttribute('playsinline', '');
+var _preSrc = '';
 function preloadNextTrack() {
 if (!pState.playlist.length || pState.shuffle) return;
 var n = pState.plIdx + 1;
 if (n >= pState.playlist.length) return;
 var item = pState.playlist[n];
 var rel = RELEASE_LIST[item.releaseIdx];
-if (rel && rel.tracks[item.trackIdx]) _preAudio.src = _safeAudioSrc(rel.tracks[item.trackIdx].file);
+if (!rel || !rel.tracks[item.trackIdx]) return;
+var next = _safeAudioSrc(rel.tracks[item.trackIdx].file);
+if (next === _preSrc) return;   // already warming this one
+// Visitors who asked their browser to save data don't get a whole extra
+// song downloaded ahead of time.
+var conn = navigator.connection;
+if (conn && conn.saveData) return;
+_preSrc = next; _preAudio.src = next;
 }
+// The next song is warmed only once this one is really sounding - never
+// for a song that was loaded but not started.
+npAudio.addEventListener('playing', preloadNextTrack);
 function npToggle() {
 var intent = ++_playIntent;
 if (npAudio.paused) {
@@ -750,14 +771,14 @@ npAudio.pause(); npSetPlaying(false);
 function npClose() {
 npAudio.pause(); npSetPlaying(false); npHide();
 }
-function playTrack(rIdx, tIdx) {
+function playTrack(rIdx, tIdx, cueOnly) {
 var rel = RELEASE_LIST[rIdx];
 if (!rel || !rel.tracks[tIdx]) return;
 pState.releaseIdx = rIdx;
 pState.playlist = rel.tracks.map(function(t, i) { return { title: t.title, file: t.file, releaseIdx: rIdx, trackIdx: i }; });
 pState.plIdx = tIdx;
 var t = rel.tracks[tIdx];
-npLoad(t.title, rel.name, t.file, true);
+npLoad(t.title, rel.name, t.file, !cueOnly);
 updatePlayUI();
 }
 function playRelease(rIdx) { playTrack(rIdx, 0); }
@@ -905,6 +926,33 @@ function wireSeekBar(el) {
  // element, making playback lag behind the thumb (which reads as a sticky,
  // slow slider). So media seeks are throttled to ~6/s during the drag and
  // one final seek lands exactly at the released position.
+ // Keyboard and screen readers: the bar is a slider. Arrows move 5s,
+ // Page Up/Down 30s, Home/End jump to the start/end. The spoken value is
+ // refreshed on focus and after each key press (not on every tick, which
+ // would make a screen reader read the time out continuously).
+ el.setAttribute('role', 'slider'); el.tabIndex = 0; el.setAttribute('aria-label', 'Seek'); el.setAttribute('aria-valuemin', '0');
+ function syncAria(t) {
+ var d = npAudio.duration || 0, c = t == null ? (npAudio.currentTime || 0) : t;
+ el.setAttribute('aria-valuemax', Math.round(d)); el.setAttribute('aria-valuenow', Math.round(c));
+ el.setAttribute('aria-valuetext', d ? fmtT(c) + ' of ' + fmtT(d) : 'Nothing playing');
+ }
+ syncAria(); el.addEventListener('focus', function() { syncAria(); });
+ el.addEventListener('keydown', function(e) {
+ var d = npAudio.duration; if (!d || e.altKey || e.ctrlKey || e.metaKey) return;
+ var c = npAudio.currentTime, t;
+ switch (e.key) {
+ case 'ArrowRight': case 'ArrowUp': t = c + 5; break;
+ case 'ArrowLeft': case 'ArrowDown': t = c - 5; break;
+ case 'PageUp': t = c + 30; break;
+ case 'PageDown': t = c - 30; break;
+ case 'Home': t = 0; break;
+ case 'End': t = d - 1; break;
+ default: return;
+ }
+ e.preventDefault(); e.stopPropagation();
+ t = Math.max(0, Math.min(d - .25, t)); npAudio.currentTime = t;
+ pendingPct = t / d; paint(); syncAria(t);
+ });
  function paint() {
  if (pendingPct < 0) return;
  fill.style.transform = 'scaleX(' + pendingPct + ')';
@@ -1636,7 +1684,10 @@ if (!_deepDone && !_deepAt) _deepAt = performance.now();
 _deepDone = true;
 var lb = wrap.querySelector('.rel-lyrics-toggle');
 if (lb && !lb.classList.contains('open')) lb.click();
-if (!upcoming && _src !== key) playTrack(rIdx, tIdx);
+// Cued in the player, ready for Play - not started: browsers refuse to
+// autoplay sound on arrival anyway, and starting the download regardless
+// cost every visitor to a song page about 30MB (this song plus the next).
+if (!upcoming && (_src !== key || !npBar.classList.contains('show'))) playTrack(rIdx, tIdx, true);
 var land = function() { var top = wrap.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' }); };
 setTimeout(land, 450); setTimeout(land, 1100);
 }
@@ -1688,7 +1739,7 @@ row.setAttribute('aria-label', 'Play ' + String(t.title).replace(/<[^>]*>/g, '')
 row.innerHTML =
 '<span class="rel-track-num" aria-hidden="true">' + r.num + '</span>' +
 '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
-'<span class="rel-track-title">' + t.title + '</span>' +
+'<span class="rel-track-title">' + escHtml(t.title) + '</span>' +
 '';
 // The lyrics toggle is a sibling of the row, not inside it: a button
 // nested in a role="button" row is a nested-interactive control that
@@ -1716,25 +1767,49 @@ container.innerHTML = '';
 container.appendChild(frag);
 });
 }
+// A track title too long for its row scrolls sideways. Safe to call again at
+// any time: every title is measured afresh at its current width, so one that
+// fits again (wider card, wider window) goes back to plain text.
 function initMarquees() {
-var els = document.querySelectorAll('.rel-track-title:not(.marquee)');
-var overflowed = [];
+var els = document.querySelectorAll('.rel-track-title');
+var seen = [];
 els.forEach(function(el) {
-if (el.scrollWidth > el.clientWidth) overflowed.push({ el: el, text: el.textContent });
+if (!el.clientWidth) return;   // closed tracklist: nothing to measure yet
+var text = el.dataset.full || el.textContent;
+el.dataset.full = text;
+var was = el.classList.contains('marquee');
+// measured on the plain text, with the scrolling copy taken out
+if (was) { el.classList.remove('marquee'); el.textContent = text; }
+seen.push({ el: el, text: text, was: was });
 });
-overflowed.forEach(function(o) {
+seen.forEach(function(o) { o.over = o.el.scrollWidth > o.el.clientWidth + 1; });
+seen.forEach(function(o) {
+if (!o.over) return;
 o.el.classList.add('marquee');
-var dur = Math.max(4, o.text.length * 0.3);
-o.el.style.setProperty('--marquee-duration', dur + 's');
-o.el.innerHTML = '<span>' + o.text + '   •   ' + o.text + '</span>';
+o.el.style.setProperty('--marquee-duration', Math.max(4, o.text.length * 0.3) + 's');
+var sp = document.createElement('span');
+sp.textContent = o.text + '   \u2022   ' + o.text;
+o.el.textContent = ''; o.el.appendChild(sp);
 });
+}
+// Titles are measured once a card has settled at its new size. Measuring
+// while a card was still growing open judged them against the small card,
+// so titles that fit the open card ("Summertime Even on the Moon") scrolled
+// for no reason.
+var _mqTimer = 0;
+function queueMarquees() { clearTimeout(_mqTimer); _mqTimer = setTimeout(initMarquees, 160); }
+var _mqRO = ('ResizeObserver' in window) ? new ResizeObserver(queueMarquees) : null;
+function watchCardSizes() {
+if (!_mqRO) return;
+_mqRO.disconnect();
+document.querySelectorAll('.releases-grid .rel-card').forEach(function(c) { _mqRO.observe(c); });
 }
 var _relGrid = document.querySelector('.releases-grid');
 if (_relGrid) {
 new MutationObserver(function(mutations) {
 mutations.forEach(function(m) {
 if (m.target.classList && m.target.classList.contains('rel-card')) {
-if (m.target.classList.contains('tracks-open')) setTimeout(initMarquees, 50);
+if (m.target.classList.contains('tracks-open')) queueMarquees();
 if (typeof sizeCardForLyrics === 'function') sizeCardForLyrics(m.target);
 }
 });
@@ -1881,7 +1956,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ' - ' + escHtml(rel.type) + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
 '<div class="rel-art-wrap">' +
-'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '" class="rel-art" width="560" height="560" itemprop="image"/>' +
+'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '" class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>' +
 '<div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">' + escHtml(rel.type) + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div></div>' +
 '</div>' +
 '<div class="rel-btns">' + btns + '</div>' +
@@ -1894,7 +1969,7 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '" alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="640" height="360"/>'
+? '<img src="' + escHtml(v.thumb) + '" alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
 : '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/
@@ -1972,7 +2047,8 @@ wireVideos();
 // a refresh re-render shortly after load would close the song again
 if (_deepDone && performance.now() - _deepAt < 6000) _deepDone = false;
 openDeepSong();
-if (typeof initMarquees === 'function') setTimeout(initMarquees, 50);
+watchCardSizes();
+queueMarquees();
 }
 function loadDynamicContent() {
 // Prerendered pages carry the content JSON embedded inline - render from
@@ -1987,6 +2063,10 @@ if (embedded[0]) renderAllContent(embedded, false);
  // cached index.html desyncs the player/UI (stale-preload bug), so always
  // take the freshest copy; the HTML itself is the only thing allowed to
  // lag behind briefly.
+ // When the page already rendered from its embedded copy, this check waits
+ // until the page has finished loading and the browser is idle, so it never
+ // competes with the fonts, hero photo and scripts for a slow connection.
+ function revalidate() {
  Promise.all([
  fetch('releases.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
  fetch('videos.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
@@ -1998,12 +2078,17 @@ if (results[2] === null) results[2] = embedded[2] ? embedded[2] : {};
 if (!embedded[0]) { renderAllContent(results, false); return; }
 if (JSON.stringify(results) !== JSON.stringify(embedded)) renderAllContent(results, true);
 });
+ }
+ if (!embedded[0]) { revalidate(); return; }
+ var whenIdle = function() { (window.requestIdleCallback || function(f) { setTimeout(f, 1200); })(revalidate, { timeout: 4000 }); };
+ if (document.readyState === 'complete') whenIdle(); else window.addEventListener('load', whenIdle, { once: true });
 }
 loadDynamicContent();
 
 let _lbIdx = 0;
 var _lbPrevFocus = null;
 var _lbOpen = false;
+var _lbWatcher = null;
 function openLightbox(v) {
 if (_lbOpen) return;
 _lbOpen = true;
@@ -2017,6 +2102,10 @@ lb.classList.add('open');
 lb.setAttribute('aria-hidden', 'false');
 lb.inert = false;
 document.body.style.overflow = 'hidden';
+// Chrome does not send key events to the page while focus is inside the
+// video's built-in controls, so the Escape handler never ran there. A
+// CloseWatcher gets Escape (and Android's back gesture) from the browser itself.
+if ('CloseWatcher' in window) { try { _lbWatcher = new CloseWatcher(); _lbWatcher.onclose = function() { _lbWatcher = null; closeLightbox(); }; } catch (e) { _lbWatcher = null; } }
 setTimeout(function() { document.querySelector('.lb-close').focus(); }, 100);
 }
 function _lbShow(idx) {
@@ -2064,6 +2153,7 @@ _lbShow(_lbIdx);
 function closeLightbox() {
 if (!_lbOpen) return;
 _lbOpen = false;
+if (_lbWatcher) { var _w = _lbWatcher; _lbWatcher = null; try { _w.destroy(); } catch (e) {} }
 const lb = document.getElementById('vid-lightbox');
 const vid = document.getElementById('lb-video');
 vid.pause(); vid.src = '';
@@ -2573,15 +2663,15 @@ document.querySelectorAll('a[data-epk-download]').forEach(function(a){a.addEvent
 var done=false,go=function(){if(done)return;done=true;removeEventListener('scrollend',go);press();};
 if('onscrollend' in window){addEventListener('scrollend',go,{once:true});setTimeout(go,1600);}else setTimeout(go,900);
 });});})();</script>
-<script>/* About card: the top half repeats "Ash Stu" in as many rows as fit,
-   the bottom half repeats the tagline in the same number of rows; every
-   row's gradient runs in step. The copies are decorative (hidden from
-   screen readers); the first of each is the real text. */
+<script>/* About card: "Ash Stu" above the description and the tagline below it,
+   one line each, sized to span the panel; both gradients run in step.
+   (n below can repeat each line in extra decorative rows, hidden from
+   screen readers; it is 1, so there are none.) */
 (function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
 if(!card||!text||!top||!bot)return;var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
 function build(){
 top.querySelectorAll('[data-copy], .rep').forEach(function(e){e.remove();});bot.querySelectorAll('[data-copy]').forEach(function(e){e.remove();});
-var name=top.querySelector('.bio-name'),tag=bot.querySelector('.bio-tagline'),n=4;
+var name=top.querySelector('.bio-name'),tag=bot.querySelector('.bio-tagline'),n=1; // one line each (was 4 repeated rows)
 for(var i=1;i<n;i++){var a=document.createElement('p');a.className='bio-name';a.setAttribute('aria-hidden','true');a.dataset.copy='1';a.innerHTML='<span>Ash Stu</span>';top.appendChild(a);
 var b=tag.cloneNode(true);b.setAttribute('aria-hidden','true');b.dataset.copy='1';bot.appendChild(b);}
 // Four rows each, as large as they go: each wall's type is sized so a row

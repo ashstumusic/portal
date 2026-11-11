@@ -4,10 +4,22 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="robots" content="noindex, nofollow"/>
-<title>Resume</title>
+<title>Ashton Stubblefield - Resume</title>
 <style>
   html, body { margin: 0; padding: 0; height: 100%; background: #525659; }
   iframe { display: block; width: 100vw; height: 100dvh; border: none; }
+  /* "Home" used to sit under the full-height viewer in default link blue on
+     the grey page (1.3:1 contrast, and off-screen). Now a small pill in the
+     corner that stays put. */
+  .nav-link {
+    position: fixed; left: 12px; bottom: 12px; z-index: 2;
+    padding: 10px 16px; border-radius: 999px;
+    background: #111; color: #fff; border: 2px solid #fff;
+    font: 600 15px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+  }
+  .nav-link:hover { background: #fff; color: #111; }
+  .nav-link:focus-visible { outline: 3px solid #F7C548; outline-offset: 2px; }
   .sr-only {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0,0,0,0); white-space: nowrap;
@@ -17,9 +29,10 @@
 <body>
 <main>
 <h1 class="sr-only">Ashton Stubblefield &ndash; Resume</h1>
-<iframe id="resume-frame" title="Resume"></iframe>
-<nav>
-  <a href="index.html" class="nav-link">Home</a>
+<iframe id="resume-frame" title="Resume (PDF viewer)"></iframe>
+<noscript><p style="color:#fff;padding:1rem;font-family:system-ui,sans-serif"><a style="color:#fff" href="Ashton_Stubblefield_Resume.pdf">Open the resume (PDF)</a></p></noscript>
+<nav aria-label="Site">
+  <a href="./" class="nav-link"><span aria-hidden="true">&larr; </span>Ash Stu home</a>
 </nav>
 </main>
 <script>
