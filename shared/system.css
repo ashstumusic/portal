@@ -2057,7 +2057,7 @@ html { overscroll-behavior-y: none; }
   border: 0 !important; border-radius: var(--btn-r) !important;
   -webkit-backdrop-filter: var(--btn-blur); backdrop-filter: var(--btn-blur);
   text-transform: none !important; text-shadow: none !important;
-  transition: transform .4s var(--k-spring-press, cubic-bezier(.2, .9, .3, 1.2)), background-color .2s ease, color .2s ease, box-shadow .2s ease !important;
+  transition: scale .4s var(--k-spring-press, cubic-bezier(.2, .9, .3, 1.2)), background-color .2s ease, color .2s ease, box-shadow .2s ease !important;
 }
 :root.psy .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#),
 :root.psy .np-ctrl:not(#\#):not(#\#):not(#\#):not(#\#),
@@ -2175,8 +2175,10 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
 :root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible,
 :root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):focus-visible { outline: 3px solid #fff !important; outline-offset: 3px !important; box-shadow: var(--btn-hov-edge), 0 0 0 3px #111 !important; }
-/* press (mouse only: on a touch screen the pressed look could outlast the
-   tap, the same way hover does), disabled */
+/* press uses the separate `scale` property, never `transform`: some buttons
+   are centred with a transform, and overriding it made them jump sideways.
+   (mouse only: on a touch screen the pressed look could outlast the
+   tap, the same way hover does). Then disabled. */
 :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
 :root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
 :root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
@@ -2192,7 +2194,10 @@ html { overscroll-behavior-y: none; }
 :root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
 :root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
 :root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
-:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { transform: scale(.96) !important; transition-duration: .1s, .1s, .1s, .1s !important; }
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { scale: .96 !important; transition-duration: .1s, .1s, .1s, .1s !important; }
+/* The full-screen player's Close button is centred with translateX(-50%);
+   scaling from its left edge keeps its centre exactly where it was. */
+:root.psy .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#) { transform-origin: 0 50% !important; }
 :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
 :root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
 :root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):is(:disabled, [aria-disabled="true"]),
@@ -2239,7 +2244,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
 :root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
 :root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *),
-:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { transform: none !important; }
+:root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { scale: none !important; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   :root.psy { --btn-l-bg: #E9ECEF; --btn-d-bg: #2C2F36; }
