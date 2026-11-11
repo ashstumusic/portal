@@ -224,7 +224,7 @@ h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', 
    the title). */
 .rel-track:not(.rel-track--upcoming) .rel-track-title { font-weight: 650; color: rgb(242 242 247); }
 .rel-track-wrap .rel-lyrics-inner, .rel-track-wrap .rel-lyric-line {
-  font-family: 'Lyrics', Georgia, 'Times New Roman', serif; font-optical-sizing: auto;
+  font-family: 'BodySerif', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
   font-size: 14px; line-height: 1.65; letter-spacing: 0; color: rgb(235 235 245 / .66);
 }
 .rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
@@ -2010,7 +2010,8 @@ html { overscroll-behavior-y: none; }
    description, the Press Kit and Contact lines). A narrow serif that runs
    small for its point size, so body sizes are a step larger than they were
    in the sans. Only the regular weight is shipped (the face has no italic).
-   Buttons, labels, titles and lyrics keep their own faces. */
+   Lyrics use it too (in the album cards and the full-screen player).
+   Buttons, labels and titles keep their own faces. */
 @font-face { font-family: 'BodySerif'; src: url('Fonts/gupter/Gupter-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 :root.psy { --font-body: 'BodySerif', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif; }
 :root.psy :is(.bio-text, .bio-desc, .contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) {
@@ -2022,6 +2023,9 @@ html { overscroll-behavior-y: none; }
   :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 20px !important; }
   :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.32 !important; }
 }
+
+/* Lyrics in the album cards: Gupter runs small, so a point larger than before. */
+:root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: 16.5px !important; line-height: 1.5 !important; }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a

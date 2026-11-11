@@ -23,9 +23,9 @@ FONT_FILES = [
     "Fonts/archivonarrow/ArchivoNarrow-VF.ttf",  # small labels (OFL)
     "Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf",  # quote (OFL)
     "Fonts/youngserif/YoungSerif-Regular.ttf",   # release/video titles (OFL, see Fonts/youngserif/OFL.txt)
-    "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # lyrics (OFL, see Fonts/fraunces/OFL.txt)
+    "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # no longer used by the site's stylesheet (lyrics are in Gupter); still read by scripts/build_lyrics_pages.py
     "Fonts/bricolage/BricolageGrotesque-VF.ttf", # UI (OFL, see Fonts/bricolage/OFL.txt)
-    "Fonts/gupter/Gupter-Regular.ttf",  # body text (OFL, see Fonts/gupter/OFL.txt)
+    "Fonts/gupter/Gupter-Regular.ttf",  # body text and lyrics (OFL, see Fonts/gupter/OFL.txt)
 ]
 FONT_RELPATHS = {}
 
