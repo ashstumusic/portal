@@ -257,10 +257,11 @@
 
   const dlg = doc.createElement('dialog');
   dlg.className = 'k-palette';
-  dlg.setAttribute('aria-label', 'Search and quick actions');
+  dlg.setAttribute('aria-label', 'Menu and search');
   dlg.innerHTML = `<div class="k-palette-box">
       <input class="k-palette-input" type="text" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="k-palette-list"
              aria-label="Search songs, videos, sections and actions" placeholder="Search songs, videos, sections…" autocomplete="off" spellcheck="false">
+      <div class="k-menu" id="k-menu"></div>
       <ul class="k-palette-list" id="k-palette-list" role="listbox" aria-label="Results"></ul>
       <button type="button" class="k-palette-close">Close</button>
       <p class="k-palette-foot" aria-hidden="true"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></p>
@@ -311,23 +312,62 @@
     closePalette(false);
     it.run();
   }
-  function openPalette() {
+  // One box, two faces. Opened from the menu button it is the MENU: the search field on top and, under it, the
+  // page's section links and streaming links (on small screens, where the toolbar has no room for them) and the
+  // settings switches. The moment the search field is clicked, focused or typed in, the area under it becomes
+  // SEARCH results instead. Opened with the keyboard shortcut it starts as search.
+  const menuBox = $('.k-menu', dlg);
+  const escHtml = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function renderMenu(keep) {
+    const links = $$('.nav-links a').filter((a) => a.getAttribute('href'));
+    const plats = $$('.nav-platforms a');
+    const sets = typeof settingsList === 'function' ? settingsList() : [];
+    let h = '';
+    if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
+    if (plats.length) h += '<div class="k-menu-plats" aria-label="Streaming platforms">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}">${a.innerHTML}</a>`).join('') + '</div>';
+    if (sets.length) h += '<p class="settings-title" id="k-menu-settings">Settings</p><div class="k-menu-settings" role="group" aria-labelledby="k-menu-settings">' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
+    menuBox.innerHTML = h;
+    if (keep != null) $$('.settings-row', menuBox)[keep]?.focus({ preventScroll: true });
+  }
+  function setMode(m) {
+    if (dlg.dataset.mode === m) return;
+    dlg.dataset.mode = m;
+    input.setAttribute('aria-expanded', String(m === 'search'));
+    if (m === 'search') { all = gatherItems(); active = 0; render(); }
+    else { list.replaceChildren(); input.removeAttribute('aria-activedescendant'); renderMenu(null); }
+  }
+  menuBox.addEventListener('click', (e) => {
+    const l = e.target.closest('.k-menu-link'), r = e.target.closest('.settings-row');
+    if (l) { const a = $$('.nav-links a').filter((x) => x.getAttribute('href'))[+l.dataset.link]; closePalette(false); a?.click(); }
+    else if (r) { const i = +r.dataset.set, it = settingsList()[i]; if (it) { try { it.run(); } catch {} setTimeout(() => { if (dlg.open && dlg.dataset.mode === 'menu') renderMenu(i); }, 60); } }
+    else if (e.target.closest('.k-menu-plat')) closePalette(false);
+  });
+  const menuBtns = () => $$('.nav-toggle');
+  function syncMenuBtns(open) { for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(open)); b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); } }
+  function openPalette(opts) {
     if (dlg.open) return;
+    const menu = !!(opts && opts.menu);
     opener = doc.activeElement;
-    all = gatherItems(); active = 0; input.value = '';
+    input.value = '';
     palette.open = true;
     header?.classList.remove('k-hide');
+    dlg.dataset.mode = '';
     dlg.showModal();
-    render();
-    input.focus();
+    setMode(menu ? 'menu' : 'search');
+    syncMenuBtns(true);
+    if (menu) (menuBox.querySelector('button, a') || input).focus({ preventScroll: true }); else input.focus();
   }
   function closePalette(restore = true) {
     if (!dlg.open) return;
     dlg.close();
     palette.open = false;
+    syncMenuBtns(false);
     if (restore && opener?.isConnected) opener.focus();
   }
-  input.addEventListener('input', () => { active = 0; render(); });
+  // clicking, focusing or typing in the search field turns the lower area over to search
+  input.addEventListener('pointerdown', () => setMode('search'));
+  input.addEventListener('focus', () => { if (dlg.open) setMode('search'); });
+  input.addEventListener('input', () => { setMode('search'); active = 0; render(); });
   input.addEventListener('keydown', (e) => {
     const map = { ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: shown.length - 1, PageDown: active + 5, PageUp: active - 5 };
     if (e.key in map) { e.preventDefault(); setActive(map[e.key]); }
@@ -335,13 +375,15 @@
   });
   dlg.addEventListener('click', (e) => { if (e.target === dlg) closePalette(); });
   $('.k-palette-close', dlg).addEventListener('click', () => closePalette());
-  dlg.addEventListener('close', () => { palette.open = false; });
+  dlg.addEventListener('close', () => { palette.open = false; syncMenuBtns(false); });
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;
-    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); dlg.open ? closePalette() : openPalette(); }
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (!dlg.open) openPalette(); else if (dlg.dataset.mode === 'menu') { setMode('search'); input.focus(); } else closePalette(); }
     else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); openPalette(); }
   });
-  for (const b of $$('.k-search-btn')) b.addEventListener('click', openPalette);
+  for (const b of $$('.k-search-btn')) b.addEventListener('click', () => openPalette());
+  // the one menu button: opens the box as the menu (search field + sections + settings)
+  for (const b of $$('.nav-toggle')) b.addEventListener('click', (e) => { e.stopImmediatePropagation(); dlg.open ? closePalette() : openPalette({ menu: true }); });
 
   // ── DYNAMIC CONTENT ANNOUNCEMENTS ────────────────────────────────
   const lyr = $('#fs-lyrics');
@@ -419,16 +461,22 @@
     blip(b.matches('.fx-toggle, .fs-lyrics-toggle') ? 660 : 880);
   }, { passive: true });
 
-  // Extra palette entries for these settings.
+  // Settings live in their own panel (the gear in the page footer), not in the search palette: settingsList() is what
+  // that panel shows. Each entry says what it is (label), whether it is on, and how to flip it (run).
+  function settingsList() {
+    const list = [];
+    if (hasKeys) list.push({ group: 'Settings', label: 'Single-key shortcuts', on: keysOn, title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then a letter to jump to a section, / to search', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
+    list.push({ group: 'Settings', label: 'Interface sounds', on: soundsOn, title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', sub: 'Small clicks when you press buttons', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(); } });
+    // Page-specific settings (the homepage's psyche.js adds background effects and 8-bit mode).
+    if (typeof window.kineticItems === 'function') { try { list.push(...window.kineticItems().filter((it) => it.group === 'Settings')); } catch {} }
+    return list;
+  }
+  // Extra palette entries from the page (the homepage's psyche.js adds the oracle's suggestions up top). Settings are left out.
   const _gather = gatherItems;
   gatherItems = function () {   // eslint-disable-line no-func-assign
     const items = _gather();
-    if (hasKeys) items.push({ group: 'Settings', title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then L / W / A / B, and /', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
-    items.push({ group: 'Settings', title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(); } });
-    // Page-specific entries (the homepage's psyche.js adds the oracle's
-    // suggestions up top and its own settings at the end).
     if (typeof window.kineticItems === 'function') {
-      try { const extra = window.kineticItems(); items.unshift(...extra.filter((it) => it.group !== 'Settings')); items.push(...extra.filter((it) => it.group === 'Settings')); } catch {}
+      try { items.unshift(...window.kineticItems().filter((it) => it.group !== 'Settings')); } catch {}
     }
     // Shortcut hints for section jumps.
     for (const it of items) if (it.group === 'Go to' && keysOn && hasKeys) it.kbd = ['G', it.title.trim()[0]?.toUpperCase()];
@@ -439,6 +487,6 @@
   // and no shortcut at all on touch-only devices (see hasKeys).
   syncKeys();
 
-  window.kinetic = { announce, swapLabel, openPalette };
+  window.kinetic = { announce, swapLabel, openPalette, settings: settingsList };
   }
 })();

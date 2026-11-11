@@ -1274,6 +1274,11 @@ html { overscroll-behavior-y: none; }
 .hero-photo-track.warhol-strip > :is(.hero-split-photo, .hero-photo-frame, .warhol-half) { width: calc(100% / 3) !important; flex: none; }
 .hero-photo-track.warhol-strip .hero-photo-frame { background: none; }
 .warhol-cell { contain: strict; }
+/* a cat that is "in its box": a thick border in its own random colour, drawn over the picture */
+.warhol-cell { position: relative; }
+.warhol-cell::after { content: ""; position: absolute; inset: 0; border: clamp(5px, .9vw, 12px) solid var(--box, transparent); opacity: 0; transition: opacity .35s ease; pointer-events: none; }
+.warhol-cell.boxed::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .warhol-cell::after { transition: none; } }
 .warhol-cell img { image-rendering: auto; }
 :root.psy .rel-track-wrap .rel-lyric-line.lyr-wrap-line { white-space: normal; overflow-wrap: anywhere; padding-left: 1.1em; text-indent: -1.1em; }
 /* a line given its own size keeps the song's line spacing */
@@ -2036,10 +2041,12 @@ html { overscroll-behavior-y: none; }
   font-family: var(--font-body) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important;
 }
 :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 18px !important; line-height: 1.45 !important; }
-:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 22px !important; line-height: 1.42 !important; }
+:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 25px !important; line-height: 1.38 !important; max-width: 32em; }
+/* iPad widths: the text panel is narrow, so a step down keeps it from running long */
+@media (min-width: 768px) and (max-width: 1023px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 22px !important; } }
 @media (max-width: 767px) {
   :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; }
-  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 18px !important; line-height: 1.45 !important; }
+  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; line-height: 1.4 !important; }
 }
 
 /* Lyrics in the album cards. */
@@ -2067,6 +2074,8 @@ html { overscroll-behavior-y: none; }
 @media (min-width: 768px) and (max-width: 829px) { :root.psy .nav .nav-links:not(#\#) { gap: 4px !important; } :root.psy .nav .nav-platforms:not(#\#) { gap: 6px !important; } }
 .nav-doodle { position: absolute; z-index: 0; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; left: calc(var(--bird-w) / .765 * -.12); top: calc(50% - var(--bird-w) / .765 * .69 + var(--bird-dy)); width: calc(var(--bird-w) / .765); height: calc(var(--bird-w) / .765); display: block; }
 .nav-doodle[hidden] { display: none; }
+.nav-doodle.flying { pointer-events: none; }
+.nav-doodle .dz-x { will-change: transform; }
 .nav-doodle .dz-x, .nav-doodle .dz-face { display: block; width: 100%; height: 100%; }
 /* turning round: the drawing closes to a sliver and opens facing the other way, about its own middle */
 .nav-doodle .dz-face { transform-origin: 50% 50%; transition: transform .26s cubic-bezier(.45, 0, .55, 1); }
@@ -2217,17 +2226,117 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):focus-visible { outline: 3px solid #fff !important; outline-offset: 3px !important; }
 :root.psy .nav-drawer a[aria-current]:not(.drawer-platforms a):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) { background: #fff !important; color: #111 !important; box-shadow: none !important; }
 
+/* The big "Ash Stu" in the home section is something you tap (five quick
+   taps switch 8-bit mode), not text you select: tapping or double-clicking
+   it no longer highlights the letters, the phone's tap flash and long-press
+   menu are off, a double tap does not zoom the page, and it gives a small
+   press when touched. */
+:root.psy #hero-brand, :root.psy #hero-brand .hero-name {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; cursor: pointer;
+}
+:root.psy #hero-brand .hero-name { transition: scale .18s cubic-bezier(.2, .9, .3, 1.2); }
+:root.psy #hero-brand:active .hero-name { scale: .975; transition-duration: .06s; }
+@media (prefers-reduced-motion: reduce) { :root.psy #hero-brand:active .hero-name { scale: none; } }
+/* The About card's "Ash Stu" (a link back to the top) presses the same way, and is not selectable text either. */
+:root.psy .bio-name, :root.psy .bio-name .bio-name-link { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; cursor: pointer; }
+:root.psy .bio-name { transition: scale .18s cubic-bezier(.2, .9, .3, 1.2); transform-origin: 50% 50%; }
+:root.psy .bio-name:active { scale: .975; transition-duration: .06s; }
+@media (prefers-reduced-motion: reduce) { :root.psy .bio-name:active { scale: none; } }
+
+/* Featured release: its name, a little larger. */
+:root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 35px !important; line-height: 1.12 !important; }
+@media (max-width: 767px) { :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 31px !important; } }
+@media (min-width: 768px) and (max-width: 1299px) { :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 31px !important; } }
+
+/* ── The one menu ─────────────────────────────────────────────────────
+   A single menu button at the right end of the toolbar, on every screen
+   size. It opens one box: the search field on top and, under it, the
+   menu - the section links and streaming links (small screens only; wider
+   toolbars already show them) and the settings switches. Clicking into the
+   search field hands the lower area over to search results.
+   The old separate Search button and the old phone drawer are retired. */
+:root.psy .nav .k-tools:not(#\#):not(#\#) { display: none !important; }
+:root.psy .nav-drawer:not(#\#):not(#\#):not(#\#) { display: none !important; }
+:root.psy .nav .nav-toggle:not(#\#):not(#\#) { display: inline-grid !important; place-items: center; margin-left: 12px; flex: none; position: relative; }
+/* Phones: the three streaming logos sit in the toolbar too (as on wider screens), between the name and the menu
+   button, a little smaller so everything fits on one line; they are no longer repeated inside the menu. */
+@media (max-width: 767px) {
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#) { display: flex !important; align-items: center; gap: 4px !important; margin-left: auto !important; margin-right: 0 !important; flex: none; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#) { --pt: 24px; padding: 4px; margin: 0; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#) { width: 24px !important; height: 24px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#) { margin-left: 8px; }
+}
+@media (max-width: 359px) {
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#) { gap: 1px !important; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#) { --pt: 20px; padding: 3px; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#) { width: 20px !important; height: 20px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#) { margin-left: 4px; }
+}
+.k-menu-plats { display: none !important; }
+@media (min-width: 1200px) { :root.psy .nav .nav-toggle:not(#\#):not(#\#) { margin-right: -24px; } }
+.k-palette[data-mode="menu"] :is(.k-palette-list, .k-palette-foot) { display: none; }
+.k-palette[data-mode="search"] .k-menu { display: none; }
+.k-menu { display: grid; gap: 6px; padding: 10px 12px 14px; max-height: min(70vh, 34rem); overflow-y: auto; }
+.k-menu-links { display: grid; gap: 8px; }
+.k-menu-link {
+  display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; padding: 0 16px; border: 0; cursor: pointer;
+  border-radius: var(--btn-r, 12px); background: transparent; color: #F2F4F6; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .46);
+  font: 600 16px/1.2 var(--font-ui, system-ui, sans-serif); letter-spacing: -.01em;
+}
+@supports (corner-shape: squircle) { .k-menu-link { corner-shape: squircle; } }
+.k-menu-link[aria-current="true"] { background: #fff; color: #111; box-shadow: none; }
+.k-menu-link:is(:hover, :focus-visible) { background: var(--gold); color: #111; box-shadow: none; }
+.k-menu-link:focus-visible, .k-menu-plat:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.k-menu-plats { display: flex; justify-content: space-around; align-items: center; padding: 8px 0 4px; }
+.k-menu-plat { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; }
+.k-menu-plat .pt { width: 30px; height: 30px; border-radius: 50%; display: block; }
+.k-menu-plat:is(:hover, :focus-visible) .pt { filter: url(#pt-gold); }
+/* wider screens: the toolbar itself carries the section links and streaming logos */
+@media (min-width: 768px) { .k-menu-links, .k-menu-plats { display: none; } }
+.k-menu-settings { display: grid; gap: 2px; }
+.settings-title { margin: 2px 8px 4px; font: 600 13px/1.3 var(--font-ui, system-ui, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: rgb(242 244 246 / .7); }
+.settings-row {
+  display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 8px 10px 8px 12px;
+  border: 0; border-radius: 12px; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit;
+}
+.settings-row:hover { background: rgb(255 255 255 / .07); }
+.settings-row:focus-visible { outline: 3px solid #fff; outline-offset: 1px; }
+.settings-text { display: grid; gap: 2px; min-width: 0; }
+.settings-label { font: 600 16px/1.25 var(--font-ui, system-ui, sans-serif); color: #F5F5F7; }
+.settings-sub { font: 400 13px/1.35 var(--font-ui, system-ui, sans-serif); color: rgb(242 244 246 / .72); margin: 0; }
+/* the switch: its position, the word beside it and aria-checked all say the state - never colour alone */
+.settings-switch { width: 44px; height: 26px; border-radius: 13px; background: rgb(255 255 255 / .16); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .3); position: relative; transition: background-color .2s ease; }
+.settings-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #F5F5F7; transition: translate .25s cubic-bezier(.2, .9, .3, 1.2), background-color .2s ease; }
+.settings-row[aria-checked="true"] .settings-switch { background: var(--gold); box-shadow: none; }
+.settings-row[aria-checked="true"] .settings-knob { translate: 18px 0; background: #111; }
+.settings-state { min-width: 26px; font: 600 13px/1 var(--font-ui, system-ui, sans-serif); color: rgb(242 244 246 / .85); }
+@media (prefers-reduced-motion: reduce) { .settings-knob { transition: none; } }
+@media (forced-colors: active) { .settings-switch, .k-menu-link { border: 1px solid ButtonText; } .settings-row[aria-checked="true"] .settings-switch { background: Highlight; } }
+
+/* The mouse pointer is an arrow filled with the name's gradient (gold, pink, orange, sky blue), with a dark edge so
+   it shows on any background. A cursor image cannot animate, so the gradient is still. Links and buttons keep the
+   usual pointing hand, and text fields the usual text cursor, so what is clickable stays obvious. Not in 8-bit mode
+   (it has its own pixel arrow) or forced-colours mode. */
+:root.psy:not(.nes), :root.psy:not(.nes) body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='28'%20height='30'%20viewBox='0%200%2028%2030'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23F7C549'/%3E%3Cstop%20offset='.38'%20stop-color='%23FF8AC8'/%3E%3Cstop%20offset='.68'%20stop-color='%23FFA36B'/%3E%3Cstop%20offset='1'%20stop-color='%238FE6FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M3%202L3%2024L9.2%2018.4L13%2027L17%2025.2L13.2%2016.8L21.5%2016.8Z'%20fill='url(%23g)'%20stroke='%2315171c'%20stroke-width='2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 3 2, auto; }
+@media (forced-colors: active) { :root.psy:not(.nes), :root.psy:not(.nes) body { cursor: auto; } }
+
+/* Home photo moved a bit further left inside its crop (the picture is wider
+   than its panel; a higher first number shows more of its right-hand side). */
+:root.psy .hero-split-photo:not(#\#):not(#\#) { object-position: 52% 18% !important; }
+:root.psy .hero-photo-frame:not(#\#):not(#\#) { background-position: 52% 18% !important; }
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
    catches light at the top instead of a hard 2px border, one soft ambient
    shadow, squircle corners, and sizes on the 8px grid.
 
-   Two materials:
-     light glass - links out to a service (Apple Music, Spotify, YouTube)
-                   and the toolbar's Search / menu buttons. Dark label.
-     dark glass  - controls that act on the page (player, lightbox, close,
-                   lyrics, email). Off-white label.
+   Every button is dark, with an off-white label. Two strengths of it:
+     deep dark glass - links out to a service (Apple Music, Spotify,
+                       YouTube), which also sit on pale surfaces.
+     dark glass      - controls that act on the page (player, lightbox,
+                       close, lyrics, email).
    Filled buttons (play / pause, Download Press Kit) keep their solid fill
    and take the same shape.
 
@@ -2243,8 +2352,10 @@ html { overscroll-behavior-y: none; }
 :root.psy {
   --btn-r: 12px; --btn-r-ico: 12px; --btn-r-sm: 10px;
   --btn-blur: blur(20px) saturate(180%);
-  --btn-l-bg: rgb(255 255 255 / .74); --btn-l-fg: #1d1d1f;
-  --btn-l-edge: inset 0 0 0 1px rgb(255 255 255 / .55), inset 0 1px 0 rgb(255 255 255 / .9), 0 0 0 1px rgb(0 0 0 / .1), 0 1px 2px rgb(0 0 0 / .16), 0 8px 24px -10px rgb(0 0 0 / .45);
+  /* (the links-out material used to be light glass with a dark label; every button is dark now - a deeper, more
+     opaque dark glass than the page controls', so these read on the pale featured panel as well as on dark cards) */
+  --btn-l-bg: rgb(20 22 28 / .84); --btn-l-fg: #F5F5F7;
+  --btn-l-edge: inset 0 0 0 1px rgb(255 255 255 / .2), inset 0 1px 0 rgb(255 255 255 / .22), 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px -10px rgb(0 0 0 / .55);
   --btn-d-bg: rgb(255 255 255 / .1); --btn-d-fg: #F5F5F7;
   --btn-d-edge: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .3), 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px -10px rgb(0 0 0 / .55);
   --btn-on-bg: #fff; --btn-on-fg: #111;
@@ -2482,10 +2593,10 @@ html { overscroll-behavior-y: none; }
 :root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):active:where(:root:not(.touch) *) { scale: none !important; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root.psy { --btn-l-bg: #E9ECEF; --btn-d-bg: #2C2F36; }
+  :root.psy { --btn-l-bg: #1B1E25; --btn-d-bg: #2C2F36; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  :root.psy { --btn-l-bg: #E9ECEF; --btn-d-bg: #2C2F36; --btn-blur: none; }
+  :root.psy { --btn-l-bg: #1B1E25; --btn-d-bg: #2C2F36; --btn-blur: none; }
 }
 @media (forced-colors: active) {
   :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#),

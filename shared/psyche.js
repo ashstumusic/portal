@@ -370,13 +370,13 @@
   })();
 
   // ── 8-BIT MODE (easter egg): five quick taps on the home logo ────
-  // The page turns into an NES game: everything (its own fonts and colours
+  // The page turns into an 8-bit game: everything (its own fonts and colours
   // included) rendered at low resolution, photos redrawn as tiny
   // palette-limited pixel art, square corners, stepped motion, square-wave
   // blips, and the music run through a bit-crusher.
   // Five more taps (or the search palette entry) switch it back.
   const nes = (() => {
-    // The NES's master palette (the 54 distinct colours).
+    // The 8-bit's master palette (the 54 distinct colours).
     const PAL = ['7c7c7c', '0000fc', '0000bc', '4428bc', '940084', 'a80020', 'a81000', '881400', '503000', '007800', '006800', '005800', '004058', '000000',
       'bcbcbc', '0078f8', '0058f8', '6844fc', 'd800cc', 'e40058', 'f83800', 'e45c10', 'ac7c00', '00b800', '00a800', '00a844', '008888',
       'f8f8f8', '3cbcfc', '6888fc', '9878f8', 'f878f8', 'f85898', 'f87858', 'fca044', 'f8b800', 'b8f818', '58d854', '58f898', '00e8d8', '787878',
@@ -468,7 +468,7 @@
       }
     }
 
-    // ── one NES frame rate (12 fps) for everything that moves ──
+    // ── one 8-bit frame rate (12 fps) for everything that moves ──
     // Scripted animation (confetti, the field, the players, the video
     // canvases) all runs off requestAnimationFrame: in 8-bit mode its
     // callbacks are held and released together 12 times a second. CSS
@@ -511,7 +511,7 @@
 
     // ── videos as pixel art ──
     // A canvas laid over each video redraws every frame at 128 pixels
-    // across, dithered and snapped to the NES palette, and shown with
+    // across, dithered and snapped to the 8-bit palette, and shown with
     // square pixels. It ignores the pointer, and lifts off the bottom strip
     // (the player's controls) while the video is paused or being pointed at.
     // (Full screen shows the video itself: the canvas can't follow it there.)
@@ -606,7 +606,7 @@
       const box = el.getBoundingClientRect();
       if (box.width < 4 || box.height < 4) return;
       const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize);
-      // Block size in screen pixels: chunky, NES-title sized (the name a touch finer than the quote).
+      // Block size in screen pixels: chunky, 8-bit-title sized (the name a touch finer than the quote).
       const B = Math.max(2, Math.round(fs / (el.classList.contains('hero-name') ? 14 : 11)));
       const W = Math.ceil(box.width), H = Math.ceil(box.height);
       const big = doc.createElement('canvas'); big.width = W; big.height = H;
@@ -660,7 +660,7 @@
       for (const el of names()) { el.classList.toggle('nes-name', false); el.style.removeProperty('--nes-name'); el.style.removeProperty('--nes-name-size'); }
     }
 
-    // ── sound: square-wave blips and an NES-style bit-crusher ──
+    // ── sound: square-wave blips and an 8-bit-style bit-crusher ──
     function ctx() {
       if (!actx) { try { actx = new AudioContext(); } catch { return null; } }
       if (actx.state === 'suspended') actx.resume().catch(() => {});
@@ -796,10 +796,10 @@
     return { get on() { return on; }, toggle: () => set(!on) };
   })();
 
-  // Palette settings (kinetic.js picks these up).
+  // Settings for the footer's settings panel (kinetic.js picks these up).
   window.kineticItems = () => [
-    { group: 'Settings', title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Haze, stars, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } },
-    { group: 'Settings', title: nes.on ? 'Turn 8-bit mode off' : 'Turn 8-bit mode on', sub: 'NES look and sound (or tap the logo five times)', run: () => nes.toggle() },
+    { group: 'Settings', label: 'Background effects', on: fxPref, title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Haze, stars, confetti, fireworks and the toolbar bird', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } },
+    { group: 'Settings', label: '8-bit mode', on: nes.on, title: nes.on ? 'Turn 8-bit mode off' : 'Turn 8-bit mode on', sub: 'Retro pixel look and sound (or tap the big name five times)', run: () => nes.toggle() },
   ];
 
   syncFx();

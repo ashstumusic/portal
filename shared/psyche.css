@@ -96,7 +96,7 @@
 .psy .nav { -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
 
 /* ── 8-BIT MODE (easter egg; see shared/psyche.js) ──────────────────────
-   The site keeps its own fonts, colours and layout, rendered at NES
+   The site keeps its own fonts, colours and layout, rendered at 8-bit
    resolution: SVG filters (injected by the script) give text hard pixel
    edges and a retro colour range, photos become palette-limited pixel art,
    corners go square, motion steps, and the cursor is a pixel arrow. */
@@ -121,6 +121,11 @@ html.nes :is(.nav, .nav-drawer, main > *, footer, #player-bar, .fs-player, .k-pa
    used to make big text chunkier, but GPU rendering drops some of its
    tiles: half a quote, or the name, would vanish.) */
 html.nes :is([data-nes-text], svg:not(#nes-svg)) { filter: url(#nes-crisp); }
+/* The About card's "Ash Stu" is gradient-filled lettering: the gradient belongs to the paragraph and is clipped to the
+   text of the link inside it. A filter on that inner link cuts its text out of the paragraph's clip, and the name
+   vanished in 8-bit mode. The hard pixel edge goes on the paragraph instead, and the link carries no filter. */
+html.nes .bio-name .bio-name-link { filter: none !important; }
+html.nes .bio-name:not(#\#):not(#\#):not(#\#) { filter: url(#nes-crisp) !important; }
 html.nes :is(img.nes-px, canvas) { image-rendering: pixelated; }
 /* The name, redrawn as pixel art by the script (see pixelName). */
 html.nes .nes-name {
