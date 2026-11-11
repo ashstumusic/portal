@@ -2326,6 +2326,10 @@ html { overscroll-behavior-y: none; }
 :root.psy .hero-split-photo:not(#\#):not(#\#) { object-position: 52% 18% !important; }
 :root.psy .hero-photo-frame:not(#\#):not(#\#) { background-position: 52% 18% !important; }
 
+/* Music section: each release's title, larger (30px, was 24px; 27px on phones and on the narrower cards at tablet widths). */
+:root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 30px !important; line-height: 1.12 !important; }
+@media (max-width: 1023px) { :root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 27px !important; } }
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
