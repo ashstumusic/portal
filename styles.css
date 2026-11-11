@@ -3536,12 +3536,11 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 .np-time { color: rgba(8,76,97,.85); color: rgb(from var(--player-ink) r g b / .85); }
 :root[data-theme="dark"] #player-bar #np-close { background: rgb(19 35 42 / .72); border-color: rgb(220 238 242 / .3); }
 
-/* Lyrics in Fraunces Regular (OFL; optical size kept variable so small
-   and large lines both render crisply). The current line keeps its size,
-   bar and full opacity; no faux bold. */
-@font-face { font-family: 'Lyrics'; src: url('Fonts/fraunces/Fraunces-Regular-opsz.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+/* Lyrics in Gupter, the same face as the body text ('BodySerif', declared
+   in shared/system.css). The current line keeps its size, bar and full
+   opacity; no faux bold. */
 .fs-lyric button, .fs-lyric--plain, .rel-lyrics-inner, .fs-lyric.is-current button {
-  font-family: 'Lyrics', Georgia, 'Times New Roman', serif; font-weight: 400; font-synthesis: none; font-optical-sizing: auto;
+  font-family: 'BodySerif', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif; font-weight: 400; font-synthesis: none;
 }
 
 /* The line being sung gets a gold highlighter band (dark text on gold
