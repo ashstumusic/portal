@@ -2185,6 +2185,34 @@ html { overscroll-behavior-y: none; }
   :root.psy .bio-card-media > img:not(.bio-media-main):not(#\#):not(#\#) { order: 2; grid-column: auto; width: 100%; }
 }
 
+/* ── Phone menu ───────────────────────────────────────────────────────
+   The panel that drops from the toolbar is the toolbar's own dark surface,
+   and its five buttons - Press Kit, Contact, Music, Videos and Search - are
+   one design: 48px tall, the same squircle, a hairline light outline, an
+   off-white 16px label, no fill and no shadow. (Search used to be a white
+   glass pill among four outlined boxes.) Mouse-over and keyboard focus are
+   gold with a dark label, as everywhere else. */
+:root.psy .nav-drawer:not(#\#):not(#\#) {
+  background: rgb(16 18 24 / .97) !important; border-color: rgb(255 255 255 / .09) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5);
+  box-shadow: 0 18px 40px rgb(0 0 0 / .5) !important; color: #F2F4F6;
+}
+:root.psy .nav-drawer .drawer-platforms:not(#\#) { border-color: rgb(255 255 255 / .12) !important; }
+:root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important;
+  width: 100% !important; height: 48px !important; min-height: 48px !important; padding: 0 16px !important; margin-inline: 0 !important;
+  border: 0 !important; border-radius: var(--btn-r) !important;
+  font-size: 16px !important; font-weight: 600 !important; letter-spacing: -.01em !important; line-height: 1.2 !important; text-transform: none !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+@supports (corner-shape: squircle) { :root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { corner-shape: squircle; } }
+:root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) { background: transparent !important; color: #F2F4F6 !important; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .46) !important; }
+:root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) :is(svg, span) { color: #F2F4F6 !important; }
+:root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) { background: var(--gold) !important; color: #111 !important; box-shadow: none !important; }
+:root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible) :is(svg, span) { color: #111 !important; }
+:root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):focus-visible { outline: 3px solid #fff !important; outline-offset: 3px !important; }
+:root.psy .nav-drawer a[aria-current]:not(.drawer-platforms a):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) { background: #fff !important; color: #111 !important; box-shadow: none !important; }
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
