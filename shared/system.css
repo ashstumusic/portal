@@ -1954,7 +1954,9 @@ html { overscroll-behavior-y: none; }
    A mask in two pieces: a solid block for everything above the last few
    dozen pixels, and a strip of one small swell repeated across the width
    (about 9 on a laptop, 6 on a phone) for the bottom edge. The page behind shows through the troughs.
-   The wave's height scales with the screen. */
+   The wave's height scales with the screen.    The strip is ONE image holding 64 swells side by side, not one swell
+   repeated: where repeated tiles met, Safari left hairline gaps that showed
+   as thin vertical lines standing up from the wave. */
 /* The wave rises a little and settles back into place, over and over.
    --wave-lift is a registered length so it can animate; the mask reads it
    (browsers without @property just show the wave still). Stops with
@@ -1967,8 +1969,8 @@ html { overscroll-behavior-y: none; }
   --wave-lift: 0px;
   animation: wave-rise 3.6s ease-in-out infinite;
   --wave-w: calc(var(--wave-h) * 4);   /* one swell is four times as wide as it is tall, repeated across */
-  -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) - var(--wave-lift) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20360%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H360V22Q270%2044%20180%2022T0%2022Z'/%3E%3C/svg%3E") left 0 bottom var(--wave-lift) / var(--wave-w) var(--wave-h) repeat-x;
-  mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) - var(--wave-lift) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20360%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H360V22Q270%2044%20180%2022T0%2022Z'/%3E%3C/svg%3E") left 0 bottom var(--wave-lift) / var(--wave-w) var(--wave-h) repeat-x;
+  -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) - var(--wave-lift) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2023040%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H23040V22q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200Z'/%3E%3C/svg%3E") left 0 bottom var(--wave-lift) / calc(var(--wave-w) * 64) var(--wave-h) no-repeat;
+  mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) - var(--wave-lift) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2023040%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H23040V22q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200Z'/%3E%3C/svg%3E") left 0 bottom var(--wave-lift) / calc(var(--wave-w) * 64) var(--wave-h) no-repeat;
 }
 @media (forced-colors: active) { :root.psy .hero-split { -webkit-mask: none; mask: none; } }
 :root.psy.psy-calm .hero-split { animation: none; }
@@ -2028,36 +2030,129 @@ html { overscroll-behavior-y: none; }
 /* Lyrics in the album cards. */
 :root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: 15.5px !important; line-height: 1.55 !important; }
 
-/* Toolbar doodle (see the script in the page): a 40px sketch character that
-   lives in the space the toolbar's "Ash Stu" leaves when it fades out.
-   The line "boils" (three wobble filters cycled in steps), legs swap
-   between two drawings while walking, and it bobs and blinks when idle. */
-.nav-doodle { position: absolute; height: 40px; pointer-events: none; z-index: 1; contain: layout style; }
+/* Toolbar songbird (see the script in the page): the little sketchbook bird
+   that stands at the left end of the toolbar, just left of the name.
+   Everything about where it stands is decided here, with no script, so the
+   toolbar is in its final layout from the first paint:
+   - the name's link reserves room on its left (the bird's width + a 7px gap);
+   - the bird is placed in that room, its middle level with the lettering;
+   - --bird-w is the width of the bird's shape, about the lettering's height
+     (the drawing sheet is 1/.765 of that; the shape starts 12% in and its
+     middle is 69% down the sheet);
+   - on wide screens the link starts 24px further left, matching the Search
+     box's distance from the right edge.
+   The lettering fades (opacity on .hero-brand, set by the page). A click on
+   the bird turns him round (handled by the page) and follows the link too. */
+:root.js.psy .nav .nav-logo:not(#\#) { position: relative; opacity: 1 !important; pointer-events: auto !important; --bird-w: 34px; --bird-dy: 2px; padding-left: calc(var(--bird-w) + 7px) !important; }
+:root.js.psy .nav .nav-logo .hero-brand { position: relative; z-index: 1; opacity: 0; will-change: opacity; }
+@media (min-width: 1200px) { :root.js.psy .nav .nav-logo:not(#\#) { margin-left: -24px; } }
+@media (min-width: 768px) and (max-width: 899px) { :root.js.psy .nav .nav-logo:not(#\#) { --bird-w: 29px; --bird-dy: 1px; } }
+@media (max-width: 767px) { :root.js.psy .nav .nav-logo:not(#\#) { --bird-w: 32px; } }
+/* the narrowest tablet toolbars are full: the links and icons sit a little closer so the row still fits on one line */
+@media (min-width: 768px) and (max-width: 829px) { :root.psy .nav .nav-links:not(#\#) { gap: 4px !important; } :root.psy .nav .nav-platforms:not(#\#) { gap: 6px !important; } }
+.nav-doodle { position: absolute; z-index: 0; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; left: calc(var(--bird-w) / .765 * -.12); top: calc(50% - var(--bird-w) / .765 * .69 + var(--bird-dy)); width: calc(var(--bird-w) / .765); height: calc(var(--bird-w) / .765); display: block; }
 .nav-doodle[hidden] { display: none; }
-.nav-doodle .dz-x { position: absolute; left: 0; top: 0; width: 40px; height: 40px; will-change: transform; }
-.nav-doodle .dz-face { width: 40px; height: 40px; transform-origin: 50% 50%; }
-.nav-doodle .dz { display: block; overflow: visible; animation: dz-boil .42s steps(1) infinite; }
-@keyframes dz-boil { 0% { filter: url(#dz-boil-1); } 33% { filter: url(#dz-boil-2); } 66% { filter: url(#dz-boil-3); } }
-.nav-doodle .dz-lb { visibility: hidden; }
-.nav-doodle .dz-walk .dz-la { animation: dz-leg-a .26s steps(1) infinite; }
-.nav-doodle .dz-walk .dz-lb { animation: dz-leg-b .26s steps(1) infinite; }
-.nav-doodle .dz-dash .dz-la { animation-duration: .1s; }
-.nav-doodle .dz-dash .dz-lb { animation-duration: .1s; }
-@keyframes dz-leg-a { 0% { visibility: visible; } 50% { visibility: hidden; } }
-@keyframes dz-leg-b { 0% { visibility: hidden; } 50% { visibility: visible; } }
-.nav-doodle .dz-walk .dz-body { animation: dz-step .26s steps(1) infinite; }
-@keyframes dz-step { 0% { transform: translateY(0); } 50% { transform: translateY(-1px); } }
-.nav-doodle .dz-idle .dz-body, .nav-doodle .dz-float .dz-body { animation: dz-bob 1.6s ease-in-out infinite; }
-@keyframes dz-bob { 50% { transform: translateY(-1.6px); } }
-.nav-doodle .dz-slide .dz-body { animation: dz-squash .9s ease-in-out infinite; transform-origin: 50% 100%; transform-box: fill-box; }
-@keyframes dz-squash { 50% { transform: scaleX(1.06) scaleY(.95); } }
-.nav-doodle .dz-dash .dz { transform: skewX(-10deg); }
-.nav-doodle .dz-eye { transform-box: fill-box; transform-origin: 50% 50%; animation: dz-blink 3.4s steps(1) infinite; }
-@keyframes dz-blink { 0%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.1); } 97% { transform: scaleY(1); } }
-@media (prefers-reduced-motion: reduce) { .nav-doodle { display: none !important; } }
+.nav-doodle .dz-x, .nav-doodle .dz-face { display: block; width: 100%; height: 100%; }
+/* turning round: the drawing closes to a sliver and opens facing the other way, about its own middle */
+.nav-doodle .dz-face { transform-origin: 50% 50%; transition: transform .26s cubic-bezier(.45, 0, .55, 1); }
+.nav-doodle .dz { display: block; width: 100%; height: 100%; overflow: visible; color: #F2F4F6; }
+/* a rule elsewhere keeps icon lines one thickness whatever their size (non-scaling-stroke); the bird's lines must scale with it */
+.nav-doodle svg * { vector-effect: none !important; }
+/* only the current drawing shows (the hidden attribute does nothing on SVG groups by itself) */
+.nav-doodle .dz g[hidden] { display: none; }
+.nav-doodle .dz-note { position: absolute; display: block; will-change: transform, opacity; pointer-events: none; }
+.nav-doodle .dz-note-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.nav-doodle .dz-note-svg g[hidden] { display: none; }
+/* (the toolbar name is 2.2rem, set on the element; a touch smaller in the shorter phone toolbar) */
+@media (max-width: 767px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: 2rem !important; } }
+/* between phone and small-laptop widths the toolbar is full: the name keeps its earlier size there so the row does not wrap */
+@media (min-width: 768px) and (max-width: 899px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: 1.805rem !important; } }
+/* no bird (reduced motion, effects off, forced colours, print): no room kept for it */
+@media (prefers-reduced-motion: reduce) { .nav-doodle { display: none !important; } :root.js.psy .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; } }
 :root.psy-calm .nav-doodle { display: none !important; }
-@media (forced-colors: active) { .nav-doodle { display: none !important; } }
+:root.js.psy.psy-calm .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; }
+@media (forced-colors: active) { .nav-doodle { display: none !important; } :root.js.psy .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; } }
 @media print { .nav-doodle { display: none !important; } }
+
+/* Desktop toolbar: the Search box sits closer to the right edge of the
+   window (24px from it instead of 48px), at its usual width. */
+@media (min-width: 1200px) {
+  :root.psy .nav .k-tools:not(#\#) { margin-right: -24px !important; }
+}
+
+/* The toolbar's "Ash Stu" wears the same flowing gradient as the big name
+   in the home section (same colours, same 9-second flow, same red offset
+   shadow, scaled to its size). It was plain black before. The flow holds
+   still with reduced motion or background effects off; in forced-colours
+   mode it is plain text. */
+:root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#) {
+  background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) !important;
+  background-size: 200% 100% !important; background-repeat: repeat-x !important; background-color: transparent !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  -webkit-text-fill-color: transparent !important; color: #F7C549 !important;
+  /* the home name's red offset edge, scaled to this size (the toolbar is dark now, so the same red reads the same) */
+  filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .7)) !important;
+  animation: name-flow 9s linear infinite;
+}
+:root.psy.psy-calm .nav .nav-logo .hero-name:not(#\#):not(#\#) { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#) { animation: none; } }
+@media (forced-colors: active) { :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#) { background-image: none !important; -webkit-text-fill-color: currentColor !important; color: CanvasText !important; filter: none !important; animation: none; } }
+
+/* ── Dark toolbar ─────────────────────────────────────────────────────
+   The bar is the page's own near-black (frosted, so the page still blurs
+   through), which is the surface the gradient name was made for: it reads
+   here as it does in the home section. Everything on the bar is light:
+   link labels and outlines, the Search and menu buttons (dark glass, a
+   hairline edge, no drop shadow), the divider, and the bird (light line).
+   The current section is a solid white squircle with a dark label; hover
+   and keyboard focus are still gold with a dark label. */
+:root.psy .nav:not(#\#):not(#\#), :root[data-theme="dark"].psy .nav:not(#\#):not(#\#) {
+  --bar-rim: rgb(255 255 255 / .46); --focus-ring: 0 0 0 2px #14161C, 0 0 0 5px #fff;
+  background: rgb(16 18 24 / .84) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(1.5) !important; backdrop-filter: blur(26px) saturate(1.5) !important;
+  border-bottom: 1px solid rgb(255 255 255 / .09) !important;
+  box-shadow: 0 8px 28px rgb(0 0 0 / .35) !important;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { :root.psy .nav:not(#\#):not(#\#) { background: #14161C !important; } }
+:root .nav .nav-links a:not(:hover, :focus-visible, [aria-current], :active):not(#\#):not(#\#) { color: #F2F4F6 !important; }
+:root .nav .nav-links a:not(:hover, :focus-visible, [aria-current]):not(#\#):not(#\#)::after { box-shadow: inset 0 0 0 1px var(--bar-rim) !important; background: transparent !important; }
+:root .nav .nav-links a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#) { color: #111 !important; }
+:root .nav .nav-links:has(.nav-glider) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { box-shadow: none !important; background: transparent !important; }   /* the white glider behind it is the highlight */
+:root .nav .nav-links:not(:has(.nav-glider)) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { box-shadow: none !important; }
+:root .nav .nav-links:not(:has(.nav-glider)) a[aria-current]:not(:hover, :focus-visible):not(#\#):not(#\#)::after { background: #fff !important; }
+:root.psy .nav .nav-links .nav-glider:not(#\#):not(#\#):not(#\#) { background: #fff !important; background-color: #fff !important; box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 4px 12px rgb(0 0 0 / .25) !important; }
+:root.psy .nav .k-tools:not(#\#)::before { background: rgb(255 255 255 / .22) !important; border-color: rgb(255 255 255 / .22) !important; }
+:root.psy .nav :is(.k-search-btn, .nav-toggle):not(:hover):not(:focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  background: var(--btn-d-bg) !important; color: var(--btn-d-fg) !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22) !important;
+}
+:root.psy .nav :is(.k-search-btn, .nav-toggle):not(:hover):not(:focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) :is(svg, span:not(.nav-toggle-bar)) { color: var(--btn-d-fg) !important; }
+:root.psy .nav .nav-toggle:not(:hover):not(:focus-visible):not(#\#) .nav-toggle-bar { background: #F2F4F6 !important; }
+:root.psy .nav .nav-toggle:is(:hover, :focus-visible):not(#\#) .nav-toggle-bar { background: #111 !important; }
+/* the menu button is a little smaller than the other icon buttons, so it does not crowd the shorter phone bar */
+:root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; border-radius: var(--btn-r-sm) !important; }
+@media (forced-colors: active) { :root.psy .nav:not(#\#):not(#\#) { background: Canvas !important; } }
+
+/* The stand-alone streaming logos (toolbar and phone menu): on mouse-over
+   or keyboard focus the highlight is the logo itself turning gold, at its
+   own size, with a thin gold halo ring just outside it. No larger disc
+   behind it. The ring is its own layer (::after on the link), so the
+   filter that recolours the logo does not touch it; the link keeps its
+   larger invisible click/tap area. */
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):not(#\#) { position: relative; --pt: 26px; }
+:root.psy .nav-drawer .drawer-platforms a:not(#\#) { --pt: 30px; }
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#) {
+  background: transparent !important; box-shadow: none !important; outline: 0 !important;
+}
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):not(#\#)::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: calc(var(--pt) + 8px); height: calc(var(--pt) + 8px); translate: -50% -50%;
+  border-radius: 50%; box-sizing: border-box; border: 2px solid var(--gold); opacity: 0; pointer-events: none; transition: opacity .15s ease;
+}
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):is(:hover, :focus-visible):not(#\#)::after { opacity: 1; }
+/* keyboard focus: a heavier ring, white inside gold, so it is unmistakable */
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):focus-visible:not(#\#)::after { width: calc(var(--pt) + 12px); height: calc(var(--pt) + 12px); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--gold); }
+:root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#) .pt { filter: url(#pt-gold) !important; outline: 0 !important; }
+@media (forced-colors: active) { :root.psy :is(.nav .nav-platform, .nav-drawer .drawer-platforms a):is(:hover, :focus-visible)::after { border-color: Highlight; } }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a

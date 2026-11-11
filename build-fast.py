@@ -162,6 +162,7 @@ html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_o
 _fv = __import__('hashlib').sha256(open("favicon.webp", "rb").read()).hexdigest()[:8]   # cache-bust a changed icon
 html = re.sub(r'<link rel="icon"[^>]*/>', f'<link rel="icon" type="image/webp" href="favicon.webp?v={_fv}"/>', html)
 html = re.sub(r'<link rel="apple-touch-icon"[^>]*/>\n?', f'<link rel="apple-touch-icon" href="favicon.png?v={_fv}"/>', html)
+html = html.replace('<link href="favicon.svg"', f'<link href="favicon.svg?v={_fv}"')   # the vector icon (browsers that take SVG icons prefer it)
 
 # minify JSON-LD
 def min_jsonld(m):
