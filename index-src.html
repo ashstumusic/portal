@@ -2716,7 +2716,7 @@ var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').match
 var onScreen=true,sec=document.getElementById('epk');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
 if(!imgs[0].animate)return;
-var GAP=200,OUT=520,IN=620,busy=false;
+var GAP=60,OUT=110,IN=130,busy=false;   // near-instant: each photo flicks out and the next flicks in
 function slide(im,from,to,dur,ease){var a=im.animate([{transform:'translateY('+from+')'},{transform:'translateY('+to+')'}],{duration:dur,easing:ease,fill:'forwards'});
 return a.finished.then(function(){return a;},function(){return a;});}
 function turn(){if(busy||still()||!onScreen||document.hidden)return;busy=true;

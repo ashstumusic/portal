@@ -1907,12 +1907,13 @@ html { overscroll-behavior-y: none; }
 
 /* ── Home section: its bottom edge is cut as a wave ───────────────────
    A mask in two pieces: a solid block for everything above the last few
-   dozen pixels, and a wave-shaped strip (two full swells across the
-   width) for the bottom edge. The page behind shows through the troughs.
+   dozen pixels, and a strip of one small swell repeated across the width
+   (about 9 on a laptop, 6 on a phone) for the bottom edge. The page behind shows through the troughs.
    The wave's height scales with the screen. */
 :root.psy .hero-split {
-  --wave-h: clamp(18px, 3.2vw, 46px);
-  -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H1440V22Q1260%2044%201080%2022T720%2022T360%2022T0%2022Z'/%3E%3C/svg%3E") bottom / 100% var(--wave-h) no-repeat;
-  mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H1440V22Q1260%2044%201080%2022T720%2022T360%2022T0%2022Z'/%3E%3C/svg%3E") bottom / 100% var(--wave-h) no-repeat;
+  --wave-h: clamp(16px, 2.6vw, 36px);
+  --wave-w: calc(var(--wave-h) * 4);   /* one swell is four times as wide as it is tall, repeated across */
+  -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20360%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H360V22Q270%2044%20180%2022T0%2022Z'/%3E%3C/svg%3E") bottom left / var(--wave-w) var(--wave-h) repeat-x;
+  mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20360%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H360V22Q270%2044%20180%2022T0%2022Z'/%3E%3C/svg%3E") bottom left / var(--wave-w) var(--wave-h) repeat-x;
 }
 @media (forced-colors: active) { :root.psy .hero-split { -webkit-mask: none; mask: none; } }
