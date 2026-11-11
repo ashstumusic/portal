@@ -177,7 +177,8 @@
 }
 </script>
 <title>Ash Stu Art | Ashton Stubblefield</title>
-<link rel="icon" type="image/png" href="favicon.png" sizes="192x192"/>
+<link href="favicon.svg" type="image/svg+xml" rel="icon" sizes="any"/>
+<link rel="icon" type="image/png" href="favicon.png" sizes="512x512"/>
 <link rel="apple-touch-icon" href="favicon.png"/>
 
 
@@ -200,7 +201,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu, back to top">
     <div class="hero-brand">
-      <span class="hero-name" style="font-size:1.805rem;padding-top:0;line-height:1">Ash Stu</span>
+      <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
     </div>
   </a>
   <ul class="nav-links" role="list">
@@ -227,9 +228,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </nav>
 <!-- Hover filters for the streaming logos (pt-gold in use): the coloured shape turns
      solid gold (pt-mono: black); white details stay white and cut-outs stay transparent. -->
-<!-- "Boiling line" for the toolbar doodles: three slightly different wobbles,
-     cycled a few times a second so the drawing looks hand-animated. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="dz-boil-1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="1" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter><filter id="dz-boil-2" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="1" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter><filter id="dz-boil-3" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="1" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter></svg>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter><filter id="pt-gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".969 .969 .969 .969 .969 .969 .969 .98 1 1"/><feFuncG type="table" tableValues=".773 .773 .773 .773 .773 .773 .773 .88 1 1"/><feFuncB type="table" tableValues=".286 .286 .286 .286 .286 .286 .286 .62 1 1"/></feComponentTransfer></filter></svg>
 <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile menu" aria-hidden="true">
   <div class="drawer-platforms">
@@ -523,7 +521,7 @@ const ids = ['epk','contact','music','videos'];
 const links = {};
 ids.forEach(id => { links[id] = document.querySelector(`.nav-links a[href="#${id}"]`); });
 const nav = document.querySelector('.nav');
-const navLogo = nav.querySelector('.nav-logo');
+const navLogo = nav.querySelector('.nav-logo .hero-brand') || nav.querySelector('.nav-logo');   /* the lettering: it fades; the link around it (which also holds the bird) stays live */
 const heroBrand = document.getElementById('hero-brand');
 const heroSection = document.querySelector('.hero-split-left');
 let offsets = [], ticking = false, heroH = 400;
@@ -555,7 +553,7 @@ const h = heroH;
 // Cross-fades, at both ends of the page: one "Ash Stu" fades out exactly
 // while the other fades in, over the same stretch of scrolling.
 // Top: the hero's name fades out as the toolbar's fades in.
-const heroOut = Math.min(1, Math.max(0, (scrollY - h * 0.15) / (h * 0.2)));
+const heroOut = Math.min(1, Math.max(0, (scrollY - h * 0.27) / (h * 0.2)));   /* starts a little later than it used to (was 0.15) */
 const navIn = heroOut;
 // Bottom: as the About card's "Ash Stu" rises into view, the toolbar's
 // fades out while the About one fades in (measured from the bottom of the
@@ -570,7 +568,7 @@ aboutIn = navOut;
 }
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
-if (navLogo && navShow !== _lastNavIn) { if (window.__navDoodle) window.__navDoodle(navShow); navLogo.style.opacity = navShow; navLogo.style.pointerEvents = navShow < .05 ? 'none' : ''; navLogo.tabIndex = navShow < .05 ? -1 : 0; _lastNavIn = navShow; }
+if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; _lastNavIn = navShow; }
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
@@ -1900,16 +1898,48 @@ cardLyricsKick();
 /* Each lyric stays on one line: if a song's longest line won't fit the
    card, that song's lyrics shrink just enough (down to 12px); only below
    that does a line wrap, so nothing ever runs past the card edge. */
-/* Lyrics are never shrunk and cards never change width: every release
-   card is wide enough for the longest lyric line in the catalogue (see
-   "Release cards: one fixed width" in shared/system.css). */
-function fitLyrics(inner) {}
-function sizeCardForLyrics(card) {}
+/* While one of a release's lyrics is open, that release takes a whole row
+   to itself and fills the section's width (class lyrics-open; the layout is
+   in shared/system.css under "A release with lyrics open"), and its lyrics
+   are set a little larger. Every lyric line stays on one line and inside the
+   card: the type starts at the larger size and, if the song's longest line
+   would not fit, comes down just enough to fit (never below 11px; only a
+   line that still cannot fit at 11px is allowed to wrap). */
+function _keepInPlace(el, change) {
+var before = el && el.isConnected ? el.getBoundingClientRect().top : null;
+change();
+if (before === null) return;
+var shift = el.getBoundingClientRect().top - before;
+if (Math.abs(shift) > 1) { var sb = document.documentElement.style.scrollBehavior; document.documentElement.style.scrollBehavior = 'auto'; window.scrollBy(0, shift); document.documentElement.style.scrollBehavior = sb; }
+}
+function sizeCardForLyrics(card) {
+if (!card) return;
+var openBtn = card.querySelector('.rel-lyrics-toggle.open'), want = !!openBtn;
+if (card.classList.contains('lyrics-open') !== want) {
+  /* the row the visitor just used stays where it is on screen while the card changes shape */
+  var anchor = openBtn || (card.contains(document.activeElement) ? document.activeElement : card);
+  _keepInPlace(anchor, function () { card.classList.toggle('lyrics-open', want); });
+}
+if (openBtn) { var w = openBtn.closest('.rel-track-wrap'), inner = w && w.querySelector('.rel-lyrics-inner'); if (inner) _fitLyricType(inner); }
+}
+function _fitLyricType(inner) {
+var lines = inner.querySelectorAll('.rel-lyric-line'); if (!lines.length) return;
+var target = innerWidth >= 900 ? 19 : 16.5, floor = 11;
+inner.classList.remove('lyr-wrap'); inner.style.setProperty('--lyr-fs', target + 'px');
+var worst = 1;
+for (var i = 0; i < lines.length; i++) { var l = lines[i]; if (l.scrollWidth > l.clientWidth + .5) worst = Math.min(worst, l.clientWidth / l.scrollWidth); }
+if (worst < 1) {
+  var fs = Math.max(floor, Math.floor(target * worst * 0.985 * 10) / 10);
+  inner.style.setProperty('--lyr-fs', fs + 'px');
+  if (fs === floor) { for (var k = 0; k < lines.length; k++) { if (lines[k].scrollWidth > lines[k].clientWidth + .5) { inner.classList.add('lyr-wrap'); break; } } }
+}
+}
+function fitLyrics(inner) { if (inner) sizeCardForLyrics(inner.closest('.rel-card')); }
 // Measure with the real lyrics face: fit now, and again once it's loaded
 // (the fallback serif is narrower, so a fit made with it can overflow).
 function fitLyricsSoon(inner) {
 fitLyrics(inner);
-if (document.fonts && document.fonts.load) document.fonts.load('14px Lyrics').then(function() { fitLyrics(inner); recalcTracklistHeight(inner.closest('.rel-tracklist')); });
+if (document.fonts && document.fonts.load) document.fonts.load('16px BodyText').then(function() { fitLyrics(inner); recalcTracklistHeight(inner.closest('.rel-tracklist')); });
 }
 function refitOpenLyrics() {
 document.querySelectorAll('.rel-card').forEach(sizeCardForLyrics);
@@ -2224,7 +2254,8 @@ const bursts = [];
 /* Fireworks: a rocket streaks up from the bottom trailing sparks, then
    bursts into a ring of sparks that fall, flicker and fade. One every
    1.4-3s, anywhere in the panel, always behind its content. */
-const FW_COLORS = [['#7A1FA2','#C77DFF'],['#DF2B2C','#FF8A7A'],['#1E63D6','#7FB2FF'],['#E8641B','#FFB070'],['#F7C549','#FFF1B8'],['#C8161E','#7A1FA2']];
+/* each firework is two of the four colours of the name's gradient (gold, pink, orange, sky blue) - nothing else */
+const FW_COLORS = [['#F7C549','#FF8AC8'],['#FF8AC8','#FFA36B'],['#FFA36B','#8FE6FF'],['#8FE6FF','#F7C549'],['#F7C549','#FFA36B'],['#FF8AC8','#8FE6FF']];
 const rockets = [], sparks = [], flashes = [];
 let nextFirework = 600;
 function launchFirework() {
@@ -2614,65 +2645,122 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
-<script>/* Toolbar doodle. Whenever the toolbar's "Ash Stu" has faded away (at the top
-   of the page, where the big name is showing, and at the bottom, where the
-   About one is), a small sketchbook character - one of six, picked at
-   random - walks in from the left edge of the screen and potters about in
-   the space the name left. When the name starts to come back it turns and
-   dashes off to the left.
-   Drawn as vector line art (sharp at any size), with a "boiling" pencil
-   line and two-frame legs. Purely decorative: hidden from assistive tech,
-   never focusable, never in the way of a click. Does not appear at all
-   with reduced motion or with background effects switched off. */
+<script>/* Toolbar songbird. A little sketchbook bird stands at the left end of the
+   toolbar, immediately to the left of "Ash Stu", level with it, hopping on
+   the spot and whistling - small hand-drawn music notes in bright colours
+   rise from its beak in a little plume.
+   It sits inside the name's link, in room the stylesheet reserves beside the
+   lettering: bird and name never overlap and nothing moves as the page
+   loads. Clicking the bird turns him round and, like clicking the name,
+   takes you back to the top. The lettering
+   fades in and out beside it as before, and is always drawn above the notes.
+   It is a one-colour silhouette of a perched songbird in profile (the eye
+   and one wing line cut out as negative space) and it is still a flip-book:
+   each frame is the same exact drawing in a new pose - leaning back to
+   whistle with its beak open, flicking its tail, a small hop. The drawings are vector, made on a 200-unit sheet.
+   Purely decorative: hidden from assistive tech (the link keeps its own
+   name). It does not appear at all with reduced motion or with background
+   effects switched off. */
 (function(){
 var nav=document.querySelector('.nav'),logo=nav&&nav.querySelector('.nav-logo');
-if(!nav||!logo||!document.body.animate)return;
+if(!nav||!logo)return;
 var calm=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
-var S='fill="#fff" stroke="#1d1d1f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
-var L='fill="none" stroke="#1d1d1f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
-var eye=function(x,y){return '<ellipse class="dz-eye" cx="'+x+'" cy="'+y+'" rx="1.3" ry="1.5" fill="#1d1d1f"/>';};
-/* each: [name, legs frame A, legs frame B, body (drawn over the legs), style: walk|float|slide] - all face right, 40x40 */
-var CAST=[
-['bird','<path '+L+' d="M17 29l-3 8M14 37h-3M23 29l3 8M26 37h3"/>','<path '+L+' d="M18 29v8M18 37h-3M22 29v8M22 37h3"/>',
- '<path '+S+' d="M8 20c0-7 5-12 12-12s11 5 11 12-5 10-11 10S8 27 8 20z"/><path '+S+' d="M30 17l7 2-7 3z"/><path '+L+' d="M13 21c2 4 7 4 9-1M8 22l-5 2M8 19l-5-1"/>'+eye(25,16),'walk'],
-['cat','<path '+L+' d="M12 29l-2 8M17 30l-1 7M25 30l1 7M30 29l2 8"/>','<path '+L+' d="M13 29v8M17 30v7M25 30v7M29 29v8"/>',
- '<path '+L+' d="M8 24C3 23 2 17 5 13"/><path '+S+' d="M8 24c0-5 4-7 10-7h6c5 0 8 3 8 7s-3 7-8 7h-8c-5 0-8-2-8-7z"/><path '+S+' d="M22 14l1-7 5 4 4-0 3-5 2 8c1 5-2 9-7 9s-8-4-8-9z"/><path '+L+' d="M31 16l-1 1 1 1M37 15l4-1M37 17l4 1"/>'+eye(27,13)+eye(33,13),'walk'],
-['ghost','','',
- '<path '+S+' d="M9 34V18C9 11 14 6 20 6s11 5 11 12v16l-4-3-3.5 3-3.5-3-3.5 3-3.500-3z"/><path '+L+' d="M22 22c1.500 1.500 3.500 1.500 5 0M31 20l5-2"/>'+eye(21,16)+eye(27,16),'float'],
-['snail','','',
- '<path '+S+' d="M3 34c8 0 22 1 30-1 3-1 4-4 3-8l-1-5-4 1c1 5-1 8-5 8H3z"/><path '+S+' d="M7 29C4 21 9 12 17 12s12 7 10 14c-1 3-4 4-7 3"/><path '+L+' d="M12 27c-2-5 1-10 5-10s6 4 5 7c-1 2-4 2-5 0M34 20l1-7M31 21l-2-6"/><circle cx="35" cy="12" r="1.3" fill="#1d1d1f"/><circle cx="29" cy="14" r="1.3" fill="#1d1d1f"/>','slide'],
-['star','<path '+L+' d="M16 30l-3 7M24 30l3 7"/>','<path '+L+' d="M17 30v7M23 30v7"/>',
- '<path '+S+' d="M20 3l4.600 9.400 10.400 1.500-7.500 7.300 1.800 10.300L20 26.600l-9.300 4.900 1.800-10.300L5 13.900l10.400-1.500z"/><path '+L+' d="M17 21c2 2 4 2 6 0"/>'+eye(17,16)+eye(23,16),'walk'],
-['strummer','<path '+L+' d="M19 27l-5 10M21 27l5 10"/>','<path '+L+' d="M19 27l-1 10M21 27l1 10"/>',
- '<path '+L+' d="M20 14v13M20 18l-7 5M20 18l8 2"/><circle '+S+' cx="20" cy="8" r="5.500"/><path '+S+' d="M11 22c3-2 6-1 7 1 2-1 4 0 4 2s-2 4-5 4-4 1-6 0-2-5 0-7z"/><path '+L+' d="M21 22l12-8M32 12l3 3M16 5c2-3 6-3 8 0"/>'+eye(22,8),'walk']
-];
-var box=null,xw=null,face=null,cur=null,anim=null,timer=0,on=false,last=-1,x=0;
-function clear(){clearTimeout(timer);timer=0;}
-function geom(){var n=nav.getBoundingClientRect(),l=logo.getBoundingClientRect();var w=Math.max(l.width,96);
-box.style.left=(l.left-n.left)+'px';box.style.width=w+'px';box.style.top=((n.height-40)/2+1)+'px';return {off:-(l.left+60),max:Math.max(8,w-40)};}
-function go(to,dur,ease,cls){if(anim)try{anim.cancel();}catch(e){}
-face.style.transform=to<x?'scaleX(-1)':'';xw.className='dz-x '+cls;
-anim=xw.animate([{transform:'translateX('+x+'px)'},{transform:'translateX('+to+'px)'}],{duration:dur,easing:ease,fill:'forwards'});
-var a=anim;x=to;return a.finished.then(function(){return a===anim;},function(){return false;});}
-function idle(g){xw.className='dz-x dz-idle';timer=setTimeout(function(){wander(g);},700+Math.random()*2200);}
-function wander(g){if(!on)return;var to=Math.round(Math.random()*g.max),d=Math.abs(to-x);if(d<10){idle(g);return;}
-var speed=cur==='slide'?18:cur==='float'?40:55;
-go(to,d/speed*1000,'linear',cur==='walk'?'dz-walk':'dz-'+cur).then(function(ok){if(ok&&on)idle(g);});}
-function show(){if(on||calm())return;on=true;clear();
-if(!box){box=document.createElement('div');box.className='nav-doodle';box.setAttribute('aria-hidden','true');
-box.innerHTML='<div class="dz-x"><div class="dz-face"></div></div>';nav.appendChild(box);xw=box.firstChild;face=xw.firstChild;}
-var i;do{i=Math.floor(Math.random()*CAST.length);}while(CAST.length>1&&i===last);last=i;var c=CAST[i];cur=c[4];
-face.innerHTML='<svg class="dz dz--'+c[0]+'" viewBox="0 0 40 40" width="40" height="40" focusable="false"><g class="dz-la">'+c[1]+'</g><g class="dz-lb">'+c[2]+'</g><g class="dz-body">'+c[3]+'</g></svg>';
-var g=geom();x=g.off;box.hidden=false;
-var to=Math.round(g.max*(.25+Math.random()*.5)),d=to-x,speed=cur==='slide'?90:cur==='float'?150:190;
-go(to,Math.max(500,d/speed*1000),'cubic-bezier(.2,.7,.3,1)',cur==='walk'?'dz-walk':'dz-'+cur).then(function(ok){if(ok&&on)idle(g);});}
-function hide(){if(!on)return;on=false;clear();var g=geom();
-go(g.off,cur==='slide'?520:340,'cubic-bezier(.6,0,.9,.4)','dz-dash'+(cur==='walk'?' dz-walk':' dz-'+cur)).then(function(ok){if(ok&&!on)box.hidden=true;});}
-/* called by the toolbar logic with the logo's opacity (0 = name gone) */
-window.__navDoodle=function(o){if(o<=.02)show();else hide();};
-addEventListener('resize',function(){if(on&&box){var g=geom();if(x>g.max){x=g.max;xw.style.transform='translateX('+x+'px)';}}},{passive:true});
-/* the page may load with the name already gone (top of the page): arrive after a beat */
-setTimeout(function(){var o=parseFloat(logo.style.opacity===''?getComputedStyle(logo).opacity:logo.style.opacity);if(!(o>.02))show();},900);
+/* ── the pencil ── */
+var seed=1;function rnd(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}
+function j(a){return (rnd()-.5)*2*a;}
+function f1(n){return Math.round(n*10)/10;}
+function smooth(p,closed){var d='M'+f1(p[0][0])+' '+f1(p[0][1]);for(var i=1;i<p.length-1;i++){var mx=(p[i][0]+p[i+1][0])/2,my=(p[i][1]+p[i+1][1])/2;d+='Q'+f1(p[i][0])+' '+f1(p[i][1])+' '+f1(mx)+' '+f1(my);}
+var l=p[p.length-1];return d+'L'+f1(l[0])+' '+f1(l[1]);}
+/* a hand-drawn line through the given points: resampled, each point nudged, ends overshooting a touch */
+function wob(pts,amp){var o=[];for(var i=0;i<pts.length-1;i++){var a=pts[i],b=pts[i+1],n=Math.max(1,Math.round(Math.hypot(b[0]-a[0],b[1]-a[1])/13));
+for(var k=0;k<n;k++){var t=k/n;o.push([a[0]+(b[0]-a[0])*t+j(amp),a[1]+(b[1]-a[1])*t+j(amp)]);}}
+var e=pts[pts.length-1];o.push([e[0]+j(amp),e[1]+j(amp)]);return smooth(o);}
+function line(pts,w,amp){amp=amp==null?1.5:amp;var s='<path d="'+wob(pts,amp)+'" stroke-width="'+w+'"/>';
+if(rnd()<.8)s+='<path d="'+wob(pts,amp*1.3)+'" stroke-width="'+f1(w*.55)+'" opacity=".55"/>';return s;}
+/* a hand-drawn loop: goes a little past where it started instead of closing neatly */
+function loop(cx,cy,rx,ry,rot,w,fill,amp){amp=amp==null?1.4:amp;var p=[],st=rnd()*6.283,n=14,over=2+Math.floor(rnd()*2),c=Math.cos(rot||0),s=Math.sin(rot||0);
+for(var i=0;i<=n+over;i++){var a=st+i/n*6.283,x=Math.cos(a)*(rx+j(amp)),y=Math.sin(a)*(ry+j(amp));p.push([cx+x*c-y*s,cy+x*s+y*c]);}
+var out='';if(fill){var q=[];for(var k=0;k<n;k++){var a2=k/n*6.283,x2=Math.cos(a2)*rx,y2=Math.sin(a2)*ry;q.push(f1(cx+x2*c-y2*s)+' '+f1(cy+x2*s+y2*c));}out+='<path d="M'+q.join('L')+'Z" fill="'+fill+'" stroke="none"/>';}
+return out+'<path d="'+smooth(p)+'" stroke-width="'+w+'"/>';}
+function dot(x,y,r){return '<circle cx="'+f1(x+j(.6))+'" cy="'+f1(y+j(.6))+'" r="'+f1(r+j(.4))+'" fill="#F2F4F6" stroke="none"/>';}
+var PAPER='#14161C';   /* the toolbar's own colour: the bird is drawn in light line on the dark bar, like chalk, and its body is 'empty' */
+/* ── the songbird ── */
+/* The bird is a one-colour silhouette of a small perched songbird in profile: one continuous outline (crown, sloping
+   back, long tail, round breast, fine beak) drawn with a handful of exact curves, plus two thin legs. The eye and a
+   single wing line are cut out of the shape as negative space. One flat colour (currentColor), no outlines, no wobble:
+   every frame is the same exact drawing in a slightly different pose. */
+var MASKN=0;
+/* sing: beak open. tail: tail tip lower(+)/higher(-). lean: whole bird tips forward(+)/back(-), degrees.
+   bob: body lower/higher. hop: feet off the ground. sx/sy: squash and stretch. */
+function bird(P){var b=P.bob||0,g=188-(P.hop||0),t=P.tail||0,id='dzm'+(MASKN++),s='';
+s+='<mask id="'+id+'" maskUnits="userSpaceOnUse" x="-20" y="-40" width="240" height="250"><rect x="-20" y="-40" width="240" height="250" fill="#fff"/>';
+s+='<circle cx="151" cy="'+(73+b)+'" r="3.800" fill="#000"/><path d="M128 '+(94+b)+'C117 '+(113+b)+' 101 '+(125+b)+' 82 '+(131+b)+'" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/></mask>';
+var body='<g fill="currentColor" stroke="none" mask="url(#'+id+')">';
+body+='<path d="M166 '+(85+b)+'L166 '+(71+b)+'C160 '+(58+b)+' 146 '+(52+b)+' 134 '+(56+b)+'C124 '+(59+b)+' 118 '+(66+b)+' 112 '+(76+b)+'C100 '+(92+b)+' 84 '+(106+b)+' 68 '+(116+b)
+ +'L18 '+(152+b+t)+'Q11 '+(160+b+t)+' 22 '+(162+b+t)+'L74 '+(146+b)+'C88 '+(164+b)+' 118 '+(170+b)+' 142 '+(158+b)+'C162 '+(148+b)+' 172 '+(126+b)+' 170 '+(104+b)+'C170 '+(96+b)+' 168 '+(90+b)+' 166 '+(85+b)+'Z"/>';
+body+=P.sing?'<path d="M165 '+(70+b)+'L187 '+(68+b)+'L165 '+(79+b)+'Z"/><path d="M165 '+(81+b)+'L183 '+(91+b)+'L165 '+(87+b)+'Z"/>':'<path d="M165 '+(71+b)+'L188 '+(78+b)+'L165 '+(85+b)+'Z"/>';
+body+='</g>';
+var legs='<g fill="none" stroke="currentColor" stroke-width="4.500" stroke-linecap="round" stroke-linejoin="round"><path d="M112 '+(162+b)+'L108 '+g+'L119 '+g+'"/><path d="M130 '+(161+b)+'L130 '+g+'L141 '+g+'"/></g>';
+s+=legs+(P.lean?'<g transform="rotate('+P.lean+' 120 '+(160+b)+')">'+body+'</g>':body);
+if(P.hop)s+='<path d="M98 196L112 196M128 196L142 196" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" opacity=".55"/>';
+if(P.sx)s='<g transform="translate(120 190) scale('+P.sx+' '+P.sy+') translate(-120 -190)">'+s+'</g>';
+return s;}
+var PERCH=[{},{sing:1,lean:-4,sx:.98,sy:1.03},{sing:1,lean:-6,tail:5,sx:.97,sy:1.04},{sing:1,lean:-4,sx:.98,sy:1.03},
+{tail:-7,lean:2},{bob:-8,hop:8,tail:4,sx:.96,sy:1.05},{sing:1,bob:3,tail:-3,sx:1.05,sy:.95},{sing:1,lean:-5,tail:3,sx:.97,sy:1.04}];
+/* The whistle: while the bird is singing, little hand-drawn music notes in bright colours come out of its beak one after
+   another and drift up and away, wobbling, each one a three-drawing flip-book of its own. */
+var INK=['#F7C549','#FF8AC8','#FFA36B','#8FE6FF'];   /* the four colours of the name's gradient: gold, pink, orange, sky blue */
+function noteArt(shape,col){var h='<svg class="dz-note-svg" viewBox="0 0 40 40" focusable="false"><g fill="none" stroke="'+col+'" stroke-linecap="round" stroke-linejoin="round">';
+for(var k=0;k<3;k++){seed=(Math.random()*1e9)|0;var g='';
+if(shape===0)g=line([[25,7],[25,28]],3.6,.7)+line([[25,7],[34,12],[32,20]],3.4,.7)+loop(19.500,29,6.500,4.800,-.4,3,col,.6);
+else if(shape===1)g=line([[12,12],[12,30]],3.4,.7)+line([[31,7],[31,26]],3.4,.7)+line([[12,12],[31,7]],5,.6)+loop(7.500,31,5.200,3.900,-.4,2.800,col,.5)+loop(26.500,27,5.200,3.900,-.4,2.800,col,.5);
+else g=line([[24,6],[24,29]],3.6,.7)+loop(18.500,30,6.500,4.800,-.4,3,col,.6);
+h+='<g'+(k?' hidden':'')+'>'+g+'</g>';}
+return h+'</g></svg>';}
+var notes=[];
+function whistle(){if(!box||box.hidden||notes.length>(beside?4:6)||!document.body.animate)return;
+var el=document.createElement('span');el.className='dz-note';el.innerHTML=noteArt(Math.floor(Math.random()*3),INK[Math.floor(Math.random()*INK.length)]);
+/* small notes, in a tight plume just above the beak: they rise a little and fade, drifting only slightly.
+   The name is layered above them (see .nav-logo in shared/system.css), so one that strays that way passes behind it. */
+var S2=G.size,sz=S2*(.15+Math.random()*.07);el.style.width=el.style.height=sz+'px';el.style.left=((turned?S2*.13:S2*.87)-sz*(turned?.3:.7))+'px';el.style.top=(S2*.44-sz*.7)+'px';box.appendChild(el);
+/* the rise is capped so a note fades out before the top of the toolbar and is never cut off by its edge */
+var room=box.getBoundingClientRect().top-nav.getBoundingClientRect().top+(S2*.44-sz*.7)-sz*.25-3,dx=(Math.random()-.3)*S2*.5*(turned?-1:1),dy=Math.max(4,Math.min(S2*(.3+Math.random()*.22),room)),wv=S2*(.025+Math.random()*.035)*(Math.random()<.5?-1:1),r=(Math.random()-.5)*36;
+var a=el.animate([{transform:'translate(0,0) scale(.3) rotate(0deg)',opacity:0},{transform:'translate('+f1(dx*.2)+'px,'+f1(-dy*.35+wv)+'px) scale(.9) rotate('+f1(r*.4)+'deg)',opacity:1,offset:.2},
+{transform:'translate('+f1(dx*.55)+'px,'+f1(-dy*.7-wv)+'px) scale(1) rotate('+f1(-r*.5)+'deg)',opacity:1,offset:.6},{transform:'translate('+f1(dx)+'px,'+f1(-dy+wv*.5)+'px) scale(1.05) rotate('+f1(r)+'deg)',opacity:0}],{duration:1100+Math.random()*600,easing:'ease-out',fill:'forwards'});
+var rec={el:el,a:a,fr:[].slice.call(el.querySelectorAll('svg > g > g')),n:0};notes.push(rec);
+var done=function(){var i=notes.indexOf(rec);if(i>=0)notes.splice(i,1);el.remove();};a.finished.then(done,done);}
+function jitterNotes(){for(var i=0;i<notes.length;i++){var r=notes[i];r.n++;for(var k=0;k<r.fr.length;k++){if(k===r.n%r.fr.length)r.fr[k].removeAttribute('hidden');else r.fr[k].setAttribute('hidden','');}}}
+function hush(){while(notes.length){notes.pop().el.remove();}}
+function wrap(walk,idle){return '<svg class="dz" viewBox="-13 -32 226 226" focusable="false"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
+function birdSheet(){var a='',c='',i,k;
+for(k=0;k<2;k++)for(i=0;i<PERCH.length;i++){seed=8101+i*23+k*557;c+='<g hidden>'+bird(PERCH[i])+'</g>';}return wrap(a,c);}
+/* ── where the bird stands ── */
+/* Its place, size and level are all set in the stylesheet (see "Toolbar songbird" in shared/system.css): it sits inside
+   the name's link, in room reserved to the left of the lettering. Nothing here moves the name or the bird, so nothing
+   shifts as the page loads. Being inside the link, a click on the bird does what a click on the name does. */
+var box=null,xw=null,face=null,fi=null,shown=null,G={size:50},tick=false,loopT=0,loopN=0,beside=0,brand=logo.querySelector('.hero-brand')||logo;
+function build(){box=document.createElement('span');box.className='nav-doodle';box.setAttribute('aria-hidden','true');box.hidden=true;
+box.innerHTML='<span class="dz-x"><span class="dz-face">'+birdSheet()+'</span></span>';logo.insertBefore(box,logo.firstChild);xw=box.firstChild;face=xw.firstChild;
+fi=[].slice.call(face.querySelectorAll('.dz-fi > g'));
+/* a click or tap on the bird turns him round there and then, and - since he is inside the name's link - also does what
+   a click on the name does (back to the top). His own random turning starts counting again from that moment. */
+box.addEventListener('click',function(){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';if(loopT)turnSoon();});}
+function show(el){if(el===shown)return;if(shown)shown.setAttribute('hidden','');el.removeAttribute('hidden');shown=el;}
+/* Every so often it turns to face the other way: after a random wait of 3 to 8 seconds each time (never sooner, never
+   longer), taking about a quarter of a second to turn. */
+var turned=false,turnT=0;
+function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';}turnSoon();},3000+Math.random()*5000);}
+function play(ms){if(loopT)return;turnSoon();loopT=setInterval(function(){if(document.hidden||!fi)return;loopN++;show(fi[loopN%fi.length]);
+jitterNotes();if(PERCH[loopN%PERCH.length].sing)whistle();},ms);}
+function hide(){if(loopT){clearInterval(loopT);loopT=0;}clearTimeout(turnT);turnT=0;hush();if(box&&!box.hidden)box.hidden=true;}
+function update(){tick=false;
+if(calm()){hide();return;}
+if(!box)build();box.hidden=false;G.size=box.getBoundingClientRect().width||50;
+beside=parseFloat(brand.style.opacity||0)>.001?1:0;
+if(!loopT){show(fi[0]);play(190);}}
+function ask(){if(!tick){tick=true;requestAnimationFrame(update);}}
+addEventListener('scroll',ask,{passive:true});addEventListener('resize',ask,{passive:true});
+update();
 })();</script>
 <script>/* About card: "Ash Stu" and the tagline, one line each, sized to span the
    text panel (scaled down if the group would be taller than the photo
