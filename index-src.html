@@ -1119,7 +1119,7 @@ var _lyr = { file: null, times: [], btns: [], cur: -2, holdUntil: 0, raf: 0 };
 var _lyrShow = true;
 try { _lyrShow = localStorage.getItem('fs-lyrics') !== 'off'; } catch (e) {}
 var _lyrReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-var LYRIC_LEAD = 0.2; // highlight a hair early, like reading along
+var LYRIC_LEAD = 0;   /* a line lights up when it is sung, not before (it used to light a fraction of a second early) */
 function fsCurrentFile() { var p = pState.playlist[pState.plIdx]; return p ? p.file : null; }
 function fsRenderLyrics() {
  var file = fsCurrentFile();
@@ -1876,7 +1876,7 @@ var open = inner.parentNode.style.maxHeight && inner.parentNode.style.maxHeight 
 var cur = inner.querySelector('.rel-lyric-line.is-current');
 var want = null;
 if (open && inner.dataset.file === file && npAudio.src) {
-var t = npAudio.currentTime + 0.2;   // a hair early, like the full-screen lyrics
+var t = npAudio.currentTime + LYRIC_LEAD;   // exactly when the line is sung, like the full-screen lyrics
 inner.querySelectorAll('.rel-lyric-line[data-t]').forEach(function(sp) { if (parseFloat(sp.dataset.t) <= t) want = sp; });
 live = true;
 }
