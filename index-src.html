@@ -2792,7 +2792,9 @@ s+='<mask id="'+id+'m" maskUnits="userSpaceOnUse" x="-30" y="-40" width="260" he
  +'<path d="M'+f1(149+j(.8))+' '+f1(73+b+j(.8))+'l.1 .1" stroke-width="'+f1(12+j(.8))+'"/>'
  +'<path d="'+wob([[128,100+b],[120,114+b],[106,125+b],[86,132+b]],1.2)+'" stroke-width="6"/>'
  +'</g></mask>';
-var body='<g mask="url(#'+id+'m)"><g clip-path="url(#'+id+'c)">'
+/* a solid coat under the pencil work (body, beak, wing), shown only when the bird has to stand out - in the About section */
+var solid='<g class="dz-solid" fill="currentColor" stroke="none"><path d="'+bodyD+'"/>'+beaks.map(function(d){return '<path d="'+d+'"/>';}).join('')+(wingD?'<path d="'+wingD+'"/>':'')+'</g>';
+var body='<g mask="url(#'+id+'m)">'+solid+'<g clip-path="url(#'+id+'c)">'
  +scribble(118,50+b,172,100+b,-.95+j(.04),7.5,8.4)+scribble(4,44+b,196,176+b,-.95+j(.04),13.5,9.6)+scribble(4,44+b,196,176+b,-.78+j(.05),27,5,'.5')+'</g>'
  +round(edge,1.3,9)+round(edge,2.2,5,'.8')+(rnd()<.6?round(edge,3,2.6,'.6'):'');
 for(var q=0;q<beaks.length;q++){var be=along(beaks[q],9);body+=round(be,.9,5.6)+round(be,1.4,3,'.7');}
@@ -2837,7 +2839,9 @@ function wrap(walk,idle){return '<svg class="dz" viewBox="-13 -32 226 226" focus
 +'<animateTransform attributeName="gradientTransform" type="translate" calcMode="discrete" values="'+(function(){var v=[];for(var i=0;i<54;i++)v.push(f1(-226*i/54)+' '+f1(-40*i/54));return v.join(';');})()+'" dur="9s" repeatCount="indefinite"/></linearGradient>'
 /* the pencil: the line's edge is roughened a little, and fine grain is knocked out of it, as graphite skips on paper */
 +'<filter id="dz-pencil" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" result="d"/>'
-+'<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="3" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.2 2.55" result="a"/><feComposite in="d" in2="a" operator="in"/></filter></defs>'
++'<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="3" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.2 2.55" result="a"/><feComposite in="d" in2="a" operator="in"/></filter>'
+/* the same hand-wobbled edge without the grain knocked out: for the bright, fully solid bird in the About section */
++'<filter id="dz-rough" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter></defs>'
 +'<g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#dz-pencil)"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
 function birdSheet(){var a='',c='',i,k;
 var FLY=[{fly:'up',lean:-8,tail:-4},{fly:'down',lean:-3,tail:3}];for(k=0;k<3;k++)for(i=0;i<2;i++){seed=4401+i*31+k*211;a+='<g hidden>'+sketch(FLY[i])+'</g>';}
@@ -2951,7 +2955,9 @@ if(!placed){placed=true;mode=m;pivot();xw.style.transform=tf(t);if(m==='home'){v
 else if(m!==mode){mode=m;clearTimeout(roamT);if(m==='roam')roamNext();else flyTo(t);}
 else if(m==='roam'){if(tgt&&tgt.px&&performance.now()-roamAt>260){var bd=band(tgt.px);if(bd.none||tgt.ay<bd.top-3||tgt.ay>bd.bot+3)roamNext();}else if(!tgt&&!flying&&performance.now()-roamAt>400&&!band(60).none)roamNext();}
 else if(!flying&&!hopping)xw.style.transform=tf(t);
-home=mode==='home';box.classList.toggle('out',mode!=='perch');}
+home=mode==='home';box.classList.toggle('out',mode!=='perch');
+/* in the About section it is drawn bright and fully solid, so it stands out against whatever it flies over */
+if(box.classList.contains('bright')!==(mode==='roam'))box.classList.toggle('bright',mode==='roam');}
 /* A hop is a real jump: it leaves one crest and lands on another along a parabola, high enough to clear whatever
    letters stand between the two (their tops are known from the outline) with room to spare, and it takes as long as a
    jump of that height takes. It faces the way it is going where it can stand that way; otherwise it lands turned the
