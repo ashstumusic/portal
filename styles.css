@@ -3536,11 +3536,11 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 .np-time { color: rgba(8,76,97,.85); color: rgb(from var(--player-ink) r g b / .85); }
 :root[data-theme="dark"] #player-bar #np-close { background: rgb(19 35 42 / .72); border-color: rgb(220 238 242 / .3); }
 
-/* Lyrics in Roboto Condensed ('LyricsText', declared in shared/system.css; body text stays in Source Sans 3 -
+/* Lyrics in Reddit Sans Condensed ('LyricsText', declared in shared/system.css; the body text uses the same face -
    in shared/system.css). The current line keeps its size, bar and full
    opacity; no faux bold. */
 .fs-lyric button, .fs-lyric--plain, .rel-lyrics-inner, .fs-lyric.is-current button {
-  font-family: 'LyricsText', 'Roboto Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif; font-weight: 400; font-synthesis: none;
+  font-family: 'LyricsText', 'Reddit Sans Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif; font-weight: 400; font-synthesis: none;
 }
 
 /* The line being sung gets a gold highlighter band (dark text on gold
