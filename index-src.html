@@ -233,7 +233,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </nav>
 <!-- Hover filters for the streaming logos (pt-gold in use): the coloured shape turns
      solid gold (pt-mono: black); white details stay white and cut-outs stay transparent. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-cut" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 -1 0 0 0  -1 1 0 0 0  0 0 0 0 0  0 0 0 1 0"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  4 4 0 0 0"/></filter><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter><filter id="pt-gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".969 .969 .969 .969 .969 .969 .969 .98 1 1"/><feFuncG type="table" tableValues=".773 .773 .773 .773 .773 .773 .773 .88 1 1"/><feFuncB type="table" tableValues=".286 .286 .286 .286 .286 .286 .286 .62 1 1"/></feComponentTransfer></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-cut" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 -1 0 0 0  -1 1 0 0 0  0 0 0 0 0  0 0 0 1 0"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  4 4 0 0 0"/></filter><filter id="pt-line" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 -1 0 0 0  -1 1 0 0 0  0 0 0 0 0  0 0 0 1 0"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  4 4 0 0 0" result="body"/><feFlood flood-color="#F7C549"/><feComposite operator="in" in2="body"/></filter><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter><filter id="pt-gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".969 .969 .969 .969 .969 .969 .969 .98 1 1"/><feFuncG type="table" tableValues=".773 .773 .773 .773 .773 .773 .773 .88 1 1"/><feFuncB type="table" tableValues=".286 .286 .286 .286 .286 .286 .286 .62 1 1"/></feComponentTransfer></filter></svg>
 <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile menu" aria-hidden="true">
   <div class="drawer-platforms">
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
@@ -1887,7 +1887,8 @@ if (live && !npAudio.paused) _cardLyrRaf = requestAnimationFrame(cardLyricsTick)
 function cardLyricsKick() { if (!_cardLyrRaf) _cardLyrRaf = requestAnimationFrame(cardLyricsTick); }
 ['play', 'seeked', 'loadedmetadata', 'pause', 'emptied'].forEach(function(ev) { npAudio.addEventListener(ev, cardLyricsKick); });
 function recalcTracklistHeight(tl) {
-if (tl) tl.style.maxHeight = 'none';
+/* only an open tracklist is given its height: a closed one must stay shut (closing a song's lyrics inside a closed release used to re-open its space, leaving an empty block under the release) */
+if (!tl) return; var _c = tl.closest('.rel-card'); tl.style.maxHeight = (!_c || _c.classList.contains('tracks-open')) ? 'none' : '0';
 }
 function toggleTrackLyrics(btn) {
 var wrap = btn.closest('.rel-track-wrap');
@@ -1956,10 +1957,11 @@ if (openBtn) { var w = openBtn.closest('.rel-track-wrap'), inner = w && w.queryS
 }
 function _fitLyricType(inner) {
 var lines = inner.querySelectorAll('.rel-lyric-line'); if (!lines.length) return;
-var target = innerWidth >= 900 ? 19 : 16.5, floor = 11;
+var target = innerWidth >= 900 ? 19 : 16.5, floor = 14;
+var _cs = getComputedStyle(lines[0]), pad = (parseFloat(_cs.paddingLeft) || 0) + (parseFloat(_cs.paddingRight) || 0);   /* the words shrink, the padding does not */
 inner.classList.remove('lyr-wrap'); inner.style.setProperty('--lyr-fs', target + 'px');
 var worst = 1;
-for (var i = 0; i < lines.length; i++) { var l = lines[i]; if (l.scrollWidth > l.clientWidth + .5) worst = Math.min(worst, l.clientWidth / l.scrollWidth); }
+for (var i = 0; i < lines.length; i++) { var l = lines[i]; if (l.scrollWidth > l.clientWidth + .5) worst = Math.min(worst, (l.clientWidth - pad) / (l.scrollWidth - pad)); }
 if (worst < 1) {
   var fs = Math.max(floor, Math.floor(target * worst * 0.985 * 10) / 10);
   inner.style.setProperty('--lyr-fs', fs + 'px');
@@ -2276,9 +2278,6 @@ const fctx = fcvs ? fcvs.getContext('2d', { desynchronized: true, alpha: true })
 const TWO_PI = Math.PI * 2, DEG2RAD = Math.PI / 180;
 const pieces = [];
 let cw, ch;
-/* 8-bit mode (html.nes, see shared/psyche.js): drawn at 1/4 resolution,
-   shown with square pixels (psyche.js also drops every animation to 12 fps). */
-const NES_Q = .25;
 let Q = 1;
 function resize() { const r = cvs.parentElement.getBoundingClientRect(); cw = r.width; ch = r.height; for (const c of [cvs, fcvs]) if (c) { c.width = Math.max(1, Math.round(cw * Q)); c.height = Math.max(1, Math.round(ch * Q)); } }
 resize();
@@ -2322,9 +2321,7 @@ let running = false, lastT = null, rafId = null;
 function draw(t) {
 if (!running) { lastT = null; rafId = null; return; }
 if (lastT === null) { lastT = t; rafId = requestAnimationFrame(draw); return; }
-const nes = document.documentElement.classList.contains('nes');
-if ((nes ? NES_Q : 1) !== Q) { Q = nes ? NES_Q : 1; resize(); }
-const dt = Math.min(t - lastT, nes ? 120 : 50) / 16.667;
+const dt = Math.min(t - lastT, 50) / 16.667;
 lastT = t;
 ctx.setTransform(1, 0, 0, 1, 0, 0);
 ctx.clearRect(0, 0, cvs.width, cvs.height);
