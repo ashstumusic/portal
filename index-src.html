@@ -2097,7 +2097,7 @@ function renderAllContent(results, isRefresh) {
 RELEASE_LIST = results[0] || [];
 FEATURED_IDX = Math.max(0, RELEASE_LIST.findIndex(function(r) { return r.featured; }));
 VIDEO_LIST = results[1] || [];
-LYRICS = results[2] || {};
+LYRICS = results[2] || {}; window.LYRICS = LYRICS;
 
 var relGrid = document.getElementById('releases-grid');
 if (relGrid) relGrid.innerHTML = RELEASE_LIST.map(renderReleaseCard).join('');
@@ -2873,6 +2873,28 @@ var gone=imgs.map(function(im,k){return new Promise(function(res){setTimeout(fun
 imgs.forEach(function(im,k){var from=(k-1+n)%n;   // it receives the photo from the window before it
 Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
 return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
+setInterval(turn,5200);})();</script>
+<script>/* About photos: the three trade places around their triangle (top -> lower right -> lower left -> top), at the
+   same pace as the press kit's photos. Each one leaves toward the place it is going and arrives from the place it came
+   from. Only while the section is on screen and the tab is visible; no movement with reduced motion or background
+   effects off. Each frame keeps its own treatment (colour on top, black and white below). */
+(function(){var imgs=[].slice.call(document.querySelectorAll('.bio-card-media img'));if(imgs.length!==3||!imgs[0].animate)return;
+var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),cur=[0,1,2],busy=false,onScreen=false;
+var NEXT=[2,0,1];   /* frame 0 (top) -> frame 2 (lower right) -> frame 1 (lower left) -> frame 0 */
+var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
+var sec=document.querySelector('.bio-card-media');
+if('IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e.some(function(x){return x.isIntersecting;});if(onScreen)items.forEach(function(it){var p=new Image();p.src=it.src;});}).observe(imgs[0]);else onScreen=true;
+function mid(el){var r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];}
+function turn(){if(busy||still()||!onScreen||document.hidden)return;busy=true;
+var c=imgs.map(mid),old=cur.slice(),left=3;
+var out=imgs.map(function(im,k){var to=NEXT[k],dx=(c[to][0]-c[k][0])*.22,dy=(c[to][1]-c[k][1])*.22;
+var a=im.animate([{translate:'0 0',opacity:1},{translate:dx+'px '+dy+'px',opacity:0}],{duration:150,easing:'cubic-bezier(.55,0,.85,.35)',fill:'forwards'});
+return a.finished.then(function(){return a;},function(){return a;});});
+Promise.all(out).then(function(as){imgs.forEach(function(im,k){var from=NEXT.indexOf(k);cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
+var go=function(){as[k].cancel();var dx=(c[from][0]-c[k][0])*.22,dy=(c[from][1]-c[k][1])*.22;
+var b=im.animate([{translate:dx+'px '+dy+'px',opacity:0},{translate:'0 0',opacity:1}],{duration:190,easing:'cubic-bezier(.15,.7,.25,1)'});
+b.finished.then(function(){if(--left===0)busy=false;},function(){if(--left===0)busy=false;});};
+(im.decode?im.decode():Promise.resolve()).then(go,go);});});}
 setInterval(turn,5200);})();</script>
 <script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the
    current section changes, bring its button into view inside the rail. */
