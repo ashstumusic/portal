@@ -14,7 +14,7 @@ import io, os, re
 from playwright.sync_api import sync_playwright
 from PIL import Image
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-POSE = os.environ.get('FAV_POSE', '{sing:1,lean:-4}')   # singing (beak open) and tipped back a touch: with its crest the bird is then exactly as tall as it is wide, so it fills the square icon edge to edge
+POSE = os.environ.get('FAV_POSE', '{sing:1,lean:-17}')   # singing (beak open) and tipped back: the bird is then exactly as tall as it is wide, so it fills the square icon edge to edge
 PX = 1024                                 # size of the raster copies
 src = open(os.path.join(ROOT, 'index-src.html'), encoding='utf-8').read()
 a = src.index("var seed=1;function rnd()"); b = src.index("function wrap(walk,idle)")

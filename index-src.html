@@ -2770,13 +2770,11 @@ var MASKN=0;
    bob: body lower/higher. hop: feet off the ground. sx/sy: squash and stretch. */
 function bird(P){var b=P.bob||0,g=188-(P.hop||0),t=P.tail||0,id='dzm'+(MASKN++),s='';
 s+='<mask id="'+id+'" maskUnits="userSpaceOnUse" x="-20" y="-40" width="240" height="250"><rect x="-20" y="-40" width="240" height="250" fill="#fff"/>';
-s+='<circle cx="151" cy="'+(73+b)+'" r="3.800" fill="#000"/><path d="M128 '+(94+b)+'C117 '+(113+b)+' 101 '+(125+b)+' 82 '+(131+b)+'" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/></mask>';
+s+='<circle cx="151" cy="'+(73+b)+'" r="3.800" fill="#000"/><path d="M128 '+(94+b)+'C117 '+(113+b)+' 101 '+(125+b)+' 82 '+(131+b)+'" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>'+'</mask>';
 var body='<g fill="currentColor" stroke="none" mask="url(#'+id+')">';
 body+='<path d="M166 '+(85+b)+'L166 '+(71+b)+'C160 '+(58+b)+' 146 '+(52+b)+' 134 '+(56+b)+'C124 '+(59+b)+' 118 '+(66+b)+' 112 '+(76+b)+'C100 '+(92+b)+' 84 '+(106+b)+' 68 '+(116+b)
  +'L18 '+(152+b+t)+'Q11 '+(160+b+t)+' 22 '+(162+b+t)+'L74 '+(146+b)+'C88 '+(164+b)+' 118 '+(170+b)+' 142 '+(158+b)+'C162 '+(148+b)+' 172 '+(126+b)+' 170 '+(104+b)+'C170 '+(96+b)+' 168 '+(90+b)+' 166 '+(85+b)+'Z"/>';
 body+=P.sing?'<path d="M165 '+(70+b)+'L187 '+(68+b)+'L165 '+(79+b)+'Z"/><path d="M165 '+(81+b)+'L183 '+(91+b)+'L165 '+(87+b)+'Z"/>':'<path d="M165 '+(71+b)+'L188 '+(78+b)+'L165 '+(85+b)+'Z"/>';
-/* a crest of three swept-back feathers on the crown: with the legs, the eye and the long tail it gives the bird its own outline (a perched, crested songbird), unlike any flat flying-bird mark */
-['M157 '+(61+b)+'L153 '+(31+b)+'L146 '+(56+b)+'Z','M149 '+(57+b)+'L138 '+(29+b)+'L138 '+(56+b)+'Z','M141 '+(57+b)+'L123 '+(38+b)+'L131 '+(59+b)+'Z'].forEach(function(d){body+='<path d="'+d+'"/>';});
 if(P.fly==='up')body+='<path d="M92 '+(98+b)+'L70 '+(34+b)+'Q104 '+(48+b)+' 126 '+(88+b)+'Z"/>';
 else if(P.fly==='down')body+='<path d="M96 '+(128+b)+'L84 '+(190+b)+'Q118 '+(172+b)+' 132 '+(130+b)+'Z"/>';
 body+='</g>';
@@ -2805,7 +2803,6 @@ function sketch(P){var b=P.bob||0,g=188-(P.hop||0),t=P.tail||0,id='dzs'+(SKN++),
 var bodyD='M166 '+(85+b)+'L166 '+(71+b)+'C160 '+(58+b)+' 146 '+(52+b)+' 134 '+(56+b)+'C124 '+(59+b)+' 118 '+(66+b)+' 112 '+(76+b)+'C100 '+(92+b)+' 84 '+(106+b)+' 68 '+(116+b)
  +'L18 '+(152+b+t)+'Q11 '+(160+b+t)+' 22 '+(162+b+t)+'L74 '+(146+b)+'C88 '+(164+b)+' 118 '+(170+b)+' 142 '+(158+b)+'C162 '+(148+b)+' 172 '+(126+b)+' 170 '+(104+b)+'C170 '+(96+b)+' 168 '+(90+b)+' 166 '+(85+b)+'Z';
 var beaks=P.sing?['M163 '+(70+b)+'L188 '+(67+b)+'L163 '+(80+b)+'Z','M163 '+(81+b)+'L184 '+(92+b)+'L163 '+(88+b)+'Z']:['M163 '+(70+b)+'L190 '+(78+b)+'L163 '+(86+b)+'Z'];
-beaks=beaks.concat(['M157 '+(61+b)+'L153 '+(31+b)+'L146 '+(56+b)+'Z','M149 '+(57+b)+'L138 '+(29+b)+'L138 '+(56+b)+'Z','M141 '+(57+b)+'L123 '+(38+b)+'L131 '+(59+b)+'Z']);   /* the crest (see bird()) */
 var wingD=P.fly==='up'?'M92 '+(100+b)+'L64 '+(30+b)+'Q106 '+(44+b)+' 130 '+(90+b)+'Z':P.fly==='down'?'M94 '+(124+b)+'L82 '+(192+b)+'Q120 '+(174+b)+' 134 '+(128+b)+'Z':'';
 var edge=along(bodyD,11);
 s+='<clipPath id="'+id+'c"><path d="'+bodyD+'"/>'+beaks.map(function(d){return '<path d="'+d+'"/>';}).join('')+(wingD?'<path d="'+wingD+'"/>':'')+'</clipPath>';
