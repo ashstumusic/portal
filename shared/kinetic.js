@@ -230,25 +230,35 @@
       const target = href.length > 1 && doc.getElementById(href.slice(1));
       if (!target || seen.has(href)) continue;
       seen.add(href);
-      items.push({ group: 'Go to', title: textOf(a), run: () => goTo(target) });
+      items.push({ group: 'Go to', tag: 'Section', title: textOf(a), run: () => goTo(target) });
     }
     // Songs: static pages expose a.track links; the homepage exposes RELEASE_LIST + playTrack().
     const tracks = $$('a.track[data-play]');
     if (tracks.length) {
-      for (const a of tracks) items.push({ group: 'Play a song', title: a.textContent.trim(), sub: textOf(a.closest('.record')?.querySelector('.record-title')), run: () => a.click() });
+      for (const a of tracks) items.push({ group: 'Play a song', tag: 'Song', title: a.textContent.trim(), sub: textOf(a.closest('.record')?.querySelector('.record-title')), run: () => a.click() });
     } else if (Array.isArray(window.RELEASE_LIST) && typeof window.playTrack === 'function') {
-      window.RELEASE_LIST.forEach((rel, r) => rel.tracks.forEach((t, ti) => items.push({ group: 'Play a song', title: t.title, sub: rel.name, run: () => window.playTrack(r, ti) })));
+      // albums first (each goes to its release), then every song on them
+      window.RELEASE_LIST.forEach((rel, r) => { const card = $$('.rel-card')[r]; if (card && rel.name) items.push({ group: 'Albums', tag: 'Album', title: rel.name, sub: `${rel.tracks.length} song${rel.tracks.length === 1 ? '' : 's'}`, run: () => goTo(card) }); });
+      window.RELEASE_LIST.forEach((rel, r) => rel.tracks.forEach((t, ti) => items.push({ group: 'Play a song', tag: 'Song', title: t.title, sub: rel.name, run: () => window.playTrack(r, ti) })));
     }
-    for (const v of $$('a.video-link')) items.push({ group: 'Watch a video', title: textOf(v.closest('.video')?.querySelector('.video-name')), run: () => v.click() });
-    for (const v of $$('.vid-card')) items.push({ group: 'Watch a video', title: (v.getAttribute('aria-label') || '').replace(/^Play\s*/, '').replace(/^["“]|["”]$/g, ''), run: () => v.click() });
+    for (const v of $$('a.video-link')) items.push({ group: 'Watch a video', tag: 'Video', title: textOf(v.closest('.video')?.querySelector('.video-name')), run: () => v.click() });
+    for (const v of $$('.vid-card')) items.push({ group: 'Watch a video', tag: 'Video', title: (v.getAttribute('aria-label') || '').replace(/^Play\s*/, '').replace(/^["“]|["”]$/g, ''), run: () => v.click() });
     const fx = $('.fx-toggle');
     if (fx) items.push({ group: 'Actions', title: fx.getAttribute('aria-pressed') === 'true' ? 'Turn motion effects off' : 'Turn motion effects on', run: () => fx.click() });
     const mail = $('a[href^="mailto:"]');
     if (mail && navigator.clipboard) items.push({ group: 'Actions', title: 'Copy booking email address', sub: mail.href.slice(7).split('?')[0], run: () => navigator.clipboard.writeText(mail.href.slice(7).split('?')[0]).then(() => announce('Email address copied')) });
     const kit = $('a[href$=".zip"]');
     if (kit) items.push({ group: 'Actions', title: 'Download the press kit', sub: 'ZIP', run: () => kit.click() });
+    // Streaming services (the toolbar's links): each opens Ash Stu's page there.
+    const seenP = new Set();
+    for (const a of $$('.nav-platforms a.nav-platform')) { const name = a.getAttribute('title') || textOf(a); if (!name || seenP.has(name)) continue; seenP.add(name); items.push({ group: 'Streaming', tag: 'Streaming', title: name, sub: 'Opens in a new tab', run: () => a.click() }); }
+    for (const i of items) if (!i.tag) i.tag = 'Action';
     return items.filter((i) => i.title);
   }
+  // Tags: every suggestion says what kind of thing it is, and the kind can be typed as part of the search
+  // ("video hope", "song raven", "album", "setting", "streaming"; "music" covers songs and albums; #video and video: work too).
+  const TAG_WORDS = { Section: 'section sections page go', Song: 'song songs music track tracks play audio', Album: 'album albums music release releases record', Video: 'video videos watch', Streaming: 'streaming stream service services listen link links platform', Setting: 'setting settings option options preference preferences toggle', Action: 'action actions' };
+  const hayOf = (i) => `${i.title} ${i.sub || ''} ${i.tag || ''} ${TAG_WORDS[i.tag] || ''}`.toLowerCase();
   function goTo(target) {
     target.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
     const focusable = target.matches('h1,h2,h3,[tabindex]') ? target : target.querySelector('h1, h2, h3');
@@ -363,18 +373,19 @@
     let items = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
     function draw() {
-      const q = inp.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      const q = inp.value.toLowerCase().trim().split(/\s+/).map((w) => w.replace(/^[#@]+|:+$/g, '')).filter(Boolean);
       if (opt && opt.onQuery) opt.onQuery(q.length > 0);
       if (flow && !q.length) { shut(); return; }
-      hits = items.filter((i) => { const hay = `${i.title} ${i.sub || ''} ${i.group}`.toLowerCase(); return q.every((w) => hay.includes(w)); });
+      hits = items.filter((i) => { const hay = hayOf(i); return q.every((w) => hay.includes(w)); });
       if (q.length) hits.sort((a, b) => (b.title.toLowerCase().startsWith(q[0]) ? 1 : 0) - (a.title.toLowerCase().startsWith(q[0]) ? 1 : 0));
-      hits = hits.slice(0, q.length ? 30 : 12);
+      hits = hits.slice(0, q.length ? 40 : 12);
       act = Math.min(act, Math.max(0, hits.length - 1));
       const frag = doc.createDocumentFragment();
       hits.forEach((it, i) => {
         const li = doc.createElement('li'); li.className = 'k-si-opt'; li.id = id + '-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === act));
-        const t = doc.createElement('span'); t.className = 'k-si-t'; t.textContent = it.title; const u = doc.createElement('span'); u.className = 'k-si-sub'; u.textContent = it.sub || it.group || '';
-        li.append(t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
+        const t = doc.createElement('span'); t.className = 'k-si-t'; t.textContent = it.title; const u = doc.createElement('span'); u.className = 'k-si-sub'; u.textContent = it.sub || '';
+        const g = doc.createElement('span'); g.className = 'k-si-tag'; g.dataset.tag = it.tag; g.textContent = it.tag;
+        li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
       });
       if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches.'; frag.append(e); }
       ul.replaceChildren(frag); ul.hidden = false; host.classList.add('open');
@@ -533,6 +544,8 @@
     if (typeof window.kineticItems === 'function') {
       try { items.unshift(...window.kineticItems().filter((it) => it.group !== 'Settings')); } catch {}
     }
+    // Settings can be found and switched from the search too.
+    for (const st of settingsList()) items.push({ group: 'Settings', tag: 'Setting', title: st.label, sub: st.on ? 'On - turn off' : 'Off - turn on', run: () => { st.run(); } });
     // Shortcut hints for section jumps.
     for (const it of items) if (it.group === 'Go to' && keysOn && hasKeys) it.kbd = ['G', it.title.trim()[0]?.toUpperCase()];
     return items;
