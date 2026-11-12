@@ -274,8 +274,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="featured-kicker">Album</span>
     <p class="featured-title">Ash Stu, Vol. II</p>
     <div class="featured-btns">
-    <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>
-    <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>
+    <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>
+    <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>
     </div>
   </div>
 </section>
@@ -2075,8 +2075,8 @@ if (title) title.textContent = rel.name;
 var btnsEl = document.querySelector('.featured-btns');
 if (btnsEl) {
 var h = '';
-if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
-if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
+if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>';
+if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>';
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming
@@ -3010,7 +3010,7 @@ setInterval(turn,5200);})();</script>
 (function(){var as=[].slice.call(document.querySelectorAll('.nav .nav-platforms a.nav-platform'));if(as.length<2)return;
 var nav=document.querySelector('.nav'),box=as[0].parentNode,TXT={apple:'Listen on Apple Music',spotify:'Stream now on Spotify',youtube:'Watch on YouTube'};
 as.forEach(function(a,k){var m=/pt--(\w+)/.exec((a.querySelector('.pt')||{}).className||'');a.dataset.flash=TXT[m&&m[1]]||a.getAttribute('aria-label')||'';a.dataset.brand=m?m[1]:'';a.style.order=k;});
-var ord=as.map(function(_,k){return k;}),can=false,rT=0;
+var ord=as.map(function(_,k){return k;}),can=false,rT=0,BADGE=false;   /* BADGE off: the toolbar logos stay round (the full "Listen on..." wording lives on the featured release's buttons instead); they still trade places */
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
 function first(){return as[ord.indexOf(as.length-1)];}   /* the open badge is the one at the right-hand end; the round logos rest to its left */
 var tools=nav.querySelector('.k-tools');
@@ -3027,7 +3027,7 @@ var okL=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1||
 var hug=function(){box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().left-12-box.getBoundingClientRect().right;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');};
 var flowOr=function(){beside(false);nav.classList.add('pf-left');if(ul)hug();if(okL())return true;box.style.removeProperty('margin-left');nav.classList.add('pf-flow');if(okL())return true;nav.classList.remove('pf-flow','pf-left');beside(true);if(ok()&&(!tools||box.getBoundingClientRect().right+8<=tools.getBoundingClientRect().left))return true;beside(false);if(ok())return true;nav.classList.add('pf-flow');if(ok())return true;nav.classList.remove('pf-flow');return false;};
 as.forEach(function(a){a.classList.add('flash-try');});
-if(!still()){var base=box.getBoundingClientRect().width,small=as[0].getBoundingClientRect().width,big=0,widest=as[0];
+if(BADGE&&!still()){var base=box.getBoundingClientRect().width,small=as[0].getBoundingClientRect().width,big=0,widest=as[0];
 as.forEach(function(a){a.classList.add('flash');var w=a.getBoundingClientRect().width;if(w>big){big=w;widest=a;}a.classList.remove('flash');});
 box.classList.add('pf-wide');box.style.setProperty('min-width',Math.ceil(base-small+big)+'px','important');widest.classList.add('flash');   /* tried with the widest badge really open */
 can=flowOr();widest.classList.remove('flash');
