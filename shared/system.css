@@ -1278,6 +1278,10 @@ html { overscroll-behavior-y: none; }
 .warhol-cell { position: relative; }
 .warhol-cell::after { content: ""; position: absolute; inset: 0; border: clamp(5px, .9vw, 12px) solid var(--box, transparent); opacity: 0; transition: opacity .35s ease; pointer-events: none; }
 .warhol-cell.boxed::after { opacity: 1; }
+/* cat wall up: the hero's name hands over to the toolbar's (a fade, since no scrolling drives it), and cannot be pressed while unseen */
+:root.cat-mode #hero-brand, :root.cat-mode .nav-logo .hero-brand { transition: opacity .6s ease; }
+:root.cat-mode #hero-brand { pointer-events: none !important; }
+@media (prefers-reduced-motion: reduce) { :root.cat-mode #hero-brand, :root.cat-mode .nav-logo .hero-brand { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .warhol-cell::after { transition: none; } }
 .warhol-cell img { image-rendering: auto; }
 :root.psy .rel-track-wrap .rel-lyric-line.lyr-wrap-line { white-space: normal; overflow-wrap: anywhere; padding-left: 1.1em; text-indent: -1.1em; }
@@ -2529,6 +2533,12 @@ html { overscroll-behavior-y: none; }
 .k-si-sub { flex: none; font-size: 13px; color: rgb(242 244 246 / .7); max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .k-si-opt[aria-selected="true"] .k-si-sub { color: rgb(17 17 17 / .75); }
 .k-si-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* what kind of thing a suggestion is: a fixed-width tag in front of it */
+.k-si-tag { flex: none; align-self: center; width: 74px; padding: 3px 0; border-radius: 6px; text-align: center; font: 700 10.5px/1.2 var(--font-ui, system-ui, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: #111; background: #F5F5F7; }
+.k-si-tag[data-tag="Song"] { background: #F7C549; } .k-si-tag[data-tag="Album"] { background: #FFA36B; } .k-si-tag[data-tag="Video"] { background: #FF8AC8; } .k-si-tag[data-tag="Streaming"] { background: #8FE6FF; }
+.k-si-opt[aria-selected="true"] .k-si-tag { background: #111; color: #fff; }
+.k-si-opt { justify-content: flex-start; } .k-si-t { flex: 1 1 auto; }
+.k-si--bar .k-si-list { width: max(100%, 440px); }
 .k-si-empty { padding: 12px; color: rgb(242 244 246 / .75); font: 500 14px/1.3 var(--font-ui, system-ui, sans-serif); }
 /* toolbar */
 .k-si--bar { flex: 0 1 300px; width: 300px; }
@@ -2558,6 +2568,11 @@ html { overscroll-behavior-y: none; }
   .k-si--flow { display: block; margin-bottom: 4px; }
   .k-si--flow .k-si-input { height: 48px; font-size: 16px; }
   .k-si--flow .k-si-list { padding: 8px 0 0; }
+  .k-si--flow .k-si-ico { top: 24px; }
+  .k-si--flow .k-si-tag { width: 68px; }
+  .k-si--flow .k-si-opt { gap: 10px; }
+  .k-si--flow .k-si-t { flex: 1 0 auto; max-width: calc(100% - 78px); }
+  .k-si--flow .k-si-sub { flex: 0 1 auto; min-width: 0; max-width: none; font-size: 12px; }
   .k-si--flow .k-si-opt { min-height: 48px; padding: 12px; }
   .k-menu.searching > :not(.k-si):not(.k-menu-title) { display: none !important; }
 }

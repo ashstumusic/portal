@@ -571,7 +571,8 @@ const h = heroH;
 // Cross-fades, at both ends of the page: one "Ash Stu" fades out exactly
 // while the other fades in, over the same stretch of scrolling.
 // Top: the hero's name fades out as the toolbar's fades in.
-const heroOut = Math.min(1, Math.max(0, (scrollY - h * 0.27) / (h * 0.2)));   /* starts a little later than it used to (was 0.15) */
+// (While the cat wall is up, the name is always the toolbar's: the big one steps out of the cats' way.)
+const heroOut = document.documentElement.classList.contains('cat-mode') ? 1 : Math.min(1, Math.max(0, (scrollY - h * 0.27) / (h * 0.2)));   /* starts a little later than it used to (was 0.15) */
 const navIn = heroOut;
 // Bottom: as the About card's "Ash Stu" rises into view, the toolbar's
 // fades out while the About one fades in (measured from the bottom of the
@@ -2615,9 +2616,13 @@ heroTrack.appendChild(twin);
 heroTrack.classList.add('warhol-strip');
 var heroLeft = heroTrack.parentNode;
 if (heroLeft) heroLeft.classList.add('warhol-on');
+/* the big name in the hero hands over to the toolbar's, as it does on scrolling, so the cats have the hero to themselves */
+document.documentElement.classList.add('cat-mode'); window.dispatchEvent(new Event('scroll'));
+/* a box is never the colour of the square it frames: it is drawn from the same pop palette, well away from the square's own */
+function boxCol(c) { var own = hexToLab(c.getAttribute('data-bg') || '#000000'), far = WARHOL_BG.filter(function(x) { return deltaE(hexToLab(x), own) >= 50; }); if (!far.length) far = WARHOL_BG.filter(function(x) { return x !== c.getAttribute('data-bg'); }); return far[Math.floor(Math.random() * far.length)]; }
 var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var third = 100 / 3;
-if (reduced || !heroTrack.animate) { heroTrack.style.transform = 'translate3d(-' + third + '%,0,0)'; for (var q = 0; q < grid.children.length; q++) { if (Math.random() < .5) { grid.children[q].classList.add('boxed'); grid.children[q].style.setProperty('--box', 'hsl(' + Math.floor(Math.random() * 360) + ' 92% 56%)'); } } return; }
+if (reduced || !heroTrack.animate) { heroTrack.style.transform = 'translate3d(-' + third + '%,0,0)'; for (var q = 0; q < grid.children.length; q++) { if (Math.random() < .5) { grid.children[q].classList.add('boxed'); grid.children[q].style.setProperty('--box', boxCol(grid.children[q])); } } return; }
 // One speed, always: the wall moves a hero-width every 14 seconds, from the first moment it starts sliding in and
 // for as long as it keeps panning. (The slide-in used to be quicker than the pan that followed.)
 var PAN = 14000;
@@ -2632,7 +2637,7 @@ var boxT = 0, visible = true;
 var cellsA = grid.children, cellsB = twin.firstChild.children;
 function roll() {
 for (var i = 0; i < cellsA.length; i++) {
-var boxed = Math.random() < .5, col = 'hsl(' + Math.floor(Math.random() * 360) + ' 92% 56%)';
+var boxed = Math.random() < .5, col = boxCol(cellsA[i]);
 [cellsA[i], cellsB[i]].forEach(function(c) { if (!c) return; c.classList.toggle('boxed', boxed); if (boxed) c.style.setProperty('--box', col); });
 }
 }
