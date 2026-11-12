@@ -18,11 +18,15 @@ PX = 1024                                 # size of the raster copies
 src = open(os.path.join(ROOT, 'index-src.html'), encoding='utf-8').read()
 a = src.index("var seed=1;function rnd()"); b = src.index("function wrap(walk,idle)")
 code = src[a:b]
-JS = "(code)=>{const art=new Function(code+';return bird({});')();" \
+JS = "(code)=>{const both=new Function(code+';var a0=bird({});seed=8101;var s0=sketch({});return [a0,s0];')();const art=both[0];" \
      "const NS='http://www.w3.org/2000/svg';const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','-100 -100 500 500');svg.style.cssText='position:fixed;left:0;top:0;width:500px;height:500px;color:#15171c';" \
      "svg.innerHTML='<g>'+art+'</g>';document.body.appendChild(svg);" \
-     "const bb=svg.firstChild.getBBox();svg.remove();return {art:art,x:bb.x,y:bb.y,w:bb.width,h:bb.height};}"
+     "const bb=svg.firstChild.getBBox();svg.remove();return {art:art,sk:both[1],x:bb.x,y:bb.y,w:bb.width,h:bb.height};}"
 OUTLINE, EDGE = '#15171c', 7.0
+# The top layer is the toolbar's own pencil drawing (sketch() in the page), with the same pencil filter the toolbar uses.
+PENCIL = ('<filter id="fav-pencil" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="7" result="n"/>'
+          '<feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="3" result="g"/>'
+          '<feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.2 2.55" result="a"/><feComposite in="d" in2="a" operator="in"/></filter>')
 def outline(art):
     """A near-black copy of the bird, drawn underneath and a little fatter, so a dark edge shows all round it.
     The pastel gradient alone is under 3:1 against a light browser tab; the edge is about 18:1. The copy is solid
@@ -40,7 +44,7 @@ with sync_playwright() as p:
         svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="%.2f %.2f %.2f %.2f">'
                '<defs><linearGradient id="fav-grad" gradientUnits="userSpaceOnUse" x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f">'
                '<stop offset="0" stop-color="#F7C549"/><stop offset=".36" stop-color="#FF8AC8"/><stop offset=".66" stop-color="#FFA36B"/><stop offset="1" stop-color="#8FE6FF"/>'
-               '</linearGradient></defs><g>%s</g><g>%s</g></svg>') % (vx, vy, side, side, r["x"], r["y"] + r["h"] * .35, r["x"] + r["w"], r["y"] + r["h"] * .65, outline(r["art"]), r["art"].replace("currentColor", "url(#fav-grad)"))
+               '</linearGradient>' + PENCIL.replace('%', '%%') + '</defs><g>%s</g><g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#fav-pencil)">%s</g></svg>') % (vx, vy, side, side, r["x"], r["y"] + r["h"] * .35, r["x"] + r["w"], r["y"] + r["h"] * .65, outline(r["art"]), r["sk"].replace("currentColor", "url(#fav-grad)"))
         pg.set_viewport_size({"width": PX, "height": PX})
         pg.set_content("<!doctype html><html><body style='margin:0;background:transparent'>" + svg.replace("<svg ", "<svg width='%d' height='%d' style='display:block' " % (PX, PX)) + "</body></html>")
         return svg, pg.screenshot(omit_background=True, clip={"x": 0, "y": 0, "width": PX, "height": PX})

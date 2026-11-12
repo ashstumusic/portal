@@ -2748,6 +2748,46 @@ s+=legs+(P.lean?'<g transform="rotate('+P.lean+' 120 '+(160+b)+')">'+body+'</g>'
 if(P.hop)s+='<path d="M98 196L112 196M128 196L142 196" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" opacity=".55"/>';
 if(P.sx)s='<g transform="translate(120 190) scale('+P.sx+' '+P.sy+') translate(-120 -190)">'+s+'</g>';
 return s;}
+/* ── the pencil drawing ──
+   The toolbar's bird is that same bird drawn by hand in soft pencil: its outline gone over two or three times with a
+   blunt point (each pass a little off the last, running on past where it began), its body shaded in with fast
+   back-and-forth scribble that leaves flecks of paper showing, the eye and the wing left bare. Every frame of the
+   flip-book is drawn afresh, so the line shivers the way hand-drawn animation does. The pencil's grain and its soft,
+   broken edge come from the filter in wrap(). (bird() above is the clean mark; the favicon is made from it.) */
+var NS='http://www.w3.org/2000/svg';
+function along(d,step){var e=document.createElementNS(NS,'path');e.setAttribute('d',d);var L=e.getTotalLength(),n=Math.max(6,Math.round(L/step)),o=[];for(var i=0;i<n;i++){var q=e.getPointAtLength(L*i/n);o.push([q.x,q.y]);}return o;}
+/* once round a closed shape by hand: starts anywhere, wanders a little, and overshoots its own start */
+function round(P0,amp,w,op){var n=P0.length,st=Math.floor(rnd()*n),over=2+Math.floor(rnd()*3),o=[];for(var i=0;i<=n+over;i++){var q=P0[(st+i)%n];o.push([q[0]+j(amp),q[1]+j(amp)]);}
+return '<path d="'+smooth(o)+'" stroke="currentColor" stroke-width="'+w+'"'+(op?' opacity="'+op+'"':'')+'/>';}
+/* shading: one unbroken back-and-forth scribble across a box, at a slant; unevenly spaced, turning round outside the shape */
+function scribble(x0,y0,x1,y1,ang,gap,w,op){var c=Math.cos(ang),sn=Math.sin(ang),cx=(x0+x1)/2,cy=(y0+y1)/2,R=Math.hypot(x1-x0,y1-y0)/2,o=[],dir=1;
+for(var u=-R;u<=R;u+=gap*(.72+rnd()*.56)){var a=-R*dir,b=R*dir;o.push([cx+a*c-u*sn+j(3),cy+a*sn+u*c+j(2)]);o.push([cx+(a+b)/2*c-(u+j(2.2))*sn,cy+(a+b)/2*sn+(u+j(2.2))*c]);o.push([cx+b*c-u*sn+j(3),cy+b*sn+u*c+j(2)]);dir=-dir;}
+return '<path d="'+smooth(o)+'" stroke="currentColor" stroke-width="'+w+'"'+(op?' opacity="'+op+'"':'')+'/>';}
+var SKN=0;
+function sketch(P){var b=P.bob||0,g=188-(P.hop||0),t=P.tail||0,id='dzs'+(SKN++),s='';
+var bodyD='M166 '+(85+b)+'L166 '+(71+b)+'C160 '+(58+b)+' 146 '+(52+b)+' 134 '+(56+b)+'C124 '+(59+b)+' 118 '+(66+b)+' 112 '+(76+b)+'C100 '+(92+b)+' 84 '+(106+b)+' 68 '+(116+b)
+ +'L18 '+(152+b+t)+'Q11 '+(160+b+t)+' 22 '+(162+b+t)+'L74 '+(146+b)+'C88 '+(164+b)+' 118 '+(170+b)+' 142 '+(158+b)+'C162 '+(148+b)+' 172 '+(126+b)+' 170 '+(104+b)+'C170 '+(96+b)+' 168 '+(90+b)+' 166 '+(85+b)+'Z';
+var beaks=P.sing?['M163 '+(70+b)+'L188 '+(67+b)+'L163 '+(80+b)+'Z','M163 '+(81+b)+'L184 '+(92+b)+'L163 '+(88+b)+'Z']:['M163 '+(70+b)+'L190 '+(78+b)+'L163 '+(86+b)+'Z'];
+var wingD=P.fly==='up'?'M92 '+(100+b)+'L64 '+(30+b)+'Q106 '+(44+b)+' 130 '+(90+b)+'Z':P.fly==='down'?'M94 '+(124+b)+'L82 '+(192+b)+'Q120 '+(174+b)+' 134 '+(128+b)+'Z':'';
+var edge=along(bodyD,11);
+s+='<clipPath id="'+id+'c"><path d="'+bodyD+'"/>'+beaks.map(function(d){return '<path d="'+d+'"/>';}).join('')+(wingD?'<path d="'+wingD+'"/>':'')+'</clipPath>';
+/* bare paper: the eye (a quick round dot) and the wing (two strokes and a shorter third) */
+s+='<mask id="'+id+'m" maskUnits="userSpaceOnUse" x="-30" y="-40" width="260" height="260"><rect x="-30" y="-40" width="260" height="260" fill="#fff"/><g fill="none" stroke="#000" stroke-linecap="round">'
+ +'<path d="M'+f1(149+j(.8))+' '+f1(73+b+j(.8))+'l.1 .1" stroke-width="'+f1(12+j(.8))+'"/>'
+ +'<path d="'+wob([[128,100+b],[120,114+b],[106,125+b],[86,132+b]],1.2)+'" stroke-width="6"/>'
+ +'</g></mask>';
+var body='<g mask="url(#'+id+'m)"><g clip-path="url(#'+id+'c)">'
+ +scribble(118,50+b,172,100+b,-.95+j(.04),7.5,8.4)+scribble(4,44+b,196,176+b,-.95+j(.04),13.5,9.6)+scribble(4,44+b,196,176+b,-.78+j(.05),27,5,'.5')+'</g>'
+ +round(edge,1.3,9)+round(edge,2.2,5,'.8')+(rnd()<.6?round(edge,3,2.6,'.6'):'');
+for(var q=0;q<beaks.length;q++){var be=along(beaks[q],9);body+=round(be,.9,5.6)+round(be,1.4,3,'.7');}
+if(wingD){var we=along(wingD,10);body+=round(we,1.2,8)+round(we,2,4.4,'.8');}
+body+='</g>';
+var legs=P.fly?'':'<g stroke-linejoin="round">'+[[112,108,119],[130,130,141]].map(function(L){return line([[L[0],160+b],[L[1],g],[L[2]+2,g]],5.4,1)+line([[L[1],g],[L[1]-7,g+1]],4,.8);}).join('')+'</g>';
+legs=legs.replace(/<path d/g,'<path stroke="currentColor" d');
+s+=legs+(P.lean?'<g transform="rotate('+P.lean+' 120 '+(160+b)+')">'+body+'</g>':body);
+if(P.hop)s+=line([[98,196],[113,196]],2.800,.8).replace(/<path d/g,'<path stroke="currentColor" opacity=".55" d')+line([[127,196],[142,196]],2.800,.8).replace(/<path d/g,'<path stroke="currentColor" opacity=".55" d');
+if(P.sx)s='<g transform="translate(120 190) scale('+P.sx+' '+P.sy+') translate(-120 -190)">'+s+'</g>';
+return s;}
 var PERCH=[{},{sing:1,lean:-4,sx:.98,sy:1.03},{sing:1,lean:-6,tail:5,sx:.97,sy:1.04},{sing:1,lean:-4,sx:.98,sy:1.03},
 {tail:-7,lean:2},{bob:-8,hop:8,tail:4,sx:.96,sy:1.05},{sing:1,bob:3,tail:-3,sx:1.05,sy:.95},{sing:1,lean:-5,tail:3,sx:.97,sy:1.04}];
 /* The whistle: while the bird is singing, little hand-drawn music notes in bright colours come out of its beak one after
@@ -2765,9 +2805,9 @@ function whistle(){if(!box||box.hidden||notes.length>(beside?4:6)||!document.bod
 var el=document.createElement('span');el.className='dz-note';el.innerHTML=noteArt(Math.floor(Math.random()*3),INK[Math.floor(Math.random()*INK.length)]);
 /* small notes, in a tight plume just above the beak: they rise a little and fade, drifting only slightly.
    The name is layered above them (see .nav-logo in shared/system.css), so one that strays that way passes behind it. */
-var S2=G.size,sz=S2*(.15+Math.random()*.07);el.style.width=el.style.height=sz+'px';el.style.left=((turned?S2*.13:S2*.87)-sz*(turned?.3:.7))+'px';el.style.top=(S2*.44-sz*.7)+'px';box.appendChild(el);
+var S2=G.size,sz=S2*(.15+Math.random()*.07);el.style.width=el.style.height=sz+'px';el.style.left=((turned?S2*.13:S2*.87)-sz*(turned?.3:.7))+'px';el.style.top=(S2*.44-sz*.7)+'px';xw.appendChild(el);
 /* the rise is capped so a note fades out before the top of the toolbar and is never cut off by its edge */
-var room=box.getBoundingClientRect().top-nav.getBoundingClientRect().top+(S2*.44-sz*.7)-sz*.25-3,dx=(Math.random()-.3)*S2*.5*(turned?-1:1),dy=Math.max(4,Math.min(S2*(.3+Math.random()*.22),room)),wv=S2*(.025+Math.random()*.035)*(Math.random()<.5?-1:1),r=(Math.random()-.5)*36;
+var room=home?1e4:box.getBoundingClientRect().top-nav.getBoundingClientRect().top+(S2*.44-sz*.7)-sz*.25-3,dx=(Math.random()-.3)*S2*.5*(turned?-1:1),dy=Math.max(4,Math.min(S2*(.3+Math.random()*.22),room)),wv=S2*(.025+Math.random()*.035)*(Math.random()<.5?-1:1),r=(Math.random()-.5)*36;
 var a=el.animate([{transform:'translate(0,0) scale(.3) rotate(0deg)',opacity:0},{transform:'translate('+f1(dx*.2)+'px,'+f1(-dy*.35+wv)+'px) scale(.9) rotate('+f1(r*.4)+'deg)',opacity:1,offset:.2},
 {transform:'translate('+f1(dx*.55)+'px,'+f1(-dy*.7-wv)+'px) scale(1) rotate('+f1(-r*.5)+'deg)',opacity:1,offset:.6},{transform:'translate('+f1(dx)+'px,'+f1(-dy+wv*.5)+'px) scale(1.05) rotate('+f1(r)+'deg)',opacity:0}],{duration:1100+Math.random()*600,easing:'ease-out',fill:'forwards'});
 var rec={el:el,a:a,fr:[].slice.call(el.querySelectorAll('svg > g > g')),n:0};notes.push(rec);
@@ -2778,10 +2818,14 @@ function hush(){while(notes.length){notes.pop().el.remove();}}
    sheet, repeating, slid sideways forever. (The stylesheet points the bird's fill and its legs' stroke at it.) */
 function wrap(walk,idle){return '<svg class="dz" viewBox="-13 -32 226 226" focusable="false"><defs><linearGradient id="dz-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="226" y2="40" spreadMethod="repeat">'
 +'<stop offset="0" stop-color="#F7C549"/><stop offset=".25" stop-color="#FF8AC8"/><stop offset=".5" stop-color="#FFA36B"/><stop offset=".75" stop-color="#8FE6FF"/><stop offset="1" stop-color="#F7C549"/>'
-+'<animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="-226 -40" dur="9s" repeatCount="indefinite"/></linearGradient></defs>'
-+'<g fill="none" stroke-linecap="round" stroke-linejoin="round"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
++'<animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="-226 -40" dur="9s" repeatCount="indefinite"/></linearGradient>'
+/* the pencil: the line's edge is roughened a little, and fine grain is knocked out of it, as graphite skips on paper */
++'<filter id="dz-pencil" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" result="d"/>'
++'<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="3" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.2 2.55" result="a"/><feComposite in="d" in2="a" operator="in"/></filter></defs>'
++'<g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#dz-pencil)"><g class="dz-fw">'+walk+'</g><g class="dz-fi">'+idle+'</g></g></svg>';}
 function birdSheet(){var a='',c='',i,k;
-for(k=0;k<2;k++)for(i=0;i<PERCH.length;i++){seed=8101+i*23+k*557;c+='<g hidden>'+bird(PERCH[i])+'</g>';}return wrap(a,c);}
+var FLY=[{fly:'up',lean:-8,tail:-4},{fly:'down',lean:-3,tail:3}];for(k=0;k<3;k++)for(i=0;i<2;i++){seed=4401+i*31+k*211;a+='<g hidden>'+sketch(FLY[i])+'</g>';}
+for(k=0;k<2;k++)for(i=0;i<PERCH.length;i++){seed=8101+i*23+k*557;c+='<g hidden>'+sketch(PERCH[i])+'</g>';}return wrap(a,c);}
 /* ── where the bird stands ── */
 /* Its place, size and level are all set in the stylesheet (see "Toolbar songbird" in shared/system.css): it sits inside
    the name's link, in room reserved to the left of the lettering. Nothing here moves the name or the bird, so nothing
@@ -2798,18 +2842,50 @@ function show(el){if(el===shown)return;if(shown)shown.setAttribute('hidden','');
    longer), taking about a quarter of a second to turn. */
 var turned=false,turnT=0;
 function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden&&!inAir()){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';}turnSoon();},3000+Math.random()*5000);}
-/* (The bird stays on its perch at all times; it no longer flies off while the name is showing.) */
-function inAir(){return false;}
-function play(ms){if(loopT)return;turnSoon();loopT=setInterval(function(){if(document.hidden||!fi)return;loopN++;
+/* Where the bird is. While the big name in the hero is showing (the top of the page), the bird is out beside it: to the
+   right of the lettering, standing level with the foot of the letters, hopping from spot to spot (where there is no room
+   to the right - narrow screens - it stands on top of the end of the name instead). Once the page is scrolled on and the
+   name passes to the toolbar, it flies back to its perch at the left of the toolbar; scroll back up and it flies out
+   again. It is one bird throughout: the toolbar's, moved and enlarged with a transform, so it never appears twice. */
+var home=false,placed=false,hopF=.25,hopT=0,hopping=false,hopA=null,heroName=document.querySelector('#hero-brand .hero-name'),heroB=document.getElementById('hero-brand');
+function inAir(){return flying||hopping;}
+function tf(t){return t?'translate('+f1(t.x)+'px,'+f1(t.y)+'px) scale('+(Math.round(t.s*1000)/1000)+')':'translate(0px,0px) scale(1)';}
+function spot(){if(!heroName||!heroName.firstChild)return null;var rg=document.createRange();rg.selectNodeContents(heroName.firstChild);var r=rg.getBoundingClientRect(),pb=box.getBoundingClientRect();if(!r.width||!pb.width)return null;
+var size=Math.max(46,Math.min(132,r.height*.62)),x=r.right+size*.02,room=innerWidth-10-size-x,y;
+if(room>=0){x+=hopF*Math.min(size*1.5,room);y=r.top+r.height*.83-size*.97;}
+else{x=Math.min(r.right,innerWidth-10)-size-hopF*Math.min(size*1.5,r.width*.5);y=r.top+r.height*.24-size*.97;}
+return {x:x-pb.left,y:y-pb.top,s:size/pb.width,px:size};}
+function wantHome(){if(!heroB||document.documentElement.classList.contains('cat-mode'))return false;if(scrollY>2)return false;var o=heroB.style.opacity;return (o===''?1:parseFloat(o))>.5;}
+function faceTo(left){turned=!!left;face.style.transform=turned?'scaleX(-1)':'';}
+function flyTo(t){flying=true;hush();var from=getComputedStyle(xw).transform;if(hopA){hopA.cancel();hopA=null;hopping=false;}var to=tf(t),r0=xw.getBoundingClientRect(),pb=box.getBoundingClientRect(),tx=pb.left+(t?t.x:0);
+faceTo(tx<r0.left);if(flyA)flyA.cancel();
+var lift=Math.min(90,Math.max(26,Math.abs(tx-r0.left)*.18));
+flyA=xw.animate([{transform:from==='none'?tf(null):from,translate:'0 0'},{translate:'0 -'+f1(lift)+'px',offset:.45},{transform:to,translate:'0 0'}],{duration:900,easing:'cubic-bezier(.45,0,.3,1)'});
+xw.style.transform=to;var a=flyA,done=function(){if(flyA!==a)return;flyA=null;flying=false;place();if(!home)faceTo(false);};a.finished.then(done,done);}
+function place(){var w=wantHome(),t=w?spot():null;if(w&&!t)w=false;
+if(!placed){placed=true;home=w;xw.style.transform=tf(t);}
+else if(w!==home){home=w;flyTo(t);}
+else if(!flying&&!hopping)xw.style.transform=tf(t);
+box.classList.toggle('out',home);}
+function hopSoon(){clearTimeout(hopT);hopT=setTimeout(function(){
+if(home&&!flying&&!hopping&&scrollY<=2&&!document.hidden&&box&&!box.hidden){var a0=spot();hopF=Math.random();var t=spot();
+if(a0&&t&&Math.abs(t.x-a0.x)>4){hopping=true;faceTo(t.x<a0.x);var a=xw.animate([{transform:tf(a0),translate:'0 0'},{translate:'0 -'+f1(t.px*.3)+'px',offset:.5},{transform:tf(t),translate:'0 0'}],{duration:360,easing:'cubic-bezier(.4,0,.6,1)'});hopA=a;
+xw.style.transform=tf(t);var done=function(){if(hopA!==a)return;hopA=null;hopping=false;place();};a.finished.then(done,done);}}
+hopSoon();},1100+Math.random()*1700);}
+function play(ms){if(loopT)return;turnSoon();hopSoon();loopT=setInterval(function(){if(document.hidden||!fi)return;loopN++;
+if(flying&&ff.length){show(ff[loopN%ff.length]);return;}
 show(fi[loopN%fi.length]);jitterNotes();if(PERCH[loopN%PERCH.length].sing)whistle();},ms);}
-function hide(){if(loopT){clearInterval(loopT);loopT=0;}clearTimeout(turnT);turnT=0;hush();if(box&&!box.hidden)box.hidden=true;}
+function hide(){if(loopT){clearInterval(loopT);loopT=0;}clearTimeout(turnT);turnT=0;clearTimeout(hopT);hush();if(box&&!box.hidden)box.hidden=true;}
 function update(){tick=false;
 if(calm()){hide();return;}
 if(!box)build();box.hidden=false;G.size=box.getBoundingClientRect().width||50;
 beside=parseFloat(brand.style.opacity||0)>.001?1:0;
+place();
 if(!loopT){show(fi[0]);play(190);}}
 function ask(){if(!tick){tick=true;requestAnimationFrame(update);}}
-addEventListener('scroll',ask,{passive:true});addEventListener('resize',ask,{passive:true});
+addEventListener('scroll',function(){if(box&&!box.hidden&&home&&scrollY>2)place();ask();},{passive:true});addEventListener('resize',ask,{passive:true});addEventListener('load',ask);
+if(heroB&&'MutationObserver' in window)new MutationObserver(ask).observe(heroB,{attributes:true,attributeFilter:['style']});
+new MutationObserver(ask).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 update();
 })();</script>
 <script>/* About card: "Ash Stu" and the tagline, one line each, sized to span the
@@ -2874,28 +2950,43 @@ imgs.forEach(function(im,k){var from=(k-1+n)%n;   // it receives the photo from 
 Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
 return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
 setInterval(turn,5200);})();</script>
-<script>/* About photos: the three trade places around their triangle (top -> lower right -> lower left -> top), at the
-   same pace as the press kit's photos. Each one leaves toward the place it is going and arrives from the place it came
-   from. Only while the section is on screen and the tab is visible; no movement with reduced motion or background
-   effects off. Each frame keeps its own treatment (colour on top, black and white below). */
-(function(){var imgs=[].slice.call(document.querySelectorAll('.bio-card-media img'));if(imgs.length!==3||!imgs[0].animate)return;
-var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),cur=[0,1,2],busy=false,onScreen=false;
-var NEXT=[2,0,1];   /* frame 0 (top) -> frame 2 (lower right) -> frame 1 (lower left) -> frame 0 */
+<script>/* The toolbar's three streaming logos: one of them is always open as its full badge in the site's dark glass, like every other button
+   ("Listen on Apple Music", "Stream now on Spotify", "Watch on YouTube"), and every five seconds they trade places:
+   all three move one place round, the open one closes and the one arriving at the left end opens.
+   Room for the widest badge is set aside once, so nothing else on the toolbar moves when they switch. If the section
+   buttons (normally centred) would be in the way, they sit beside the logos instead; if the toolbar has no room even
+   then (small tablets), the logos stay round and only trade places. The label is decorative (each link already has
+   that name for assistive tech). They switch every five seconds, and hold still while the pointer is on the toolbar or something in it has focus,
+   while the search or a menu is open, and in a hidden tab; none of this on phones or with reduced motion or
+   background effects off. */
+(function(){var as=[].slice.call(document.querySelectorAll('.nav .nav-platforms a.nav-platform'));if(as.length<2)return;
+var nav=document.querySelector('.nav'),box=as[0].parentNode,TXT={apple:'Listen on Apple Music',spotify:'Stream now on Spotify',youtube:'Watch on YouTube'};
+as.forEach(function(a,k){var m=/pt--(\w+)/.exec((a.querySelector('.pt')||{}).className||'');a.dataset.flash=TXT[m&&m[1]]||a.getAttribute('aria-label')||'';a.dataset.brand=m?m[1]:'';a.style.order=k;});
+var ord=as.map(function(_,k){return k;}),can=false,rT=0;
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
-var sec=document.querySelector('.bio-card-media');
-if('IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e.some(function(x){return x.isIntersecting;});if(onScreen)items.forEach(function(it){var p=new Image();p.src=it.src;});}).observe(imgs[0]);else onScreen=true;
-function mid(el){var r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];}
-function turn(){if(busy||still()||!onScreen||document.hidden)return;busy=true;
-var c=imgs.map(mid),old=cur.slice(),left=3;
-var out=imgs.map(function(im,k){var to=NEXT[k],dx=(c[to][0]-c[k][0])*.22,dy=(c[to][1]-c[k][1])*.22;
-var a=im.animate([{translate:'0 0',opacity:1},{translate:dx+'px '+dy+'px',opacity:0}],{duration:150,easing:'cubic-bezier(.55,0,.85,.35)',fill:'forwards'});
-return a.finished.then(function(){return a;},function(){return a;});});
-Promise.all(out).then(function(as){imgs.forEach(function(im,k){var from=NEXT.indexOf(k);cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
-var go=function(){as[k].cancel();var dx=(c[from][0]-c[k][0])*.22,dy=(c[from][1]-c[k][1])*.22;
-var b=im.animate([{translate:dx+'px '+dy+'px',opacity:0},{translate:'0 0',opacity:1}],{duration:190,easing:'cubic-bezier(.15,.7,.25,1)'});
-b.finished.then(function(){if(--left===0)busy=false;},function(){if(--left===0)busy=false;});};
-(im.decode?im.decode():Promise.resolve()).then(go,go);});});}
-setInterval(turn,5200);})();</script>
+function first(){return as[ord.indexOf(0)];}
+function setup(){nav.classList.remove('pf-flow');box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
+if(!as[0].offsetWidth||innerWidth<768)return;
+var h0=nav.offsetHeight,name=nav.querySelector('.nav-logo'),ul=nav.querySelector('.nav-links');
+var ok=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1)return false;if(!ul||!name)return true;var l=ul.getBoundingClientRect();return l.right+8<=box.getBoundingClientRect().left&&l.left>=name.getBoundingClientRect().right+12;};
+var flowOr=function(){if(ok())return true;nav.classList.add('pf-flow');if(ok())return true;nav.classList.remove('pf-flow');return false;};
+as.forEach(function(a){a.classList.add('flash-try');});
+if(!still()){var base=box.getBoundingClientRect().width,small=as[0].getBoundingClientRect().width,big=0,widest=as[0];
+as.forEach(function(a){a.classList.add('flash');var w=a.getBoundingClientRect().width;if(w>big){big=w;widest=a;}a.classList.remove('flash');});
+box.classList.add('pf-wide');box.style.setProperty('min-width',Math.ceil(base-small+big)+'px','important');widest.classList.add('flash');   /* tried with the widest badge really open */
+can=flowOr();widest.classList.remove('flash');
+if(!can){box.classList.remove('pf-wide');box.style.removeProperty('min-width');}}
+if(!can)flowOr();   /* no badge: still make sure the centred section buttons are not under the logos */
+void box.offsetWidth;if(can)first().classList.add('flash');void box.offsetWidth;as.forEach(function(a){a.classList.remove('flash-try');});}
+function turn(){if(document.hidden||still()||!as[0].offsetWidth||nav.matches(':hover')||nav.contains(document.activeElement)||document.querySelector('.k-si.open')||document.querySelector('dialog[open]'))return;
+var was=as.map(function(a){return a.getBoundingClientRect().left;}),old=first();
+ord.unshift(ord.pop());as.forEach(function(a,k){a.style.order=ord[k];});
+if(can){old.classList.remove('flash');first().classList.add('flash');}
+as.forEach(function(a,k){var d=was[k]-a.getBoundingClientRect().left;if(d&&a.animate)a.animate([{translate:d+'px 0'},{translate:'0 0'}],{duration:440,easing:'cubic-bezier(.3,.8,.3,1)'});});}
+addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(setup,200);},{passive:true});
+new MutationObserver(function(){if(still()===can)setup();}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setup);
+setup();setTimeout(setup,1500);setInterval(turn,5000);})();</script>
 <script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the
    current section changes, bring its button into view inside the rail. */
 (function(){var r=document.querySelector('.nav-rail');if(!r)return;
