@@ -204,6 +204,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
     </div>
   </a>
+  <!-- The rail: the four section buttons and the three streaming logos. On wider screens it is not a box at all
+       (its children sit in the toolbar as before); on phones it is one row you can slide sideways. -->
+  <div class="nav-rail">
   <ul class="nav-links" role="list">
     <li><a href="#epk">Press Kit</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -214,6 +217,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Apple Music" title="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Spotify" title="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Watch on YouTube" title="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span></a>
+  </div>
   </div>
   <div class="k-tools">
     <button type="button" class="k-tool k-search-btn" aria-label="Search songs, videos, sections and actions" aria-haspopup="dialog">
@@ -2864,6 +2868,14 @@ imgs.forEach(function(im,k){var from=(k-1+n)%n;   // it receives the photo from 
 Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
 return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
 setInterval(turn,5200);})();</script>
+<script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the
+   current section changes, bring its button into view inside the rail. */
+(function(){var r=document.querySelector('.nav-rail');if(!r)return;
+function edges(){var m=r.scrollWidth-r.clientWidth;r.classList.toggle('more-right',m>4&&r.scrollLeft<m-4);r.classList.toggle('more-left',m>4&&r.scrollLeft>4);}
+r.addEventListener('scroll',edges,{passive:true});addEventListener('resize',edges,{passive:true});edges();setTimeout(edges,600);
+var ul=r.querySelector('.nav-links');if(ul&&'MutationObserver' in window)new MutationObserver(function(){var a=ul.querySelector('a[aria-current]');if(!a||r.scrollWidth<=r.clientWidth+4)return;
+var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left+16||ar.right>rr.right-40)r.scrollLeft+=ar.left-rr.left-16;}).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
+})();</script>
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
