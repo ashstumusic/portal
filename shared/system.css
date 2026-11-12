@@ -2441,6 +2441,32 @@ html { overscroll-behavior-y: none; }
 }
 @media (max-width: 389px) { :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 5.5px !important; } }
 @media (max-width: 359px) { :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 8px !important; } }
+/* The rail. On wider screens .nav-rail is transparent to layout (display: contents): the section buttons and the
+   streaming logos sit in the toolbar exactly as before.
+   On phones it is the toolbar's second row and a slider: the four section buttons, then the three streaming logos,
+   in one line that slides sideways under the finger (or with a trackpad / arrow keys). Buttons keep their natural
+   width instead of being squeezed to fit; whatever does not fit is a swipe away, and the row fades out at the edge
+   where there is more to see. The first row is now just the bird, the name and the menu button. */
+.nav-rail { display: contents; }
+@media (max-width: 767px) {
+  .nav .nav-rail {
+    display: flex; align-items: center; gap: 6px; order: 10; flex: 0 0 calc(100% + 32px); width: calc(100% + 32px); margin-inline: -16px; padding-inline: 16px; box-sizing: border-box;
+    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; scroll-padding-inline: 16px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .nav .nav-rail::-webkit-scrollbar { display: none; }
+  .nav .nav-rail.more-right { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
+  .nav .nav-rail.more-left { -webkit-mask-image: linear-gradient(270deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(270deg, #000 calc(100% - 40px), transparent); }
+  .nav .nav-rail.more-left.more-right { -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent); }
+  :root .nav .nav-rail .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: 0; flex: 0 0 auto !important; width: auto !important; gap: 6px !important; }
+  :root .nav .nav-rail .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) > li:not(.nav-glider) { flex: 0 0 auto; scroll-snap-align: start; }
+  :root .nav .nav-rail .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) a { flex: 0 0 auto; padding-inline: 16px !important; font-size: 15px !important; }
+  :root.psy .nav .nav-rail .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 0 0 auto; margin-left: 4px !important; gap: 2px !important; }
+  :root.psy .nav .nav-rail .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 28px; width: 40px; height: 32px; padding: 2px 6px !important; scroll-snap-align: start; }
+  :root.psy .nav .nav-rail .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 28px !important; height: 28px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; }
+  @media (prefers-reduced-motion: no-preference) { .nav .nav-rail { scroll-behavior: smooth; } }
+}
 .k-menu-links { display: none !important; }
 
 /* ══ Button system ═════════════════════════════════════════════════════
