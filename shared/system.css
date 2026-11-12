@@ -2661,9 +2661,18 @@ html { overscroll-behavior-y: none; }
 @media (prefers-reduced-transparency: reduce) { :root.psy .k-si-input { background: #23262d; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 /* room for the widest badge is reserved (min-width set by the page); the open badge is at its left end, next to the section buttons */
 :root.psy .nav .nav-platforms.pf-wide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { justify-content: flex-start !important; }
+/* the logos' place: the open room on the left of the toolbar, straight after the name (class set by the page when it fits) */
+:root.psy .nav.pf-left .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: -2; }
+:root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: -1; margin-left: 16px !important; margin-right: 0 !important; }
+:root.psy .nav.pf-left:not(.pf-flow) .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; }
+/* ...right up against the section buttons: the round logos nearest them, the open badge reaching out to the left */
+:root.psy .nav.pf-left .nav-platforms.pf-wide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { justify-content: flex-end !important; }
+:root.psy .nav.pf-left.pf-flow .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; }
+:root.psy .nav.pf-left.pf-flow .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 12px !important; }
+
 /* when the centred section buttons would be under the badge, they sit in the row beside the logos instead */
 :root.psy .nav.pf-flow .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative !important; left: auto !important; top: auto !important; transform: none !important; translate: none !important; margin: 0 0 0 auto !important; }
-:root.psy .nav.pf-flow .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 12px !important; }
+:root.psy .nav.pf-flow:not(.pf-left) .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 12px !important; }
 /* the unseen try-out, to see whether the badge fits: no easing, no paint */
 .nav .nav-platform.flash-try, .nav .nav-platform.flash-try::before { transition: none !important; }
 @media (prefers-reduced-motion: reduce), (forced-colors: active), (max-width: 767px) { .nav .nav-platform::before { display: none; } }
@@ -2671,6 +2680,23 @@ html { overscroll-behavior-y: none; }
 /* About: each of the three photos has all four corners rounded (they used to share the card's outer corners only) */
 :root.psy .bio-card-media img:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 16px !important; }
 :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 0 !important; overflow: visible !important; }
+
+/* Release download (makes a ZIP of the release): an icon button of the Button system - 40px square, dark glass,
+   gold on hover/focus. While it is working the arrow gives way to the percentage done. */
+:root.psy .rel-btn.rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 0 0 40px !important; width: 40px !important; min-width: 40px; height: 40px; padding: 0 !important; justify-content: center; gap: 0; cursor: pointer; font: inherit; }
+:root.psy .rel-dl .rel-dl-pct { font: 700 11.5px/1 var(--font-ui, system-ui, sans-serif); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+:root.psy .rel-dl .rel-dl-pct:empty { display: none; }
+:root.psy .rel-dl.working .rel-dl-ico { display: none; }
+:root.psy .rel-dl.working { cursor: progress; }
+@media (pointer: coarse) { :root.psy .rel-btn.rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-basis: 44px !important; width: 44px !important; height: 44px; } }
+
+/* Toolbar streaming logos, on hover and keyboard focus: the logo becomes a black cut-out on gold. Its coloured
+   body turns black and its detail (the note, the waves, the play mark) becomes a hole the gold shows through.
+   (Filter #pt-cut: whatever is coloured becomes opaque black, whatever is white or black becomes clear.)
+   The open badge is already gold then; a round logo gets a gold disc behind it. */
+:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { filter: url(#pt-cut) !important; position: relative; z-index: 1; outline: 0 !important; }
+:root.psy .nav .nav-platform:not(.flash):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { opacity: 1; background: var(--gold); border-color: var(--gold); width: calc(var(--pt) + 6px); height: calc(var(--pt) + 6px); }
+:root.psy .nav .nav-platform:not(.flash):focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { box-shadow: 0 0 0 2px #14161c, 0 0 0 5px #fff; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

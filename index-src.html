@@ -233,7 +233,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </nav>
 <!-- Hover filters for the streaming logos (pt-gold in use): the coloured shape turns
      solid gold (pt-mono: black); white details stay white and cut-outs stay transparent. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter><filter id="pt-gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".969 .969 .969 .969 .969 .969 .969 .98 1 1"/><feFuncG type="table" tableValues=".773 .773 .773 .773 .773 .773 .773 .88 1 1"/><feFuncB type="table" tableValues=".286 .286 .286 .286 .286 .286 .286 .62 1 1"/></feComponentTransfer></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="pt-cut" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 -1 0 0 0  -1 1 0 0 0  0 0 0 0 0  0 0 0 1 0"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  4 4 0 0 0"/></filter><filter id="pt-mono" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncG type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/><feFuncB type="table" tableValues="0 0 0 0 0 0 0 .5 1 1"/></feComponentTransfer></filter><filter id="pt-gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".333 .333 .333 0 0  .333 .333 .333 0 0  .333 .333 .333 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".969 .969 .969 .969 .969 .969 .969 .98 1 1"/><feFuncG type="table" tableValues=".773 .773 .773 .773 .773 .773 .773 .88 1 1"/><feFuncB type="table" tableValues=".286 .286 .286 .286 .286 .286 .286 .62 1 1"/></feComponentTransfer></filter></svg>
 <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile menu" aria-hidden="true">
   <div class="drawer-platforms">
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
@@ -2022,6 +2022,9 @@ var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 if (!btns || rel.soon) btns += '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>';
+// Download: one press gathers the release's songs into a ZIP, made in the visitor's browser (see "Album ZIP" below).
+if (rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song)' : ' songs)');
+btns += '<button type="button" class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="rel-dl-pct" aria-hidden="true"></span></button>'; }
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
@@ -2837,7 +2840,7 @@ box.innerHTML='<span class="dz-x"><span class="dz-face">'+birdSheet()+'</span></
 fi=[].slice.call(face.querySelectorAll('.dz-fi > g'));ff=[].slice.call(face.querySelectorAll('.dz-fw > g'));
 /* a click or tap on the bird turns him round there and then, and - since he is inside the name's link - also does what
    a click on the name does (back to the top). His own random turning starts counting again from that moment. */
-box.addEventListener('click',function(e){if(mode==='roam'&&window.__catWall){window.__catWall(e);return;}turned=!turned;face.style.transform=turned?'scaleX(-1)':'';if(loopT)turnSoon();});}
+box.addEventListener('click',function(e){if(mode==='roam'&&window.__catWall){caught=true;window.__catWall(e);place();return;}turned=!turned;face.style.transform=turned?'scaleX(-1)':'';if(loopT)turnSoon();});}
 function show(el){if(el===shown)return;if(shown)shown.setAttribute('hidden','');el.removeAttribute('hidden');shown=el;}
 /* Every so often it turns to face the other way: after a random wait of 3 to 8 seconds each time (never sooner, never
    longer), taking about a quarter of a second to turn. */
@@ -2855,7 +2858,7 @@ function tf(t){return t?'translate('+f1(t.x)+'px,'+f1(t.y)+'px) scale('+(Math.ro
    column by column; every crest of that edge (the point of the A, the top of each s, the tall stem and the shoulder of
    the h, the top of the t, both arms of the u...) becomes a place to stand, kept as a position within the lettering
    (in ems from its left end and its baseline) so it holds at any size. The bird hops from crest to crest. */
-var plat=null,hopI=-1;
+var plat=null,hopI=-1,caught=false;
 function mapName(){plat=null;if(!heroName||!heroName.firstChild||heroName.firstChild.nodeType!==3)return;
 var node=heroName.firstChild,txt=node.nodeValue,cs=getComputedStyle(heroName),fs=parseFloat(cs.fontSize);if(!fs)return;
 var rg=document.createRange();rg.selectNodeContents(node);var r0=rg.getBoundingClientRect();if(!r0.width)return;
@@ -2876,22 +2879,19 @@ var fs=parseFloat(getComputedStyle(heroName).fontSize)||0;if(!plat||Math.abs(pla
 if(plat){if(hopI<0||hopI>=plat.spots.length)hopI=plat.spots.length-1;var sp=plat.spots[hopI],size=Math.max(34,Math.min(72,fs*.4));
 return {x:r.left+sp.ex*fs-size*(turned?.39:.61)-pb.left,y:r.top+(plat.baseEm+sp.ey)*fs-size*.955-pb.top,s:size/pb.width,px:size};}
 var size2=Math.max(46,Math.min(132,r.height*.62));return {x:Math.min(r.right,innerWidth-10-size2)-pb.left,y:r.top+r.height*.83-size2*.97-pb.top,s:size2/pb.width,px:size2};}
-function wantHome(){if(!heroB||document.documentElement.classList.contains('cat-mode'))return false;if(scrollY>2)return false;var o=heroB.style.opacity;return (o===''?1:parseFloat(o))>.5;}
+function wantHome(){if(caught||!heroB||document.documentElement.classList.contains('cat-mode'))return false;if(scrollY>2)return false;var o=heroB.style.opacity;return (o===''?1:parseFloat(o))>.5;}
 function faceTo(left){turned=!!left;face.style.transform=turned?'scaleX(-1)':'';}
-function flyTo(t,dur,low){flying=true;tgt=t;hush();var from=getComputedStyle(xw).transform;if(hopA){hopA.cancel();hopA=null;hopping=false;}var to=tf(t),r0=xw.getBoundingClientRect(),pb=box.getBoundingClientRect(),tx=pb.left+(t?t.x:0);
+function flyTo(t,dur,low){flying=true;tgt=t;hush();var cst=getComputedStyle(xw),from=cst.transform,lift0=cst.translate&&cst.translate!=='none'?cst.translate.split(' '):null;if(from==='none')from=tf(null);if(lift0)from='translate('+lift0[0]+','+(lift0[1]||'0px')+') '+from;if(hopA){hopA.cancel();hopA=null;hopping=false;}var to=tf(t),r0=xw.getBoundingClientRect(),pb=box.getBoundingClientRect(),tx=pb.left+(t?t.x:0);
 faceTo(tx<r0.left);if(flyA)flyA.cancel();
 var lift=low?14+Math.random()*22:Math.min(90,Math.max(26,Math.abs(tx-r0.left)*.18));
-flyA=xw.animate([{transform:from==='none'?tf(null):from,translate:'0 0'},{translate:'0 -'+f1(lift)+'px',offset:.45},{transform:to,translate:'0 0'}],{duration:dur||900,easing:'cubic-bezier(.45,0,.3,1)'});
+flyA=xw.animate([{transform:from,translate:'0 0'},{translate:'0 -'+f1(lift)+'px',offset:.45},{transform:to,translate:'0 0'}],{duration:dur||900,easing:'cubic-bezier(.45,0,.3,1)'});
 xw.style.transform=to;var a=flyA,done=function(){if(flyA!==a)return;flyA=null;flying=false;place();if(mode==='perch')faceTo(false);else if(mode==='roam'){clearTimeout(roamT);roamT=setTimeout(roamNext,250+Math.random()*900);}};a.finished.then(done,done);}
-/* About: the bird is on the wing, flying from place to place anywhere on the screen - except over the three photos.
-   A place is only chosen if the bird would be clear of every photo and all of the wording there and on the way there; and if scrolling
-   brings a photo under where it is (or is heading), it sets off somewhere else at once. */
-/* what it must keep off: the three photos, and every piece of wording in the section (each measured as the words themselves, not their boxes) */
-function shots(){var out=[].slice.call(document.querySelectorAll('.bio-card-media img')).map(function(i){return i.getBoundingClientRect();});
-[].forEach.call(document.querySelectorAll('#about h2, #about .bio-name, #about .bio-tagline, #about .bio-desc, #about .bio-text'),function(el){var rg=document.createRange();rg.selectNodeContents(el);[].push.apply(out,[].slice.call(rg.getClientRects()));});
-return out.filter(function(r){return r.width>2&&r.height>2&&r.bottom>0&&r.top<innerHeight;});}
+/* About: the bird is on the wing, flying from place to place anywhere inside the window (below the toolbar, above
+   the player), over photos and words alike. */
+/* nothing is off limits any more: it may fly over the photos and the words - it only has to stay inside the window */
+function shots(){return [];}
 function over(x,y,sz,rs){for(var i=0;i<rs.length;i++){var r=rs[i];if(x<r.right+12&&x+sz>r.left-12&&y<r.bottom+12&&y+sz>r.top-12)return true;}return false;}
-function wantRoam(){return !!aboutSec&&aboutSec.getBoundingClientRect().top<innerHeight*.55;}
+function wantRoam(){return !caught&&!!aboutSec&&aboutSec.getBoundingClientRect().top<innerHeight*.55;}
 function roamNext(){clearTimeout(roamT);if(mode!=='roam'||!box||box.hidden)return;var pb=box.getBoundingClientRect(),cur=xw.getBoundingClientRect(),rs=shots(),sz=Math.max(52,Math.min(84,innerWidth*.07)),top=nav.getBoundingClientRect().bottom+6,best=null;
 for(var k=0;k<40&&!best;k++){var x=8+Math.random()*(innerWidth-sz-16),y=top+Math.random()*Math.max(10,innerHeight-top-sz-96);if(over(x,y,sz,rs))continue;
 if(k<30){var hit=false;for(var q=1;q<6;q++){if(over(cur.left+(x-cur.left)*q/6,cur.top+(y-cur.top)*q/6,sz,rs)){hit=true;break;}}if(hit)continue;if(Math.hypot(x-cur.left,y-cur.top)<innerWidth*.12)continue;}
@@ -2992,7 +2992,7 @@ return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[
 setInterval(turn,5200);})();</script>
 <script>/* The toolbar's three streaming logos: one of them is always open as its full badge in the site's dark glass, like every other button
    ("Listen on Apple Music", "Stream now on Spotify", "Watch on YouTube"), and every five seconds they trade places:
-   all three move one place round, the open one closes and the one arriving at the left end opens.
+   all three move one place round, the open one closes and the one arriving at the right-hand end opens.
    Room for the widest badge is set aside once, so nothing else on the toolbar moves when they switch. If the section
    buttons (normally centred) would be in the way, they sit beside the logos instead; if the toolbar has no room even
    then (small tablets), the logos stay round and only trade places. The label is decorative (each link already has
@@ -3004,16 +3004,20 @@ var nav=document.querySelector('.nav'),box=as[0].parentNode,TXT={apple:'Listen o
 as.forEach(function(a,k){var m=/pt--(\w+)/.exec((a.querySelector('.pt')||{}).className||'');a.dataset.flash=TXT[m&&m[1]]||a.getAttribute('aria-label')||'';a.dataset.brand=m?m[1]:'';a.style.order=k;});
 var ord=as.map(function(_,k){return k;}),can=false,rT=0;
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
-function first(){return as[ord.indexOf(0)];}
+function first(){return as[ord.indexOf(as.length-1)];}   /* the open badge is the one at the right-hand end; the round logos rest to its left */
 var tools=nav.querySelector('.k-tools');
-/* the logos sit directly to the right of the section buttons; the spare room on the toolbar is between them and the search */
+/* (fallback when there is no room on the left) the logos sit directly to the right of the section buttons */
 function beside(on){box.style.removeProperty('margin-left');if(tools)tools.style.removeProperty('margin-left');if(!on)return;var ul=nav.querySelector('.nav-links');if(!ul||!tools)return;
 tools.style.setProperty('margin-left','auto','important');box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().right+12-box.getBoundingClientRect().left;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');}
-function setup(){nav.classList.remove('pf-flow');beside(false);box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
+function setup(){nav.classList.remove('pf-flow','pf-left');beside(false);box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
 if(!as[0].offsetWidth||innerWidth<768)return;
 var h0=nav.offsetHeight,name=nav.querySelector('.nav-logo'),ul=nav.querySelector('.nav-links');
 var ok=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1)return false;if(!ul||!name)return true;var l=ul.getBoundingClientRect();return l.right+8<=box.getBoundingClientRect().left&&l.left>=name.getBoundingClientRect().right+12;};
-var flowOr=function(){beside(true);if(ok()&&(!tools||box.getBoundingClientRect().right+8<=tools.getBoundingClientRect().left))return true;beside(false);if(ok())return true;nav.classList.add('pf-flow');if(ok())return true;nav.classList.remove('pf-flow');return false;};
+/* first choice: the logos stand in the open room on the left, between the name and the section buttons... */
+var okL=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1||!ul||!name)return false;var l=ul.getBoundingClientRect(),bx=box.getBoundingClientRect();return bx.right+8<=l.left&&bx.left>=name.getBoundingClientRect().right+4&&(!tools||l.right+8<=tools.getBoundingClientRect().left);};
+/* ...pushed right up against the section buttons (12px from the first of them) */
+var hug=function(){box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().left-12-box.getBoundingClientRect().right;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');};
+var flowOr=function(){beside(false);nav.classList.add('pf-left');if(ul)hug();if(okL())return true;box.style.removeProperty('margin-left');nav.classList.add('pf-flow');if(okL())return true;nav.classList.remove('pf-flow','pf-left');beside(true);if(ok()&&(!tools||box.getBoundingClientRect().right+8<=tools.getBoundingClientRect().left))return true;beside(false);if(ok())return true;nav.classList.add('pf-flow');if(ok())return true;nav.classList.remove('pf-flow');return false;};
 as.forEach(function(a){a.classList.add('flash-try');});
 if(!still()){var base=box.getBoundingClientRect().width,small=as[0].getBoundingClientRect().width,big=0,widest=as[0];
 as.forEach(function(a){a.classList.add('flash');var w=a.getBoundingClientRect().width;if(w>big){big=w;widest=a;}a.classList.remove('flash');});
@@ -3031,6 +3035,45 @@ addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(setup,200);}
 new MutationObserver(function(){if(still()===can)setup();}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setup);
 setup();setTimeout(setup,1500);setInterval(turn,5000);})();</script>
+<script>/* Album ZIP. The site does not keep a ZIP of each release (they are too big to store alongside the songs), so
+   the Download button on a release makes one on the spot, in the visitor's own browser: it fetches that release's
+   MP3s (the same files the player uses), plus the cover and the lyrics sheet when there is one, packs them into a
+   standard ZIP (stored, not compressed - MP3s do not shrink) and hands it over as "<Release> - Ash Stu.zip".
+   While it works the button shows how far along it is and says so to screen readers; it cannot be started twice;
+   if anything fails it says so and goes back to how it was. */
+(function(){
+var T=null;function crcTable(){if(T)return T;T=new Uint32Array(256);for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;T[n]=c>>>0;}return T;}
+function crc32(u8){var t=crcTable(),c=0xFFFFFFFF;for(var i=0,l=u8.length;i<l;i++)c=t[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function say(m){if(window.kinetic&&window.kinetic.announce)window.kinetic.announce(m);}
+function makeZip(files){   /* files: [{name, data: Uint8Array}] -> Blob */
+var enc=new TextEncoder(),parts=[],central=[],off=0,d=new Date(),time=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),date=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+files.forEach(function(f){var nm=enc.encode(f.name),crc=crc32(f.data),n=f.data.length;
+var h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint16(10,time,true);h.setUint16(12,date,true);h.setUint32(14,crc,true);h.setUint32(18,n,true);h.setUint32(22,n,true);h.setUint16(26,nm.length,true);h.setUint16(28,0,true);
+parts.push(h.buffer,nm,f.data);
+var c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,0,true);c.setUint16(12,time,true);c.setUint16(14,date,true);c.setUint32(16,crc,true);c.setUint32(20,n,true);c.setUint32(24,n,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+central.push(c.buffer,nm);off+=30+nm.length+n;});
+var cs=0;central.forEach(function(x){cs+=x.byteLength;});
+var e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+return new Blob(parts.concat(central,[e.buffer]),{type:'application/zip'});}
+function safe(n){return String(n).replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim();}
+function get(url){return fetch(url.split('/').map(encodeURIComponent).join('/')).then(function(r){if(!r.ok)throw new Error(r.status);return r.arrayBuffer();}).then(function(b){return new Uint8Array(b);});}
+function run(btn){var rel=(window.RELEASE_LIST||[])[+btn.dataset.rel];if(!rel||!rel.tracks||!rel.tracks.length||btn.getAttribute('aria-busy')==='true')return;
+var label=btn.getAttribute('aria-label'),pct=btn.querySelector('.rel-dl-pct'),folder=safe(rel.name+' - Ash Stu'),files=new Array(rel.tracks.length),done=0,total=rel.tracks.length;
+btn.setAttribute('aria-busy','true');btn.setAttribute('aria-disabled','true');btn.classList.add('working');if(pct)pct.textContent='0%';say('Preparing '+rel.name+' for download.');
+var show=function(){var p=Math.round(done/total*100);if(pct)pct.textContent=p+'%';btn.setAttribute('aria-label','Preparing '+rel.name+': '+p+' percent');};
+var end=function(msg){btn.removeAttribute('aria-busy');btn.removeAttribute('aria-disabled');btn.classList.remove('working');if(pct)pct.textContent='';btn.setAttribute('aria-label',label);if(msg)say(msg);};
+/* three songs at a time */
+var next=0;function worker(){if(next>=total)return Promise.resolve();var i=next++,t=rel.tracks[i];return get(t.file).then(function(u8){files[i]={name:folder+'/'+safe(t.file.split('/').pop()),data:u8};done++;show();return worker();});}
+Promise.all([worker(),worker(),worker()]).then(function(){
+var dir=rel.tracks[0].file.split('/').slice(0,-1).join('/'),extras=[];
+if(rel.art)extras.push(get(rel.art).then(function(u8){files.push({name:folder+'/cover.'+(rel.art.split('.').pop()||'webp'),data:u8});},function(){}));
+extras.push(get(dir+'/lyrics.txt').then(function(u8){files.push({name:folder+'/lyrics.txt',data:u8});},function(){}));
+return Promise.all(extras);}).then(function(){
+var blob=makeZip(files),a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=folder+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},60000);
+end(rel.name+' is downloading: '+total+(total===1?' song':' songs')+', '+Math.round(blob.size/1048576)+' megabytes.');
+}).catch(function(){end("Couldn't prepare "+rel.name+". Check your connection and try again.");});}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(b){e.preventDefault();e.stopPropagation();run(b);}},true);
+})();</script>
 <script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the
    current section changes, bring its button into view inside the rail. */
 (function(){var r=document.querySelector('.nav-rail');if(!r)return;
