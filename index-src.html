@@ -200,7 +200,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <header>
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu, back to top">
-    <!-- Shown in the name's place whenever the name is away (top of the page, and in About where the big name is on show): a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
+    <!-- Shown in the name's place when the name is away in About (where the big name is on show), never in the home section: a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
     <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg></span>
     <div class="hero-brand">
       <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
@@ -580,7 +580,7 @@ const h = heroH;
 // Top: the hero's name fades out as the toolbar's fades in.
 // (While the cat wall is up, the name is always the toolbar's: the big one steps out of the cats' way.)
 const heroOut = document.documentElement.classList.contains('cat-mode') ? 1 : Math.min(1, Math.max(0, (scrollY - h * 0.27) / (h * 0.2)));   /* starts a little later than it used to (was 0.15) */
-const navIn = heroOut;
+const navIn = Math.min(1, Math.max(0, (heroOut - .65) / .35));   /* the toolbar's name comes and goes over a third of the stretch the big name takes: scrolling up, it is gone quickly */
 // Bottom: as the About card's "Ash Stu" rises into view, the toolbar's
 // fades out while the About one fades in (measured from the bottom of the
 // screen, same fade length as at the top). At the very bottom the About
@@ -589,12 +589,14 @@ let navOut = 0, aboutIn = 1;
 if (aboutName) {
 const rise = innerHeight - aboutName.getBoundingClientRect().top;   /* how far it has come up into view */
 const atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
-navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.2)));
-aboutIn = navOut;
+aboutIn = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.2)));
+navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.07)));   /* the toolbar's name fades away about three times faster than the About name fades in */
 }
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
-if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; if (navHome) { navHome.style.opacity = 1 - navShow; navHome.parentNode.classList.toggle('home-on', navShow < .5); } _lastNavIn = navShow; }   /* the Home button takes the name's place as the name fades, and hands it back */
+if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; _lastNavIn = navShow; }
+if (navHome) { var homeOn = navShow <= .02 && navIn >= .98;   /* not in the home section (you are already home there): only where the name has given way further down, in About */
+ if (homeOn !== navHome._on) { navHome._on = homeOn; navHome.style.opacity = homeOn ? 1 : 0; navHome.parentNode.classList.toggle('home-on', homeOn); } }   /* checked on every scroll, not only when the name's own fade changes: jumping from About straight to the top leaves the name hidden throughout */   /* the Home button takes the name's place only once the name has gone completely, and leaves the moment the name starts to return: the two are never on top of each other (they used to cross-fade with the scroll, so stopping part-way showed the button over half-faded lettering) */
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
@@ -1879,7 +1881,7 @@ var open = inner.parentNode.style.maxHeight && inner.parentNode.style.maxHeight 
 var cur = inner.querySelector('.rel-lyric-line.is-current');
 var want = null;
 if (open && inner.dataset.file === file && npAudio.src) {
-var t = npAudio.currentTime + LYRIC_LEAD;   // exactly when the line is sung, like the full-screen lyrics
+var t = npAudio.currentTime;   // exactly when the line is sung, like the full-screen lyrics
 inner.querySelectorAll('.rel-lyric-line[data-t]').forEach(function(sp) { if (parseFloat(sp.dataset.t) <= t) want = sp; });
 live = true;
 }
