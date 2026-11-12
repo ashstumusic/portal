@@ -389,7 +389,7 @@
     const id = 'k-si-list-' + (++siN), flow = !!(opt && opt.flow);
     host.innerHTML = '<svg class="k-si-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
       + '<input class="k-si-input" type="text" inputmode="search" enterkeyhint="search" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="' + id + '" aria-label="Search songs, lyrics, albums, videos, sections, streaming services and settings" placeholder="Search songs, lyrics, videos" autocomplete="off" autocapitalize="off" spellcheck="false">'
-      + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" hidden></ul>';
+      + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" tabindex="-1" hidden></ul>';
     const inp = $('.k-si-input', host), ul = $('.k-si-list', host);
     let items = [], lyrics = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
@@ -458,7 +458,13 @@
     palette.open = false;
     syncMenuBtns(false);
     if (restore && opener?.isConnected) opener.focus();
+    // After a finger closed it, the button would keep its focus colour (gold) until something else was tapped: let go of it.
+    // (Keyboard and mouse keep focus on the button, as they should.)
+    if (lastTouch && opener?.isConnected) opener.blur();
   }
+  let lastTouch = false;
+  addEventListener('pointerdown', (e) => { lastTouch = e.pointerType === 'touch'; }, { capture: true, passive: true });
+  addEventListener('keydown', () => { lastTouch = false; }, { capture: true, passive: true });
   input.addEventListener('input', () => { active = 0; render(); });
   input.addEventListener('keydown', (e) => {
     const map = { ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: shown.length - 1, PageDown: active + 5, PageUp: active - 5 };
