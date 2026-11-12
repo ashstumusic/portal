@@ -2640,10 +2640,11 @@ var tools=nav.querySelector('.k-tools');
 /* (fallback when there is no room on the left) the logos sit directly to the right of the section buttons */
 function beside(on){box.style.removeProperty('margin-left');box.style.removeProperty('width');if(tools)tools.style.removeProperty('margin-left');if(!on)return;var ul=nav.querySelector('.nav-links');if(!ul||!tools)return;
 tools.style.setProperty('margin-left','auto','important');box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().right+12-box.getBoundingClientRect().left;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');}
-function setup(){nav.style.setProperty('--name-gone','0');nav.style.setProperty('--name-shift','0px');setup0();
+function setup(){box.style.setProperty('transition','none','important');box.style.setProperty('translate','none','important');setup0();   /* measured with the logos in their resting place, and put back without any movement */
 /* how far the logos travel to sit beside the Home mark while the name is hidden (measured with them in their resting place) */
 var hm=nav.querySelector('.nav-home');if(hm&&as[0].offsetWidth&&nav.classList.contains('pf-left')&&!nav.classList.contains('pf-flow')){var d=as.reduce(function(m,a){return Math.min(m,a.getBoundingClientRect().left);},1e9)-(hm.getBoundingClientRect().right+10);nav.style.setProperty('--name-shift',Math.max(0,Math.round(d))+'px');}
-nav._goneSet=nav._gone||'1';nav.style.setProperty('--name-gone',nav._goneSet);}
+else nav.style.setProperty('--name-shift','0px');
+box.style.removeProperty('translate');void box.offsetWidth;box.style.removeProperty('transition');}
 function setup0(){nav.classList.remove('pf-flow','pf-left');beside(false);box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
 if(!as[0].offsetWidth||innerWidth<768)return;
 var h0=nav.offsetHeight,name=nav.querySelector('.nav-logo'),ul=nav.querySelector('.nav-links');
