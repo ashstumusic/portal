@@ -2406,6 +2406,41 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 20px !important; height: 20px !important; }
   :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) a { font-size: 13px !important; }
 }
+/* Phones: the three streaming logos are easier to hit - bigger logos, and each one's tappable area is a full 44px
+   tall and as wide as the row allows (the padding around a logo is part of its button), with no dead space between
+   them. They still sit between the name and the menu button, inside the same margins. */
+@media (max-width: 767px) {
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0 !important; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 32px; box-sizing: border-box; width: 44px; height: 44px; border-radius: 10px;   /* a square-ish hit area: the corners count too */ padding: 6px !important; margin: 0 !important; display: grid !important; place-items: center; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 32px !important; height: 32px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 6px; }
+}
+@media (max-width: 389px) {
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 27px; width: 34px; padding: 8.5px 3.5px !important; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 27px !important; height: 27px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 4px; }
+}
+@media (max-width: 359px) {
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 22px; border-radius: 8px; width: 27px; padding: 11px 2.5px !important; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 22px !important; height: 22px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 3px; }
+}
+/* Phones: the two-row toolbar kept as low as it can go while everything stays comfortably tappable - 4px above, a
+   38px first row, 4px between, a 32px second row, 4px below and a 1px edge: 83px in all (it was 105px). The logos' tappable areas
+   keep their full width and are 38px tall; the menu button is 36px. */
+@media (max-width: 767px) {
+  :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 4px 16px 4px !important; row-gap: 4px !important; }
+  :root.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 38px !important; height: 38px; padding-block: 0 !important; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: 38px; padding-block: 3px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) a { height: 32px !important; min-height: 32px !important; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) a::after { height: 32px !important; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .nav-glider { height: 32px !important; }
+  :root.psy .hero-split:not(#\#):not(#\#):not(#\#) { padding-top: 83px !important; }
+  [id] { scroll-margin-top: 91px; }
+}
+@media (max-width: 389px) { :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 5.5px !important; } }
+@media (max-width: 359px) { :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 8px !important; } }
 .k-menu-links { display: none !important; }
 
 /* ══ Button system ═════════════════════════════════════════════════════
