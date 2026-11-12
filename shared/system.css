@@ -2698,6 +2698,25 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav .nav-platform:not(.flash):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { opacity: 1; background: var(--gold); border-color: var(--gold); width: calc(var(--pt) + 6px); height: calc(var(--pt) + 6px); }
 :root.psy .nav .nav-platform:not(.flash):focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { box-shadow: 0 0 0 2px #14161c, 0 0 0 5px #fff; }
 
+/* Featured release: its two links carry the full wording ("Listen on Apple Music", "Stream now on Spotify"), which
+   does not fit side by side in the panel - so they stack, one above the other, both the same width. */
+:root.psy .featured-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 8px !important; width: max-content !important; max-width: none !important; min-width: 0 !important; margin-inline: 50% 0 !important; translate: -50% 0; align-self: flex-start !important; box-sizing: border-box; padding: 0 !important; }   /* centred on the panel even where the wording is wider than the column it sits in */
+:root.psy .featured-btns > .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; max-width: none !important; flex: none !important; justify-content: center; white-space: nowrap; box-sizing: border-box; margin: 0 !important; overflow: visible !important; }
+
+/* ...and they are set out as the services' own badges are: the logo, then two lines - a small "Listen on" /
+   "Stream now on" over the service's name in large type. Still the site's button (dark glass, squircle, gold on
+   hover and focus), on the 8px grid: 64px tall, 40px logo, 16px sides. */
+:root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: 64px !important; min-height: 64px !important; padding: 0 20px 0 12px !important; gap: 12px !important; justify-content: flex-start !important; text-align: left; }
+:root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { width: 40px !important; height: 40px !important; flex: none; margin: 0 !important; }
+:root.psy .f-btn--badge .fb-txt { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; }
+:root.psy .f-btn--badge .fb-sm:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 13px !important; font-weight: 500 !important; line-height: 1 !important; letter-spacing: .005em !important; opacity: .92; display: block; }
+:root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 25px !important; font-weight: 650 !important; line-height: 1 !important; letter-spacing: -.02em !important; display: block; }
+@media (max-width: 1099px) {
+  :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: 56px !important; min-height: 56px !important; padding: 0 16px 0 8px !important; gap: 8px !important; }
+  :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { width: 36px !important; height: 36px !important; }
+  :root.psy .f-btn--badge .fb-sm:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 12px !important; } :root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 21px !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
