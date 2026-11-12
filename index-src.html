@@ -200,6 +200,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <header>
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu, back to top">
+    <!-- Shown in the name's place whenever the name is away (top of the page, and in About where the big name is on show): a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
+    <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg></span>
     <div class="hero-brand">
       <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
     </div>
@@ -530,7 +532,8 @@ const ids = ['epk','contact','music','videos'];
 const links = {};
 ids.forEach(id => { links[id] = document.querySelector(`.nav-links a[href="#${id}"]`); });
 const nav = document.querySelector('.nav');
-const navLogo = nav.querySelector('.nav-logo .hero-brand') || nav.querySelector('.nav-logo');   /* the lettering: it fades; the link around it stays live */
+const navLogo = nav.querySelector('.nav-logo .hero-brand') || nav.querySelector('.nav-logo');
+const navHome = nav.querySelector('.nav-logo .nav-home');   /* the lettering: it fades; the link around it stays live */
 const heroBrand = document.getElementById('hero-brand');
 const heroSection = document.querySelector('.hero-split-left');
 let offsets = [], ticking = false, heroH = 400, aboutTop = 0, _picked = '';
@@ -591,7 +594,7 @@ aboutIn = navOut;
 }
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
-if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; _lastNavIn = navShow; }
+if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; if (navHome) { navHome.style.opacity = 1 - navShow; navHome.parentNode.classList.toggle('home-on', navShow < .5); } _lastNavIn = navShow; }   /* the Home button takes the name's place as the name fades, and hands it back */
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
