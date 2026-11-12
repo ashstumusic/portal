@@ -1176,7 +1176,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-lyrics-toggle.open:not(:hover):not(#\#) svg { color: #111 !important; }
 
 /* The About name is a link back to the top (the hero slides away). */
-:root.psy .bio-name-link { color: inherit; text-decoration: none; border-radius: 8px; cursor: default; pointer-events: none; -webkit-text-fill-color: inherit; }   /* plain lettering: not pressable (the cat wall is set off by catching the bird) */
+:root.psy .bio-name-link { color: inherit; text-decoration: none; border-radius: 8px; cursor: default; pointer-events: none; -webkit-text-fill-color: inherit; }   /* plain lettering: not pressable */
 :root.psy .bio-name:has(.bio-name-link:hover) { filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) drop-shadow(0 0 10px rgb(247 197 73 / .55)) !important; }
 
 /* Streaming logos on hover: solid gold (white details and cut-outs kept).
@@ -2059,54 +2059,18 @@ html { overscroll-behavior-y: none; }
 /* Lyrics in the album cards. */
 :root.psy .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: 15.5px !important; line-height: 1.55 !important; }
 
-/* Toolbar songbird (see the script in the page): the little sketchbook bird
-   that stands at the left end of the toolbar, just left of the name.
-   Everything about where it stands is decided here, with no script, so the
-   toolbar is in its final layout from the first paint:
-   - the name's link reserves room on its left (the bird's width + a 7px gap);
-   - the bird is placed in that room, its middle level with the lettering;
-   - --bird-w is the width of the bird's shape, about the lettering's height
-     (the drawing sheet is 1/.765 of that; the shape starts 12% in and its
-     middle is 69% down the sheet);
-   - on wide screens the link starts 24px further left, matching the Search
-     box's distance from the right edge.
-   The lettering fades (opacity on .hero-brand, set by the page). A click on
-   the bird turns him round (handled by the page) and follows the link too. */
-:root.js.psy .nav .nav-logo:not(#\#) { position: relative; opacity: 1 !important; pointer-events: auto !important; --bird-w: 34px; --bird-dy: 2px; padding-left: calc(var(--bird-w) + 7px) !important; }
+/* The toolbar's name link. The lettering fades in and out (opacity on .hero-brand, set by the page); on wide screens
+   the link starts 24px further left, matching the search box's distance from the right edge. */
+:root.js.psy .nav .nav-logo:not(#\#) { position: relative; opacity: 1 !important; pointer-events: auto !important; padding-left: 0 !important; }
 :root.js.psy .nav .nav-logo .hero-brand { position: relative; z-index: 1; opacity: 0; will-change: opacity; }
 @media (min-width: 1200px) { :root.js.psy .nav .nav-logo:not(#\#) { margin-left: -24px; } }
-@media (min-width: 768px) and (max-width: 899px) { :root.js.psy .nav .nav-logo:not(#\#) { --bird-w: 29px; --bird-dy: 1px; } }
-@media (max-width: 767px) { :root.js.psy .nav .nav-logo:not(#\#) { --bird-w: 32px; } }
 /* the narrowest tablet toolbars are full: the links and icons sit a little closer so the row still fits on one line */
 @media (min-width: 768px) and (max-width: 829px) { :root.psy .nav .nav-links:not(#\#) { gap: 4px !important; } :root.psy .nav .nav-platforms:not(#\#) { gap: 6px !important; } }
-.nav-doodle { position: absolute; z-index: 0; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; left: calc(var(--bird-w) / .765 * -.12); top: calc(50% - var(--bird-w) / .765 * .69 + var(--bird-dy)); width: calc(var(--bird-w) / .765); height: calc(var(--bird-w) / .765); display: block; }
-.nav-doodle[hidden] { display: none; }
-.nav-doodle.flying { pointer-events: none; }
-.nav-doodle .dz-x { transform-origin: 0 0; }   /* no will-change: the bird is redrawn sharp at whatever size it is shown (it is enlarged beside the hero's name) */
-.nav-doodle .dz-x, .nav-doodle .dz-face { display: block; width: 100%; height: 100%; }
-/* turning round: the drawing closes to a sliver and opens facing the other way, about its own middle */
-.nav-doodle .dz-face { transform-origin: 50% 50%; }   /* no transition: the turn is animated by the page script (a hop-and-snap turn, not a flat flip) */
-.nav-doodle .dz { display: block; width: 100%; height: 100%; overflow: visible; color: #F2F4F6; }
-/* filled with the name's flowing gradient (defined inside the drawing); plain off-white if a browser cannot resolve it */
-.nav-doodle .dz [fill="currentColor"] { fill: url(#dz-grad) #F2F4F6; }
-.nav-doodle .dz [stroke="currentColor"] { stroke: url(#dz-grad) #F2F4F6; }
-/* a rule elsewhere keeps icon lines one thickness whatever their size (non-scaling-stroke); the bird's lines must scale with it */
-.nav-doodle svg * { vector-effect: none !important; }
-/* only the current drawing shows (the hidden attribute does nothing on SVG groups by itself) */
-.nav-doodle .dz g[hidden] { display: none; }
-.nav-doodle .dz-note { position: absolute; display: block; will-change: transform, opacity; pointer-events: none; }
-.nav-doodle .dz-note-svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.nav-doodle .dz-note-svg g[hidden] { display: none; }
 /* (the toolbar name is 2.2rem, set on the element; a touch smaller in the shorter phone toolbar) */
 @media (max-width: 767px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: 2rem !important; } }
 /* between phone and small-laptop widths the toolbar is full: the name keeps its earlier size there so the row does not wrap */
 @media (min-width: 768px) and (max-width: 899px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: 1.805rem !important; } }
-/* no bird (reduced motion, effects off, forced colours, print): no room kept for it */
-@media (prefers-reduced-motion: reduce) { .nav-doodle { display: none !important; } :root.js.psy .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; } }
-:root.psy-calm .nav-doodle { display: none !important; }
 :root.js.psy.psy-calm .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; }
-@media (forced-colors: active) { .nav-doodle { display: none !important; } :root.js.psy .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; } }
-@media print { .nav-doodle { display: none !important; } }
 
 /* Desktop toolbar: the Search box sits closer to the right edge of the
    window (24px from it instead of 48px), at its usual width. */
@@ -2141,7 +2105,7 @@ html { overscroll-behavior-y: none; }
    through), which is the surface the gradient name was made for: it reads
    here as it does in the home section. Everything on the bar is light:
    link labels and outlines, the Search and menu buttons (dark glass, a
-   hairline edge, no drop shadow), the divider, and the bird (light line).
+   hairline edge, no drop shadow), the divider.
    The current section is a black squircle with a white edge and a white
    label; hover and keyboard focus are still gold with a dark label. */
 :root.psy .nav:not(#\#):not(#\#), :root[data-theme="dark"].psy .nav:not(#\#):not(#\#) {
@@ -2364,7 +2328,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-card.lyrics-open .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: var(--lyr-fs, 19px) !important; line-height: 1.5 !important; }
 
 /* Phones: a two-row toolbar.
-   Row 1 - the bird and name on the left; the three streaming logos and the
+   Row 1 - the name on the left; the three streaming logos and the
            menu button on the right.
    Row 2 - the four sections (Press Kit, Contact, Music, Videos) as four
            equal buttons across the full width, with the same highlight for
@@ -2375,7 +2339,6 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 767px) {
   :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; min-height: 0 !important; flex-wrap: wrap !important; align-items: center !important; align-content: flex-start; row-gap: 8px; padding: 8px 16px 8px !important; }
   :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#) { font-size: 2.25rem !important; }
-  :root.js.psy .nav .nav-logo:not(#\#):not(#\#) { --bird-w: 36px; }
   :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; margin-left: 10px; }
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 2px !important; }
   :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#) { --pt: 28px; padding: 3px; }
@@ -2385,9 +2348,8 @@ html { overscroll-behavior-y: none; }
   :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) a { flex: 1; display: flex !important; align-items: center; justify-content: center; height: 36px !important; min-height: 36px !important; padding-inline: 2px !important; font-size: 14px !important; white-space: nowrap; }
   :root.psy .hero-split:not(#\#):not(#\#) { padding-top: 105px !important; }
   [id] { scroll-margin-top: 113px; }
-  /* the lettering and the bird sit on the same centre line as the logos and the menu button */
+  /* the lettering sits on the same centre line as the logos and the menu button */
   :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#) { top: calc(.17em - 2px) !important; }
-  :root.js.psy .nav .nav-logo:not(#\#):not(#\#) { --bird-dy: .5px; }
 }
 /* narrower phones: smaller logos and name so row 1 stays on one line */
 @media (max-width: 389px) {
@@ -2397,7 +2359,6 @@ html { overscroll-behavior-y: none; }
 }
 @media (max-width: 349px) {
   :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 2rem !important; }
-  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#) { --bird-w: 32px; }
   :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 20px; padding: 2px; }
   :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 20px !important; height: 20px !important; }
   :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) a { font-size: 13px !important; }
@@ -2442,7 +2403,7 @@ html { overscroll-behavior-y: none; }
    On phones it is the toolbar's second row and a slider: the four section buttons, then the three streaming logos,
    in one line that slides sideways under the finger (or with a trackpad / arrow keys). Buttons keep their natural
    width instead of being squeezed to fit; whatever does not fit is a swipe away, and the row fades out at the edge
-   where there is more to see. The first row is now just the bird, the name and the menu button. */
+   where there is more to see. The first row is now just the name and the menu button. */
 .nav-rail { display: contents; }
 @media (max-width: 767px) {
   .nav .nav-rail {
@@ -2468,7 +2429,7 @@ html { overscroll-behavior-y: none; }
    Wider screens: the toolbar ends with a Search button (icon and label)
    and a gear button for Settings. No menu button - everything else is
    already in the bar.
-   Phones: one row only - the bird and name, and the menu button. The menu
+   Phones: one row only - the name and the menu button. The menu
    holds everything else: Search first, then the four sections, the three
    streaming links and, under a gear heading, the settings. The second row and its slider are gone, so the bar is 47px
    tall.
@@ -2592,7 +2553,7 @@ html { overscroll-behavior-y: none; }
 
 /* ── The name, in coloured pencil ─────────────────────────────────────
    "Ash Stu" (hero, toolbar, About) keeps its flowing gradient but is shaded
-   the way the toolbar's bird is: a great many fine, short pencil strokes laid over
+   the way a sketch is: a great many fine, short pencil strokes laid over
    one another, with the paper's grain showing through. The strokes are a mask over the
    lettering (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py),
    sized in ems so they scale with the name. */
@@ -2733,16 +2694,6 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 32px !important; height: 32px !important; }
 }
 
-/* The bird in the About section (class .bright, set by the page while it is flying there): fully solid and bright.
-   A solid coat of the gradient lies under the pencil strokes, the grain that lets the background show through is
-   switched off (the hand-wobbled edge stays), the colours are lifted, and a light halo plus a dark shadow separate it
-   from pale and dark backgrounds alike. */
-.nav-doodle .dz-solid { display: none; }
-.nav-doodle.bright .dz-solid { display: inline; }
-.nav-doodle.bright .dz > g { filter: url(#dz-rough); }
-.nav-doodle.bright .dz { opacity: 1; filter: brightness(1.22) saturate(1.5) drop-shadow(0 0 5px rgb(255 255 255 / .75)) drop-shadow(0 0 14px rgb(255 240 200 / .45)) drop-shadow(0 3px 5px rgb(0 0 0 / .65)); }
-@media (forced-colors: active) { .nav-doodle.bright .dz { filter: none; } }
-
 /* ── Phones: the home section fits the screen ─────────────────────────
    The photo, the "Latest release" tag, the cover, the title and both
    streaming buttons all fit inside one screen, whatever its height
@@ -2816,12 +2767,8 @@ html { overscroll-behavior-y: none; }
 @media (min-width: 1200px) { :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) a { font-size: 15px !important; } }
 @media (min-width: 900px) and (max-width: 1199px) { :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-inline: 24px !important; } }
 
-/* The bird in About: solid and clear, without the glow (the white halo was too bright) */
-:root .nav-doodle.bright .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: 1; filter: brightness(1.05) saturate(1.15) drop-shadow(0 2px 3px rgb(0 0 0 / .6)) !important; }
-@media (forced-colors: active) { :root .nav-doodle.bright .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
-
 /* ── Desktop toolbar, organised as three groups ──
-   Left: who this is and where to listen (bird, name, a hairline, then Apple Music, Spotify, YouTube side by side,
+   Left: who this is and where to listen (name, a hairline, then Apple Music, Spotify, YouTube side by side,
    same order as always). Centre: the four sections, centred on the page. Right: the tools (search, settings).
    The logos used to be spread across the whole empty stretch, which left them floating between groups. */
 :root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { justify-content: flex-start !important; gap: 4px !important; padding-left: 21px !important; position: relative; box-sizing: border-box; }
@@ -2833,12 +2780,6 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 8px !important; }
 
 @media (max-width: 1099px) { :root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0 !important; padding-left: 17px !important; } }   /* tighter where the bar is short of room, so the logos keep their place by the name */
-
-/* The bird looks the same everywhere as it does in About: solid coat, full strength, soft dark shadow, no glow */
-.nav-doodle .dz-solid { display: inline; }
-.nav-doodle .dz > g { filter: url(#dz-rough); }
-:root .nav-doodle .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: 1; filter: brightness(1.05) saturate(1.15) drop-shadow(0 2px 3px rgb(0 0 0 / .6)) !important; }
-@media (forced-colors: active) { :root .nav-doodle .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
 
 /* Toolbar streaming logos, on hover and keyboard focus: a line drawing on gold. The logo's body is gold right up to
    its edge; its edge is a thin black line; its detail (the note, the waves, the play mark) is solid black; and a
@@ -2875,6 +2816,13 @@ html { overscroll-behavior-y: none; }
 /* wide screens: the wavy edge along the bottom of the home section covers the foot of the last row, so those words sit higher */
 @media (min-width: 900px) { .warhol-cell:nth-last-child(-n+4) .warhol-word { bottom: 21%; } }
 @media (forced-colors: active) { .warhol-word { -webkit-text-stroke: 0; text-shadow: none; color: CanvasText; background: Canvas; } }
+
+/* Phones and narrow windows: the featured panel always reaches the bottom of the home section. (In a window wider
+   than a phone but still in the phone layout, the panel stopped short and a solid teal band showed under it.) */
+@media (max-width: 767px) {
+  :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex-direction: column !important; }
+  :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 1 1 auto !important; max-height: none !important; height: auto !important; min-height: 0; }
+}
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
