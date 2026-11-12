@@ -257,7 +257,28 @@
   }
   // Tags: every suggestion says what kind of thing it is, and the kind can be typed as part of the search
   // ("video hope", "song raven", "album", "setting", "streaming"; "music" covers songs and albums; #video and video: work too).
-  const TAG_WORDS = { Section: 'section sections page go', Song: 'song songs music track tracks play audio', Album: 'album albums music release releases record', Video: 'video videos watch', Streaming: 'streaming stream service services listen link links platform', Setting: 'setting settings option options preference preferences toggle', Action: 'action actions' };
+  const TAG_WORDS = { Section: 'section sections page go', Song: 'song songs music track tracks play audio', Album: 'album albums music release releases record', Video: 'video videos watch', Streaming: 'streaming stream service services listen link links platform', Setting: 'setting settings option options preference preferences toggle', Lyric: 'lyric lyrics words line lines', Action: 'action actions' };
+  // Lyrics: every line of every song. They are only looked through once something is typed (never in the opening
+  // list); picking a line plays that song from that line (from the start when the song's lyrics are not timed).
+  function lyricItems() {
+    const L = window.LYRICS, R = window.RELEASE_LIST, out = [];
+    if (!L || !Array.isArray(R) || typeof window.playTrack !== 'function') return out;
+    R.forEach((rel, r) => rel.tracks.forEach((t, ti) => {
+      const e = L[t.file]; if (!e || !Array.isArray(e.lines)) return;
+      const seen = new Set();
+      for (const ln of e.lines) {
+        const text = String(ln[1] || '').trim(), key = text.toLowerCase(); if (!text || seen.has(key)) continue; seen.add(key);
+        const at = typeof ln[0] === 'number' ? ln[0] : null;
+        out.push({ group: 'Lyrics', tag: 'Lyric', title: text, sub: t.title, run: () => {
+          window.playTrack(r, ti);
+          const a = doc.getElementById('np-audio'); if (!a || at === null) return;
+          const seek = () => { try { a.currentTime = Math.max(0, at - .3); } catch {} };
+          if (a.readyState >= 1) seek(); else a.addEventListener('loadedmetadata', seek, { once: true });
+        } });
+      }
+    }));
+    return out;
+  }
   const hayOf = (i) => `${i.title} ${i.sub || ''} ${i.tag || ''} ${TAG_WORDS[i.tag] || ''}`.toLowerCase();
   function goTo(target) {
     target.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
@@ -367,25 +388,30 @@
     if (!host) return null;
     const id = 'k-si-list-' + (++siN), flow = !!(opt && opt.flow);
     host.innerHTML = '<svg class="k-si-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
-      + '<input class="k-si-input" type="text" inputmode="search" enterkeyhint="search" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="' + id + '" aria-label="Search songs, videos and sections" placeholder="Search songs, videos, sections" autocomplete="off" autocapitalize="off" spellcheck="false">'
+      + '<input class="k-si-input" type="text" inputmode="search" enterkeyhint="search" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="' + id + '" aria-label="Search songs, lyrics, albums, videos, sections, streaming services and settings" placeholder="Search songs, lyrics, videos" autocomplete="off" autocapitalize="off" spellcheck="false">'
       + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" hidden></ul>';
     const inp = $('.k-si-input', host), ul = $('.k-si-list', host);
-    let items = [], hits = [], act = 0, cT = 0;
+    let items = [], lyrics = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
     function draw() {
       const q = inp.value.toLowerCase().trim().split(/\s+/).map((w) => w.replace(/^[#@]+|:+$/g, '')).filter(Boolean);
       if (opt && opt.onQuery) opt.onQuery(q.length > 0);
       if (flow && !q.length) { shut(); return; }
       hits = items.filter((i) => { const hay = hayOf(i); return q.every((w) => hay.includes(w)); });
-      if (q.length) hits.sort((a, b) => (b.title.toLowerCase().startsWith(q[0]) ? 1 : 0) - (a.title.toLowerCase().startsWith(q[0]) ? 1 : 0));
-      hits = hits.slice(0, q.length ? 40 : 12);
+      // a lyric is matched on its own words; the song's name counts too only when the search says "lyric(s)" (as in "lyrics raven")
+      if (q.join('').length >= 2) {
+        const asked = q.some((w) => 'lyrics'.startsWith(w) && w.length >= 3);
+        hits = hits.concat(lyrics.filter((i) => { const own = i.own || (i.own = `${i.title} lyric lyrics words line lines`.toLowerCase()), all = i.hay || (i.hay = hayOf(i)); const hay = asked ? all : own; return q.every((w) => hay.includes(w)); }).slice(0, 25));
+      }
+      if (q.length) { const rank = (i) => (i.tag === 'Lyric' ? 0 : 2) + (i.title.toLowerCase().startsWith(q[0]) ? 1 : 0); hits.sort((a, b) => rank(b) - rank(a)); }
+      hits = hits.slice(0, q.length ? 50 : 12);
       act = Math.min(act, Math.max(0, hits.length - 1));
       const frag = doc.createDocumentFragment();
       hits.forEach((it, i) => {
         const li = doc.createElement('li'); li.className = 'k-si-opt'; li.id = id + '-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === act));
         const t = doc.createElement('span'); t.className = 'k-si-t'; t.textContent = it.title; const u = doc.createElement('span'); u.className = 'k-si-sub'; u.textContent = it.sub || '';
         const g = doc.createElement('span'); g.className = 'k-si-tag'; g.dataset.tag = it.tag; g.textContent = it.tag;
-        li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
+        li.dataset.tag = it.tag; li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
       });
       if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches.'; frag.append(e); }
       ul.replaceChildren(frag); ul.hidden = false; host.classList.add('open');
@@ -394,7 +420,7 @@
     }
     function mark(i) { if (!hits.length) return; act = (i + hits.length) % hits.length; for (const o of $$('.k-si-opt', ul)) o.setAttribute('aria-selected', String(o.id === id + '-' + act)); inp.setAttribute('aria-activedescendant', id + '-' + act); $('#' + id + '-' + act, ul)?.scrollIntoView({ block: 'nearest' }); }
     function pick(i) { const it = hits[i]; if (!it) return; inp.value = ''; shut(); if (opt && opt.onQuery) opt.onQuery(false); inp.blur(); if (opt && opt.beforeRun) opt.beforeRun(); it.run(); }
-    inp.addEventListener('focus', () => { items = gatherItems(); act = 0; draw(); });
+    inp.addEventListener('focus', () => { items = gatherItems(); lyrics = lyricItems(); act = 0; draw(); });
     inp.addEventListener('input', () => { act = 0; draw(); });
     inp.addEventListener('keydown', (e) => {
       const open = !ul.hidden;

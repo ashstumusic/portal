@@ -2535,20 +2535,25 @@ html { overscroll-behavior-y: none; }
 .k-si-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* what kind of thing a suggestion is: a fixed-width tag in front of it */
 .k-si-tag { flex: none; align-self: center; width: 74px; padding: 3px 0; border-radius: 6px; text-align: center; font: 700 10.5px/1.2 var(--font-ui, system-ui, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: #111; background: #F5F5F7; }
-.k-si-tag[data-tag="Song"] { background: #F7C549; } .k-si-tag[data-tag="Album"] { background: #FFA36B; } .k-si-tag[data-tag="Video"] { background: #FF8AC8; } .k-si-tag[data-tag="Streaming"] { background: #8FE6FF; }
+.k-si-tag[data-tag="Song"] { background: #F7C549; } .k-si-tag[data-tag="Lyric"] { background: transparent; color: #F5F5F7; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / .7); }
+.k-si-input, .k-si-input::placeholder { text-overflow: ellipsis; }
+ .k-si-tag[data-tag="Album"] { background: #FFA36B; } .k-si-tag[data-tag="Video"] { background: #FF8AC8; } .k-si-tag[data-tag="Streaming"] { background: #8FE6FF; }
 .k-si-opt[aria-selected="true"] .k-si-tag { background: #111; color: #fff; }
 .k-si-opt { justify-content: flex-start; } .k-si-t { flex: 1 1 auto; }
-.k-si--bar .k-si-list { width: max(100%, 440px); }
+.k-si--bar .k-si-list { width: max(100%, 520px); }
+/* a lyric line gets the room; the song it is from sits small after it */
+.k-si-opt[data-tag="Lyric"] .k-si-sub { max-width: 30%; }
 .k-si-empty { padding: 12px; color: rgb(242 244 246 / .75); font: 500 14px/1.3 var(--font-ui, system-ui, sans-serif); }
 /* toolbar */
 .k-si--bar { flex: 0 1 300px; width: 300px; }
 .k-si--bar .k-si-list {
-  position: absolute; top: calc(100% + 8px); right: 0; z-index: 300; width: max(100%, 380px); max-width: calc(100vw - 32px); max-height: min(64vh, 480px); overflow-y: auto;
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 300; width: max(100%, 540px); max-width: calc(100vw - 32px); max-height: min(64vh, 480px); overflow-y: auto;
   background: rgb(20 22 28 / .97); border-radius: 16px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .16), 0 18px 48px rgb(0 0 0 / .6);
   -webkit-backdrop-filter: blur(24px) saturate(1.5); backdrop-filter: blur(24px) saturate(1.5);
 }
 :root.k-inline-search.psy .nav .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
-@media (max-width: 1199px) { .k-si--bar { flex-basis: 210px; width: 210px; } }
+@media (max-width: 1199px) { .k-si--bar { flex-basis: 260px; width: 260px; } }
+@media (max-width: 1099px) { .k-si--bar { flex-basis: 248px; width: 248px; } }
 /* narrower toolbars have no room for a wide field: it rests compact and widens over its neighbours while in use */
 @media (max-width: 1023px) {
   .k-si--bar { flex: 0 0 var(--si-w); width: var(--si-w); --si-w: 132px; transition: margin-left .18s ease, width .18s ease, flex-basis .18s ease; }
@@ -2582,6 +2587,18 @@ html { overscroll-behavior-y: none; }
 .settings-title { display: flex; align-items: center; gap: 8px; min-height: 30px; }
 .settings-title .k-gear { width: 16px; height: 16px; flex: none; }
 @media (max-width: 767px) { .k-menu .settings-title { margin-top: 10px; padding-top: 12px; border-top: 1px solid rgb(255 255 255 / .12); } }
+
+/* ── Contact and About: no back wall ──────────────────────────────────
+   The dark panel behind each is gone; the words and photos sit straight on
+   the page. (The Contact words line up with the section heading now that
+   there is no panel to inset them.) */
+:root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#) { background: none !important; background-color: transparent !important; box-shadow: none !important; border: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+:root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#)::after, :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#)::after { display: none !important; }
+:root.psy .bio-card-text:not(#\#):not(#\#):not(#\#):not(#\#) { background: none !important; }
+:root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#) { border: 0 !important; }
+:root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 !important; overflow: visible !important; }
+/* the three About photos trade places: each one is clipped to its own frame while it slides */
+.bio-card-media img { will-change: auto; }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
