@@ -1628,7 +1628,7 @@ html { overscroll-behavior-y: none; }
   transition: transform .45s cubic-bezier(.2, .9, .3, 1.25), background-color .25s ease, box-shadow .25s ease !important;
 }
 @supports (corner-shape: squircle) {
-  :root.psy .epk-section .btn-epk:not(#\#):not(#\#):not(#\#) { corner-shape: squircle; border-radius: 24px !important; }
+  :root.psy .epk-section .btn-epk:not(#\#):not(#\#):not(#\#) { corner-shape: squircle; border-radius: 16px !important; }
 }
 :root.psy .epk-section .btn-epk:not(#\#):not(#\#):not(#\#) span {
   color: #fff !important; font-size: 17px !important; font-weight: 600 !important; line-height: 24px !important;
@@ -1669,15 +1669,15 @@ html { overscroll-behavior-y: none; }
 /* Page tightened vertically: less space above and below every section
    and under each heading (desktop about 40px between sections instead of
    ~160px; phones about 28px). */
-:root.psy .epk-section:not(#\#):not(#\#):not(#\#) { padding-block: 8px !important; }
-:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#) { padding-top: 20px !important; padding-bottom: 20px !important; }
-:root.psy :is(.contact-section, .releases-section, .videos-section) .section-h { margin-bottom: 20px !important; }
+:root.psy .epk-section:not(#\#):not(#\#):not(#\#) { padding-block: 16px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#) { padding-top: 24px !important; padding-bottom: 24px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section) .section-h { margin-bottom: 24px !important; }
 :root.psy .bio-section:not(#\#) { padding-top: 0 !important; }
 :root.psy .bio-section-header:not(#\#) { padding-top: 20px !important; }
 :root.psy .bio-body:not(#\#) { padding-top: 20px !important; padding-bottom: 32px !important; }
 @media (max-width: 767px) {
-  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#) { padding-top: 14px !important; padding-bottom: 14px !important; }
-  :root.psy :is(.contact-section, .releases-section, .videos-section) .section-h { margin-bottom: 14px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#) { padding-top: 16px !important; padding-bottom: 16px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section) .section-h { margin-bottom: 16px !important; }
   :root.psy .bio-section-header:not(#\#) { padding-top: 14px !important; }
   :root.psy .bio-body:not(#\#) { padding-top: 14px !important; padding-bottom: 24px !important; }
 }
@@ -1856,7 +1856,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .epk-photos:not(#\#) { gap: 12px !important; }
 /* each photo sits in its own rounded window, so it can slide up and out
    of it (the reel) without crossing its neighbours */
-:root.psy .epk-photos .epk-slot { display: block; overflow: hidden; border-radius: 10px; min-width: 0; }
+:root.psy .epk-photos .epk-slot { display: block; overflow: hidden; border-radius: 12px; min-width: 0; }
 /* the photo keeps its own square size (width and height attributes) and
    the window takes its size from it; sizing the window first and the
    photo as 100% of it collapsed to nothing in Safari */
@@ -2047,7 +2047,7 @@ html { overscroll-behavior-y: none; }
 :root.psy :is(.bio-text, .bio-desc, .contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) {
   font-family: var(--font-body) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important;
 }
-:root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 18px !important; line-height: 1.45 !important; }
+:root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: 1.45 !important; }
 :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 25px !important; line-height: 1.38 !important; max-width: 32em; }
 /* iPad widths: the text panel is narrow, so a step down keeps it from running long */
 @media (min-width: 768px) and (max-width: 1023px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 22px !important; } }
@@ -2219,9 +2219,9 @@ html { overscroll-behavior-y: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy .bio-name:active { scale: none; } }
 
 /* Featured release: its name, a little larger. */
-:root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 35px !important; line-height: 1.12 !important; }
-@media (max-width: 767px) { :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 31px !important; } }
-@media (min-width: 768px) and (max-width: 1299px) { :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 31px !important; } }
+:root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 34px !important; line-height: 1.12 !important; }
+@media (max-width: 767px) { :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 28px !important; } }
+@media (min-width: 768px) and (max-width: 1299px) { :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 28px !important; } }
 
 /* ── The one menu ─────────────────────────────────────────────────────
    A single menu button at the right end of the toolbar, on every screen
@@ -2294,11 +2294,11 @@ html { overscroll-behavior-y: none; }
 :root.psy .hero-photo-frame:not(#\#):not(#\#) { background-position: 52% 18% !important; }
 
 /* Music section: each release's title, larger (30px, was 24px; 27px on phones and on the narrower cards at tablet widths). */
-:root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 30px !important; line-height: 1.12 !important; }
-@media (max-width: 1023px) { :root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 27px !important; } }
+:root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 28px !important; line-height: 1.12 !important; }
+@media (max-width: 1023px) { :root.psy .rel-card .rel-name:not(#\#):not(#\#):not(#\#) { font-size: 28px !important; } }
 
 /* Videos section: each video's title, larger (21px, was 17px; 20px on phones). */
-:root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 21px !important; line-height: 1.2 !important; }
+:root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; line-height: 1.2 !important; }
 @media (max-width: 767px) { :root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; } }
 /* tablet widths: three narrow cards per row, where the larger size wrapped titles onto four or five lines - kept at 17px */
 @media (min-width: 768px) and (max-width: 1099px) { :root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: 1.25 !important; } }
@@ -2660,7 +2660,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { width: 40px !important; height: 40px !important; flex: none; margin: 0 !important; }
 :root.psy .f-btn--badge .fb-txt { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; }
 :root.psy .f-btn--badge .fb-sm:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 13px !important; font-weight: 500 !important; line-height: 1 !important; letter-spacing: .005em !important; opacity: .92; display: block; }
-:root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 25px !important; font-weight: 650 !important; line-height: 1 !important; letter-spacing: -.02em !important; display: block; }
+:root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 24px !important; font-weight: 650 !important; line-height: 1 !important; letter-spacing: -.02em !important; display: block; }
 @media (max-width: 1099px) {
   :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: 56px !important; min-height: 56px !important; padding: 0 16px 0 8px !important; gap: 8px !important; }
   :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { width: 36px !important; height: 36px !important; }
@@ -2884,6 +2884,15 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav.pf-left:not(.pf-flow) .nav-platforms { translate: calc(var(--name-gone, 0) * var(--name-shift, 0px) * -1) 0; }
 @media (prefers-reduced-motion: no-preference) { :root.psy .nav.pf-left:not(.pf-flow) .nav-platforms { transition: translate .22s ease-out; } }
 
+/* ── One scale for corners, type and spacing (standardisation sweep).
+   Corners: 8 tags and small marks, 12 pictures and small controls, 16 buttons, fields and cards; pills and circles as they are.
+   Type: 12, 13, 15, 17, 20, 24, 28, 34, 48 (the wordmark and the About lettering keep their own fluid sizes).
+   Spacing: sections 24px above and below (16 on phones), 24px under a section heading (16 on phones).
+   The values themselves are set where each rule lives; the stragglers are brought into line here. */
+:root.psy .vid-card:not(#\#):not(#\#):not(#\#) { border-radius: 16px !important; }
+:root.psy .rel-btn.rel-btn--label:not(#\#):not(#\#):not(#\#) { border-radius: 8px !important; }
+:root.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#) { border-radius: 12px !important; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
@@ -2942,7 +2951,7 @@ html { overscroll-behavior-y: none; }
   --btn-hov-edge: inset 0 0 0 1px rgb(255 255 255 / .4), inset 0 1px 0 rgb(255 255 255 / .6), 0 1px 2px rgb(0 0 0 / .2), 0 10px 28px -10px rgb(0 0 0 / .5);
 }
 @supports (corner-shape: squircle) {
-  :root.psy { --btn-r: 18px; --btn-r-ico: 16px; --btn-r-sm: 13px; }
+  :root.psy { --btn-r: 16px; --btn-r-ico: 16px; --btn-r-sm: 12px; }
   :root.psy .f-btn:not(#\#):not(#\#):not(#\#):not(#\#),
 :root.psy .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#),
 :root.psy .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#),
