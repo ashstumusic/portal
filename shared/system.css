@@ -2741,6 +2741,38 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 32px !important; height: 32px !important; }
 }
 
+/* The bird in the About section (class .bright, set by the page while it is flying there): fully solid and bright.
+   A solid coat of the gradient lies under the pencil strokes, the grain that lets the background show through is
+   switched off (the hand-wobbled edge stays), the colours are lifted, and a light halo plus a dark shadow separate it
+   from pale and dark backgrounds alike. */
+.nav-doodle .dz-solid { display: none; }
+.nav-doodle.bright .dz-solid { display: inline; }
+.nav-doodle.bright .dz > g { filter: url(#dz-rough); }
+.nav-doodle.bright .dz { opacity: 1; filter: brightness(1.22) saturate(1.5) drop-shadow(0 0 5px rgb(255 255 255 / .75)) drop-shadow(0 0 14px rgb(255 240 200 / .45)) drop-shadow(0 3px 5px rgb(0 0 0 / .65)); }
+@media (forced-colors: active) { .nav-doodle.bright .dz { filter: none; } }
+
+/* ── Phones: the home section fits the screen ─────────────────────────
+   The photo, the "Latest release" tag, the cover, the title and both
+   streaming buttons all fit inside one screen, whatever its height
+   (measured in svh, the height with the browser's bars showing):
+   - the photo is at most 36% of the screen's height;
+   - the cover is at most 21% of it;
+   - the two buttons sit side by side in one row, in a compact form of the
+     same two-line badge (48px tall), each taking half the row. */
+@media (max-width: 767px) {
+  :root.psy .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-height: 36svh !important; }
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: min(48vw, 21svh) !important; max-width: min(48vw, 21svh) !important; min-width: 0 !important; min-height: 0 !important; height: auto !important; aspect-ratio: 1 / 1; flex: none !important; margin-block: 0 !important; }
+  :root.psy #party .featured-art-wrap .featured-art:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; height: 100% !important; max-height: none !important; object-fit: cover; }
+  :root.psy #party:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: clamp(6px, 1.4svh, 14px) !important; padding-top: clamp(8px, 1.6svh, 16px) !important; padding-bottom: clamp(24px, 4svh, 36px) !important; justify-content: center !important; }
+  :root.psy #party .featured-title:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-block: 0 !important; }
+  :root.psy .featured-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-direction: row !important; align-items: stretch !important; width: calc(100% - 32px) !important; max-width: 400px !important; gap: 8px !important; margin-inline: auto !important; translate: none !important; align-self: center !important; }
+  :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 1 1 0 !important; min-width: 0 !important; width: auto !important; height: 48px !important; min-height: 48px !important; padding: 0 8px 0 6px !important; gap: 6px !important; justify-content: flex-start !important; }
+  :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { width: 30px !important; height: 30px !important; }
+  :root.psy .f-btn--badge .fb-txt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 2px; min-width: 0; }
+  :root.psy .f-btn--badge .fb-sm:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 10px !important; white-space: nowrap; }
+  :root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: clamp(13px, 4.1vw, 16px) !important; white-space: nowrap; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
