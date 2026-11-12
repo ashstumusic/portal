@@ -2085,7 +2085,7 @@ html { overscroll-behavior-y: none; }
 .nav-doodle .dz-x { transform-origin: 0 0; }   /* no will-change: the bird is redrawn sharp at whatever size it is shown (it is enlarged beside the hero's name) */
 .nav-doodle .dz-x, .nav-doodle .dz-face { display: block; width: 100%; height: 100%; }
 /* turning round: the drawing closes to a sliver and opens facing the other way, about its own middle */
-.nav-doodle .dz-face { transform-origin: 50% 50%; transition: transform .26s cubic-bezier(.45, 0, .55, 1); }
+.nav-doodle .dz-face { transform-origin: 50% 50%; }   /* no transition: the turn is animated by the page script (a hop-and-snap turn, not a flat flip) */
 .nav-doodle .dz { display: block; width: 100%; height: 100%; overflow: visible; color: #F2F4F6; }
 /* filled with the name's flowing gradient (defined inside the drawing); plain off-white if a browser cannot resolve it */
 .nav-doodle .dz [fill="currentColor"] { fill: url(#dz-grad) #F2F4F6; }
