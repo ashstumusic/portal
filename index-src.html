@@ -1879,7 +1879,7 @@ live = true;
 if (cur !== want) {
 if (cur) { cur.classList.remove('is-current'); cur.removeAttribute('aria-current'); }
 if (want) { want.classList.add('is-current'); want.setAttribute('aria-current', 'true');
-var sb = want.closest('.lyr-sheet-body'); if (sb && !sb.matches(':hover') && !sb.contains(document.activeElement)) { var wr = want.getBoundingClientRect(), br = sb.getBoundingClientRect(); sb.scrollTo({ top: sb.scrollTop + (wr.top + wr.height / 2) - (br.top + br.height * .42), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } }
+var sb = want.closest('.rel-card.lyrics-pane') ? want.closest('.rel-lyrics') : null; if (sb && !sb.matches(':hover') && !sb.contains(document.activeElement)) { var wr = want.getBoundingClientRect(), br = sb.getBoundingClientRect(); sb.scrollTo({ top: sb.scrollTop + (wr.top + wr.height / 2) - (br.top + br.height * .42), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } }
 }
 });
 if (live && !npAudio.paused) _cardLyrRaf = requestAnimationFrame(cardLyricsTick);
@@ -1911,7 +1911,7 @@ var songTitle = (btn.getAttribute('aria-label') || '').replace(/^(Show|Hide) lyr
 btn.setAttribute('aria-label', (opening ? 'Hide lyrics for ' : 'Show lyrics for ') + songTitle);
 btn.setAttribute('aria-expanded', String(opening));
 lyrics.style.maxHeight = opening ? 'none' : '0';
-lyrSheetSync();
+if (opening) lyrics.scrollTop = 0;
 if (opening) fitLyricsSoon(lyrics.querySelector('.rel-lyrics-inner')); else sizeCardForLyrics(btn.closest('.rel-card'));
 recalcTracklistHeight(tl);
 cardLyricsKick();
@@ -1933,44 +1933,19 @@ if (before === null) return;
 var shift = el.getBoundingClientRect().top - before;
 if (Math.abs(shift) > 1) { var sb = document.documentElement.style.scrollBehavior; document.documentElement.style.scrollBehavior = 'auto'; window.scrollBy(0, shift); document.documentElement.style.scrollBehavior = sb; }
 }
-/* ── Lyrics on wide screens: a reading sheet at the side ──
-   From 900px up, a song's lyrics no longer reshape its release into a wide two-column block. The release stays exactly
-   as it is in the grid, and the lyrics open in a sheet fixed to the right-hand edge of the window: the song's name and
-   release at the top, the words below at a comfortable reading size (long lines wrap, with the continuation indented),
-   scrolling on their own, the line being sung highlighted and kept in view. It is not a dialog - the page behind stays
-   usable; the sheet closes with its Close button, with Escape, or by pressing the song's lyrics button again; opening
-   another song's lyrics replaces what it shows. Narrower screens keep the lyrics inline under the song, as before.
-   The same lyrics element is used in both places: it is moved into the sheet while open and put back when closed. */
-var lyrSheet = null, lyrSheetBtn = null;
-function lyrSheetMode() { return window.matchMedia('(min-width: 900px)').matches; }
-function lyrSheetBuild() {
-if (lyrSheet) return lyrSheet;
-var a = document.createElement('aside'); a.className = 'lyr-sheet'; a.id = 'lyr-sheet'; a.setAttribute('aria-label', 'Lyrics'); a.hidden = true;
-a.innerHTML = '<header class="lyr-sheet-head"><div class="lyr-sheet-what"><p class="lyr-sheet-kicker">Lyrics</p><h3 class="lyr-sheet-title" tabindex="-1"></h3><p class="lyr-sheet-sub"></p></div>' +
-'<button type="button" class="lyr-sheet-close" aria-label="Close lyrics" title="Close lyrics"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>' +
-'<div class="lyr-sheet-body" tabindex="0" role="group" aria-label="Lyrics text"></div>';
-document.body.appendChild(a);
-a.querySelector('.lyr-sheet-close').addEventListener('click', function() { var b = lyrSheetBtn; if (b) { toggleTrackLyrics(b); b.focus(); } });
-document.addEventListener('keydown', function(e) { if (e.key !== 'Escape' || !lyrSheetBtn || a.hidden || document.querySelector('dialog[open]')) return; if (a.contains(document.activeElement) || document.activeElement === lyrSheetBtn) { var b = lyrSheetBtn; toggleTrackLyrics(b); b.focus(); } });
-lyrSheet = a; return a;
-}
-/* puts every lyrics element where it belongs right now: the open one in the sheet (wide screens) or under its song */
-function lyrSheetSync() {
-var open = document.querySelector('.rel-lyrics-toggle.open'), wide = lyrSheetMode();
-document.querySelectorAll('.rel-lyrics-toggle').forEach(function(b) { var l = b._lyr; if (!l) return; var w = b.closest('.rel-track-wrap'); if ((b !== open || !wide) && l.parentNode !== w) w.appendChild(l); });
-if (open && wide && open._lyr) {
-var sh = lyrSheetBuild(), body = sh.querySelector('.lyr-sheet-body'), card = open.closest('.rel-card');
-if (open._lyr.parentNode !== body) { body.textContent = ''; body.appendChild(open._lyr); body.scrollTop = 0; }
-sh.querySelector('.lyr-sheet-title').textContent = (open.getAttribute('aria-label') || '').replace(/^(Show|Hide) lyrics for /, '');
-var nm = card && card.querySelector('.rel-name'); sh.querySelector('.lyr-sheet-sub').textContent = nm ? nm.textContent : '';
-open.setAttribute('aria-controls', 'lyr-sheet'); lyrSheetBtn = open;
-if (sh.hidden) { sh.hidden = false; void sh.offsetWidth; } sh.classList.add('show'); document.documentElement.classList.add('lyr-sheet-open');
-} else if (lyrSheet) { lyrSheet.classList.remove('show'); lyrSheet.hidden = true; lyrSheetBtn = null; document.documentElement.classList.remove('lyr-sheet-open'); }
-}
+/* ── Lyrics on wide screens: a reading pane inside the release ──
+   From 900px up, opening a song's lyrics does not reshape the release or take over the row, and nothing opens over the
+   page: the words drop open directly under the song, inside its release, in a pane of fixed height that scrolls on its
+   own. The release keeps its place and width in the grid; long lines wrap (continuation indented) at a steady reading
+   size; the line being sung is highlighted and kept in view inside the pane. (Class lyrics-pane on the release; the
+   layout is in shared/system.css under "Lyrics pane".) Narrower screens are unchanged: there the release takes the
+   row and the lyrics are set large. */
+function lyrPaneMode() { return window.matchMedia('(min-width: 900px)').matches; }
 function sizeCardForLyrics(card) {
 if (!card) return;
-if (lyrSheetMode()) { lyrSheetSync(); if (card.classList.contains('lyrics-open')) card.classList.remove('lyrics-open'); return; }
-lyrSheetSync();
+/* (classes are only written when they really change: a watcher on the releases re-runs this whenever a release's class is touched) */
+if (lyrPaneMode()) { if (card.classList.contains('lyrics-open')) card.classList.remove('lyrics-open'); var ob = card.querySelector('.rel-lyrics-toggle.open'); if (card.classList.contains('lyrics-pane') !== !!ob) card.classList.toggle('lyrics-pane', !!ob); if (ob && ob._lyr) { var inr = ob._lyr.querySelector('.rel-lyrics-inner'); if (inr) { inr.classList.remove('lyr-wrap'); inr.style.removeProperty('--lyr-fs'); } } return; }
+if (card.classList.contains('lyrics-pane')) card.classList.remove('lyrics-pane');
 var openBtn = card.querySelector('.rel-lyrics-toggle.open'), want = !!openBtn;
 if (card.classList.contains('lyrics-open') !== want) {
   /* the row the visitor just used stays where it is on screen while the card changes shape */
