@@ -177,9 +177,10 @@
 }
 </script>
 <title>Ash Stu Art | Ashton Stubblefield</title>
+<link rel="icon" href="favicon.ico" sizes="48x48"/>
 <link href="favicon.svg" type="image/svg+xml" rel="icon" sizes="any"/>
-<link rel="icon" type="image/png" href="favicon.png" sizes="1024x1024"/>
-<link rel="apple-touch-icon" href="favicon.png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
 
 
 <script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search")})(document.documentElement)</script>
@@ -200,7 +201,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <header>
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu, back to top">
-    <!-- Shown in the name's place when the name is away: in the home section a plain little house (no bubble, not pressable); in About (where the big name is on show) a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
+    <!-- Always here, left of the name: in the home section a plain little house (no bubble, not pressable); everywhere else a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
     <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg></span>
     <div class="hero-brand">
       <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
@@ -595,12 +596,15 @@ navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.07)));  
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
 if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; _lastNavIn = navShow; }
-/* The Home mark in the name's place. Three states, never on top of the lettering:
+/* While the name is not showing, the streaming logos close up beside the Home mark instead of leaving the name's space empty
+   (see --name-shift, measured by the logos' layout script); they move back out exactly as the name fades in. */
+/* the logos have moved out of the name's space before it starts to appear, and close up only once it has all but gone, so the two never cross */
+nav._gone = (1 - Math.min(1, Math.max(0, (heroOut - .3) / .35)) * (1 - Math.min(1, Math.max(0, (navOut - .8) / .2)))).toFixed(3); if (nav._gone !== nav._goneSet) { nav._goneSet = nav._gone; nav.style.setProperty('--name-gone', nav._gone); }
+/* The Home mark, always at the left end of the toolbar, with the name beside it. Two states:
    - "plain"  in the home section: just the little house, no bubble, not pressable (you are already home);
-   - "button" in About, where the name has given way to the big one: the house in its glass bubble, pressable;
-   - "off"    wherever the name itself is showing or part-way through its fade.
-   Checked on every scroll (jumping from About straight to the top leaves the name hidden throughout). */
-if (navHome) { var homeState = navShow > .02 ? 'off' : navIn >= .98 ? 'button' : navIn <= .02 ? 'plain' : 'off';
+   - "button" everywhere else: the house in its glass bubble, pressable (back to the top).
+   Checked on every scroll. */
+if (navHome) { var homeState = navIn <= .02 ? 'plain' : 'button';
  if (homeState !== navHome._st) { navHome._st = homeState; var lk = navHome.parentNode; lk.setAttribute('data-home', homeState); lk.classList.toggle('home-on', homeState === 'button');
   if (homeState === 'plain') { lk.setAttribute('tabindex', '-1'); lk.setAttribute('aria-hidden', 'true'); } else { lk.removeAttribute('tabindex'); lk.removeAttribute('aria-hidden'); } } }
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
@@ -2052,9 +2056,9 @@ var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 if (!btns || rel.soon) btns += '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>';
-// Download: one press gathers the release's songs into a ZIP, made in the visitor's browser (see "Album ZIP" below).
-if (rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song)' : ' songs)');
-btns += '<button type="button" class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="rel-dl-pct" aria-hidden="true"></span></button>'; }
+// Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
+if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
+btns += '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
@@ -2811,7 +2815,11 @@ var tools=nav.querySelector('.k-tools');
 /* (fallback when there is no room on the left) the logos sit directly to the right of the section buttons */
 function beside(on){box.style.removeProperty('margin-left');box.style.removeProperty('width');if(tools)tools.style.removeProperty('margin-left');if(!on)return;var ul=nav.querySelector('.nav-links');if(!ul||!tools)return;
 tools.style.setProperty('margin-left','auto','important');box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().right+12-box.getBoundingClientRect().left;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');}
-function setup(){nav.classList.remove('pf-flow','pf-left');beside(false);box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
+function setup(){nav.style.setProperty('--name-gone','0');nav.style.setProperty('--name-shift','0px');setup0();
+/* how far the logos travel to sit beside the Home mark while the name is hidden (measured with them in their resting place) */
+var hm=nav.querySelector('.nav-home');if(hm&&as[0].offsetWidth&&nav.classList.contains('pf-left')&&!nav.classList.contains('pf-flow')){var d=as.reduce(function(m,a){return Math.min(m,a.getBoundingClientRect().left);},1e9)-(hm.getBoundingClientRect().right+10);nav.style.setProperty('--name-shift',Math.max(0,Math.round(d))+'px');}
+nav._goneSet=nav._gone||'1';nav.style.setProperty('--name-gone',nav._goneSet);}
+function setup0(){nav.classList.remove('pf-flow','pf-left');beside(false);box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
 if(!as[0].offsetWidth||innerWidth<768)return;
 var h0=nav.offsetHeight,name=nav.querySelector('.nav-logo'),ul=nav.querySelector('.nav-links');
 var ok=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1)return false;if(!ul||!name)return true;var l=ul.getBoundingClientRect();return l.right+8<=box.getBoundingClientRect().left&&l.left>=name.getBoundingClientRect().right+12;};
@@ -2840,44 +2848,16 @@ new MutationObserver(function(){if(still()===can)setup();}).observe(document.doc
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setup);
 /* The logos keep one fixed order (Apple Music, Spotify, YouTube): they no longer trade places. */
 setup();setTimeout(setup,1500);})();</script>
-<script>/* Album ZIP. The site does not keep a ZIP of each release (they are too big to store alongside the songs), so
-   the Download button on a release makes one on the spot, in the visitor's own browser: it fetches that release's
-   MP3s (the same files the player uses), plus the cover and the lyrics sheet when there is one, packs them into a
-   standard ZIP (stored, not compressed - MP3s do not shrink) and hands it over as "<Release> - Ash Stu.zip".
-   While it works the button shows how far along it is and says so to screen readers; it cannot be started twice;
-   if anything fails it says so and goes back to how it was. */
+<script>/* Album downloads. Each release's Download button is a plain link to a ready-made ZIP (made by scripts/album_zip.py,
+   kept on the repository's GitHub Release "downloads"), so the browser starts saving at once and handles the rest.
+   Two small helps here: the connection to the file servers is opened as soon as the pointer or focus reaches a
+   Download button, so the press itself has nothing left to set up; and screen readers are told the download began. */
 (function(){
-var T=null;function crcTable(){if(T)return T;T=new Uint32Array(256);for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;T[n]=c>>>0;}return T;}
-function crc32(u8){var t=crcTable(),c=0xFFFFFFFF;for(var i=0,l=u8.length;i<l;i++)c=t[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
-function say(m){if(window.kinetic&&window.kinetic.announce)window.kinetic.announce(m);}
-function makeZip(files){   /* files: [{name, data: Uint8Array}] -> Blob */
-var enc=new TextEncoder(),parts=[],central=[],off=0,d=new Date(),time=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),date=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
-files.forEach(function(f){var nm=enc.encode(f.name),crc=crc32(f.data),n=f.data.length;
-var h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint16(10,time,true);h.setUint16(12,date,true);h.setUint32(14,crc,true);h.setUint32(18,n,true);h.setUint32(22,n,true);h.setUint16(26,nm.length,true);h.setUint16(28,0,true);
-parts.push(h.buffer,nm,f.data);
-var c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,0,true);c.setUint16(12,time,true);c.setUint16(14,date,true);c.setUint32(16,crc,true);c.setUint32(20,n,true);c.setUint32(24,n,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
-central.push(c.buffer,nm);off+=30+nm.length+n;});
-var cs=0;central.forEach(function(x){cs+=x.byteLength;});
-var e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
-return new Blob(parts.concat(central,[e.buffer]),{type:'application/zip'});}
-function safe(n){return String(n).replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim();}
-function get(url){return fetch(url.split('/').map(encodeURIComponent).join('/')).then(function(r){if(!r.ok)throw new Error(r.status);return r.arrayBuffer();}).then(function(b){return new Uint8Array(b);});}
-function run(btn){var rel=(window.RELEASE_LIST||[])[+btn.dataset.rel];if(!rel||!rel.tracks||!rel.tracks.length||btn.getAttribute('aria-busy')==='true')return;
-var label=btn.getAttribute('aria-label'),pct=btn.querySelector('.rel-dl-pct'),folder=safe(rel.name+' - Ash Stu'),files=new Array(rel.tracks.length),done=0,total=rel.tracks.length;
-btn.setAttribute('aria-busy','true');btn.setAttribute('aria-disabled','true');btn.classList.add('working');if(pct)pct.textContent='0%';say('Preparing '+rel.name+' for download.');
-var show=function(){var p=Math.round(done/total*100);if(pct)pct.textContent=p+'%';btn.setAttribute('aria-label','Preparing '+rel.name+': '+p+' percent');};
-var end=function(msg){btn.removeAttribute('aria-busy');btn.removeAttribute('aria-disabled');btn.classList.remove('working');if(pct)pct.textContent='';btn.setAttribute('aria-label',label);if(msg)say(msg);};
-/* three songs at a time */
-var next=0;function worker(){if(next>=total)return Promise.resolve();var i=next++,t=rel.tracks[i];return get(t.file).then(function(u8){files[i]={name:folder+'/'+safe(t.file.split('/').pop()),data:u8};done++;show();return worker();});}
-Promise.all([worker(),worker(),worker()]).then(function(){
-var dir=rel.tracks[0].file.split('/').slice(0,-1).join('/'),extras=[];
-if(rel.art)extras.push(get(rel.art).then(function(u8){files.push({name:folder+'/cover.'+(rel.art.split('.').pop()||'webp'),data:u8});},function(){}));
-extras.push(get(dir+'/lyrics.txt').then(function(u8){files.push({name:folder+'/lyrics.txt',data:u8});},function(){}));
-return Promise.all(extras);}).then(function(){
-var blob=makeZip(files),a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=folder+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},60000);
-end(rel.name+' is downloading: '+total+(total===1?' song':' songs')+', '+Math.round(blob.size/1048576)+' megabytes.');
-}).catch(function(){end("Couldn't prepare "+rel.name+". Check your connection and try again.");});}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(b){e.preventDefault();e.stopPropagation();run(b);}},true);
+var warm=false;function prep(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(!b||warm)return;warm=true;
+['https://github.com','https://release-assets.githubusercontent.com'].forEach(function(h){var l=document.createElement('link');l.rel='preconnect';l.href=h;document.head.appendChild(l);});}
+['pointerover','focusin','touchstart'].forEach(function(t){document.addEventListener(t,prep,{passive:true,capture:true});});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(!b)return;e.stopPropagation();var rel=(window.RELEASE_LIST||[])[+b.dataset.rel];
+if(rel&&window.kinetic&&window.kinetic.announce)window.kinetic.announce(rel.name+' is downloading.');},true);
 })();</script>
 <script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the
    current section changes, bring its button into view inside the rail. */

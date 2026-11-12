@@ -7,3 +7,4 @@ data.db-wal
 Books/
 .claude/
 .aider*
+.zips/

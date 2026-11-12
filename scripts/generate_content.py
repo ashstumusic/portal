@@ -11,6 +11,8 @@ import os
 import re
 import subprocess
 import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import album_zip
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
@@ -199,6 +201,10 @@ def gen_releases():
     for r in releases:
         r['featured'] = r is lead
         del r['_sort'], r['_lead'], r['_order']
+        # The release's ready-made ZIP (see album_zip.py): the link the Download button uses, and its exact size.
+        zp = album_zip.plan(r)
+        if zp:
+            r['zip'] = {'url': zp['url'], 'bytes': zp['bytes']}
     return releases
 
 

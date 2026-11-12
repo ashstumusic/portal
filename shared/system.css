@@ -2636,12 +2636,8 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 0 !important; overflow: visible !important; }
 
 /* Release download (makes a ZIP of the release): an icon button of the Button system - 40px square, dark glass,
-   gold on hover/focus. While it is working the arrow gives way to the percentage done. */
+   gold on hover/focus. It is a plain link to the release's ready-made ZIP. */
 :root.psy .rel-btn.rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 0 0 40px !important; width: 40px !important; min-width: 40px; height: 40px; padding: 0 !important; justify-content: center; gap: 0; cursor: pointer; font: inherit; }
-:root.psy .rel-dl .rel-dl-pct { font: 700 11.5px/1 var(--font-ui, system-ui, sans-serif); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-:root.psy .rel-dl .rel-dl-pct:empty { display: none; }
-:root.psy .rel-dl.working .rel-dl-ico { display: none; }
-:root.psy .rel-dl.working { cursor: progress; }
 @media (pointer: coarse) { :root.psy .rel-btn.rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-basis: 44px !important; width: 44px !important; height: 44px; } }
 
 /* Toolbar streaming logos, on hover and keyboard focus: the logo becomes a black cut-out on gold. Its coloured
@@ -2824,28 +2820,69 @@ html { overscroll-behavior-y: none; }
   :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 1 1 auto !important; max-height: none !important; height: auto !important; min-height: 0; }
 }
 
-/* Toolbar Home mark: stands in the name's place whenever "Ash Stu" is away from the toolbar (the page sets
-   data-home on the name's link: "plain", "button" or "off").
+/* Toolbar Home mark: always at the left end of the toolbar; the name sits to its right (the name's link keeps 48px
+   of room for it: the 40px mark and an 8px gap). The page sets data-home on the link:
    - plain (the home section, and the first paint): only the little house - no bubble, and the link is not pressable
      there, since you are already home;
-   - button (About): the house in a bubble built to the button rules below - dark glass, squircle, 40px, gold on hover
-     and focus, a slight press. It is drawn inside the name's own link, so the link's 44px-tall area is its hit area
-     and its name ("Ash Stu, back to top") and focus ring are the link's;
-   - off: hidden (the name is showing). */
+   - button (everywhere else): the house in a bubble built to the button rules below - dark glass, squircle, 40px,
+     gold on hover and focus, a slight press. It is drawn inside the name's own link, so the link's 44px-tall area is
+     its hit area and its name ("Ash Stu, back to top") and focus ring are the link's. */
 .nav-home { display: none; }
 :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: absolute; left: 0; top: 50%; z-index: 2; width: 40px; height: 40px; margin-top: -20px; display: grid; place-items: center; box-sizing: border-box;
-  border-radius: var(--btn-r, 12px); background: transparent; box-shadow: none; color: var(--btn-d-fg);
+  border-radius: var(--btn-r-ico, 12px); background: transparent; box-shadow: none; color: var(--btn-d-fg);   /* the same corners as the settings button at the other end of the bar */
   opacity: 1; pointer-events: none; transition: opacity .2s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease, scale .12s ease; }
-:root.js.psy .nav .nav-logo .nav-home svg { display: block; width: 20px; height: 20px; }
-:root.js.psy .nav .nav-logo[data-home="off"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: 0; }
+:root.js.psy .nav .nav-logo .nav-home svg { display: block; width: 22px; height: 22px; }
+:root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 48px !important; }
 :root.js.psy .nav .nav-logo[data-home="plain"]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.js.psy .nav .nav-logo:not([data-home]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: none !important; cursor: default; }
-:root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--btn-d-bg); box-shadow: var(--btn-d-edge); -webkit-backdrop-filter: var(--btn-blur); backdrop-filter: var(--btn-blur); }
+:root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--btn-d-bg); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22); }   /* exactly the settings button's glass: same fill and edge, no drop shadow, no extra blur (the bar behind it is already frosted) */
 :root.js.psy .nav .nav-logo.home-on:is(:hover, :focus-visible) .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold); color: #111; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .18), 0 1px 2px rgb(0 0 0 / .3); }
 :root.js.psy .nav .nav-logo.home-on:active .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { scale: .96; }
 @media (prefers-reduced-motion: reduce) { :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transition: none; } }
 @media (prefers-reduced-transparency: reduce) { :root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-backdrop-filter: none; backdrop-filter: none; background: #2a2d35; } }
 @media (forced-colors: active) { :root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; box-shadow: none; } }
 @media print { .nav-home { display: none !important; } }
+
+/* Tablet-width toolbars (768-859px) are full now that the Home mark is always there: the search field rests as a
+   40px magnifying-glass button and opens to its full width over its neighbours when used (as it already did from a
+   wider resting size), so the row stays on one line. */
+@media (min-width: 768px) and (max-width: 859px) {
+  :root.psy .nav .k-si--bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --si-w: 40px; flex: 0 0 40px !important; width: 40px !important; min-width: 40px !important; }
+  :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 40px !important; padding-right: 0 !important; cursor: pointer; }
+  :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::placeholder { color: transparent !important; }
+  :root.psy .nav .k-si--bar .k-si-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: 11px !important; }
+  :root.psy .nav .k-si--bar:focus-within:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-basis: 320px !important; width: 320px !important; margin-left: -280px !important; }
+}
+
+/* ── Phone menu: everything in view at once. The four sections sit two by two instead of in a tall stack, the three
+   streaming links are labelled buttons (a bare logo does not say where it goes), and the sheet may use the full
+   height of the screen, so Settings no longer hide below a scroll. The Menu button is the same 40px square as the
+   Home mark at the other end of the bar, with a 44px area to press. */
+.k-menu-plat-name { display: none; }
+@media (max-width: 767px) {
+  .k-menu { max-height: calc(100vh - 3rem); max-height: calc(100dvh - 3rem); gap: 8px; }
+  .k-menu-links { grid-template-columns: 1fr 1fr; }
+  .k-menu-link:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .k-menu-plats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0; }
+  .k-menu-plat { width: auto; height: auto; min-height: 64px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    border-radius: var(--btn-r, 12px); background: var(--btn-l-bg); color: var(--btn-l-fg); box-shadow: var(--btn-l-edge); text-decoration: none;
+    font: 600 12.5px/1.1 var(--font-ui, system-ui, sans-serif); letter-spacing: -.01em; transition: background-color .18s ease, color .18s ease, transform .18s ease; }
+  .k-menu-plat .pt { width: 26px; height: 26px; }
+  .k-menu-plat-name { display: block; white-space: nowrap; }
+  .k-menu-plat:is(:hover, :focus-visible) { background: var(--gold); color: #111; box-shadow: none; }
+  .k-menu-plat:is(:hover, :focus-visible) .pt { filter: none; }
+  .k-menu-plat:active, .k-menu-link:active { transform: scale(.96); }
+  .k-menu .settings-title { margin-top: 6px; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; position: relative; }
+  :root.psy .nav .nav-toggle::after { content: ""; position: absolute; inset: -2px; }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) { .k-menu-plat { transition: none; } .k-menu-plat:active, .k-menu-link:active { transform: none; } }
+@media (max-width: 767px) and (forced-colors: active) { .k-menu-plat { border: 1px solid ButtonText; } }
+
+/* Desktop toolbar, name hidden (the home section, and About where the big name takes over): the streaming logos sit
+   right beside the Home mark rather than across an empty gap. --name-gone runs 0..1 with the name's fade, so the logos
+   glide out as the name appears; nothing else in the bar moves. */
+:root.psy .nav.pf-left:not(.pf-flow) .nav-platforms { translate: calc(var(--name-gone, 0) * var(--name-shift, 0px) * -1) 0; }
+@media (prefers-reduced-motion: no-preference) { :root.psy .nav.pf-left:not(.pf-flow) .nav-platforms { transition: translate .22s ease-out; } }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
