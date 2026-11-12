@@ -2615,7 +2615,6 @@ body+='</g>';
 var legs=P.fly?'':'<g stroke-linejoin="round">'+[[112,108,119],[130,130,141]].map(function(L){return line([[L[0],160+b],[L[1],g],[L[2]+2,g]],5.4,1)+line([[L[1],g],[L[1]-7,g+1]],4,.8);}).join('')+'</g>';
 legs=legs.replace(/<path d/g,'<path stroke="currentColor" d');
 s+=legs+(P.lean?'<g transform="rotate('+P.lean+' 120 '+(160+b)+')">'+body+'</g>':body);
-if(P.hop)s+=line([[98,196],[113,196]],2.800,.8).replace(/<path d/g,'<path stroke="currentColor" opacity=".55" d')+line([[127,196],[142,196]],2.800,.8).replace(/<path d/g,'<path stroke="currentColor" opacity=".55" d');
 if(P.sx)s='<g transform="translate(120 190) scale('+P.sx+' '+P.sy+') translate(-120 -190)">'+s+'</g>';
 return s;}
 var PERCH=[{},{sing:1,lean:-4,sx:.98,sy:1.03},{sing:1,lean:-6,tail:5,sx:.97,sy:1.04},{sing:1,lean:-4,sx:.98,sy:1.03},
@@ -2635,7 +2634,7 @@ function whistle(){if(!box||box.hidden||notes.length>(beside?4:6)||!document.bod
 var el=document.createElement('span');el.className='dz-note';el.innerHTML=noteArt(Math.floor(Math.random()*3),INK[Math.floor(Math.random()*INK.length)]);
 /* small notes, in a tight plume just above the beak: they rise a little and fade, drifting only slightly.
 The name is layered above them (see .nav-logo in shared/system.css), so one that strays that way passes behind it. */
-var S2=G.size,sz=S2*(.15+Math.random()*.07);el.style.width=el.style.height=sz+'px';el.style.left=((turned?S2*.13:S2*.87)-sz*(turned?.3:.7))+'px';el.style.top=(S2*.44-sz*.7)+'px';xw.appendChild(el);
+var S2=G.size,sz=S2*(.15+Math.random()*.07);el.style.width=el.style.height=sz+'px';el.style.left=((turned?S2*(mode==='home'?2*FX-.87:.13):S2*.87)-sz*(turned?.3:.7))+'px';el.style.top=(S2*.44-sz*.7)+'px';xw.appendChild(el);
 /* the rise is capped so a note fades out before the top of the toolbar and is never cut off by its edge */
 var room=mode!=='perch'?1e4:box.getBoundingClientRect().top-nav.getBoundingClientRect().top+(S2*.44-sz*.7)-sz*.25-3,dx=(Math.random()-.3)*S2*.5*(turned?-1:1),dy=Math.max(4,Math.min(S2*(.3+Math.random()*.22),room)),wv=S2*(.025+Math.random()*.035)*(Math.random()<.5?-1:1),r=(Math.random()-.5)*36;
 var a=el.animate([{transform:'translate(0,0) scale(.3) rotate(0deg)',opacity:0},{transform:'translate('+f1(dx*.2)+'px,'+f1(-dy*.35+wv)+'px) scale(.9) rotate('+f1(r*.4)+'deg)',opacity:1,offset:.2},
@@ -2667,12 +2666,12 @@ box.innerHTML='<span class="dz-x"><span class="dz-face">'+birdSheet()+'</span></
 fi=[].slice.call(face.querySelectorAll('.dz-fi > g'));ff=[].slice.call(face.querySelectorAll('.dz-fw > g'));
 /* a click or tap on the bird turns him round there and then, and - since he is inside the name's link - also does what
 a click on the name does (back to the top). His own random turning starts counting again from that moment. */
-box.addEventListener('click',function(e){if(mode==='roam'&&window.__catWall){caught=true;window.__catWall(e);place();return;}turned=!turned;face.style.transform=turned?'scaleX(-1)':'';if(loopT)turnSoon();});}
+box.addEventListener('click',function(e){if(mode==='roam'&&window.__catWall){caught=true;window.__catWall(e);place();return;}if(mode==='home'){var sp=plat&&plat.spots[hopI];if(sp&&!(turned?sp.R:sp.L)){if(loopT)turnSoon();return;}}turned=!turned;face.style.transform=turned?'scaleX(-1)':'';if(loopT)turnSoon();});}
 function show(el){if(el===shown)return;if(shown)shown.setAttribute('hidden','');el.removeAttribute('hidden');shown=el;}
 /* Every so often it turns to face the other way: after a random wait of 3 to 8 seconds each time (never sooner, never
 longer), taking about a quarter of a second to turn. */
 var turned=false,turnT=0;
-function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden&&!inAir()){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';}turnSoon();},3000+Math.random()*5000);}
+function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden&&!inAir()&&mode!=='home'){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';}turnSoon();},3000+Math.random()*5000);}
 /* Where the bird is. While the big name in the hero is showing (the top of the page), the bird is out beside it: to the
 right of the lettering, standing level with the foot of the letters, hopping from spot to spot (where there is no room
 to the right - narrow screens - it stands on top of the end of the name instead). Once the page is scrolled on and the
@@ -2681,38 +2680,59 @@ again. It is one bird throughout: the toolbar's, moved and enlarged with a trans
 var home=false,mode='perch',tgt=null,roamT=0,aboutSec=document.getElementById('about'),placed=false,hopT=0,hopping=false,hopA=null,heroName=document.querySelector('#hero-brand .hero-name'),heroB=document.getElementById('hero-brand');
 function inAir(){return flying||hopping;}
 function tf(t){return t?'translate('+f1(t.x)+'px,'+f1(t.y)+'px) scale('+(Math.round(t.s*1000)/1000)+')':'translate(0px,0px) scale(1)';}
-/* The letters are its perches. Each letter of the name is drawn, unseen, in the name's own font and its top edge traced
-column by column; every crest of that edge (the point of the A, the top of each s, the tall stem and the shoulder of
-the h, the top of the t, both arms of the u...) becomes a place to stand, kept as a position within the lettering
-(in ems from its left end and its baseline) so it holds at any size. The bird hops from crest to crest. */
+/* The letters are its perches.
+Each letter of the name is drawn, unseen, in the name's own font and its top edge traced column by column, giving one
+outline of the top of the whole name. Every crest of that outline is a possible place to stand - but only if the
+bird, standing there, is clear of the letters on either side: its body (from tail tip to beak) must not be cut into
+by a taller neighbour. That is checked for the bird facing each way; a crest is kept with the way(s) it can face
+there, and dropped if it fits neither way. Places are kept as positions within the lettering (ems from its left end
+and its baseline), so they hold at any size.
+The bird's own measurements, as fractions of its square: feet at 61% across and 97% down; tail tip 50% behind the
+feet, beak 29% ahead; its underside clears the ground by about 10%. It turns about its feet, so they stay planted. */
+var FX=.61,FY=.973,BACK=.5,FRONT=.29;
 var plat=null,hopI=-1,caught=false;
+function birdSize(fs){return Math.max(34,Math.min(72,fs*.4));}
 function mapName(){plat=null;if(!heroName||!heroName.firstChild||heroName.firstChild.nodeType!==3)return;
 var node=heroName.firstChild,txt=node.nodeValue,cs=getComputedStyle(heroName),fs=parseFloat(cs.fontSize);if(!fs)return;
 var rg=document.createRange();rg.selectNodeContents(node);var r0=rg.getBoundingClientRect();if(!r0.width)return;
 var pr=document.createElement('span');pr.style.cssText='display:inline-block;width:0;height:0;vertical-align:baseline';heroName.insertBefore(pr,node);var base=pr.getBoundingClientRect().bottom;pr.remove();
-var U=160,pad=60,B=250,cv=document.createElement('canvas');cv.width=U*2+pad*2;cv.height=340;var ctx=cv.getContext('2d',{willReadFrequently:true});
+var U=200,pad=80,B=320,cv=document.createElement('canvas');cv.width=U*2+pad*2;cv.height=420;var ctx=cv.getContext('2d',{willReadFrequently:true});
 ctx.font=cs.fontStyle+' '+cs.fontWeight+' '+U+'px '+cs.fontFamily;ctx.textBaseline='alphabetic';ctx.fillStyle='#000';
-var spots=[],win=Math.round(U*.13);
-for(var i=0;i<txt.length;i++){if(!txt[i].trim())continue;rg.setStart(node,i);rg.setEnd(node,i+1);var cr=rg.getBoundingClientRect();
-ctx.clearRect(0,0,cv.width,cv.height);ctx.fillText(txt[i],pad,B);var d=ctx.getImageData(0,0,cv.width,cv.height).data,top=[],c,y;
-for(c=0;c<cv.width;c++){top[c]=null;for(y=0;y<cv.height;y++){if(d[(y*cv.width+c)*4+3]>128){top[c]=y;break;}}}
-var run=null;for(c=0;c<=cv.width;c++){var crest=false;if(c<cv.width&&top[c]!==null){crest=true;for(var k=Math.max(0,c-win);k<=Math.min(cv.width-1,c+win);k++){if(top[k]!==null&&top[k]<top[c]-2){crest=false;break;}}
-/* not the very rim of a letter, where the edge is falling away */
-if(crest&&(top[c-5]==null||top[c+5]==null))crest=false;}
-if(crest){if(!run)run={a:c,b:c};run.b=c;}else if(run){var m=Math.round((run.a+run.b)/2);spots.push({ex:(cr.left-r0.left)/fs+(m-pad)/U,ey:(top[m]-B)/U});run=null;}}}
-if(spots.length)plat={fs:fs,baseEm:(base-r0.top)/fs,spots:spots};}
-function spot(){if(!heroName||!heroName.firstChild)return null;var rg=document.createRange();rg.selectNodeContents(heroName.firstChild);var r=rg.getBoundingClientRect(),pb=box.getBoundingClientRect();if(!r.width||!pb.width)return null;
+/* the top outline of the whole name: prof[column] = height of the ink's top edge above the baseline, in canvas px (U per em) */
+var n=Math.ceil(r0.width/fs*U)+2*pad,prof=new Array(n).fill(null),i,c,y;
+for(i=0;i<txt.length;i++){if(!txt[i].trim())continue;rg.setStart(node,i);rg.setEnd(node,i+1);var cr=rg.getBoundingClientRect(),g0=Math.round((cr.left-r0.left)/fs*U);
+ctx.clearRect(0,0,cv.width,cv.height);ctx.fillText(txt[i],pad,B);var d=ctx.getImageData(0,0,cv.width,cv.height).data;
+for(c=0;c<cv.width;c++){for(y=0;y<cv.height;y++){if(d[(y*cv.width+c)*4+3]>128){var g=g0+c;if(g>=0&&g<n){var v=B-y;if(prof[g]===null||v>prof[g])prof[g]=v;}break;}}}}
+var S=birdSize(fs)/fs*U,win=Math.round(U*.12),spots=[],run=null;
+function clear(m,a,b){for(var k=Math.max(0,Math.round(m-a));k<=Math.min(n-1,Math.round(m+b));k++){if(prof[k]!==null&&prof[k]>prof[m]+S*.07&&Math.abs(k-m)>S*.1)return false;}return true;}
+for(c=0;c<=n;c++){var crest=false;if(c<n&&prof[c]!==null){crest=true;for(var k=Math.max(0,c-win);k<=Math.min(n-1,c+win);k++){if(prof[k]!==null&&prof[k]>prof[c]+1.5){crest=false;break;}}
+/* not the very rim of a letter, where the edge is falling away, and wide enough to stand on */
+if(crest&&(prof[c-6]==null||prof[c+6]==null))crest=false;}
+if(crest){if(!run)run={a:c,b:c};run.b=c;}else if(run){var m=Math.round((run.a+run.b)/2),R=clear(m,S*BACK,S*FRONT),L=clear(m,S*FRONT,S*BACK);
+if(R||L)spots.push({ex:(m-pad)/U,ey:-prof[m]/U,R:R,L:L});run=null;}}
+if(spots.length>1)plat={fs:fs,baseEm:(base-r0.top)/fs,spots:spots,prof:prof,U:U,pad:pad};}
+function nameBox(){if(!heroName||!heroName.firstChild)return null;var rg=document.createRange();rg.selectNodeContents(heroName.firstChild);var r=rg.getBoundingClientRect();return r.width?r:null;}
+function spot(){var r=nameBox(),pb=box.getBoundingClientRect();if(!r||!pb.width)return null;
 var fs=parseFloat(getComputedStyle(heroName).fontSize)||0;if(!plat||Math.abs(plat.fs-fs)>.5)mapName();
-if(plat){if(hopI<0||hopI>=plat.spots.length)hopI=plat.spots.length-1;var sp=plat.spots[hopI],size=Math.max(34,Math.min(72,fs*.4));
-return {x:r.left+sp.ex*fs-size*(turned?.39:.61)-pb.left,y:r.top+(plat.baseEm+sp.ey)*fs-size*.955-pb.top,s:size/pb.width,px:size};}
-var size2=Math.max(46,Math.min(132,r.height*.62));return {x:Math.min(r.right,innerWidth-10-size2)-pb.left,y:r.top+r.height*.83-size2*.97-pb.top,s:size2/pb.width,px:size2};}
+if(!plat)return null;if(hopI<0||hopI>=plat.spots.length)hopI=plat.spots.length-1;var sp=plat.spots[hopI],size=birdSize(fs);
+return {x:r.left+sp.ex*fs-size*FX-pb.left,y:r.top+(plat.baseEm+sp.ey)*fs-size*(FY-.012)-pb.top,s:size/pb.width,px:size};}
 function wantHome(){if(caught||!heroB||document.documentElement.classList.contains('cat-mode'))return false;if(scrollY>2)return false;var o=heroB.style.opacity;return (o===''?1:parseFloat(o))>.5;}
 function faceTo(left){turned=!!left;face.style.transform=turned?'scaleX(-1)':'';}
-function flyTo(t,dur,low){flying=true;tgt=t;hush();var cst=getComputedStyle(xw),from=cst.transform,lift0=cst.translate&&cst.translate!=='none'?cst.translate.split(' '):null;if(from==='none')from=tf(null);if(lift0)from='translate('+lift0[0]+','+(lift0[1]||'0px')+') '+from;if(hopA){hopA.cancel();hopA=null;hopping=false;}var to=tf(t),r0=xw.getBoundingClientRect(),pb=box.getBoundingClientRect(),tx=pb.left+(t?t.x:0);
-faceTo(tx<r0.left);if(flyA)flyA.cancel();
-var lift=low?14+Math.random()*22:Math.min(90,Math.max(26,Math.abs(tx-r0.left)*.18));
-flyA=xw.animate([{transform:from,translate:'0 0'},{translate:'0 -'+f1(lift)+'px',offset:.45},{transform:to,translate:'0 0'}],{duration:dur||900,easing:'cubic-bezier(.45,0,.3,1)'});
-xw.style.transform=to;var a=flyA,done=function(){if(flyA!==a)return;flyA=null;flying=false;place();if(mode==='perch')faceTo(false);else if(mode==='roam'){clearTimeout(roamT);roamT=setTimeout(roamNext,250+Math.random()*900);}};a.finished.then(done,done);}
+/* on the letters it turns about its feet (they stay on the crest); on the toolbar about its middle, as before */
+function pivot(){face.style.transformOrigin=mode==='home'?(FX*100)+'% 50%':'';}
+/* where it is this instant, whatever is moving it */
+function now(){var m=getComputedStyle(xw).transform;if(!m||m==='none')return {x:0,y:0,s:1};var q=new DOMMatrixReadOnly(m);return {x:q.e,y:q.f,s:q.a};}
+/* one movement = one list of drawn positions along a curve, from where it is to where it is going: x and size change
+evenly, and the height follows rise(t) (0 at both ends). No second property is animated, so nothing can fall out of
+step, and a movement that takes over from another starts from the exact spot the bird has reached. */
+function travel(from,to,rise,dur,ease){var k=[],N=16;for(var i=0;i<=N;i++){var t=i/N;k.push({transform:tf({x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t-rise(t),s:from.s+(to.s-from.s)*t})});}
+xw.style.transform=tf(to);return xw.animate(k,{duration:dur,easing:ease||'linear'});}
+function stopMoves(){if(hopA){var h=hopA;hopA=null;hopping=false;h.cancel();}if(flyA){var f=flyA;flyA=null;f.cancel();}}
+function flyTo(t,dur,low){var from=now(),to=t||{x:0,y:0,s:1};stopMoves();flying=true;tgt=t;hush();pivot();
+faceTo(to.x<from.x-2?true:to.x>from.x+2?false:turned);
+var dist=Math.hypot(to.x-from.x,to.y-from.y),lift=low?14+Math.random()*22:Math.min(90,Math.max(20,dist*.14));
+var a=travel(from,to,function(u){return Math.sin(Math.PI*u)*lift;},dur||Math.max(520,Math.min(1100,dist*1.5+360)),'cubic-bezier(.45,0,.3,1)');flyA=a;
+var done=function(){if(flyA!==a)return;flyA=null;flying=false;if(mode==='home'){var sp=plat&&plat.spots[hopI];if(sp)faceTo(turned?sp.L||!sp.R:!sp.R);}place();if(mode==='perch')faceTo(false);else if(mode==='roam'){clearTimeout(roamT);roamT=setTimeout(roamNext,250+Math.random()*900);}};a.finished.then(done,done);}
 /* About: the bird is on the wing, flying from place to place anywhere inside the window (below the toolbar, above
 the player), over photos and words alike. */
 /* nothing is off limits any more: it may fly over the photos and the words - it only has to stay inside the window */
@@ -2735,16 +2755,29 @@ best={x:x-pb.left,y:y-pb.top,s:sz/pb.width,px:sz,ax:x,ay:y};}
 if(!best){if(Math.abs(cur.left-pb.left)>4||Math.abs(cur.top-pb.top)>4)flyTo(null,900,true);else roamT=setTimeout(roamNext,700);return;}
 flyTo(best,Math.max(700,Math.min(2200,Math.hypot(best.ax-cur.left,best.ay-cur.top)*2.6)),true);}
 function place(){var m=wantHome()?'home':wantRoam()?'roam':'perch',t=m==='home'?spot():null;if(m==='home'&&!t)m='perch';
-if(!placed){placed=true;mode=m;xw.style.transform=tf(t);if(m==='roam')roamNext();}
+if(!placed){placed=true;mode=m;pivot();xw.style.transform=tf(t);if(m==='home'){var s0=plat&&plat.spots[hopI];if(s0)faceTo(!s0.R);}if(m==='roam')roamNext();}
 else if(m!==mode){mode=m;clearTimeout(roamT);if(m==='roam')roamNext();else flyTo(t);}
 else if(m==='roam'){if(tgt&&tgt.px&&performance.now()-roamAt>260){var bd=band(tgt.px);if(tgt.ay<bd.top-3||tgt.ay>bd.bot+3)roamNext();}}
 else if(!flying&&!hopping)xw.style.transform=tf(t);
 home=mode==='home';box.classList.toggle('out',mode!=='perch');}
+/* A hop is a real jump: it leaves one crest and lands on another along a parabola, high enough to clear whatever
+letters stand between the two (their tops are known from the outline) with room to spare, and it takes as long as a
+jump of that height takes. It faces the way it is going where it can stand that way; otherwise it lands turned the
+way that fits. */
 function hopSoon(){clearTimeout(hopT);hopT=setTimeout(function(){
-if(home&&!flying&&!hopping&&scrollY<=2&&!document.hidden&&box&&!box.hidden){var a0=spot(),n=plat?plat.spots.length:0,was=hopI;if(n>1){/* usually to a neighbouring crest, now and then a longer leap */var far=Math.random()<.25,st=(Math.random()<.5?-1:1)*(far?2+Math.floor(Math.random()*3):1);hopI=Math.max(0,Math.min(n-1,hopI+st));if(hopI===was)hopI=Math.max(0,Math.min(n-1,was-st));
-faceTo(plat.spots[hopI].ex<plat.spots[was].ex);}var t=spot();
-if(a0&&t&&n>1&&hopI!==was){hopping=true;var a=xw.animate([{transform:tf(a0),translate:'0 0'},{translate:'0 -'+f1(t.px*(.32+Math.abs(hopI-was)*.12))+'px',offset:.5},{transform:tf(t),translate:'0 0'}],{duration:300+Math.abs(hopI-was)*70,easing:'cubic-bezier(.4,0,.6,1)'});hopA=a;
-xw.style.transform=tf(t);var done=function(){if(hopA!==a)return;hopA=null;hopping=false;place();};a.finished.then(done,done);}}
+if(mode==='home'&&!flying&&!hopping&&scrollY<=2&&!document.hidden&&box&&!box.hidden&&plat&&plat.spots.length>1){var from=spot(),n=plat.spots.length,was=hopI;
+/* usually to a neighbouring crest, now and then a longer leap */
+var far=Math.random()<.25,st=(Math.random()<.5?-1:1)*(far?2+Math.floor(Math.random()*3):1),to=Math.max(0,Math.min(n-1,was+st));if(to===was)to=Math.max(0,Math.min(n-1,was-st));
+if(from&&to!==was){var A=plat.spots[was],Bq=plat.spots[to],left=Bq.ex<A.ex,fs=plat.fs,size=from.px,U=plat.U,pad=plat.pad;
+hopI=to;var faceL=left?(Bq.L||!Bq.R):!Bq.R,t=spot();
+/* how far the letters in between rise above the higher of the two crests */
+var hi=Math.max(-A.ey,-Bq.ey)*U,need=0,c0=Math.round(Math.min(A.ex,Bq.ex)*U+pad-size/fs*U*.35),c1=Math.round(Math.max(A.ex,Bq.ex)*U+pad+size/fs*U*.35);
+for(var c=Math.max(0,c0);c<=Math.min(plat.prof.length-1,c1);c++){if(plat.prof[c]!==null&&plat.prof[c]-hi>need)need=plat.prof[c]-hi;}
+var lift=need/U*fs+Math.abs(A.ey-Bq.ey)*fs/2+size*.3,dur=Math.max(280,Math.min(680,Math.sqrt(8*lift/(2300*size/50))*1000));
+hopping=true;var a=travel(from,t,function(u){return 4*lift*u*(1-u);},dur,'linear');hopA=a;
+/* it turns to face the way it will land once it is up and clear of the letter it left - never while still standing on it */
+if(faceL!==turned)setTimeout(function(){if(hopA===a)faceTo(faceL);},dur*.3);
+var done=function(){if(hopA!==a)return;hopA=null;hopping=false;place();};a.finished.then(done,done);}}
 hopSoon();},1100+Math.random()*1700);}
 function play(ms){if(loopT)return;turnSoon();hopSoon();loopT=setInterval(function(){if(document.hidden||!fi)return;loopN++;
 if((flying||mode==='roam')&&ff.length){show(ff[loopN%ff.length]);return;}
@@ -2761,6 +2794,8 @@ addEventListener('scroll',function(){if(box&&!box.hidden&&home&&scrollY>2)place(
 if(heroB&&'MutationObserver' in window)new MutationObserver(ask).observe(heroB,{attributes:true,attributeFilter:['style']});
 new MutationObserver(ask).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){plat=null;ask();});
+/* (for checking the perches: where it may stand, which it is on, and a way to stand it on any one of them) */
+window.__bird={plat:function(){return plat;},i:function(){return hopI;},mode:function(){return mode;},stand:function(i){if(!plat||mode!=='home')return;stopMoves();clearTimeout(hopT);hopI=i;var sp=plat.spots[i];faceTo(!sp.R);xw.style.transform=tf(spot());},hop:function(){hopSoon();}};
 update();
 })();</script>
 <script>/* About card: "Ash Stu" and the tagline, one line each, sized to span the
@@ -2869,7 +2904,8 @@ as.forEach(function(a,k){var d=was[k]-a.getBoundingClientRect().left;if(d&&a.ani
 addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(setup,200);},{passive:true});
 new MutationObserver(function(){if(still()===can)setup();}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setup);
-setup();setTimeout(setup,1500);setInterval(turn,5000);})();</script>
+/* The logos keep one fixed order (Apple Music, Spotify, YouTube): they no longer trade places. */
+setup();setTimeout(setup,1500);})();</script>
 <script>/* Album ZIP. The site does not keep a ZIP of each release (they are too big to store alongside the songs), so
 the Download button on a release makes one on the spot, in the visitor's own browser: it fetches that release's
 MP3s (the same files the player uses), plus the cover and the lyrics sheet when there is one, packs them into a
