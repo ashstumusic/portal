@@ -524,7 +524,9 @@ const nav = document.querySelector('.nav');
 const navLogo = nav.querySelector('.nav-logo .hero-brand') || nav.querySelector('.nav-logo');   /* the lettering: it fades; the link around it (which also holds the bird) stays live */
 const heroBrand = document.getElementById('hero-brand');
 const heroSection = document.querySelector('.hero-split-left');
-let offsets = [], ticking = false, heroH = 400, aboutTop = 0;
+let offsets = [], ticking = false, heroH = 400, aboutTop = 0, _picked = '';
+ids.forEach(id => { if (links[id]) links[id].addEventListener('click', () => { _picked = id; }); });
+['wheel', 'touchmove', 'keydown'].forEach(ev => window.addEventListener(ev, () => { _picked = ''; }, { passive: true }));
 function cacheOffsets() {
 offsets = ids.map(id => ({ id, top: (document.getElementById(id) || {}).offsetTop || 0 }));
 var ab = document.getElementById('about') || document.querySelector('.bio-section'); aboutTop = ab ? ab.offsetTop : 0;
@@ -549,6 +551,9 @@ for (let i = 0; i < offsets.length; i++) { if (mark >= offsets[i].top) cur = off
 // The About section has no toolbar link of its own: once it is the section in view (by the same measure, or the
 // page is scrolled to the very end), no link is marked as current.
 if (aboutTop && (mark >= aboutTop || window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2)) cur = '';
+// A section link that was just pressed stays the lit one until the visitor scrolls by hand: a short section (Contact)
+// can share the screen with the next one, and the link pressed must be the one that lights up.
+if (_picked) cur = _picked;
 // aria-current is styled ([aria-current] selectors), so writing it
 // invalidates style - only touch the DOM on a real section change,
 // never every scroll frame.

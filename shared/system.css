@@ -2367,6 +2367,47 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-card.lyrics-open .rel-lyrics-inner:not(.lyr-wrap) .rel-lyric-line:not(#\#):not(#\#):not(#\#) { white-space: nowrap !important; overflow: hidden; text-indent: 0 !important; padding-left: 8px !important; }
 :root.psy .rel-card.lyrics-open .rel-lyric-line:not(#\#):not(#\#):not(#\#) { font-size: var(--lyr-fs, 19px) !important; line-height: 1.5 !important; }
 
+/* Phones: a two-row toolbar.
+   Row 1 - the bird and name on the left; the three streaming logos and the
+           menu button on the right.
+   Row 2 - the four sections (Press Kit, Contact, Music, Videos) as four
+           equal buttons across the full width, with the same highlight for
+           the current section as on wider screens.
+   The bar is 105px tall in all; the home section starts 105px down and
+   in-page jumps stop 113px short, so nothing hides behind it. The section
+   links are no longer repeated inside the menu. */
+@media (max-width: 767px) {
+  :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; min-height: 0 !important; flex-wrap: wrap !important; align-items: center !important; align-content: flex-start; row-gap: 8px; padding: 8px 16px 8px !important; }
+  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#) { font-size: 2.25rem !important; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#) { --bird-w: 36px; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; margin-left: 10px; }
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 2px !important; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#) { --pt: 28px; padding: 3px; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#) { width: 28px !important; height: 28px !important; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; order: 10; flex: 0 0 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; gap: 6px !important; position: relative; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) > li:not(.nav-glider) { flex: 1 1 0; min-width: 0; display: flex; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) a { flex: 1; display: flex !important; align-items: center; justify-content: center; height: 36px !important; min-height: 36px !important; padding-inline: 2px !important; font-size: 14px !important; white-space: nowrap; }
+  :root.psy .hero-split:not(#\#):not(#\#) { padding-top: 105px !important; }
+  [id] { scroll-margin-top: 113px; }
+  /* the lettering and the bird sit on the same centre line as the logos and the menu button */
+  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#) { top: calc(.17em - 2px) !important; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#) { --bird-dy: .5px; }
+}
+/* narrower phones: smaller logos and name so row 1 stays on one line */
+@media (max-width: 389px) {
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 24px; padding: 3px; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#) { width: 24px !important; height: 24px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 6px; }
+}
+@media (max-width: 349px) {
+  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 2rem !important; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#) { --bird-w: 32px; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 20px; padding: 2px; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 20px !important; height: 20px !important; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) a { font-size: 13px !important; }
+}
+.k-menu-links { display: none !important; }
+
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
    translucent fill that blurs what is behind it), a hairline edge that
