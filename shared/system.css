@@ -2237,8 +2237,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav-drawer :is(a:not(.drawer-platforms a), .drawer-search):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):focus-visible { outline: 3px solid #fff !important; outline-offset: 3px !important; }
 :root.psy .nav-drawer a[aria-current]:not(.drawer-platforms a):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible) { background: #fff !important; color: #111 !important; box-shadow: none !important; }
 
-/* The big "Ash Stu" in the home section is something you tap (five quick
-   taps switch 8-bit mode), not text you select: tapping or double-clicking
+/* The big "Ash Stu" in the home section is a picture of the name, not text you select: tapping or double-clicking
    it no longer highlights the letters, the phone's tap flash and long-press
    menu are off, a double tap does not zoom the page, and it gives a small
    press when touched. */
@@ -2327,10 +2326,9 @@ html { overscroll-behavior-y: none; }
 
 /* The mouse pointer is an arrow filled with the name's gradient (gold, pink, orange, sky blue), with a dark edge so
    it shows on any background. A cursor image cannot animate, so the gradient is still. Links and buttons keep the
-   usual pointing hand, and text fields the usual text cursor, so what is clickable stays obvious. Not in 8-bit mode
-   (it has its own pixel arrow) or forced-colours mode. */
-:root.psy:not(.nes), :root.psy:not(.nes) body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='28'%20height='30'%20viewBox='0%200%2028%2030'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23F7C549'/%3E%3Cstop%20offset='.38'%20stop-color='%23FF8AC8'/%3E%3Cstop%20offset='.68'%20stop-color='%23FFA36B'/%3E%3Cstop%20offset='1'%20stop-color='%238FE6FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M3%202L3%2024L9.2%2018.4L13%2027L17%2025.2L13.2%2016.8L21.5%2016.8Z'%20fill='url(%23g)'%20stroke='%2315171c'%20stroke-width='2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 3 2, auto; }
-@media (forced-colors: active) { :root.psy:not(.nes), :root.psy:not(.nes) body { cursor: auto; } }
+   usual pointing hand, and text fields the usual text cursor, so what is clickable stays obvious. Not in forced-colours mode. */
+:root.psy, :root.psy body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='28'%20height='30'%20viewBox='0%200%2028%2030'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23F7C549'/%3E%3Cstop%20offset='.38'%20stop-color='%23FF8AC8'/%3E%3Cstop%20offset='.68'%20stop-color='%23FFA36B'/%3E%3Cstop%20offset='1'%20stop-color='%238FE6FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M3%202L3%2024L9.2%2018.4L13%2027L17%2025.2L13.2%2016.8L21.5%2016.8Z'%20fill='url(%23g)'%20stroke='%2315171c'%20stroke-width='2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 3 2, auto; }
+@media (forced-colors: active) { :root.psy, :root.psy body { cursor: auto; } }
 
 /* Home photo moved a bit further left inside its crop (the picture is wider
    than its panel; a higher first number shows more of its right-hand side). */
@@ -2603,8 +2601,8 @@ html { overscroll-behavior-y: none; }
    the way the toolbar's bird is: a great many fine, short pencil strokes laid over
    one another, with the paper's grain showing through. The strokes are a mask over the
    lettering (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py),
-   sized in ems so they scale with the name. Not in 8-bit mode. */
-:root.psy:not(.nes) :is(.hero-name, .bio-name) {
+   sized in ems so they scale with the name. */
+:root.psy :is(.hero-name, .bio-name) {
   -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
   -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
 }
@@ -2619,7 +2617,7 @@ html { overscroll-behavior-y: none; }
   75% { -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.nes):not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
+  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
 }
 
 
@@ -2792,6 +2790,71 @@ html { overscroll-behavior-y: none; }
   :root.psy .vid-card-wrap .vid-info .vid-title:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; flex: none !important; }
 }
 @media (min-width: 768px) { #player-bar .np-bar-track::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; bottom: -8px; } }
+
+/* ── Lyrics, titles and tracklists: one layout on every screen ──
+   One left edge per screen for the words: under the song titles where there is room (tablets and up), under the
+   track numbers on phones (where every pixel of width keeps a line whole). Phones and tablets keep each line on one
+   line; a song with a very long line comes down in size only as far as 14px (it used to go to 11px, too small to
+   read) and after that the long lines wrap, with the continuation indented so it reads as the same line.
+   Songs not out yet: still italic and quieter than released ones, but readable (was 38% ink, now 64%). */
+:root.psy .rel-track.rel-track--upcoming:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .rel-track.rel-track--upcoming:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .rel-track-title { color: rgb(226 234 240 / .64) !important; }
+:root.psy .rel-track-num:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-variant-numeric: tabular-nums; }
+@media (max-width: 899px) {
+  :root.psy .rel-card { --lyr-edge: 18px; }
+  :root.psy .rel-card .rel-lyrics-inner:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 4px 0 16px !important; }
+  :root.psy .rel-card .rel-lyric-line:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 1px 10px 1px var(--lyr-edge) !important; text-indent: 0 !important; line-height: 1.5 !important; }
+  :root.psy .rel-card .rel-lyrics-inner.lyr-wrap .rel-lyric-line:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { white-space: normal !important; overflow: visible !important; overflow-wrap: break-word; text-wrap: pretty; padding-left: calc(var(--lyr-edge) + 16px) !important; text-indent: -16px !important; }
+}
+@media (min-width: 600px) and (max-width: 899px) { :root.psy .rel-card { --lyr-edge: 39px; } }
+@media (min-width: 900px) {
+  :root.psy .rel-card.lyrics-pane .rel-lyrics-toggle.open ~ .rel-lyrics .rel-lyrics-inner:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 8px 16px 16px 23px !important; }   /* 8px pane inset + 23px + the line's 8px = 39px, the titles' left edge */
+}
+
+/* ── Desktop toolbar: one control height, steady edges ──
+   The four section buttons are drawn 40px tall (were 34px), the same as the search field and the settings button,
+   so the row reads as one set of controls. Their labels are 15px where the bar has the room. Between 900px and
+   1199px the bar's side margins come in to 24px (they were up to 44px, wider than on big screens) so the logos
+   and the search field get that room back. */
+@media (min-width: 900px) {
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) a::after { height: 40px !important; border-radius: 12px; }
+  :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .nav-glider { height: 40px !important; }
+}
+@media (min-width: 1200px) { :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) a { font-size: 15px !important; } }
+@media (min-width: 900px) and (max-width: 1199px) { :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-inline: 24px !important; } }
+
+/* The bird in About: solid and clear, without the glow (the white halo was too bright) */
+:root .nav-doodle.bright .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: 1; filter: brightness(1.05) saturate(1.15) drop-shadow(0 2px 3px rgb(0 0 0 / .6)) !important; }
+@media (forced-colors: active) { :root .nav-doodle.bright .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
+
+/* ── Desktop toolbar, organised as three groups ──
+   Left: who this is and where to listen (bird, name, a hairline, then Apple Music, Spotify, YouTube side by side,
+   same order as always). Centre: the four sections, centred on the page. Right: the tools (search, settings).
+   The logos used to be spread across the whole empty stretch, which left them floating between groups. */
+:root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { justify-content: flex-start !important; gap: 4px !important; padding-left: 21px !important; position: relative; box-sizing: border-box; }
+:root.psy .nav.scrolled.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { content: ""; position: absolute; left: 8px; top: 50%; width: 1px; height: 24px; margin-top: -12px; background: rgb(255 255 255 / .16); }
+@media (forced-colors: active) { :root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; } }
+
+/* the logos' tap areas sit side by side, not overlapping (8px between them) */
+:root.psy .nav.pf-left .nav-platforms .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 !important; }
+:root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 8px !important; }
+
+@media (max-width: 1099px) { :root.psy .nav.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0 !important; padding-left: 17px !important; } }   /* tighter where the bar is short of room, so the logos keep their place by the name */
+
+/* The bird looks the same everywhere as it does in About: solid coat, full strength, soft dark shadow, no glow */
+.nav-doodle .dz-solid { display: inline; }
+.nav-doodle .dz > g { filter: url(#dz-rough); }
+:root .nav-doodle .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: 1; filter: brightness(1.05) saturate(1.15) drop-shadow(0 2px 3px rgb(0 0 0 / .6)) !important; }
+@media (forced-colors: active) { :root .nav-doodle .dz:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
+
+/* Toolbar streaming logos, on hover and keyboard focus: a line drawing on gold. The logo's body turns clear and
+   fills with gold right up to its edge; its edge is a black line; its detail (the note, the waves, the play mark)
+   is solid black; and a gold halo sits just outside the edge.
+   (How: a black disc the size of the logo sits behind it, and filter #pt-line repaints the logo's coloured body
+   as gold, trimmed 1px in from its edge - so the disc shows as the outline and through the detail.) */
+:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { filter: url(#pt-line) !important; clip-path: circle(calc(50% - 1px)); position: relative; z-index: 1; outline: 0 !important; }
+:root.psy .nav .nav-platform:not(.flash):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { opacity: 1; box-sizing: border-box; border: 0 !important; background: #000 !important; width: var(--pt) !important; height: var(--pt) !important; border-radius: 50%; box-shadow: 0 0 0 1px #14161c, 0 0 0 2.5px var(--gold), 0 0 10px 4px rgb(247 197 73 / .5) !important; }
+:root.psy .nav .nav-platform:not(.flash):focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { box-shadow: 0 0 0 2px #14161c, 0 0 0 3.5px var(--gold), 0 0 0 5.5px #14161c, 0 0 0 8px #fff !important; }
+@media (forced-colors: active) { :root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { filter: none !important; } }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

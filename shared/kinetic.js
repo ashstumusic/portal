@@ -391,6 +391,8 @@
       + '<input class="k-si-input" type="text" inputmode="search" enterkeyhint="search" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="' + id + '" aria-label="Search songs, lyrics, albums, videos, sections, streaming services and settings" placeholder="Search songs, lyrics, videos" autocomplete="off" autocapitalize="off" spellcheck="false">'
       + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" tabindex="-1" hidden></ul>';
     const inp = $('.k-si-input', host), ul = $('.k-si-list', host);
+    /* a narrow toolbar field has room for one word only: a short hint there, the full one elsewhere (the accessible name is unchanged) */
+    if (!flow && window.matchMedia) { const mqS = window.matchMedia('(max-width: 1023px)'), fullPh = inp.getAttribute('placeholder'); const setPh = () => inp.setAttribute('placeholder', mqS.matches ? 'Search' : fullPh); setPh(); mqS.addEventListener ? mqS.addEventListener('change', setPh) : mqS.addListener(setPh); }
     let items = [], lyrics = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
     function draw() {
@@ -565,7 +567,7 @@
     const list = [];
     if (hasKeys) list.push({ group: 'Settings', label: 'Single-key shortcuts', on: keysOn, title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then a letter to jump to a section, / to search', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
     list.push({ group: 'Settings', label: 'Interface sounds', on: soundsOn, title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', sub: 'Small clicks when you press buttons', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(); } });
-    // Page-specific settings (the homepage's psyche.js adds background effects and 8-bit mode).
+    // Page-specific settings (the homepage's psyche.js adds background effects).
     if (typeof window.kineticItems === 'function') { try { list.push(...window.kineticItems().filter((it) => it.group === 'Settings')); } catch {} }
     return list;
   }
