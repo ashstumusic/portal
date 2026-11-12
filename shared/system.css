@@ -1176,7 +1176,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-lyrics-toggle.open:not(:hover):not(#\#) svg { color: #111 !important; }
 
 /* The About name is a link back to the top (the hero slides away). */
-:root.psy .bio-name-link { color: inherit; text-decoration: none; border-radius: 8px; cursor: pointer; -webkit-text-fill-color: inherit; }
+:root.psy .bio-name-link { color: inherit; text-decoration: none; border-radius: 8px; cursor: default; pointer-events: none; -webkit-text-fill-color: inherit; }   /* plain lettering: not pressable (the cat wall is set off by catching the bird) */
 :root.psy .bio-name:has(.bio-name-link:hover) { filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) drop-shadow(0 0 10px rgb(247 197 73 / .55)) !important; }
 
 /* Streaming logos on hover: solid gold (white details and cut-outs kept).
@@ -2600,15 +2600,28 @@ html { overscroll-behavior-y: none; }
 
 /* ── The name, in coloured pencil ─────────────────────────────────────
    "Ash Stu" (hero, toolbar, About) keeps its flowing gradient but is shaded
-   the way the toolbar's bird is: slanted pencil strokes side by side with
-   slivers of paper between, and grain. The strokes are a mask over the
+   the way the toolbar's bird is: a great many fine, short pencil strokes laid over
+   one another, with the paper's grain showing through. The strokes are a mask over the
    lettering (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py),
    sized in ems so they scale with the name. Not in 8-bit mode. */
 :root.psy:not(.nes) :is(.hero-name, .bio-name) {
   -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
-  -webkit-mask-size: 4em 2em; mask-size: 4em 2em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
+  -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
 }
 @media (forced-colors: active) { :root.psy :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; } }
+/* Stop motion: the name is "redrawn" six times a second. The colours no longer glide - they move on one step per
+   drawing (54 drawings to the 9-second cycle) - and each drawing has different pencil strokes (the shading sheet jumps
+   to a new place every step, four placements in turn), the way a hand-coloured animation boils from frame to frame. */
+@keyframes pencil-boil {
+  0% { -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
+  25% { -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
+  50% { -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
+  75% { -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root.psy:not(.nes):not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
+}
+
 
 /* ── Streaming logos: trade places; each in turn opens into its badge ──
    The page moves the three round logos one place round every few seconds
@@ -2646,14 +2659,18 @@ html { overscroll-behavior-y: none; }
 :root.psy .k-si--bar .k-si-list { padding: 8px; border-radius: calc(var(--btn-r) + 4px); }
 @supports (corner-shape: squircle) { :root.psy .k-si-opt, :root.psy .k-si--bar .k-si-list { corner-shape: squircle; } }
 @media (prefers-reduced-transparency: reduce) { :root.psy .k-si-input { background: #23262d; -webkit-backdrop-filter: none; backdrop-filter: none; } }
-/* room for the widest badge is reserved (min-width set by the page); the logos keep to its right-hand end */
-:root.psy .nav .nav-platforms.pf-wide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { justify-content: flex-end !important; }
+/* room for the widest badge is reserved (min-width set by the page); the open badge is at its left end, next to the section buttons */
+:root.psy .nav .nav-platforms.pf-wide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { justify-content: flex-start !important; }
 /* when the centred section buttons would be under the badge, they sit in the row beside the logos instead */
 :root.psy .nav.pf-flow .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative !important; left: auto !important; top: auto !important; transform: none !important; translate: none !important; margin: 0 0 0 auto !important; }
 :root.psy .nav.pf-flow .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 12px !important; }
 /* the unseen try-out, to see whether the badge fits: no easing, no paint */
 .nav .nav-platform.flash-try, .nav .nav-platform.flash-try::before { transition: none !important; }
 @media (prefers-reduced-motion: reduce), (forced-colors: active), (max-width: 767px) { .nav .nav-platform::before { display: none; } }
+
+/* About: each of the three photos has all four corners rounded (they used to share the card's outer corners only) */
+:root.psy .bio-card-media img:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 16px !important; }
+:root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 0 !important; overflow: visible !important; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
