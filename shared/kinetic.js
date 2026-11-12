@@ -325,10 +325,13 @@
     const plats = $$('.nav-platforms a');
     const sets = typeof settingsList === 'function' ? settingsList() : [];
     let h = '<p class="k-menu-title">Menu</p>';
+    // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
+    h += '<div class="k-si k-si--flow"></div>';
     if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
     if (plats.length) h += '<div class="k-menu-plats" aria-label="Streaming platforms">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}">${a.innerHTML}</a>`).join('') + '</div>';
     if (sets.length) h += '<p class="settings-title" id="k-menu-settings">' + GEAR + 'Settings</p><div class="k-menu-settings" role="group" aria-labelledby="k-menu-settings">' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
-    menuBox.innerHTML = h;
+    menuBox.innerHTML = h; menuBox.classList.remove('searching');
+    makeSearch($('.k-si', menuBox), { flow: true, onQuery: (has) => menuBox.classList.toggle('searching', has), beforeRun: () => closePalette(false) });
     if (keep != null) $$('.settings-row', menuBox)[keep]?.focus({ preventScroll: true });
   }
   function setMode(m) {
@@ -340,10 +343,62 @@
   }
   menuBox.addEventListener('click', (e) => {
     const l = e.target.closest('.k-menu-link'), r = e.target.closest('.settings-row');
+    if (e.target.closest('.k-si')) return;
     if (l) { const a = $$('.nav-links a').filter((x) => x.getAttribute('href'))[+l.dataset.link]; closePalette(false); a?.click(); }
     else if (r) { const i = +r.dataset.set, it = settingsList()[i]; if (it) { try { it.run(); } catch {} setTimeout(() => { if (dlg.open && dlg.dataset.mode === 'menu') renderMenu(i); }, 60); } }
     else if (e.target.closest('.k-menu-plat')) closePalette(false);
   });
+  // ── A search field you type straight into, with suggestions listed under it ──
+  // Used in the toolbar on wider screens (a drop-down under the field) and inside the phone menu (the suggestions
+  // take the place of the rest of the menu while there is something typed). A standard combobox: arrow keys move
+  // through the suggestions, Enter opens one, Escape clears / closes; the active suggestion is announced.
+  let siN = 0;
+  function makeSearch(host, opt) {
+    if (!host) return null;
+    const id = 'k-si-list-' + (++siN), flow = !!(opt && opt.flow);
+    host.innerHTML = '<svg class="k-si-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
+      + '<input class="k-si-input" type="text" inputmode="search" enterkeyhint="search" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="' + id + '" aria-label="Search songs, videos and sections" placeholder="Search songs, videos, sections" autocomplete="off" autocapitalize="off" spellcheck="false">'
+      + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" hidden></ul>';
+    const inp = $('.k-si-input', host), ul = $('.k-si-list', host);
+    let items = [], hits = [], act = 0, cT = 0;
+    const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
+    function draw() {
+      const q = inp.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      if (opt && opt.onQuery) opt.onQuery(q.length > 0);
+      if (flow && !q.length) { shut(); return; }
+      hits = items.filter((i) => { const hay = `${i.title} ${i.sub || ''} ${i.group}`.toLowerCase(); return q.every((w) => hay.includes(w)); });
+      if (q.length) hits.sort((a, b) => (b.title.toLowerCase().startsWith(q[0]) ? 1 : 0) - (a.title.toLowerCase().startsWith(q[0]) ? 1 : 0));
+      hits = hits.slice(0, q.length ? 30 : 12);
+      act = Math.min(act, Math.max(0, hits.length - 1));
+      const frag = doc.createDocumentFragment();
+      hits.forEach((it, i) => {
+        const li = doc.createElement('li'); li.className = 'k-si-opt'; li.id = id + '-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === act));
+        const t = doc.createElement('span'); t.className = 'k-si-t'; t.textContent = it.title; const u = doc.createElement('span'); u.className = 'k-si-sub'; u.textContent = it.sub || it.group || '';
+        li.append(t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
+      });
+      if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches.'; frag.append(e); }
+      ul.replaceChildren(frag); ul.hidden = false; host.classList.add('open');
+      inp.setAttribute('aria-expanded', 'true'); if (hits.length) inp.setAttribute('aria-activedescendant', id + '-' + act); else inp.removeAttribute('aria-activedescendant');
+      clearTimeout(cT); cT = setTimeout(() => announce(`${hits.length} suggestion${hits.length === 1 ? '' : 's'}`), 500);
+    }
+    function mark(i) { if (!hits.length) return; act = (i + hits.length) % hits.length; for (const o of $$('.k-si-opt', ul)) o.setAttribute('aria-selected', String(o.id === id + '-' + act)); inp.setAttribute('aria-activedescendant', id + '-' + act); $('#' + id + '-' + act, ul)?.scrollIntoView({ block: 'nearest' }); }
+    function pick(i) { const it = hits[i]; if (!it) return; inp.value = ''; shut(); if (opt && opt.onQuery) opt.onQuery(false); inp.blur(); if (opt && opt.beforeRun) opt.beforeRun(); it.run(); }
+    inp.addEventListener('focus', () => { items = gatherItems(); act = 0; draw(); });
+    inp.addEventListener('input', () => { act = 0; draw(); });
+    inp.addEventListener('keydown', (e) => {
+      const open = !ul.hidden;
+      if (e.key === 'ArrowDown') { e.preventDefault(); open ? mark(act + 1) : draw(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); if (open) mark(act - 1); }
+      else if (e.key === 'Enter') { if (open && hits.length) { e.preventDefault(); pick(act); } }
+      else if (e.key === 'Escape') { if (inp.value) { e.stopPropagation(); e.preventDefault(); inp.value = ''; draw(); } else if (open && !flow) { e.stopPropagation(); shut(); inp.blur(); } }
+    });
+    ul.addEventListener('pointerdown', (e) => e.preventDefault());   // keep the caret in the field while choosing with the pointer
+    inp.addEventListener('blur', () => setTimeout(() => { if (doc.activeElement !== inp && !flow) shut(); }, 120));
+    return inp;
+  }
+  // the toolbar's own search field (wider screens): it replaces the old Search button, which stays as the fallback
+  let barSearch = null;
+  for (const b of $$('.nav .k-tools .k-search-btn')) { const box = doc.createElement('div'); box.className = 'k-si k-si--bar'; b.before(box); barSearch = makeSearch(box, {}); root.classList.add('k-inline-search'); }
   const menuBtns = () => $$('.nav-toggle, .k-settings-btn');
   function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(m)); if (b.matches('.nav-toggle')) b.setAttribute('aria-label', m ? 'Close menu' : 'Open menu'); } }
   function openPalette(opts) {
@@ -378,8 +433,8 @@
   dlg.addEventListener('close', () => { palette.open = false; syncMenuBtns(false); });
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;
-    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (!dlg.open) openPalette(); else if (dlg.dataset.mode === 'menu') { closePalette(false); openPalette(); } else closePalette(); }
-    else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); openPalette(); }
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) { if (dlg.open) closePalette(false); barSearch.focus(); barSearch.select(); } else if (!dlg.open) openPalette({ menu: true }); else closePalette(); }
+    else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) barSearch.focus(); else openPalette({ menu: true }); }
   });
   for (const b of $$('.k-search-btn')) b.addEventListener('click', () => openPalette());
   // the one menu button: opens the box as the menu (search field + sections + settings)

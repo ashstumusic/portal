@@ -2472,10 +2472,9 @@ html { overscroll-behavior-y: none; }
    Wider screens: the toolbar ends with a Search button (icon and label)
    and a gear button for Settings. No menu button - everything else is
    already in the bar.
-   Phones: one row only - the bird and name, then a Search button (icon
-   only) and the menu button. The menu holds everything else: the four
-   sections, the three streaming links and, under a gear heading, the
-   settings. The second row and its slider are gone, so the bar is 47px
+   Phones: one row only - the bird and name, and the menu button. The menu
+   holds everything else: Search first, then the four sections, the three
+   streaming links and, under a gear heading, the settings. The second row and its slider are gone, so the bar is 47px
    tall.
    Search opens just the search field and its results. The gear / menu
    opens the menu with no search field in it. */
@@ -2497,15 +2496,72 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-wrap: nowrap !important; padding: 4px 16px !important; row-gap: 0 !important; }
   :root.psy .nav .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; margin-right: 0 !important; }
   :root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
-  :root.psy .nav .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; padding: 0 !important; display: inline-grid !important; place-items: center; }
-  :root.psy .nav .k-search-btn .k-search-label { display: none !important; }
-  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 8px !important; }
+  /* the toolbar has just the menu button; Search is the first thing inside the menu */
+  :root.psy .nav .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; }
   :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#) { padding-top: 47px !important; }
   [id] { scroll-margin-top: 56px; }
 }
 /* the dialog: search and menu never show at the same time */
 .k-palette[data-mode="menu"] .k-palette-input { display: none; }
 .k-palette[data-mode="menu"] .k-menu { padding-top: 14px; }
+/* ── The search field ─────────────────────────────────────────────────
+   A real text field you type into, with suggestions listed under it - not
+   a button that opens a big panel.
+   Toolbar (wider screens): a wide field between the streaming logos and
+   the gear; its suggestions drop down beneath it.
+   Phone menu: the first thing in the menu; while there is something typed,
+   the suggestions take the place of the rest of the menu. */
+.k-si { position: relative; display: flex; align-items: center; min-width: 0; }
+.k-si-ico { position: absolute; left: 12px; top: 50%; translate: 0 -50%; color: rgb(242 244 246 / .8); pointer-events: none; }
+.k-si-input {
+  width: 100%; height: 40px; padding: 0 12px 0 38px; border: 0; border-radius: var(--btn-r, 12px); box-sizing: border-box; min-width: 0;
+  background: rgb(255 255 255 / .1); color: #F5F5F7; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .28);
+  font: 500 15px/1.2 var(--font-ui, system-ui, sans-serif); letter-spacing: -.01em; -webkit-appearance: none; appearance: none;
+}
+@supports (corner-shape: squircle) { .k-si-input { corner-shape: squircle; } }
+.k-si-input::placeholder { color: rgb(242 244 246 / .7); opacity: 1; }
+.k-si-input:hover { background: rgb(255 255 255 / .14); }
+.k-si-input:focus-visible { outline: 3px solid #fff; outline-offset: 2px; background: rgb(255 255 255 / .16); }
+.k-si-list { list-style: none; margin: 0; padding: 6px; }
+.k-si-opt { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; min-height: 40px; padding: 9px 12px; border-radius: 10px; cursor: pointer; color: #F5F5F7; font: 500 15px/1.25 var(--font-ui, system-ui, sans-serif); box-sizing: border-box; }
+.k-si-opt[aria-selected="true"] { background: var(--gold); color: #111; }
+.k-si-sub { flex: none; font-size: 13px; color: rgb(242 244 246 / .7); max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.k-si-opt[aria-selected="true"] .k-si-sub { color: rgb(17 17 17 / .75); }
+.k-si-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.k-si-empty { padding: 12px; color: rgb(242 244 246 / .75); font: 500 14px/1.3 var(--font-ui, system-ui, sans-serif); }
+/* toolbar */
+.k-si--bar { flex: 0 1 300px; width: 300px; }
+.k-si--bar .k-si-list {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 300; width: max(100%, 380px); max-width: calc(100vw - 32px); max-height: min(64vh, 480px); overflow-y: auto;
+  background: rgb(20 22 28 / .97); border-radius: 16px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .16), 0 18px 48px rgb(0 0 0 / .6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5); backdrop-filter: blur(24px) saturate(1.5);
+}
+:root.k-inline-search.psy .nav .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+@media (max-width: 1199px) { .k-si--bar { flex-basis: 210px; width: 210px; } }
+/* narrower toolbars have no room for a wide field: it rests compact and widens over its neighbours while in use */
+@media (max-width: 1023px) {
+  .k-si--bar { flex: 0 0 var(--si-w); width: var(--si-w); --si-w: 132px; transition: margin-left .18s ease, width .18s ease, flex-basis .18s ease; }
+  .k-si--bar .k-si-input { padding-left: 34px; font-size: 14px; text-overflow: ellipsis; }
+  .k-si--bar .k-si-input::placeholder { text-overflow: ellipsis; }
+  .k-si--bar .k-si-ico { left: 10px; }
+  .k-si--bar:focus-within { margin-left: calc(var(--si-w) - 320px); flex-basis: 320px; width: 320px; z-index: 5; }
+  .k-si--bar:focus-within .k-si-input { background: #23262d; }
+}
+@media (max-width: 899px) { .k-si--bar { --si-w: 96px; } }
+@media (max-width: 819px) { .k-si--bar { --si-w: 64px; } }
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) { .k-si--bar { transition: none; } }
+@media (max-width: 767px) { .k-si--bar { display: none; } }
+/* phone menu */
+.k-si--flow { display: none; }
+@media (max-width: 767px) {
+  .k-si--flow { display: block; margin-bottom: 4px; }
+  .k-si--flow .k-si-input { height: 48px; font-size: 16px; }
+  .k-si--flow .k-si-list { padding: 8px 0 0; }
+  .k-si--flow .k-si-opt { min-height: 48px; padding: 12px; }
+  .k-menu.searching > :not(.k-si):not(.k-menu-title) { display: none !important; }
+}
+@media (forced-colors: active) { .k-si-input { border: 1px solid ButtonText; } .k-si-opt[aria-selected="true"] { background: Highlight; color: HighlightText; } }
 .k-menu-title { margin: 2px 8px 6px; min-height: 30px; display: flex; align-items: center; font: 600 13px/1.3 var(--font-ui, system-ui, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: rgb(242 244 246 / .7); }
 @media (min-width: 768px) { .k-menu-title { display: none; } .k-palette[data-mode="menu"] .k-menu { padding-top: 12px; } }
 .settings-title { display: flex; align-items: center; gap: 8px; min-height: 30px; }
