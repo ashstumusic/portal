@@ -200,7 +200,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <header>
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Ash Stu, back to top">
-    <!-- Shown in the name's place when the name is away in About (where the big name is on show), never in the home section: a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
+    <!-- Shown in the name's place when the name is away: in the home section a plain little house (no bubble, not pressable); in About (where the big name is on show) a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
     <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg></span>
     <div class="hero-brand">
       <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
@@ -595,8 +595,14 @@ navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.07)));  
 const navShow = navIn * (1 - navOut);
 if (heroBrand && heroOut !== _lastHeroOut) { heroBrand.style.opacity = 1 - heroOut; _lastHeroOut = heroOut; }
 if (navLogo && navShow !== _lastNavIn) { navLogo.style.opacity = navShow; _lastNavIn = navShow; }
-if (navHome) { var homeOn = navShow <= .02 && navIn >= .98;   /* not in the home section (you are already home there): only where the name has given way further down, in About */
- if (homeOn !== navHome._on) { navHome._on = homeOn; navHome.style.opacity = homeOn ? 1 : 0; navHome.parentNode.classList.toggle('home-on', homeOn); } }   /* checked on every scroll, not only when the name's own fade changes: jumping from About straight to the top leaves the name hidden throughout */   /* the Home button takes the name's place only once the name has gone completely, and leaves the moment the name starts to return: the two are never on top of each other (they used to cross-fade with the scroll, so stopping part-way showed the button over half-faded lettering) */
+/* The Home mark in the name's place. Three states, never on top of the lettering:
+   - "plain"  in the home section: just the little house, no bubble, not pressable (you are already home);
+   - "button" in About, where the name has given way to the big one: the house in its glass bubble, pressable;
+   - "off"    wherever the name itself is showing or part-way through its fade.
+   Checked on every scroll (jumping from About straight to the top leaves the name hidden throughout). */
+if (navHome) { var homeState = navShow > .02 ? 'off' : navIn >= .98 ? 'button' : navIn <= .02 ? 'plain' : 'off';
+ if (homeState !== navHome._st) { navHome._st = homeState; var lk = navHome.parentNode; lk.setAttribute('data-home', homeState); lk.classList.toggle('home-on', homeState === 'button');
+  if (homeState === 'plain') { lk.setAttribute('tabindex', '-1'); lk.setAttribute('aria-hidden', 'true'); } else { lk.removeAttribute('tabindex'); lk.removeAttribute('aria-hidden'); } } }
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
