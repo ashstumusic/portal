@@ -2875,12 +2875,12 @@ box.innerHTML='<span class="dz-x"><span class="dz-face">'+birdSheet()+'</span></
 fi=[].slice.call(face.querySelectorAll('.dz-fi > g'));ff=[].slice.call(face.querySelectorAll('.dz-fw > g'));
 /* a click or tap on the bird turns him round there and then, and - since he is inside the name's link - also does what
    a click on the name does (back to the top). His own random turning starts counting again from that moment. */
-box.addEventListener('click',function(e){if(mode==='roam'&&window.__catWall){caught=true;window.__catWall(e);place();return;}if(mode==='home'){var sp=plat&&plat.spots[hopI];if(sp&&!(turned?sp.R:sp.L)){if(loopT)turnSoon();return;}}turned=!turned;face.style.transform=turned?'scaleX(-1)':'';if(loopT)turnSoon();});}
+box.addEventListener('click',function(e){if(mode==='roam'&&window.__catWall){caught=true;window.__catWall(e);place();return;}if(mode==='home'){var sp=plat&&plat.spots[hopI];if(sp&&!(turned?sp.R:sp.L)){if(loopT)turnSoon();return;}}faceTo(!turned);if(loopT)turnSoon();});}
 function show(el){if(el===shown)return;if(shown)shown.setAttribute('hidden','');el.removeAttribute('hidden');shown=el;}
 /* Every so often it turns to face the other way: after a random wait of 3 to 8 seconds each time (never sooner, never
    longer), taking about a quarter of a second to turn. */
 var turned=false,turnT=0;
-function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden&&!inAir()&&mode!=='home'){turned=!turned;face.style.transform=turned?'scaleX(-1)':'';}turnSoon();},3000+Math.random()*5000);}
+function turnSoon(){clearTimeout(turnT);turnT=setTimeout(function(){if(!document.hidden&&box&&!box.hidden&&!inAir()&&mode!=='home'){faceTo(!turned);}turnSoon();},3000+Math.random()*5000);}
 /* Where the bird is. While the big name in the hero is showing (the top of the page), the bird is out beside it: to the
    right of the lettering, standing level with the foot of the letters, hopping from spot to spot (where there is no room
    to the right - narrow screens - it stands on top of the end of the name instead). Once the page is scrolled on and the
@@ -2926,7 +2926,22 @@ var fs=parseFloat(getComputedStyle(heroName).fontSize)||0;if(!plat||Math.abs(pla
 if(!plat)return null;if(hopI<0||hopI>=plat.spots.length)hopI=plat.spots.length-1;var sp=plat.spots[hopI],size=birdSize(fs);
 return {x:r.left+sp.ex*fs-size*FX-pb.left,y:r.top+(plat.baseEm+sp.ey)*fs-size*(FY-.012)-pb.top,s:size/pb.width,px:size};}
 function wantHome(){if(caught||!heroB||document.documentElement.classList.contains('cat-mode'))return false;if(scrollY>2)return false;var o=heroB.style.opacity;return (o===''?1:parseFloat(o))>.5;}
-function faceTo(left){turned=!!left;face.style.transform=turned?'scaleX(-1)':'';}
+/* Turning round, the way a drawn cartoon character does it - never the flat "sheet of paper" flip, where the bird
+   thins to a line and comes back mirrored. On its feet it crouches (anticipation), springs up stretched, snaps round
+   at the top of the hop while it is narrow like a bird seen head-on, lands in a squash and settles. In the air it
+   does the same snap without the hop. The drawing is never thinner than about half its width, so it always reads
+   as a solid bird. (Reduced motion: it simply faces the other way.) */
+var turnA=null;
+function faceTo(left){left=!!left;var was=turned;turned=left;face.style.transform=turned?'scaleX(-1)':'';
+if(was===left||!face.animate||!box||box.hidden||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;
+if(turnA){try{turnA.cancel();}catch(e){}turnA=null;}
+var a=was?-1:1,z=left?-1:1,air=inAir()||flying||mode==='roam',up=air?0:(mode==='home'?24:9);
+var T=function(y,sx,sy){return 'translateY('+(-y)+'%) scale('+sx+','+sy+')';};
+var k=air?[{transform:T(0,a,1),easing:'ease-in'},{transform:T(0,a*.6,1.1),offset:.42,easing:'steps(1,end)'},{transform:T(0,z*.6,1.1),offset:.5,easing:'ease-out'},{transform:T(0,z*1.06,.96),offset:.82,easing:'ease-in-out'},{transform:T(0,z,1)}]
+:[{transform:T(0,a,1),easing:'ease-out'},{transform:T(0,a*1.13,.84),offset:.2,easing:'cubic-bezier(.2,.7,.3,1)'},{transform:T(up*.85,a*.86,1.14),offset:.4,easing:'ease-out'},{transform:T(up,a*.56,1.18),offset:.5,easing:'steps(1,end)'},
+{transform:T(up,z*.56,1.18),offset:.54,easing:'ease-in'},{transform:T(up*.8,z*.88,1.12),offset:.64,easing:'cubic-bezier(.6,0,.9,.5)'},{transform:T(0,z*1.15,.82),offset:.8,easing:'ease-out'},{transform:T(0,z*.96,1.05),offset:.91,easing:'ease-in-out'},{transform:T(0,z,1)}];
+var o=face.style.transformOrigin,ox=(o&&o.split(' ')[0])||'50%';face.style.transformOrigin=ox+' '+(FY*100)+'%';
+turnA=face.animate(k,{duration:air?240:560});var me=turnA,done=function(){if(turnA===me){turnA=null;pivot();}};turnA.finished.then(done,done);}
 /* on the letters it turns about its feet (they stay on the crest); on the toolbar about its middle, as before */
 function pivot(){face.style.transformOrigin=mode==='home'?(FX*100)+'% 50%':'';}
 /* where it is this instant, whatever is moving it */
