@@ -2773,6 +2773,26 @@ html { overscroll-behavior-y: none; }
   :root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: clamp(13px, 4.1vw, 16px) !important; white-space: nowrap; }
 }
 
+/* ── Small fixes from a full look over the site ────────────────────────
+   - Release cards: with the Download button beside them, "Apple Music" and
+     "Spotify" were a few pixels too tight on phones and small tablets and
+     lost the end of their label. Slightly less side padding gives it back.
+   - Per-song lyrics buttons are 40px on touch screens (they were 32px).
+   - The player's progress line is 2px tall on desktop: it now has an unseen
+     grab area 8px above and below, so it can actually be clicked.
+   - The search's suggestions list is not a keyboard stop of its own. */
+:root.psy .rel-card .rel-btns > a.rel-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-inline: 12px !important; }
+@media (pointer: coarse) { :root.psy .rel-lyrics-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-width: 40px !important; min-height: 40px !important; } }
+/* - Video cards on tablets and small laptops (three narrow cards across): the title had only 70-90px beside the YouTube button and
+     broke in the middle of words. There the title takes the full width of the card and the button sits under it;
+     and a title never breaks inside a word unless the word alone is wider than the card. */
+:root.psy .vid-card-wrap .vid-title:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { overflow-wrap: break-word !important; word-break: normal !important; hyphens: none !important; }
+@media (min-width: 768px) and (max-width: 1279px) {
+  :root.psy .vid-card-wrap .vid-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+  :root.psy .vid-card-wrap .vid-info .vid-title:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; flex: none !important; }
+}
+@media (min-width: 768px) { #player-bar .np-bar-track::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; bottom: -8px; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
