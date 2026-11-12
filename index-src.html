@@ -1935,9 +1935,9 @@ if (Math.abs(shift) > 1) { var sb = document.documentElement.style.scrollBehavio
 }
 /* ── Lyrics on wide screens: a reading pane inside the release ──
    From 900px up, opening a song's lyrics does not reshape the release or take over the row, and nothing opens over the
-   page: the words drop open directly under the song, inside its release, in a pane of fixed height that scrolls on its
-   own. The release keeps its place and width in the grid; long lines wrap (continuation indented) at a steady reading
-   size; the line being sung is highlighted and kept in view inside the pane. (Class lyrics-pane on the release; the
+   page: the words drop open directly under the song, inside its release, at their full length (no scrolling inside
+   the release). The release keeps its place and width in the grid and grows taller; long lines wrap (continuation
+   indented) at a steady reading size; the line being sung is highlighted. (Class lyrics-pane on the release; the
    layout is in shared/system.css under "Lyrics pane".) Narrower screens are unchanged: there the release takes the
    row and the lyrics are set large. */
 function lyrPaneMode() { return window.matchMedia('(min-width: 900px)').matches; }
