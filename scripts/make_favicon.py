@@ -1,6 +1,6 @@
-"""Make the favicon: a hand-drawn star (the site's own motif - the page is scattered with them), filled with the four
-colours of the name's gradient (gold, pink, orange, sky blue) and given a near-black edge so it shows on light browser
-tabs as well as dark ones. It is tilted and slightly uneven, like the stars on the page, and fills the icon edge to edge.
+"""Make the favicon: a hollow chalk star (the site's own motif - the page is scattered with them): just its outline, drawn
+in a heavy chalk line in the four colours of the name's gradient (gold, pink, orange, sky blue), dusty and wavering like
+chalk on a board, over a near-black edge so it shows on light browser tabs as well as dark ones. It is tilted and slightly uneven, like the stars on the page, and fills the icon edge to edge.
 
 Writes favicon.svg (vector: sharp at any size), favicon.png (1024px, also the Apple touch icon) and favicon.webp.
 Needs playwright (Chrome) and pillow, only to make the raster copies.
@@ -9,7 +9,7 @@ import io, math, os
 from playwright.sync_api import sync_playwright
 from PIL import Image
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-PX, EDGE, OUTLINE = 1024, 34, '#15171c'
+PX, EDGE, OUTLINE = 1024, 26, '#15171c'
 TILT = -11                                                    # degrees: not upright
 OUTER = [1.00, .94, 1.03, .97, 1.01]                          # each point a little different: drawn by hand, not stamped
 INNER = [.47, .44, .46, .43, .45]
@@ -19,12 +19,19 @@ def points(R, cx, cy):
         a = math.radians(-90 + TILT + i * 36); r = R * (OUTER[i // 2] if i % 2 == 0 else INNER[i // 2])
         pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
     return pts
+STROKE = 118                                                  # the chalk line: heavy, so the hollow star still reads at 16px
+CHALK = ('<filter id="chalk" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">'
+         '<feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="2" seed="5" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="20" xChannelSelector="R" yChannelSelector="G" result="d"/>'
+         '<feTurbulence type="fractalNoise" baseFrequency=".2" numOctaves="2" seed="11" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -6 4.25" result="a"/>'
+         '<feComposite in="d" in2="a" operator="in"/></filter>'                                   # wavering edge + dusty gaps: chalk on a board
+         '<filter id="waver" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="2" seed="5" result="w"/>'
+         '<feDisplacementMap in="SourceGraphic" in2="w" scale="20" xChannelSelector="R" yChannelSelector="G"/></filter>')   # the same waver, no gaps (for the dark edge under the chalk)
 def svg_for(R, cx, cy):
     d = 'M' + 'L'.join('%.1f %.1f' % p for p in points(R, cx, cy)) + 'Z'
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="120" y1="820" x2="880" y2="180">'
-            '<stop offset="0" stop-color="#8FE6FF"/><stop offset=".34" stop-color="#FFA36B"/><stop offset=".64" stop-color="#FF8AC8"/><stop offset="1" stop-color="#F7C549"/></linearGradient></defs>'
-            '<path d="%s" fill="%s" stroke="%s" stroke-width="%d" stroke-linejoin="round"/>'
-            '<path d="%s" fill="url(#g)" stroke="url(#g)" stroke-width="%d" stroke-linejoin="round"/></svg>') % (d, OUTLINE, OUTLINE, EDGE * 2 + 26, d, 26)
+            '<stop offset="0" stop-color="#8FE6FF"/><stop offset=".34" stop-color="#FFA36B"/><stop offset=".64" stop-color="#FF8AC8"/><stop offset="1" stop-color="#F7C549"/></linearGradient>' + CHALK.replace('%', '%%') + '<style>@media (max-width:72px){.c{filter:url(#waver)}}</style></defs>'   # shown small (a browser tab), the chalk dust would only be dark specks: there the line is solid, still wavering
+            '<path d="%s" fill="none" stroke="%s" stroke-width="%d" stroke-linejoin="round" filter="url(#waver)"/>'
+            '<path d="%s" fill="none" stroke="url(#g)" stroke-width="%d" stroke-linejoin="round" filter="url(#chalk)" class="c"/></svg>') % (d, OUTLINE, STROKE + EDGE * 2, d, STROKE)
 with sync_playwright() as p:
     br = p.chromium.launch(channel="chrome"); pg = br.new_page(viewport={"width": PX, "height": PX})
     def shot(svg):
