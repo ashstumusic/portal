@@ -2263,7 +2263,7 @@ html { overscroll-behavior-y: none; }
    toolbars already show them) and the settings switches. Clicking into the
    search field hands the lower area over to search results.
    The old separate Search button and the old phone drawer are retired. */
-:root.psy .nav .k-tools:not(#\#):not(#\#) { display: none !important; }
+/* (the Search button and the settings gear are back in the toolbar: see "Toolbar tools" below) */
 :root.psy .nav-drawer:not(#\#):not(#\#):not(#\#) { display: none !important; }
 :root.psy .nav .nav-toggle:not(#\#):not(#\#) { display: inline-grid !important; place-items: center; margin-left: 12px; flex: none; position: relative; }
 /* Phones: the three streaming logos sit in the toolbar too (as on wider screens), between the name and the menu
@@ -2280,7 +2280,7 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .nav-platform .pt:not(#\#):not(#\#) { width: 20px !important; height: 20px !important; }
   :root.psy .nav .nav-toggle:not(#\#):not(#\#) { margin-left: 4px; }
 }
-.k-menu-plats { display: none !important; }
+
 @media (min-width: 1200px) { :root.psy .nav .nav-toggle:not(#\#):not(#\#) { margin-right: -24px; } }
 .k-palette[data-mode="menu"] :is(.k-palette-list, .k-palette-foot) { display: none; }
 .k-palette[data-mode="search"] .k-menu { display: none; }
@@ -2467,7 +2467,50 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; }
   @media (prefers-reduced-motion: no-preference) { .nav .nav-rail { scroll-behavior: smooth; } }
 }
-.k-menu-links { display: none !important; }
+
+/* ── Toolbar tools: Search and Settings are two separate things ───────
+   Wider screens: the toolbar ends with a Search button (icon and label)
+   and a gear button for Settings. No menu button - everything else is
+   already in the bar.
+   Phones: one row only - the bird and name, then a Search button (icon
+   only) and the menu button. The menu holds everything else: the four
+   sections, the three streaming links and, under a gear heading, the
+   settings. The second row and its slider are gone, so the bar is 47px
+   tall.
+   Search opens just the search field and its results. The gear / menu
+   opens the menu with no search field in it. */
+:root.psy .nav .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; align-items: center; gap: 8px; margin-left: 12px; }
+:root.psy .nav .k-tools:not(#\#)::before { display: none !important; }
+:root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; padding: 0 !important; display: inline-grid !important; place-items: center; }
+/* the gear wears the same dark glass as the Search button beside it */
+:root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not([aria-expanded="true"]) { background: var(--btn-d-bg) !important; color: var(--btn-d-fg) !important; border: 0 !important; border-radius: var(--btn-r-ico) !important; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22) !important; }
+:root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover):not(:focus-visible):not([aria-expanded="true"]) svg { color: var(--btn-d-fg) !important; }
+:root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible, [aria-expanded="true"]) { background: var(--gold) !important; color: #111 !important; border: 0 !important; border-radius: var(--btn-r-ico) !important; box-shadow: none !important; }
+:root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, :focus-visible, [aria-expanded="true"]) svg { color: #111 !important; }
+:root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):focus-visible { outline: 3px solid #fff !important; outline-offset: 3px !important; }
+:root.psy .nav .k-settings-btn .k-gear { width: 20px !important; height: 20px !important; transition: rotate .5s cubic-bezier(.2, .8, .2, 1); }
+:root.psy .nav .k-settings-btn[aria-expanded="true"] .k-gear { rotate: 60deg; }
+@media (min-width: 768px) { :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; } }
+@media (min-width: 1200px) { :root.psy .nav .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-right: -24px !important; } }
+@media (max-width: 767px) {
+  .nav .nav-rail:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-wrap: nowrap !important; padding: 4px 16px !important; row-gap: 0 !important; }
+  :root.psy .nav .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: auto !important; margin-right: 0 !important; }
+  :root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy .nav .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; padding: 0 !important; display: inline-grid !important; place-items: center; }
+  :root.psy .nav .k-search-btn .k-search-label { display: none !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 8px !important; }
+  :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#) { padding-top: 47px !important; }
+  [id] { scroll-margin-top: 56px; }
+}
+/* the dialog: search and menu never show at the same time */
+.k-palette[data-mode="menu"] .k-palette-input { display: none; }
+.k-palette[data-mode="menu"] .k-menu { padding-top: 14px; }
+.k-menu-title { margin: 2px 8px 6px; min-height: 30px; display: flex; align-items: center; font: 600 13px/1.3 var(--font-ui, system-ui, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: rgb(242 244 246 / .7); }
+@media (min-width: 768px) { .k-menu-title { display: none; } .k-palette[data-mode="menu"] .k-menu { padding-top: 12px; } }
+.settings-title { display: flex; align-items: center; gap: 8px; min-height: 30px; }
+.settings-title .k-gear { width: 16px; height: 16px; flex: none; }
+@media (max-width: 767px) { .k-menu .settings-title { margin-top: 10px; padding-top: 12px; border-top: 1px solid rgb(255 255 255 / .12); } }
 
 /* ══ Button system ═════════════════════════════════════════════════════
    Every control on the site shares one design: a glass material (a
