@@ -312,20 +312,22 @@
     closePalette(false);
     it.run();
   }
-  // One box, two faces. Opened from the menu button it is the MENU: the search field on top and, under it, the
-  // page's section links and streaming links (on small screens, where the toolbar has no room for them) and the
-  // settings switches. The moment the search field is clicked, focused or typed in, the area under it becomes
-  // SEARCH results instead. Opened with the keyboard shortcut it starts as search.
+  // One dialog, two separate uses, each with its own button:
+  //   SEARCH (the Search button, / or Ctrl/Cmd+K): the search field and its results, nothing else.
+  //   MENU (the gear button on wider screens; the menu button on phones): no search field. On phones it lists the
+  //   sections and the streaming links (the toolbar there has no room for them) and then the settings; on wider
+  //   screens, where the toolbar already shows those, it is just the settings.
   const menuBox = $('.k-menu', dlg);
+  const GEAR = '<svg class="k-gear" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   const escHtml = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   function renderMenu(keep) {
     const links = $$('.nav-links a').filter((a) => a.getAttribute('href'));
     const plats = $$('.nav-platforms a');
     const sets = typeof settingsList === 'function' ? settingsList() : [];
-    let h = '';
+    let h = '<p class="k-menu-title">Menu</p>';
     if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
     if (plats.length) h += '<div class="k-menu-plats" aria-label="Streaming platforms">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}">${a.innerHTML}</a>`).join('') + '</div>';
-    if (sets.length) h += '<p class="settings-title" id="k-menu-settings">Settings</p><div class="k-menu-settings" role="group" aria-labelledby="k-menu-settings">' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
+    if (sets.length) h += '<p class="settings-title" id="k-menu-settings">' + GEAR + 'Settings</p><div class="k-menu-settings" role="group" aria-labelledby="k-menu-settings">' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
     menuBox.innerHTML = h;
     if (keep != null) $$('.settings-row', menuBox)[keep]?.focus({ preventScroll: true });
   }
@@ -342,8 +344,8 @@
     else if (r) { const i = +r.dataset.set, it = settingsList()[i]; if (it) { try { it.run(); } catch {} setTimeout(() => { if (dlg.open && dlg.dataset.mode === 'menu') renderMenu(i); }, 60); } }
     else if (e.target.closest('.k-menu-plat')) closePalette(false);
   });
-  const menuBtns = () => $$('.nav-toggle');
-  function syncMenuBtns(open) { for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(open)); b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); } }
+  const menuBtns = () => $$('.nav-toggle, .k-settings-btn');
+  function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(m)); if (b.matches('.nav-toggle')) b.setAttribute('aria-label', m ? 'Close menu' : 'Open menu'); } }
   function openPalette(opts) {
     if (dlg.open) return;
     const menu = !!(opts && opts.menu);
@@ -355,7 +357,8 @@
     dlg.showModal();
     setMode(menu ? 'menu' : 'search');
     syncMenuBtns(true);
-    if (menu) (menuBox.querySelector('button, a') || input).focus({ preventScroll: true }); else input.focus();
+    dlg.setAttribute('aria-label', menu ? 'Menu and settings' : 'Search');
+    if (menu) (menuBox.querySelector('button, a') || $('.k-palette-close', dlg)).focus({ preventScroll: true }); else input.focus();
   }
   function closePalette(restore = true) {
     if (!dlg.open) return;
@@ -364,10 +367,7 @@
     syncMenuBtns(false);
     if (restore && opener?.isConnected) opener.focus();
   }
-  // clicking, focusing or typing in the search field turns the lower area over to search
-  input.addEventListener('pointerdown', () => setMode('search'));
-  input.addEventListener('focus', () => { if (dlg.open) setMode('search'); });
-  input.addEventListener('input', () => { setMode('search'); active = 0; render(); });
+  input.addEventListener('input', () => { active = 0; render(); });
   input.addEventListener('keydown', (e) => {
     const map = { ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: shown.length - 1, PageDown: active + 5, PageUp: active - 5 };
     if (e.key in map) { e.preventDefault(); setActive(map[e.key]); }
@@ -378,12 +378,12 @@
   dlg.addEventListener('close', () => { palette.open = false; syncMenuBtns(false); });
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;
-    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (!dlg.open) openPalette(); else if (dlg.dataset.mode === 'menu') { setMode('search'); input.focus(); } else closePalette(); }
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (!dlg.open) openPalette(); else if (dlg.dataset.mode === 'menu') { closePalette(false); openPalette(); } else closePalette(); }
     else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); openPalette(); }
   });
   for (const b of $$('.k-search-btn')) b.addEventListener('click', () => openPalette());
   // the one menu button: opens the box as the menu (search field + sections + settings)
-  for (const b of $$('.nav-toggle')) b.addEventListener('click', (e) => { e.stopImmediatePropagation(); dlg.open ? closePalette() : openPalette({ menu: true }); });
+  for (const b of $$('.nav-toggle, .k-settings-btn')) b.addEventListener('click', (e) => { e.stopImmediatePropagation(); dlg.open ? closePalette() : openPalette({ menu: true }); });
 
   // ── DYNAMIC CONTENT ANNOUNCEMENTS ────────────────────────────────
   const lyr = $('#fs-lyrics');
