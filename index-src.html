@@ -2891,10 +2891,18 @@ xw.style.transform=to;var a=flyA,done=function(){if(flyA!==a)return;flyA=null;fl
 /* nothing is off limits any more: it may fly over the photos and the words - it only has to stay inside the window */
 function shots(){return [];}
 function over(x,y,sz,rs){for(var i=0;i<rs.length;i++){var r=rs[i];if(x<r.right+12&&x+sz>r.left-12&&y<r.bottom+12&&y+sz>r.top-12)return true;}return false;}
-function wantRoam(){return !caught&&!!aboutSec&&aboutSec.getBoundingClientRect().top<innerHeight*.55;}
-function roamNext(){clearTimeout(roamT);if(mode!=='roam'||!box||box.hidden)return;var pb=box.getBoundingClientRect(),cur=xw.getBoundingClientRect(),rs=shots(),sz=Math.max(52,Math.min(84,innerWidth*.07)),top=nav.getBoundingClientRect().bottom+6,best=null;
-for(var k=0;k<40&&!best;k++){var x=8+Math.random()*(innerWidth-sz-16),y=top+Math.random()*Math.max(10,innerHeight-top-sz-96);if(over(x,y,sz,rs))continue;
-if(k<30){var hit=false;for(var q=1;q<6;q++){if(over(cur.left+(x-cur.left)*q/6,cur.top+(y-cur.top)*q/6,sz,rs)){hit=true;break;}}if(hit)continue;if(Math.hypot(x-cur.left,y-cur.top)<innerWidth*.12)continue;}
+/* Only once About is really the section in front of you (its top has come up into the top third of the screen, or the
+   page is at its end) does the bird come down off the toolbar. Anywhere else it is never lower than the name: on the
+   letters of the big name at the top of the page, on its toolbar perch beside the name everywhere in between. */
+function wantRoam(){if(caught||!aboutSec)return false;return aboutSec.getBoundingClientRect().top<innerHeight*.3||innerHeight+scrollY>=document.documentElement.scrollHeight-2;}
+/* It keeps to the About section: only the part of the section that is on screen (below the toolbar, above the player)
+   is open to it, so while the section is still coming up the screen it has just that lower strip, and it never strays
+   up over the section before. */
+function band(sz){var ab=aboutSec.getBoundingClientRect(),top=Math.max(nav.getBoundingClientRect().bottom+6,ab.top+6),bot=Math.min(innerHeight-96,ab.bottom-6)-sz;return {top:top,bot:Math.max(top,bot)};}
+var roamAt=0;
+function roamNext(){clearTimeout(roamT);if(mode!=='roam'||!box||box.hidden)return;roamAt=performance.now();var pb=box.getBoundingClientRect(),cur=xw.getBoundingClientRect(),rs=shots(),sz=Math.max(52,Math.min(84,innerWidth*.07)),bd=band(sz),top=bd.top,best=null;
+for(var k=0;k<40&&!best;k++){var x=8+Math.random()*(innerWidth-sz-16),y=top+Math.random()*(bd.bot-top);if(over(x,y,sz,rs))continue;
+if(k<30){var hit=false;for(var q=1;q<6;q++){if(over(cur.left+(x-cur.left)*q/6,cur.top+(y-cur.top)*q/6,sz,rs)){hit=true;break;}}if(hit)continue;if(Math.hypot(x-cur.left,y-cur.top)<innerWidth*.12&&bd.bot-top>sz)continue;}
 best={x:x-pb.left,y:y-pb.top,s:sz/pb.width,px:sz,ax:x,ay:y};}
 /* nowhere clear on screen (a phone, with the photos and words filling it): wait on the toolbar perch and look again */
 if(!best){if(Math.abs(cur.left-pb.left)>4||Math.abs(cur.top-pb.top)>4)flyTo(null,900,true);else roamT=setTimeout(roamNext,700);return;}
@@ -2902,7 +2910,7 @@ flyTo(best,Math.max(700,Math.min(2200,Math.hypot(best.ax-cur.left,best.ay-cur.to
 function place(){var m=wantHome()?'home':wantRoam()?'roam':'perch',t=m==='home'?spot():null;if(m==='home'&&!t)m='perch';
 if(!placed){placed=true;mode=m;xw.style.transform=tf(t);if(m==='roam')roamNext();}
 else if(m!==mode){mode=m;clearTimeout(roamT);if(m==='roam')roamNext();else flyTo(t);}
-else if(m==='roam'){if(tgt&&tgt.px&&over(tgt.ax,tgt.ay,tgt.px,shots()))roamNext();}
+else if(m==='roam'){if(tgt&&tgt.px&&performance.now()-roamAt>260){var bd=band(tgt.px);if(tgt.ay<bd.top-3||tgt.ay>bd.bot+3)roamNext();}}
 else if(!flying&&!hopping)xw.style.transform=tf(t);
 home=mode==='home';box.classList.toggle('out',mode!=='perch');}
 function hopSoon(){clearTimeout(hopT);hopT=setTimeout(function(){
