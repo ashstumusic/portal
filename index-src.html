@@ -1878,7 +1878,8 @@ live = true;
 }
 if (cur !== want) {
 if (cur) { cur.classList.remove('is-current'); cur.removeAttribute('aria-current'); }
-if (want) { want.classList.add('is-current'); want.setAttribute('aria-current', 'true'); }
+if (want) { want.classList.add('is-current'); want.setAttribute('aria-current', 'true');
+var sb = want.closest('.lyr-sheet-body'); if (sb && !sb.matches(':hover') && !sb.contains(document.activeElement)) { var wr = want.getBoundingClientRect(), br = sb.getBoundingClientRect(); sb.scrollTo({ top: sb.scrollTop + (wr.top + wr.height / 2) - (br.top + br.height * .42), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } }
 }
 });
 if (live && !npAudio.paused) _cardLyrRaf = requestAnimationFrame(cardLyricsTick);
@@ -1890,7 +1891,7 @@ if (tl) tl.style.maxHeight = 'none';
 }
 function toggleTrackLyrics(btn) {
 var wrap = btn.closest('.rel-track-wrap');
-var lyrics = wrap.querySelector('.rel-lyrics');
+var lyrics = btn._lyr || (btn._lyr = wrap.querySelector('.rel-lyrics'));   /* kept on the button: on wide screens the lyrics are shown in the side sheet, away from the row */
 if (!lyrics) return;
 var inner = lyrics.querySelector('.rel-lyrics-inner');
 var tl = btn.closest('.rel-tracklist');
@@ -1910,6 +1911,7 @@ var songTitle = (btn.getAttribute('aria-label') || '').replace(/^(Show|Hide) lyr
 btn.setAttribute('aria-label', (opening ? 'Hide lyrics for ' : 'Show lyrics for ') + songTitle);
 btn.setAttribute('aria-expanded', String(opening));
 lyrics.style.maxHeight = opening ? 'none' : '0';
+lyrSheetSync();
 if (opening) fitLyricsSoon(lyrics.querySelector('.rel-lyrics-inner')); else sizeCardForLyrics(btn.closest('.rel-card'));
 recalcTracklistHeight(tl);
 cardLyricsKick();
@@ -1931,8 +1933,44 @@ if (before === null) return;
 var shift = el.getBoundingClientRect().top - before;
 if (Math.abs(shift) > 1) { var sb = document.documentElement.style.scrollBehavior; document.documentElement.style.scrollBehavior = 'auto'; window.scrollBy(0, shift); document.documentElement.style.scrollBehavior = sb; }
 }
+/* ── Lyrics on wide screens: a reading sheet at the side ──
+   From 900px up, a song's lyrics no longer reshape its release into a wide two-column block. The release stays exactly
+   as it is in the grid, and the lyrics open in a sheet fixed to the right-hand edge of the window: the song's name and
+   release at the top, the words below at a comfortable reading size (long lines wrap, with the continuation indented),
+   scrolling on their own, the line being sung highlighted and kept in view. It is not a dialog - the page behind stays
+   usable; the sheet closes with its Close button, with Escape, or by pressing the song's lyrics button again; opening
+   another song's lyrics replaces what it shows. Narrower screens keep the lyrics inline under the song, as before.
+   The same lyrics element is used in both places: it is moved into the sheet while open and put back when closed. */
+var lyrSheet = null, lyrSheetBtn = null;
+function lyrSheetMode() { return window.matchMedia('(min-width: 900px)').matches; }
+function lyrSheetBuild() {
+if (lyrSheet) return lyrSheet;
+var a = document.createElement('aside'); a.className = 'lyr-sheet'; a.id = 'lyr-sheet'; a.setAttribute('aria-label', 'Lyrics'); a.hidden = true;
+a.innerHTML = '<header class="lyr-sheet-head"><div class="lyr-sheet-what"><p class="lyr-sheet-kicker">Lyrics</p><h3 class="lyr-sheet-title" tabindex="-1"></h3><p class="lyr-sheet-sub"></p></div>' +
+'<button type="button" class="lyr-sheet-close" aria-label="Close lyrics" title="Close lyrics"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>' +
+'<div class="lyr-sheet-body" tabindex="0" role="group" aria-label="Lyrics text"></div>';
+document.body.appendChild(a);
+a.querySelector('.lyr-sheet-close').addEventListener('click', function() { var b = lyrSheetBtn; if (b) { toggleTrackLyrics(b); b.focus(); } });
+document.addEventListener('keydown', function(e) { if (e.key !== 'Escape' || !lyrSheetBtn || a.hidden || document.querySelector('dialog[open]')) return; if (a.contains(document.activeElement) || document.activeElement === lyrSheetBtn) { var b = lyrSheetBtn; toggleTrackLyrics(b); b.focus(); } });
+lyrSheet = a; return a;
+}
+/* puts every lyrics element where it belongs right now: the open one in the sheet (wide screens) or under its song */
+function lyrSheetSync() {
+var open = document.querySelector('.rel-lyrics-toggle.open'), wide = lyrSheetMode();
+document.querySelectorAll('.rel-lyrics-toggle').forEach(function(b) { var l = b._lyr; if (!l) return; var w = b.closest('.rel-track-wrap'); if ((b !== open || !wide) && l.parentNode !== w) w.appendChild(l); });
+if (open && wide && open._lyr) {
+var sh = lyrSheetBuild(), body = sh.querySelector('.lyr-sheet-body'), card = open.closest('.rel-card');
+if (open._lyr.parentNode !== body) { body.textContent = ''; body.appendChild(open._lyr); body.scrollTop = 0; }
+sh.querySelector('.lyr-sheet-title').textContent = (open.getAttribute('aria-label') || '').replace(/^(Show|Hide) lyrics for /, '');
+var nm = card && card.querySelector('.rel-name'); sh.querySelector('.lyr-sheet-sub').textContent = nm ? nm.textContent : '';
+open.setAttribute('aria-controls', 'lyr-sheet'); lyrSheetBtn = open;
+if (sh.hidden) { sh.hidden = false; void sh.offsetWidth; } sh.classList.add('show'); document.documentElement.classList.add('lyr-sheet-open');
+} else if (lyrSheet) { lyrSheet.classList.remove('show'); lyrSheet.hidden = true; lyrSheetBtn = null; document.documentElement.classList.remove('lyr-sheet-open'); }
+}
 function sizeCardForLyrics(card) {
 if (!card) return;
+if (lyrSheetMode()) { lyrSheetSync(); if (card.classList.contains('lyrics-open')) card.classList.remove('lyrics-open'); return; }
+lyrSheetSync();
 var openBtn = card.querySelector('.rel-lyrics-toggle.open'), want = !!openBtn;
 if (card.classList.contains('lyrics-open') !== want) {
   /* the row the visitor just used stays where it is on screen while the card changes shape */
@@ -2918,19 +2956,25 @@ function wantRoam(){if(caught||!aboutSec)return false;return aboutSec.getBoundin
 /* It keeps to the About section: only the part of the section that is on screen (below the toolbar, above the player)
    is open to it, so while the section is still coming up the screen it has just that lower strip, and it never strays
    up over the section before. */
-function band(sz){var ab=aboutSec.getBoundingClientRect(),top=Math.max(nav.getBoundingClientRect().bottom+6,ab.top+6),bot=Math.min(innerHeight-96,ab.bottom-6)-sz;return {top:top,bot:Math.max(top,bot)};}
+/* And it never goes lower than the name: in About its floor is the top of the big "Ash Stu" there (the whole bird stays
+   above the lettering). When that leaves no room - the name has scrolled up to the toolbar or past it - there is nowhere
+   for it to fly, and it waits on its toolbar perch. */
+var aboutNm=aboutSec&&aboutSec.querySelector('.bio-name');
+function band(sz){var ab=aboutSec.getBoundingClientRect(),top=Math.max(nav.getBoundingClientRect().bottom+6,ab.top+6),bot=Math.min(innerHeight-96,ab.bottom-6)-sz;
+if(aboutNm){var rg=document.createRange();rg.selectNodeContents(aboutNm);var nr=rg.getBoundingClientRect();if(nr.width)bot=Math.min(bot,nr.top-4-sz);}
+return {top:top,bot:bot,none:bot<top};}
 var roamAt=0;
 function roamNext(){clearTimeout(roamT);if(mode!=='roam'||!box||box.hidden)return;roamAt=performance.now();var pb=box.getBoundingClientRect(),cur=xw.getBoundingClientRect(),rs=shots(),sz=Math.max(52,Math.min(84,innerWidth*.07)),bd=band(sz),top=bd.top,best=null;
-for(var k=0;k<40&&!best;k++){var x=8+Math.random()*(innerWidth-sz-16),y=top+Math.random()*(bd.bot-top);if(over(x,y,sz,rs))continue;
+for(var k=0;k<40&&!best&&!bd.none;k++){var x=8+Math.random()*(innerWidth-sz-16),y=top+Math.random()*(bd.bot-top);if(over(x,y,sz,rs))continue;
 if(k<30){var hit=false;for(var q=1;q<6;q++){if(over(cur.left+(x-cur.left)*q/6,cur.top+(y-cur.top)*q/6,sz,rs)){hit=true;break;}}if(hit)continue;if(Math.hypot(x-cur.left,y-cur.top)<innerWidth*.12&&bd.bot-top>sz)continue;}
 best={x:x-pb.left,y:y-pb.top,s:sz/pb.width,px:sz,ax:x,ay:y};}
 /* nowhere clear on screen (a phone, with the photos and words filling it): wait on the toolbar perch and look again */
-if(!best){if(Math.abs(cur.left-pb.left)>4||Math.abs(cur.top-pb.top)>4)flyTo(null,900,true);else roamT=setTimeout(roamNext,700);return;}
+if(!best){if(Math.abs(cur.left-pb.left)>4||Math.abs(cur.top-pb.top)>4)flyTo(null,700,true);else roamT=setTimeout(roamNext,500);return;}
 flyTo(best,Math.max(700,Math.min(2200,Math.hypot(best.ax-cur.left,best.ay-cur.top)*2.6)),true);}
 function place(){var m=wantHome()?'home':wantRoam()?'roam':'perch',t=m==='home'?spot():null;if(m==='home'&&!t)m='perch';
 if(!placed){placed=true;mode=m;pivot();xw.style.transform=tf(t);if(m==='home'){var s0=plat&&plat.spots[hopI];if(s0)faceTo(!s0.R);}if(m==='roam')roamNext();}
 else if(m!==mode){mode=m;clearTimeout(roamT);if(m==='roam')roamNext();else flyTo(t);}
-else if(m==='roam'){if(tgt&&tgt.px&&performance.now()-roamAt>260){var bd=band(tgt.px);if(tgt.ay<bd.top-3||tgt.ay>bd.bot+3)roamNext();}}
+else if(m==='roam'){if(tgt&&tgt.px&&performance.now()-roamAt>260){var bd=band(tgt.px);if(bd.none||tgt.ay<bd.top-3||tgt.ay>bd.bot+3)roamNext();}else if(!tgt&&!flying&&performance.now()-roamAt>400&&!band(60).none)roamNext();}
 else if(!flying&&!hopping)xw.style.transform=tf(t);
 home=mode==='home';box.classList.toggle('out',mode!=='perch');}
 /* A hop is a real jump: it leaves one crest and lands on another along a parabola, high enough to clear whatever
@@ -3050,17 +3094,19 @@ var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').match
 function first(){return as[ord.indexOf(as.length-1)];}   /* the open badge is the one at the right-hand end; the round logos rest to its left */
 var tools=nav.querySelector('.k-tools');
 /* (fallback when there is no room on the left) the logos sit directly to the right of the section buttons */
-function beside(on){box.style.removeProperty('margin-left');if(tools)tools.style.removeProperty('margin-left');if(!on)return;var ul=nav.querySelector('.nav-links');if(!ul||!tools)return;
+function beside(on){box.style.removeProperty('margin-left');box.style.removeProperty('width');if(tools)tools.style.removeProperty('margin-left');if(!on)return;var ul=nav.querySelector('.nav-links');if(!ul||!tools)return;
 tools.style.setProperty('margin-left','auto','important');box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().right+12-box.getBoundingClientRect().left;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');}
 function setup(){nav.classList.remove('pf-flow','pf-left');beside(false);box.classList.remove('pf-wide');box.style.removeProperty('min-width');as.forEach(function(a){a.classList.remove('flash');});can=false;
 if(!as[0].offsetWidth||innerWidth<768)return;
 var h0=nav.offsetHeight,name=nav.querySelector('.nav-logo'),ul=nav.querySelector('.nav-links');
 var ok=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1)return false;if(!ul||!name)return true;var l=ul.getBoundingClientRect();return l.right+8<=box.getBoundingClientRect().left&&l.left>=name.getBoundingClientRect().right+12;};
 /* first choice: the logos stand in the open room on the left, between the name and the section buttons... */
-var okL=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1||!ul||!name)return false;var l=ul.getBoundingClientRect(),bx=box.getBoundingClientRect();return bx.right+8<=l.left&&bx.left>=name.getBoundingClientRect().right+4&&(!tools||l.right+8<=tools.getBoundingClientRect().left);};
+var okL=function(){if(nav.offsetHeight!==h0||nav.scrollWidth>nav.clientWidth+1||!ul||!name)return false;var l=ul.getBoundingClientRect(),bx=box.getBoundingClientRect(),need=as.reduce(function(n,a){return n+a.getBoundingClientRect().width;},0)+24;return bx.right<=l.left+1&&bx.width>=need&&bx.left>=name.getBoundingClientRect().right-1&&(!tools||l.right+8<=tools.getBoundingClientRect().left);};
 /* ...pushed right up against the section buttons (12px from the first of them) */
-var hug=function(){box.style.setProperty('margin-left','0px','important');var d=ul.getBoundingClientRect().left-12-box.getBoundingClientRect().right;box.style.setProperty('margin-left',Math.max(0,Math.round(d))+'px','important');};
-var flowOr=function(){beside(false);nav.classList.add('pf-left');if(ul)hug();if(okL())return true;box.style.removeProperty('margin-left');nav.classList.add('pf-flow');if(okL())return true;nav.classList.remove('pf-flow','pf-left');beside(true);if(ok()&&(!tools||box.getBoundingClientRect().right+8<=tools.getBoundingClientRect().left))return true;beside(false);if(ok())return true;nav.classList.add('pf-flow');if(ok())return true;nav.classList.remove('pf-flow');return false;};
+/* ...spread evenly across that room: the logos' box is made exactly as wide as the gap between the name and the first
+   section button, and the three sit in it with equal space before, between and after them */
+var hug=function(){box.style.setProperty('margin-left','0px','important');box.style.removeProperty('width');var d=ul.getBoundingClientRect().left-box.getBoundingClientRect().left;box.style.setProperty('width',Math.max(0,Math.floor(d))+'px','important');};
+var flowOr=function(){beside(false);nav.classList.add('pf-left');if(ul)hug();if(okL())return true;box.style.removeProperty('margin-left');box.style.removeProperty('width');nav.classList.add('pf-flow');if(okL())return true;nav.classList.remove('pf-flow','pf-left');beside(true);if(ok()&&(!tools||box.getBoundingClientRect().right+8<=tools.getBoundingClientRect().left))return true;beside(false);if(ok())return true;nav.classList.add('pf-flow');if(ok())return true;nav.classList.remove('pf-flow');return false;};
 as.forEach(function(a){a.classList.add('flash-try');});
 if(BADGE&&!still()){var base=box.getBoundingClientRect().width,small=as[0].getBoundingClientRect().width,big=0,widest=as[0];
 as.forEach(function(a){a.classList.add('flash');var w=a.getBoundingClientRect().width;if(w>big){big=w;widest=a;}a.classList.remove('flash');});
