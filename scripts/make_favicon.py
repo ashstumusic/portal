@@ -14,19 +14,27 @@ import io, os, re
 from playwright.sync_api import sync_playwright
 from PIL import Image
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+POSE = os.environ.get('FAV_POSE', '{sing:1,lean:-4}')   # singing (beak open) and tipped back a touch: with its crest the bird is then exactly as tall as it is wide, so it fills the square icon edge to edge
 PX = 1024                                 # size of the raster copies
 src = open(os.path.join(ROOT, 'index-src.html'), encoding='utf-8').read()
 a = src.index("var seed=1;function rnd()"); b = src.index("function wrap(walk,idle)")
 code = src[a:b]
-JS = "(code)=>{const both=new Function(code+';var a0=bird({});seed=8101;var s0=sketch({});return [a0,s0];')();const art=both[0];" \
+JS = "(code)=>{const both=new Function(code+';var a0=bird("+POSE+");seed=8101;var s0=sketch("+POSE+");return [a0,s0];')();const art=both[0];" \
      "const NS='http://www.w3.org/2000/svg';const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','-100 -100 500 500');svg.style.cssText='position:fixed;left:0;top:0;width:500px;height:500px;color:#15171c';" \
      "svg.innerHTML='<g>'+art+'</g>';document.body.appendChild(svg);" \
      "const bb=svg.firstChild.getBBox();svg.remove();return {art:art,sk:both[1],x:bb.x,y:bb.y,w:bb.width,h:bb.height};}"
-OUTLINE, EDGE = '#15171c', 7.0
-# The top layer is the toolbar's own pencil drawing (sketch() in the page), with the same pencil filter the toolbar uses.
+OUTLINE, EDGE = '#15171c', 10.0
+# Made to read at 16px, where a browser tab shows it: the dark edge is heavier than the toolbar bird's, and the eye,
+# the wing line and the legs are drawn fatter (at tab size the toolbar's own weights blur away to nothing).
+EYE_WING, LEGS = 1.55, 1.8
+def small_size(sk):
+    """The page's drawing with its eye, wing line and legs fattened for tiny sizes."""
+    def in_mask(m): return re.sub(r'stroke-width="([0-9.]+)"', lambda w: 'stroke-width="%.1f"' % (float(w.group(1)) * EYE_WING), m.group(0))
+    sk = re.sub(r'<mask.*?</mask>', in_mask, sk, flags=re.S)
+    return re.sub(r'(<path stroke="currentColor" d="[^"]*" stroke-width=")([0-9.]+)"', lambda m: '%s%.1f"' % (m.group(1), float(m.group(2)) * LEGS), sk)
+# The top layer is the toolbar's own drawing (sketch() in the page, solid coat included), with the same filter the toolbar uses.
 PENCIL = ('<filter id="fav-pencil" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="7" result="n"/>'
-          '<feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="3" result="g"/>'
-          '<feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.2 2.55" result="a"/><feComposite in="d" in2="a" operator="in"/></filter>')
+          '<feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter>')   # the toolbar's #dz-rough: hand-wobbled edges, solid colour (no paper grain showing through)
 def outline(art):
     """A near-black copy of the bird, drawn underneath and a little fatter, so a dark edge shows all round it.
     The pastel gradient alone is under 3:1 against a light browser tab; the edge is about 18:1. The copy is solid
@@ -34,7 +42,7 @@ def outline(art):
     a = re.sub(r'<mask.*?</mask>', '', art)
     a = re.sub(r' mask="[^"]*"', '', a)
     a = a.replace('fill="currentColor" stroke="none"', 'fill="%s" stroke="%s" stroke-width="%s" stroke-linejoin="round"' % (OUTLINE, OUTLINE, EDGE * 2))
-    a = re.sub(r'stroke="currentColor" stroke-width="([0-9.]+)"', lambda m: 'stroke="%s" stroke-width="%s"' % (OUTLINE, float(m.group(1)) + EDGE * 2), a)
+    a = re.sub(r'stroke="currentColor" stroke-width="([0-9.]+)"', lambda m: 'stroke="%s" stroke-width="%s"' % (OUTLINE, float(m.group(1)) * LEGS * 1.2 + EDGE * 2), a)
     return a
 with sync_playwright() as p:
     br = p.chromium.launch(channel="chrome"); pg = br.new_page(viewport={"width": 600, "height": 600})
@@ -44,7 +52,7 @@ with sync_playwright() as p:
         svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="%.2f %.2f %.2f %.2f">'
                '<defs><linearGradient id="fav-grad" gradientUnits="userSpaceOnUse" x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f">'
                '<stop offset="0" stop-color="#F7C549"/><stop offset=".36" stop-color="#FF8AC8"/><stop offset=".66" stop-color="#FFA36B"/><stop offset="1" stop-color="#8FE6FF"/>'
-               '</linearGradient>' + PENCIL.replace('%', '%%') + '</defs><g>%s</g><g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#fav-pencil)">%s</g></svg>') % (vx, vy, side, side, r["x"], r["y"] + r["h"] * .35, r["x"] + r["w"], r["y"] + r["h"] * .65, outline(r["art"]), r["sk"].replace("currentColor", "url(#fav-grad)"))
+               '</linearGradient>' + PENCIL.replace('%', '%%') + '</defs><g>%s</g><g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#fav-pencil)">%s</g></svg>') % (vx, vy, side, side, vx + side * .96, vy + side * .25, vx + side * .04, vy + side * .75, outline(r["art"]), small_size(r["sk"]).replace("currentColor", "url(#fav-grad)"))
         pg.set_viewport_size({"width": PX, "height": PX})
         pg.set_content("<!doctype html><html><body style='margin:0;background:transparent'>" + svg.replace("<svg ", "<svg width='%d' height='%d' style='display:block' " % (PX, PX)) + "</body></html>")
         return svg, pg.screenshot(omit_background=True, clip={"x": 0, "y": 0, "width": PX, "height": PX})

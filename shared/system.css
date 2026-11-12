@@ -2324,12 +2324,6 @@ html { overscroll-behavior-y: none; }
 @media (prefers-reduced-motion: reduce) { .settings-knob { transition: none; } }
 @media (forced-colors: active) { .settings-switch, .k-menu-link { border: 1px solid ButtonText; } .settings-row[aria-checked="true"] .settings-switch { background: Highlight; } }
 
-/* The mouse pointer is an arrow filled with the name's gradient (gold, pink, orange, sky blue), with a dark edge so
-   it shows on any background. A cursor image cannot animate, so the gradient is still. Links and buttons keep the
-   usual pointing hand, and text fields the usual text cursor, so what is clickable stays obvious. Not in forced-colours mode. */
-:root.psy, :root.psy body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='28'%20height='30'%20viewBox='0%200%2028%2030'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23F7C549'/%3E%3Cstop%20offset='.38'%20stop-color='%23FF8AC8'/%3E%3Cstop%20offset='.68'%20stop-color='%23FFA36B'/%3E%3Cstop%20offset='1'%20stop-color='%238FE6FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M3%202L3%2024L9.2%2018.4L13%2027L17%2025.2L13.2%2016.8L21.5%2016.8Z'%20fill='url(%23g)'%20stroke='%2315171c'%20stroke-width='2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 3 2, auto; }
-@media (forced-colors: active) { :root.psy, :root.psy body { cursor: auto; } }
-
 /* Home photo moved a bit further left inside its crop (the picture is wider
    than its panel; a higher first number shows more of its right-hand side). */
 :root.psy .hero-split-photo:not(#\#):not(#\#) { object-position: 52% 18% !important; }
@@ -2855,6 +2849,25 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav .nav-platform:not(.flash):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { opacity: 1; box-sizing: border-box; border: 0 !important; background: #000 !important; width: var(--pt) !important; height: var(--pt) !important; border-radius: 50%; box-shadow: 0 0 0 1px #14161c, 0 0 0 2.5px var(--gold), 0 0 10px 4px rgb(247 197 73 / .5) !important; }
 :root.psy .nav .nav-platform:not(.flash):focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { box-shadow: 0 0 0 2px #14161c, 0 0 0 3.5px var(--gold), 0 0 0 5.5px #14161c, 0 0 0 8px #fff !important; }
 @media (forced-colors: active) { :root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { filter: none !important; } }
+
+/* Without scripts the toolbar keeps its plain Search button; the field's outline (in the page for a steady first paint) stays out of the way */
+:root:not(.k-inline-search) .nav .k-si--bar { display: none !important; }
+
+/* Logos inside buttons (featured badges, album links, video links), on hover and focus: the same cut-out everywhere.
+   The button is gold then; the logo's body turns black and its detail (note, waves, play mark) becomes clear, so the
+   gold shows through it. (Before, some showed the detail in white and some in gold.) */
+:root.psy :is(.f-btn, .rel-btn, .vid-yt):is(:hover, :focus-visible) .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: url(#pt-cut) !important; }
+@media (forced-colors: active) { :root.psy :is(.f-btn, .rel-btn, .vid-yt):is(:hover, :focus-visible) .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
+
+/* The word "Art" on each cat square (a different language on each; the page script places them): white lettering
+   with a dark edge so it reads on every colour, along the bottom of the square, sized to the square itself. */
+.warhol-cell { container-type: size; }
+.warhol-word { position: absolute; left: 4%; right: 4%; bottom: 5%; z-index: 1; text-align: center; white-space: nowrap; pointer-events: none; user-select: none;
+  font: 800 15cqw/1.15 var(--font-ui, 'UI'), system-ui, -apple-system, "Segoe UI", "Noto Sans", "Noto Sans CJK SC", "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Thai", "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Ethiopic", "Noto Sans Khmer", sans-serif;
+  color: #fff; paint-order: stroke fill; -webkit-text-stroke: .9cqw #111; text-shadow: 0 .6cqw 1.4cqw rgb(0 0 0 / .55); }
+/* wide screens: the wavy edge along the bottom of the home section covers the foot of the last row, so those words sit higher */
+@media (min-width: 900px) { .warhol-cell:nth-last-child(-n+4) .warhol-word { bottom: 21%; } }
+@media (forced-colors: active) { .warhol-word { -webkit-text-stroke: 0; text-shadow: none; color: CanvasText; background: Canvas; } }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

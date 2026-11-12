@@ -437,7 +437,8 @@
   }
   // the toolbar's own search field (wider screens): it replaces the old Search button, which stays as the fallback
   let barSearch = null;
-  for (const b of $$('.nav .k-tools .k-search-btn')) { const box = doc.createElement('div'); box.className = 'k-si k-si--bar'; b.before(box); barSearch = makeSearch(box, {}); root.classList.add('k-inline-search'); }
+  for (const b of $$('.nav .k-tools .k-search-btn')) { let box = b.previousElementSibling; if (!box || !box.classList.contains('k-si--bar')) { box = doc.createElement('div'); box.className = 'k-si k-si--bar'; b.before(box); }   /* the page may already carry the field's outline, so it is in place from the first paint */
+    barSearch = makeSearch(box, {}); root.classList.add('k-inline-search'); }
   const menuBtns = () => $$('.nav-toggle, .k-settings-btn');
   function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(m)); if (b.matches('.nav-toggle')) b.setAttribute('aria-label', m ? 'Close menu' : 'Open menu'); } }
   function openPalette(opts) {
