@@ -47,6 +47,14 @@ jobs:
       - name: Build static lyric pages, sitemap entries and robots.txt
         run: python3 scripts/build_lyrics_pages.py
 
+      # The Download button on each release links to a ready-made ZIP kept on
+      # this repository's "downloads" Release. Rebuild them and replace any
+      # whose songs, cover or lyrics sheet changed (unchanged ones are skipped).
+      - name: Build the album ZIPs and update the downloads Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/album_zip.py --upload
+
       - name: Commit and push if anything changed
         run: |
           git config user.name "github-actions[bot]"

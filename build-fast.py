@@ -157,11 +157,12 @@ preloads = "\n".join(
 ) + '\n<link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">'
 html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_out}"/>\n</head>')
 
-# favicon -> external webp file (10KB vs ~80KB inlined base64 in the
-# critical HTML payload; one small cached fetch wins for a page-load win)
-_fv = __import__('hashlib').sha256(open("favicon.webp", "rb").read()).hexdigest()[:8]   # cache-bust a changed icon
-html = re.sub(r'<link rel="icon"[^>]*/>', f'<link rel="icon" type="image/webp" href="favicon.webp?v={_fv}"/>', html)
-html = re.sub(r'<link rel="apple-touch-icon"[^>]*/>\n?', f'<link rel="apple-touch-icon" href="favicon.png?v={_fv}"/>', html)
+# icons: cache-bust them when the artwork changes (favicon.ico for old browsers and the bare /favicon.ico request,
+# favicon.svg for browsers that take vector icons, a square opaque PNG for iOS, and the manifest for Android)
+_fv = __import__('hashlib').sha256(open("favicon.svg", "rb").read()).hexdigest()[:8]
+for _n in ('favicon.ico', 'apple-touch-icon.png', 'site.webmanifest'):
+    assert f'href="{_n}"' in html, _n
+    html = html.replace(f'href="{_n}"', f'href="{_n}?v={_fv}"')
 html = html.replace('<link href="favicon.svg"', f'<link href="favicon.svg?v={_fv}"')   # the vector icon (browsers that take SVG icons prefer it)
 
 # minify JSON-LD

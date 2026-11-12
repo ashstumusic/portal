@@ -61,7 +61,11 @@
         "lyrics": "Audio/My Anima/09. Lucky to Grieve (unreleased)"
       }
     ],
-    "featured": false
+    "featured": false,
+    "zip": {
+      "url": "https://github.com/ashstumusic/portal/releases/download/downloads/My-Anima-Ash-Stu.zip",
+      "bytes": 33561473
+    }
   },
   {
     "name": "Ash Stu, Vol. II",
@@ -116,7 +120,11 @@
         "num": 9
       }
     ],
-    "featured": true
+    "featured": true,
+    "zip": {
+      "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-II.zip",
+      "bytes": 76138881
+    }
   },
   {
     "name": "Ash Stu, Vol. I",
@@ -217,6 +225,10 @@
         "num": 18
       }
     ],
-    "featured": false
+    "featured": false,
+    "zip": {
+      "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-I.zip",
+      "bytes": 96897934
+    }
   }
 ]
