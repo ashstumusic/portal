@@ -2783,9 +2783,9 @@ html { overscroll-behavior-y: none; }
    Each of the three is its own vector drawing (below), not a filter over the coloured logo: a filter left rough,
    stair-stepped edges at ordinary screen density, where a drawing stays smooth at every size and zoom. */
 :root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { filter: none !important; clip-path: none; position: relative; z-index: 1; outline: 0 !important; }
-:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt--apple { background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 54 54%22%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2227%22 fill=%22%230b0c0f%22/%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2224.8%22 fill=%22%23F7C549%22/%3E%3Cg fill=%22%230b0c0f%22%3E%3Cpath d=%22M21.6 14.9 39.9 10.6v6.3L21.6 21.2z%22/%3E%3Cpath d=%22M21.6 15.5h2.5v21.3h-2.5z%22/%3E%3Cpath d=%22M37.4 11.3h2.5v21.2h-2.5z%22/%3E%3Cellipse cx=%2218.7%22 cy=%2237.6%22 rx=%225.6%22 ry=%224.5%22 transform=%22rotate(-20 18.7 37.6)%22/%3E%3Cellipse cx=%2234.5%22 cy=%2233.4%22 rx=%225.6%22 ry=%224.5%22 transform=%22rotate(-20 34.5 33.4)%22/%3E%3C/g%3E%3C/svg%3E") !important; }
-:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt--spotify { background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 54 54%22%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2227%22 fill=%22%230b0c0f%22/%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2224.8%22 fill=%22%23F7C549%22/%3E%3Cg fill=%22none%22 stroke=%22%230b0c0f%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M12.6 20.6c9.6-2.9 21.2-1.9 29.4 3%22 stroke-width=%225.2%22/%3E%3Cpath d=%22M14.3 28.4c7.9-2.3 17.3-1.5 24.3 2.7%22 stroke-width=%224.4%22/%3E%3Cpath d=%22M15.9 35.6c6.5-1.8 13.8-1.2 19.5 2.2%22 stroke-width=%223.7%22/%3E%3C/g%3E%3C/svg%3E") !important; }
-:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt--youtube { background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 54 54%22%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2227%22 fill=%22%230b0c0f%22/%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2224.8%22 fill=%22%23F7C549%22/%3E%3Crect x=%228.5%22 y=%2215.5%22 width=%2237%22 height=%2223%22 rx=%227%22 fill=%22%230b0c0f%22/%3E%3Cpath d=%22M23 21.3v11.4L33.2 27z%22 fill=%22%23F7C549%22/%3E%3C/svg%3E") !important; }
+:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt--apple, :root.psy .k-menu-plat:is(:hover, :focus-visible):not(#\#):not(#\#) .pt--apple { background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 54 54%22%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2227%22 fill=%22%230b0c0f%22/%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2224.8%22 fill=%22%23F7C549%22/%3E%3Cg fill=%22%230b0c0f%22%3E%3Cpath d=%22M21.6 14.9 39.9 10.6v6.3L21.6 21.2z%22/%3E%3Cpath d=%22M21.6 15.5h2.5v21.3h-2.5z%22/%3E%3Cpath d=%22M37.4 11.3h2.5v21.2h-2.5z%22/%3E%3Cellipse cx=%2218.7%22 cy=%2237.6%22 rx=%225.6%22 ry=%224.5%22 transform=%22rotate(-20 18.7 37.6)%22/%3E%3Cellipse cx=%2234.5%22 cy=%2233.4%22 rx=%225.6%22 ry=%224.5%22 transform=%22rotate(-20 34.5 33.4)%22/%3E%3C/g%3E%3C/svg%3E") !important; }
+:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt--spotify, :root.psy .k-menu-plat:is(:hover, :focus-visible):not(#\#):not(#\#) .pt--spotify { background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 54 54%22%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2227%22 fill=%22%230b0c0f%22/%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2224.8%22 fill=%22%23F7C549%22/%3E%3Cg fill=%22none%22 stroke=%22%230b0c0f%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M12.6 20.6c9.6-2.9 21.2-1.9 29.4 3%22 stroke-width=%225.2%22/%3E%3Cpath d=%22M14.3 28.4c7.9-2.3 17.3-1.5 24.3 2.7%22 stroke-width=%224.4%22/%3E%3Cpath d=%22M15.9 35.6c6.5-1.8 13.8-1.2 19.5 2.2%22 stroke-width=%223.7%22/%3E%3C/g%3E%3C/svg%3E") !important; }
+:root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt--youtube, :root.psy .k-menu-plat:is(:hover, :focus-visible):not(#\#):not(#\#) .pt--youtube { background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 54 54%22%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2227%22 fill=%22%230b0c0f%22/%3E%3Ccircle cx=%2227%22 cy=%2227%22 r=%2224.8%22 fill=%22%23F7C549%22/%3E%3Crect x=%228.5%22 y=%2215.5%22 width=%2237%22 height=%2223%22 rx=%227%22 fill=%22%230b0c0f%22/%3E%3Cpath d=%22M23 21.3v11.4L33.2 27z%22 fill=%22%23F7C549%22/%3E%3C/svg%3E") !important; }
 :root.psy .nav .nav-platform:not(.flash):is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { opacity: 1; box-sizing: border-box; border: 0 !important; background: #0b0c0f !important; width: var(--pt) !important; height: var(--pt) !important; border-radius: 50%; box-shadow: 0 0 0 2px var(--gold), 0 0 9px 3px rgb(247 197 73 / .45) !important; }
 :root.psy .nav .nav-platform:not(.flash):focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px #14161c, 0 0 0 6.5px #fff !important; }
 @media (forced-colors: active) { :root.psy .nav .nav-platform:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { background-image: revert !important; } }
@@ -2853,30 +2853,25 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .k-si--bar:focus-within:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-basis: 320px !important; width: 320px !important; margin-left: -280px !important; }
 }
 
-/* ── Phone menu: everything in view at once. The four sections sit two by two instead of in a tall stack, the three
-   streaming links are labelled buttons (a bare logo does not say where it goes), and the sheet may use the full
+/* ── Phone menu: everything in view at once. The four sections sit two by two instead of in a tall stack, and the sheet may use the full
    height of the screen, so Settings no longer hide below a scroll. The Menu button is the same 40px square as the
    Home mark at the other end of the bar, with a 44px area to press. */
-.k-menu-plat-name { display: none; }
 @media (max-width: 767px) {
   .k-menu { max-height: calc(100vh - 3rem); max-height: calc(100dvh - 3rem); gap: 8px; }
   .k-menu-links { grid-template-columns: 1fr 1fr; }
   .k-menu-link:last-child:nth-child(odd) { grid-column: 1 / -1; }
-  .k-menu-plats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0; }
-  .k-menu-plat { width: auto; height: auto; min-height: 64px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-    border-radius: var(--btn-r, 12px); background: var(--btn-l-bg); color: var(--btn-l-fg); box-shadow: var(--btn-l-edge); text-decoration: none;
-    font: 600 12.5px/1.1 var(--font-ui, system-ui, sans-serif); letter-spacing: -.01em; transition: background-color .18s ease, color .18s ease, transform .18s ease; }
-  .k-menu-plat .pt { width: 26px; height: 26px; }
-  .k-menu-plat-name { display: block; white-space: nowrap; }
-  .k-menu-plat:is(:hover, :focus-visible) { background: var(--gold); color: #111; box-shadow: none; }
-  .k-menu-plat:is(:hover, :focus-visible) .pt { filter: none; }
-  .k-menu-plat:active, .k-menu-link:active { transform: scale(.96); }
+  /* the streaming logos are the same three round logos as the desktop toolbar: icon only, side by side, same gold hover */
+  .k-menu-plats { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 0; }
+  .k-menu-plat { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
+  .k-menu-plat .pt { width: 32px; height: 32px; border-radius: 50%; }
+  .k-menu-plat:is(:hover, :focus-visible) .pt { filter: none; box-shadow: 0 0 0 2px var(--gold), 0 0 9px 3px rgb(247 197 73 / .45); }
+  .k-menu-plat:active .pt { transform: scale(.96); }
+  .k-menu-link:active { transform: scale(.96); }
   .k-menu .settings-title { margin-top: 6px; }
   :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; position: relative; }
   :root.psy .nav .nav-toggle::after { content: ""; position: absolute; inset: -2px; }
 }
-@media (max-width: 767px) and (prefers-reduced-motion: reduce) { .k-menu-plat { transition: none; } .k-menu-plat:active, .k-menu-link:active { transform: none; } }
-@media (max-width: 767px) and (forced-colors: active) { .k-menu-plat { border: 1px solid ButtonText; } }
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) { .k-menu-plat:active .pt, .k-menu-link:active { transform: none; } }
 
 /* Desktop toolbar, name hidden (the home section, and About where the big name takes over): the streaming logos sit
    right beside the Home mark rather than across an empty gap. --name-gone runs 0..1 with the name's fade, so the logos
