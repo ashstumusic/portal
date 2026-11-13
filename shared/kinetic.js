@@ -546,21 +546,71 @@
   // Vibration API). Sounds are OFF by default: a site that plays music
   // should never make surprise noises; turn on from the palette.
   let soundsOn = store.get('k-sounds') === 'on', actx = null;
-  function blip(freq = 880) {
+  // The sounds are a school band room's percussion shelf, made in the browser (no audio files): each is a struck
+  // bar or block built from its real overtone recipe - a few sine partials that die away at different speeds, plus a
+  // few milliseconds of filtered noise for the mallet hitting.
+  //   xylophone    rosewood bar: fundamental + a twelfth (3x), short and dry      - ordinary buttons
+  //   marimba      wider bar, two octaves up (4x), rounder, lower                  - opening a menu (a rising three-note figure)
+  //   glockenspiel steel bar: 2.76x and 5.4x, long ring, high                      - switches, and links out to streaming
+  //   wood block   two short knocks, no ring                                       - close, back, play/pause
+  //   triangle     clustered high partials, long shimmer                           - downloads
+  // Notes come from one pentatonic scale, so any run of presses is in tune with itself. A button always plays the
+  // same bar (picked from its name); rows in a list (sections, songs) step up the scale in order.
+  const SCALE = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51, 1567.98, 1760.0];   // C major pentatonic, C5-A6
+  let noiseBuf = null, master = null;
+  function audio() {
+    actx ??= new AudioContext();
+    if (actx.state === 'suspended') actx.resume();
+    if (!master) { master = actx.createGain(); master.gain.value = 0.5; const c = actx.createDynamicsCompressor(); c.threshold.value = -14; c.ratio.value = 6; master.connect(c).connect(actx.destination); }
+    if (!noiseBuf) { noiseBuf = actx.createBuffer(1, Math.round(actx.sampleRate * 0.05), actx.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    return actx;
+  }
+  function partial(f, gain, decay, at) {
+    if (f > 16000) return;
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(gain, at + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, at + decay);
+    o.connect(g).connect(master); o.start(at); o.stop(at + decay + 0.02);
+  }
+  function mallet(freq, gain, at, len = 0.012) {
+    const n = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
+    n.buffer = noiseBuf; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 1.2;
+    g.gain.setValueAtTime(gain, at); g.gain.exponentialRampToValueAtTime(0.0001, at + len);
+    n.connect(f).connect(g).connect(master); n.start(at); n.stop(at + len + 0.01);
+  }
+  const INSTR = {
+    xylophone: (f, t) => { partial(f, 0.20, 0.28, t); partial(f * 3, 0.07, 0.10, t); partial(f * 6.1, 0.02, 0.05, t); mallet(3200, 0.10, t); },
+    marimba: (f, t) => { f /= 2; partial(f, 0.24, 0.45, t); partial(f * 4, 0.05, 0.14, t); partial(f * 10, 0.012, 0.05, t); mallet(1400, 0.06, t, 0.018); },
+    glock: (f, t) => { f *= 2; partial(f, 0.11, 0.9, t); partial(f * 2.76, 0.045, 0.5, t); partial(f * 5.4, 0.018, 0.25, t); mallet(6000, 0.04, t, 0.006); },
+    block: (f, t) => { partial(f * 1.5, 0.16, 0.045, t); partial(f * 2.42, 0.08, 0.03, t); mallet(1800, 0.14, t, 0.02); },
+    triangle: (f, t) => { for (const [m, g] of [[1, 0.035], [1.33, 0.03], [1.78, 0.026], [2.31, 0.02], [2.9, 0.014]]) partial(4186 * m, g, 1.1, t); mallet(8000, 0.03, t, 0.005); },
+  };
+  function strike(instr = 'xylophone', note = 0, delay = 0) {
     if (!soundsOn) return;
-    try {
-      actx ??= new AudioContext();
-      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
-      o.frequency.value = freq; o.type = 'sine';
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
-      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.07);
-    } catch {}
+    try { const a = audio(); INSTR[instr](SCALE[((note % SCALE.length) + SCALE.length) % SCALE.length], a.currentTime + delay); } catch {}
+  }
+  function figure(instr, notes, gap = 0.075) { notes.forEach((n, i) => strike(instr, n, i * gap)); }
+  function blip(up = true) { figure('glock', up ? [2, 4] : [4, 2], 0.09); }   // the switch sound, also used when the Sounds setting itself is flipped
+  const noteOf = (el) => { let h = 0; for (const ch of (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 40)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h % 6; };
+  const rowIndex = (el, sel) => { const all = $$(sel, el.closest('ul, ol, nav, .k-menu-links, .rel-tracklist') || doc); return Math.max(0, all.indexOf(el)); };
+  function soundFor(b) {
+    if (b.matches('[role="switch"], .fx-toggle')) return blip(b.getAttribute('aria-checked') !== 'true' && b.getAttribute('aria-pressed') !== 'true');
+    if (b.matches('.k-palette-close, .lb-close, .np-close, .fs-collapse, .lb-arrow')) return figure('block', [0, 0], 0.09);
+    if (b.matches('.nav-toggle, .k-settings-btn')) return b.getAttribute('aria-expanded') === 'true' ? figure('marimba', [4, 2, 0]) : figure('marimba', [0, 2, 4]);
+    if (b.matches('.rel-dl, .btn-epk, [download]')) return strike('triangle');
+    if (b.matches('.nav-platform, .k-menu-plat, .f-btn, a.rel-btn, .vid-yt, .contact-email-link')) return strike('glock', noteOf(b));
+    if (b.matches('.fs-play, .np-play, .np-ctrl, .fs-ctrl, .vid-card')) return strike('block', 2);
+    if (b.matches('.nav-links a, .k-menu-link')) return strike('xylophone', rowIndex(b, '.nav-links a, .k-menu-link'));
+    if (b.matches('.rel-tl-toggle')) return b.getAttribute('aria-expanded') === 'true' ? figure('xylophone', [4, 2, 0], 0.06) : figure('xylophone', [0, 2, 4], 0.06);
+    const row = b.closest('.rel-track, .track-row, [data-track]');
+    if (row) return strike('xylophone', rowIndex(row, '.rel-track, .track-row, [data-track]'));
+    strike('xylophone', noteOf(b));
   }
   doc.addEventListener('pointerdown', (e) => {
-    const b = e.target.closest?.('button, .btn, [role="button"]');
+    const b = e.target.closest?.('button, .btn, [role="button"], [role="switch"], a[href]');
     if (!b) return;
-    if (e.pointerType === 'touch' && navigator.vibrate && motionOK()) navigator.vibrate(6);
-    blip(b.matches('.fx-toggle, .fs-lyrics-toggle') ? 660 : 880);
+    if (e.pointerType === 'touch' && navigator.vibrate && motionOK() && !b.matches('a[href]')) navigator.vibrate(6);
+    soundFor(b);
   }, { passive: true });
 
   // Settings live in their own panel (the gear in the page footer), not in the search palette: settingsList() is what
@@ -568,7 +618,7 @@
   function settingsList() {
     const list = [];
     if (hasKeys) list.push({ group: 'Settings', label: 'Single-key shortcuts', on: keysOn, title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then a letter to jump to a section, / to search', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
-    list.push({ group: 'Settings', label: 'Interface sounds', on: soundsOn, title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', sub: 'Clicks when you press buttons', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(); } });
+    list.push({ group: 'Settings', label: 'Interface sounds', on: soundsOn, title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', sub: 'Xylophone notes when you press', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(true); } });
     // Page-specific settings (the homepage's psyche.js adds background effects).
     if (typeof window.kineticItems === 'function') { try { list.push(...window.kineticItems().filter((it) => it.group === 'Settings')); } catch {} }
     return list;

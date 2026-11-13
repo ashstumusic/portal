@@ -325,6 +325,30 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       “Anybody caught singin’ these songs without our permission, will be <br/>mighty good friends of ourn, cause we don’t give a dern. <br/>Publish it. Write it. Sing it. Swing to it. Yodel it. <br/>We wrote it, that’s all we wanted to do.”
       <cite>Woody Guthrie</cite>
     </blockquote>
+    <script>
+    /* The Woody Guthrie quote is always its four set lines (each shorter than the one above: an upside-down triangle),
+       and always as large as the space allows: the type is sized so the first, longest line runs exactly from one
+       margin to the other. Measured on a hidden copy at 100px, then scaled; redone when the fonts arrive or the space changes. */
+    (function(){
+    var q=document.querySelector('.disc-quote'); if(!q) return;
+    var last='';
+    function fit(){
+    var cs=getComputedStyle(q), room=q.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    if(!(room>0)) return;
+    var c=q.cloneNode(true); c.removeAttribute('id'); c.setAttribute('aria-hidden','true');
+    c.style.cssText='position:absolute!important;visibility:hidden!important;left:-99999px!important;top:0!important;width:max-content!important;max-width:none!important;padding:0!important;margin:0!important;border:0!important;font-size:100px!important;white-space:nowrap!important;';
+    q.parentNode.appendChild(c); var w=c.getBoundingClientRect().width; c.remove();
+    if(!(w>0)) return;
+    var fs=(Math.floor(room/w*100*100*.998)/100)+'px';
+    if(fs!==last){ last=fs; q.style.setProperty('--q-fs',fs); }
+    }
+    requestAnimationFrame(fit);
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fit);
+    if(document.fonts&&document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',fit);
+    window.addEventListener('load',fit);
+    if('ResizeObserver' in window) new ResizeObserver(fit).observe(q.parentNode); else window.addEventListener('resize',fit);
+    })();
+    </script>
   </div>
 </section>
 <section class="section videos-section" id="videos" aria-labelledby="videos-h">
