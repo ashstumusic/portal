@@ -545,7 +545,8 @@ offsets = ids.map(id => ({ id, top: (document.getElementById(id) || {}).offsetTo
 var ab = document.getElementById('about') || document.querySelector('.bio-section'); aboutTop = ab ? ab.offsetTop : 0;
 heroH = heroSection ? heroSection.offsetHeight : 400;
 }
-cacheOffsets();
+/* (not measured here: this runs while the page is still being read in, and measuring now would make the browser lay out a
+   half-built page and then lay it all out again. The first measurement is taken just before the first frame, below.) */
 var _resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(cacheOffsets, 150); }, { passive: true });
 // The section positions also move whenever the page changes height without the window resizing (releases and videos
@@ -617,7 +618,7 @@ if (ticking) return;
 ticking = true;
 requestAnimationFrame(() => { updateNav(); ticking = false; });
 }, { passive: true });
-updateNav();
+requestAnimationFrame(function() { cacheOffsets(); updateNav(); });
 var _heroImg = document.querySelector('.hero-split-photo');
 if (_heroImg) _heroImg.addEventListener('load', function() { cacheOffsets(); updateNav(); });
 })();
@@ -2174,11 +2175,13 @@ if (embedded[0]) renderAllContent(embedded, false);
  // When the page already rendered from its embedded copy, this check waits
  // until the page has finished loading and the browser is idle, so it never
  // competes with the fonts, hero photo and scripts for a slow connection.
+ /* One content file. Anything other than a good answer of the expected shape (offline, an error page, a sign-in page
+    served in its place, a half-written file) counts as "no answer", and the copy the page already has stays. */
+ function get(url, ok) { return fetch(url, { cache: 'no-store' }).then(function(r) { if (!r.ok) throw 0; return r.json(); }).then(function(d) { return ok(d) ? d : null; }).catch(function() { return null; }); }
  function revalidate() {
  Promise.all([
- fetch('releases.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
- fetch('videos.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
- fetch('lyrics.json', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; })
+ get('releases.json', Array.isArray), get('videos.json', Array.isArray),
+ get('lyrics.json', function(d) { return !!d && typeof d === 'object' && !Array.isArray(d); })
  ]).then(function(results) {
 if (results[0] === null) results[0] = embedded[0] ? embedded[0] : [];
 if (results[1] === null) results[1] = embedded[1] ? embedded[1] : [];
@@ -2846,7 +2849,9 @@ ord.unshift(ord.pop());as.forEach(function(a,k){a.style.order=ord[k];});
 if(can){old.classList.remove('flash');first().classList.add('flash');}
 as.forEach(function(a,k){var d=was[k]-a.getBoundingClientRect().left;if(d&&a.animate)a.animate([{translate:d+'px 0'},{translate:'0 0'}],{duration:440,easing:'cubic-bezier(.3,.8,.3,1)'});});}
 addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(setup,200);},{passive:true});
-new MutationObserver(function(){if(still()===can)setup();}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+/* Re-measure only when the "calm" setting really changes. The page's class list changes for many other reasons (it did so on
+   every frame of a scroll), and each of those used to re-run the whole toolbar measurement: several forced layouts per frame. */
+var wasStill=still();new MutationObserver(function(){var now=still();if(now!==wasStill){wasStill=now;setup();}}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setup);
 /* The logos keep one fixed order (Apple Music, Spotify, YouTube): they no longer trade places. */
 setup();setTimeout(setup,1500);})();</script>

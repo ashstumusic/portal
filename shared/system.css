@@ -2067,9 +2067,9 @@ html { overscroll-behavior-y: none; }
 /* the narrowest tablet toolbars are full: the links and icons sit a little closer so the row still fits on one line */
 @media (min-width: 768px) and (max-width: 829px) { :root.psy .nav .nav-links:not(#\#) { gap: 4px !important; } :root.psy .nav .nav-platforms:not(#\#) { gap: 6px !important; } }
 /* (the toolbar name is 2.2rem, set on the element; a touch smaller in the shorter phone toolbar) */
-@media (max-width: 767px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: 2rem !important; } }
+@media (max-width: 767px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: min(2rem, 32px) !important; } }
 /* between phone and small-laptop widths the toolbar is full: the name keeps its earlier size there so the row does not wrap */
-@media (min-width: 768px) and (max-width: 899px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: 1.805rem !important; } }
+@media (min-width: 768px) and (max-width: 899px) { :root.psy .nav .nav-logo .hero-name:not(#\#) { font-size: min(1.805rem, 28.9px) !important; } }
 :root.js.psy.psy-calm .nav .nav-logo:not(#\#) { padding-left: 0 !important; margin-left: 0; }
 
 /* Desktop toolbar: the Search box sits closer to the right edge of the
@@ -2338,7 +2338,7 @@ html { overscroll-behavior-y: none; }
    links are no longer repeated inside the menu. */
 @media (max-width: 767px) {
   :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; min-height: 0 !important; flex-wrap: wrap !important; align-items: center !important; align-content: flex-start; row-gap: 8px; padding: 8px 16px 8px !important; }
-  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#) { font-size: 2.25rem !important; }
+  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#) { font-size: min(2.25rem, 36px) !important; }
   :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; margin-left: 10px; }
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 2px !important; }
   :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#) { --pt: 28px; padding: 3px; }
@@ -2358,7 +2358,7 @@ html { overscroll-behavior-y: none; }
   :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 6px; }
 }
 @media (max-width: 349px) {
-  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 2rem !important; }
+  :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: min(2rem, 32px) !important; }
   :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --pt: 20px; padding: 2px; }
   :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 20px !important; height: 20px !important; }
   :root .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#) a { font-size: 13px !important; }
@@ -2920,6 +2920,25 @@ html { overscroll-behavior-y: none; }
   .k-palette[data-mode="menu"] .k-si--flow .k-si-ico { top: 22px; }
   :root.psy .k-palette[data-mode="menu"] .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { top: 12px !important; right: 12px !important; min-height: 44px !important; width: 80px; padding-inline: 0 !important; }
 }
+
+/* The toolbar is a fixed height in pixels, so the name in it must not grow with a larger default text size
+   (at 200% text it rose out of the top of the bar). The sizes above are capped at their normal pixel value; this
+   catches the desktop default. */
+@media (min-width: 900px) { :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#) { font-size: min(2.2rem, 35.2px) !important; } }
+
+/* ── Load speed: a closed tracklist takes no part in layout.
+   The three tracklists (every song row and its lyrics) are about 1,700 of the page's 2,200 elements. Closed, they were
+   only hidden (zero height, invisible), so the browser still laid all of them out before the first paint and again
+   whenever the script measured the page. Closed now means display: none; opening shows it at once, as before (there
+   was never an open/close animation to lose). */
+:root .rel-card:not(.tracks-open) .rel-tracklist { display: none !important; }
+
+/* ── Scrolling speed: the colour haze behind the page is no longer blurred by the browser.
+   The haze is a tiny picture (about 72 by 45 dots) stretched over the whole screen, which already makes it soft. On
+   top of that it carried a 24px blur filter: a full-screen blur recomputed 20 times a second, for a layer shown at 8%
+   strength. That one filter was the largest single cost while scrolling. The softening is now done on the tiny picture itself
+   (see psyche.js), which looks the same and costs almost nothing. */
+:root .psy-field:not(.psy-field--cssblur):not(#\#) { filter: none !important; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

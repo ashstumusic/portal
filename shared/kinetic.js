@@ -477,7 +477,7 @@
   });
   dlg.addEventListener('click', (e) => { if (e.target === dlg) closePalette(); });
   $('.k-palette-close', dlg).addEventListener('click', () => closePalette());
-  dlg.addEventListener('close', () => { palette.open = false; syncMenuBtns(false); });
+  dlg.addEventListener('close', () => { if (dlg.open) return; palette.open = false; syncMenuBtns(false); });   // the event arrives a moment after closing: if the sheet was reopened meanwhile (fast double press), it must not mark the buttons closed
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;
     if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) { if (dlg.open) closePalette(false); barSearch.focus(); barSearch.select(); } else if (!dlg.open) openPalette({ menu: true }); else closePalette(); }
