@@ -351,11 +351,12 @@
   const menuBox = $('.k-menu', dlg);
   const GEAR = '<svg class="k-gear" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   const escHtml = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let findMode = false;   // phones: the sheet opened from the Search button shows only the search field and its suggestions
   function renderMenu(keep) {
     const links = $$('.nav-links a').filter((a) => a.getAttribute('href'));
     const plats = $$('.nav-platforms a');
     const sets = typeof settingsList === 'function' ? settingsList() : [];
-    let h = '<p class="k-menu-title">Menu</p>';
+    let h = '<p class="k-menu-title">' + (findMode ? 'Search' : 'Menu') + '</p>';
     // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
     h += '<div class="k-si k-si--flow"></div>';
     if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
@@ -440,10 +441,12 @@
   for (const b of $$('.nav .k-tools .k-search-btn')) { let box = b.previousElementSibling; if (!box || !box.classList.contains('k-si--bar')) { box = doc.createElement('div'); box.className = 'k-si k-si--bar'; b.before(box); }   /* the page may already carry the field's outline, so it is in place from the first paint */
     barSearch = makeSearch(box, {}); root.classList.add('k-inline-search'); }
   const menuBtns = () => $$('.nav-toggle, .k-settings-btn');
-  function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(m)); if (b.matches('.nav-toggle')) b.setAttribute('aria-label', m ? 'Close menu' : 'Open menu'); } }
+  const isFind = (b) => b.matches('.nav-find');
+  function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { const on = m && isFind(b) === findMode; b.setAttribute('aria-expanded', String(on)); if (b.matches('.nav-toggle') && !isFind(b)) b.setAttribute('aria-label', on ? 'Close menu' : 'Open menu'); } }
   function openPalette(opts) {
     if (dlg.open) return;
     const menu = !!(opts && opts.menu);
+    findMode = menu && !!opts.find; dlg.classList.toggle('k-find', findMode);
     opener = doc.activeElement;
     input.value = '';
     palette.open = true;
@@ -452,8 +455,8 @@
     dlg.showModal();
     setMode(menu ? 'menu' : 'search');
     syncMenuBtns(true);
-    dlg.setAttribute('aria-label', menu ? 'Menu and settings' : 'Search');
-    if (menu) (menuBox.querySelector('button, a') || $('.k-palette-close', dlg)).focus({ preventScroll: true }); else input.focus();
+    dlg.setAttribute('aria-label', findMode ? 'Search' : menu ? 'Menu and settings' : 'Search');
+    if (findMode) (menuBox.querySelector('.k-si-input') || input).focus({ preventScroll: true }); else if (menu) (menuBox.querySelector('button, a') || $('.k-palette-close', dlg)).focus({ preventScroll: true }); else input.focus();
   }
   function closePalette(restore = true) {
     if (!dlg.open) return;
@@ -479,12 +482,12 @@
   dlg.addEventListener('close', () => { palette.open = false; syncMenuBtns(false); });
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;
-    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) { if (dlg.open) closePalette(false); barSearch.focus(); barSearch.select(); } else if (!dlg.open) openPalette({ menu: true }); else closePalette(); }
-    else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) barSearch.focus(); else openPalette({ menu: true }); }
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) { if (dlg.open) closePalette(false); barSearch.focus(); barSearch.select(); } else if (!dlg.open) openPalette({ menu: true, find: true }); else closePalette(); }
+    else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) barSearch.focus(); else openPalette({ menu: true, find: true }); }
   });
   for (const b of $$('.k-search-btn')) b.addEventListener('click', () => openPalette());
   // the one menu button: opens the box as the menu (search field + sections + settings)
-  for (const b of $$('.nav-toggle, .k-settings-btn')) b.addEventListener('click', (e) => { e.stopImmediatePropagation(); dlg.open ? closePalette() : openPalette({ menu: true }); });
+  for (const b of $$('.nav-toggle, .k-settings-btn')) b.addEventListener('click', (e) => { e.stopImmediatePropagation(); dlg.open ? closePalette() : openPalette({ menu: true, find: isFind(b) }); });
 
   // ── DYNAMIC CONTENT ANNOUNCEMENTS ────────────────────────────────
   const lyr = $('#fs-lyrics');
