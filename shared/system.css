@@ -2213,7 +2213,7 @@ html { overscroll-behavior-y: none; }
 :root.psy #hero-brand:active .hero-name { scale: .975; transition-duration: .06s; }
 @media (prefers-reduced-motion: reduce) { :root.psy #hero-brand:active .hero-name { scale: none; } }
 /* The About card's "Ash Stu" (a link back to the top) presses the same way, and is not selectable text either. */
-:root.psy .bio-name, :root.psy .bio-name .bio-name-link { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; cursor: pointer; }
+:root.psy .bio-name, :root.psy .bio-name .bio-name-link { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; cursor: default; }
 :root.psy .bio-name { transition: scale .18s cubic-bezier(.2, .9, .3, 1.2); transform-origin: 50% 50%; }
 :root.psy .bio-name:active { scale: .975; transition-duration: .06s; }
 @media (prefers-reduced-motion: reduce) { :root.psy .bio-name:active { scale: none; } }
@@ -2892,6 +2892,11 @@ html { overscroll-behavior-y: none; }
 :root.psy .vid-card:not(#\#):not(#\#):not(#\#) { border-radius: 16px !important; }
 :root.psy .rel-btn.rel-btn--label:not(#\#):not(#\#):not(#\#) { border-radius: 8px !important; }
 :root.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#) { border-radius: 12px !important; }
+
+/* The name is never a button where it is not showing. In About the big name is plain lettering (no hand cursor), and
+   the toolbar's hidden name leaves no invisible pressable patch behind: only the Home mark itself takes the press. */
+:root.psy .nav .nav-logo.name-off:not(#\#) { pointer-events: none !important; }
+:root.psy .nav .nav-logo.name-off[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: auto !important; cursor: pointer; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
