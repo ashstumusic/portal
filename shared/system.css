@@ -2893,6 +2893,25 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav .nav-logo.name-off:not(#\#) { pointer-events: none !important; }
 :root.psy .nav .nav-logo.name-off[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: auto !important; cursor: pointer; }
 
+/* ── Phone and desktop parity. The phone shows the same things in the same order and the same style as the desktop,
+   only stacked:
+   - Press Kit reads heading, line, Download button, then the four photos (it used to open with two photos, the
+     heading sandwiched between pairs);
+   - the two streaming buttons in the home section are stacked full-size buttons with readable lettering, as on the
+     desktop (they were two small side-by-side buttons with 10px text);
+   - the play button on a video is the same size as on the desktop and on the release covers. */
+@media (max-width: 767px) {
+  :root.psy .epk-section .epk-body:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-row: 1 !important; }
+  :root.psy .epk-section .epk-photos-top:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-row: 2 !important; }
+  :root.psy .epk-section .epk-photos-bottom:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-row: 3 !important; }
+  :root.psy .featured-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-direction: column !important; align-items: stretch !important; gap: 8px !important; width: 100% !important; max-width: 256px !important; margin-inline: auto !important; }
+  :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 0 0 auto !important; width: 100% !important; height: 56px !important; min-height: 56px !important; padding: 0 16px 0 12px !important; gap: 12px !important; }
+  :root.psy .featured-btns > .f-btn--badge:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) .pt { width: 36px !important; height: 36px !important; }
+  :root.psy .f-btn--badge .fb-sm:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 12px !important; }
+  :root.psy .f-btn--badge .fb-lg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 20px !important; }
+  :root.psy .vid-play-circle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 50px !important; height: 50px !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
