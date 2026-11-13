@@ -2969,7 +2969,8 @@ html { overscroll-behavior-y: none; }
      - the panel's width / height stays between 1.375 and 1.625 (outside that, cover would cut into the rectangle);
      - object-position 92.9% 64.4% puts what little crop there is on the allowed margins.
    Wide windows: photo on the left at the full height of the screen, featured release on the right with at least
-   280px. If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
+   280px. The home section is one wave-height taller than the screen: the wave would otherwise cut into the
+   rectangle, so it sits in a dark strip under the photo, seen on the first scroll. If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
    Tall windows: photo across the full width on top, featured release below.
    Do not change these numbers without re-running the check (scratch script hb.py measures the rectangle). */
 :root { --vh100: 100vh; }
@@ -2981,7 +2982,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-height: none !important; min-height: 0 !important; flex: none !important; }
 @media (min-aspect-ratio: 11/10) and (min-width: 560px) {
   :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
-    --ph: calc(var(--vh100) - var(--hp) - var(--wz));
+    --ph: calc(var(--vh100) - var(--hp));   /* the photo reaches the bottom of the screen; the wave rides in a dark strip just below it, past the fold */
     --pw: min(100vw - 280px, var(--ph) * 1.625);
     --pane-h: min(var(--ph), var(--pw) / 1.375);
     display: grid !important; grid-template-columns: var(--pw) minmax(0, 1fr) !important; grid-template-rows: auto !important;
@@ -3011,6 +3012,18 @@ html { overscroll-behavior-y: none; }
 .vid-thumb .vid-preview-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 2; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); opacity: 0; pointer-events: none; }
 .vid-card.previewing .vid-preview-bar { opacity: 1; }
 @media (forced-colors: active) { .vid-thumb .vid-preview-bar { background: Highlight; } }
+
+/* ── Woody Guthrie quote: always the same four lines, each shorter than the one above (an upside-down triangle),
+   and always as large as its margins allow. The line breaks are the <br>s in the markup and never change; the type
+   size comes from a small script beside the quote, which sets --q-fs so the first line spans the full width.
+   The size before the script runs (2.55% of the width) is a close guess so nothing visibly jumps. */
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: block !important; width: auto !important; max-width: none !important; white-space: nowrap !important; text-wrap: nowrap !important; text-align: center !important; hanging-punctuation: none !important; font-size: var(--q-fs, 2.55cqi) !important; line-height: 1.6 !important; overflow: visible; }
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) br { display: inline !important; }
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { white-space: nowrap; }
+
+/* Press Kit: the photos shown on the page are 75% see-through (owner's choice). Only these display copies -
+   the photos inside the downloadable kit are untouched. */
+:root.psy .epk-photos img:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: .25 !important; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
