@@ -2908,18 +2908,17 @@ html { overscroll-behavior-y: none; }
   :root.psy .vid-play-circle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 50px !important; height: 50px !important; }
 }
 
-/* ── Phone toolbar: Search and Menu are two buttons, each opening its own sheet.
-   Search (magnifying glass) opens a sheet with only the search field, already focused, and its suggestions.
-   Menu opens the sections, the streaming logos and the settings, with no search field in the way.
-   Both sheets hang from the top of the screen, just under the toolbar, where the buttons are. */
-:root.psy .nav .nav-find:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+/* ── Phone menu, one sheet (search stays inside it). The search field is the sheet's top line, with Close beside it, in
+   place of a "Menu" title and a row of its own; the sections, streaming logos and settings follow. Typing swaps those
+   for suggestions, which use the sheet's full width. The sheet hangs from the top of the screen, under the toolbar. */
 @media (max-width: 767px) {
-  :root.psy .nav .nav-find:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-grid !important; margin-left: auto !important; }
-  :root.psy .nav .nav-find + .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 8px !important; }
-  :root.psy .nav .nav-find svg { width: 20px; height: 20px; display: block; }
-  .k-palette:not(.k-find) .k-menu > .k-si--flow { display: none !important; }
-  .k-palette.k-find .k-menu > :not(.k-si):not(.k-menu-title) { display: none !important; }
   .k-palette .k-palette-box { margin-top: 56px; }
+  .k-palette[data-mode="menu"] .k-menu { padding-top: 12px; }
+  .k-palette[data-mode="menu"] .k-menu-title { display: none; }
+  .k-palette[data-mode="menu"] .k-si--flow { margin-bottom: 4px; }
+  .k-palette[data-mode="menu"] .k-si--flow .k-si-input { width: calc(100% - 88px); height: 44px; }
+  .k-palette[data-mode="menu"] .k-si--flow .k-si-ico { top: 22px; }
+  :root.psy .k-palette[data-mode="menu"] .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { top: 12px !important; right: 12px !important; min-height: 44px !important; width: 80px; padding-inline: 0 !important; }
 }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
