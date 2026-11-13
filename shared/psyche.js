@@ -60,6 +60,8 @@
     cv.className = 'psy-field'; cv.setAttribute('aria-hidden', 'true');
     doc.body.prepend(cv);
     const ctx = cv.getContext('2d', { alpha: false });
+    const soft = 'filter' in ctx, src = soft ? doc.createElement('canvas') : null, sctx = soft ? src.getContext('2d') : null;
+    if (!soft) cv.classList.add('psy-field--cssblur');   // a browser whose canvas cannot blur keeps the CSS blur
     const STOPS = [[44, 6, 120], [91, 33, 255], [255, 31, 168], [236, 232, 255], [198, 255, 0], [20, 210, 200], [44, 6, 120]];
     const LUT = new Uint8ClampedArray(256 * 3);
     for (let i = 0; i < 256; i++) {
@@ -74,6 +76,7 @@
       w = Math.max(24, Math.min(110, Math.ceil(innerWidth / 20)));
       h = Math.max(24, Math.min(80, Math.ceil(innerHeight / 20)));
       cv.width = w; cv.height = h; img = ctx.createImageData(w, h);
+      if (soft) { src.width = w; src.height = h; }
     }
     function paint() {
       const d = img.data, sin = Math.sin, cos = Math.cos, ar = w / h;
@@ -98,7 +101,11 @@
           o += 4;
         }
       }
-      ctx.putImageData(img, 0, 0);
+      // The haze is softened here, on the tiny picture (a 2-dot blur of ~72x45 dots costs nothing), not by a CSS blur
+      // of the whole screen, which the browser had to recompute on every repaint. Drawn slightly oversize so the blur
+      // has picture, not empty edge, to pull from.
+      if (soft) { sctx.putImageData(img, 0, 0); ctx.filter = 'blur(2px) saturate(.9)'; ctx.drawImage(src, -2, -2, w + 4, h + 4); }
+      else ctx.putImageData(img, 0, 0);
     }
     function frame(now) {
       raf = 0;

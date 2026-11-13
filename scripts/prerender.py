@@ -262,7 +262,12 @@ def main():
     }
     payload = json.dumps(combined, separators=(',', ':')).replace('</', '<\\/')
     blocks = f'<script type="application/json" id="data-all">{payload}</script>'
-    idx = page.rindex('<script')
+    # The data must sit BEFORE the script that reads it (readEmbedded('data-all') runs as that script executes).
+    # It used to go before the last <script> on the page, which stopped being the main one once later scripts were
+    # added: the page then never found its own data, always waited on the three .json requests, and lost its
+    # releases if one of them failed.
+    reader = page.index("readEmbedded('data-all')")
+    idx = page.rindex('<script', 0, reader)
     page = page[:idx] + blocks + page[idx:]
 
     with open('index.html', 'w', encoding='utf-8') as f:
