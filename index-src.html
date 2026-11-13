@@ -259,7 +259,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <section class="hero-split" id="latest" aria-label="Ash Stu">
   <div class="hero-split-left">
     <div class="hero-photo-track" id="hero-photo-track">
-      <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="950"/>
+      <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="935"/>
       <div class="hero-photo-frame" aria-hidden="true"></div>
     </div>
     <div class="hero-split-overlay">
@@ -2017,6 +2017,41 @@ npShow();
 }
 var VIDEO_LIST = [];
 function encPath(p) { return p.replace(/"/g, '%22'); }
+/* Hover preview, as on YouTube: rest the mouse on a thumbnail for half a second and the video plays there, silent,
+   looping its first 20 seconds. Mouse only (touch has no hover), and not with reduced motion or data saver on.
+   The <video> is made on demand and thrown away on leaving, so nothing is downloaded unless someone hovers. */
+var previewOK = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+function wirePreview(card, v) {
+if (!previewOK || !v.file) return;
+var thumb = card.querySelector('.vid-thumb'), timer = 0, vid = null, bar = null;
+if (!thumb) return;
+function stop() {
+clearTimeout(timer); timer = 0;
+card.classList.remove('previewing');
+if (vid) { var old = vid, ob = bar; vid = bar = null; try { old.pause(); } catch (e) {} old.removeAttribute('src'); try { old.load(); } catch (e) {} setTimeout(function() { old.remove(); if (ob) ob.remove(); }, 260); }
+}
+function start() {
+timer = 0;
+if (vid || document.hidden) return;
+if (matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData)) return;
+if (typeof _lbOpen !== 'undefined' && _lbOpen) return;
+vid = document.createElement('video'); vid.className = 'vid-preview';
+vid.muted = true; vid.defaultMuted = true; vid.playsInline = true; vid.preload = 'auto'; vid.disablePictureInPicture = true;
+vid.setAttribute('aria-hidden', 'true'); vid.tabIndex = -1;
+bar = document.createElement('span'); bar.className = 'vid-preview-bar'; bar.setAttribute('aria-hidden', 'true');
+var mine = vid, myBar = bar, LEN = 20;
+mine.addEventListener('playing', function() { if (vid === mine) card.classList.add('previewing'); });
+mine.addEventListener('timeupdate', function() { if (vid !== mine) return; var len = Math.min(LEN, mine.duration || LEN); if (mine.currentTime >= len) mine.currentTime = 0; myBar.style.setProperty('--p', (mine.currentTime / len).toFixed(3)); });
+mine.addEventListener('error', function() { if (vid === mine) stop(); });
+mine.src = encPath(v.file);
+thumb.appendChild(mine); thumb.appendChild(myBar);
+var p = mine.play(); if (p && p.catch) p.catch(function() {});
+}
+card.addEventListener('pointerenter', function(e) { if (e.pointerType && e.pointerType !== 'mouse') return; clearTimeout(timer); timer = setTimeout(start, 500); });
+card.addEventListener('pointerleave', stop);
+card.addEventListener('click', stop);
+document.addEventListener('visibilitychange', function() { if (document.hidden) stop(); });
+}
 function wireVideos() {
 const grid = document.getElementById('video-grid');
 if (!grid || !VIDEO_LIST.length) return;
@@ -2036,6 +2071,7 @@ if (thumbVideo) {
 var p = thumbVideo.play();
 if (p && p.then) p.then(function() { thumbVideo.pause(); }).catch(function() {});
 }
+wirePreview(card, v);
 });
 }
 
