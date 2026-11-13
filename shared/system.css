@@ -2970,7 +2970,7 @@ html { overscroll-behavior-y: none; }
      - object-position 92.9% 64.4% puts what little crop there is on the allowed margins.
    Wide windows: photo on the left at the full height of the screen, featured release on the right with at least
    280px. The home section is one wave-height taller than the screen: the wave would otherwise cut into the
-   rectangle, so it sits in a dark strip under the photo, seen on the first scroll. If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
+   rectangle, so it sits just under the photo, cutting through a mirror image of the photo's lower edge (never a blank strip). If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
    Tall windows: photo across the full width on top, featured release below.
    Do not change these numbers without re-running the check (scratch script hb.py measures the rectangle). */
 :root { --vh100: 100vh; }
@@ -2989,7 +2989,12 @@ html { overscroll-behavior-y: none; }
     min-height: calc(var(--hp) + var(--pane-h) + var(--wz)) !important;
     background: #07090c !important;   /* the strip the wave rides in, under the photo: the photo's own dark floor carried down */
   }
-  :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: var(--pw) !important; height: var(--pane-h) !important; align-self: start !important; margin-bottom: var(--wz) !important; }
+  :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: var(--pw) !important; height: calc(var(--pane-h) + var(--wz)) !important; align-self: start !important; margin-bottom: 0 !important; overflow: hidden !important; position: relative !important; }
+  /* the photo itself keeps the exact panel it had (so the required area is untouched) and a mirror image of it
+     carries on underneath, so the wave cuts through picture, never through an empty strip */
+  :root.psy .hero-split > .hero-split-left > .hero-photo-track:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: var(--pane-h) !important; bottom: auto !important; }
+  :root.psy .hero-split > .hero-split-left > .hero-split-overlay:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { bottom: var(--wz) !important; }
+  :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: '' !important; position: absolute !important; left: 0; top: calc(var(--pane-h) - 1px); width: 100%; height: var(--pane-h); background: url("Images/embedded/hero-ash-stu-guitar.webp") 92.9% 64.4% / cover no-repeat; transform: scaleY(-1); pointer-events: none; }
   :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; max-height: none !important; min-height: 0 !important; }
 }
 @media not ((min-aspect-ratio: 11/10) and (min-width: 560px)) {
@@ -3024,6 +3029,12 @@ html { overscroll-behavior-y: none; }
 /* Press Kit: the photos shown on the page are 75% see-through (owner's choice). Only these display copies -
    the photos inside the downloadable kit are untouched. */
 :root.psy .epk-photos img:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { opacity: .25 !important; }
+
+/* Player progress line: the line stays thin, but the strip that answers to a pointer or finger is 24px tall
+   (WCAG 2.5.8 minimum target size). The strip is an invisible layer on the line itself. */
+:root.psy #player-bar .np-bar-track:not(#\#):not(#\#) { position: relative !important; }
+:root.psy #player-bar .np-bar-track:not(#\#):not(#\#)::before { content: "" !important; position: absolute !important; left: 0 !important; right: 0 !important; top: 50% !important; bottom: auto !important; height: 24px !important; transform: translateY(-50%); }
+@media (max-width: 767px) { :root.psy #player-bar .np-bar-track:not(#\#):not(#\#)::before { transform: translateY(-70%); } }   /* on phones the buttons sit close under the line, so the strip leans upward */
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
