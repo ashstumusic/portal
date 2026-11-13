@@ -160,7 +160,9 @@ def page(title, description, canonical, og_type, image, image_alt, body, jsonld,
 <meta name="twitter:description" content="{esc(description)}">
 <meta name="twitter:image" content="{esc(image)}">
 <meta name="twitter:image:alt" content="{esc(image_alt)}">
-<link rel="icon" href="/favicon.webp" type="image/webp">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script type="application/ld+json">
 {json.dumps(jsonld, ensure_ascii=False, indent=1)}
 </script>
