@@ -2940,6 +2940,78 @@ html { overscroll-behavior-y: none; }
    (see psyche.js), which looks the same and costs almost nothing. */
 :root .psy-field:not(.psy-field--cssblur):not(#\#) { filter: none !important; }
 
+/* ── Phone menu, tidied. The sheet opens over the toolbar, so Close sits where the Menu button was (open and close
+   are the same reach). Every group starts on one left edge and ends on one right edge; groups are 12px apart, items
+   inside a group 8px. Setting rows lose their side inset so their words line up with the buttons above. */
+@media (max-width: 767px) {
+  .k-palette[data-mode="menu"] .k-palette-box { margin-top: 8px; width: calc(100% - 32px); max-width: none; }
+  .k-palette[data-mode="menu"] .k-menu { gap: 12px; padding: 12px; }
+  .k-palette[data-mode="menu"] .k-si--flow { margin-bottom: 0; }
+  .k-menu .k-menu-settings { gap: 4px; }
+  .k-menu .settings-title { margin: 0; padding-top: 12px; min-height: 0; }
+  .k-menu .settings-row { padding-inline: 0; gap: 10px; border-radius: 8px; }
+  .k-menu .settings-row:hover { background: rgb(255 255 255 / .07); box-shadow: 0 0 0 6px rgb(255 255 255 / .07); }
+  .k-menu .settings-state { min-width: 24px; text-align: right; }
+}
+
+/* a phone on its side has width to spare and little height: the four sections take one row */
+@media (min-width: 560px) and (max-width: 767px) and (max-height: 480px) {
+  .k-menu .k-menu-links { grid-template-columns: repeat(4, 1fr); }
+  .k-menu .k-menu-link:last-child:nth-child(odd) { grid-column: auto; }
+}
+
+/* ── Home photo: the required area is never cut ──────────────────────────────────────────────────────────────
+   The owner marked a rectangle on the photo (Downloads/Guitar.png, red outline) that must show in full on every
+   device; anything outside it may be cropped. As fractions of the full frame (2301 x 1536) the rectangle runs
+   8.56% -> 99.35% across and 5.53% -> 96.94% down.
+   The photo always fills its panel edge to edge (object-fit: cover). Cover only ever crops one direction, by an
+   amount set by the panel's shape, so the rule reduces to two numbers:
+     - the panel's width / height stays between 1.375 and 1.625 (outside that, cover would cut into the rectangle);
+     - object-position 92.9% 64.4% puts what little crop there is on the allowed margins.
+   Wide windows: photo on the left at the full height of the screen, featured release on the right with at least
+   280px. If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
+   Tall windows: photo across the full width on top, featured release below.
+   Do not change these numbers without re-running the check (scratch script hb.py measures the rectangle). */
+:root { --vh100: 100vh; }
+@supports (height: 1svh) { :root { --vh100: 100svh; } }
+:root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --hp: 56px; --wz: calc(var(--wave-h, 0px) + var(--wave-rise, 0px)); padding-top: var(--hp) !important; height: auto !important; }
+@media (max-width: 767px) { :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --hp: 49px; } }
+:root.psy .hero-split-photo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { object-fit: cover !important; object-position: 92.9% 64.4% !important; animation: none !important; transform: none !important; }
+:root.psy .hero-photo-frame:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-size: cover !important; background-position: 92.9% 64.4% !important; }
+:root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-height: none !important; min-height: 0 !important; flex: none !important; }
+@media (min-aspect-ratio: 11/10) and (min-width: 560px) {
+  :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+    --ph: calc(var(--vh100) - var(--hp) - var(--wz));
+    --pw: min(100vw - 280px, var(--ph) * 1.625);
+    --pane-h: min(var(--ph), var(--pw) / 1.375);
+    display: grid !important; grid-template-columns: var(--pw) minmax(0, 1fr) !important; grid-template-rows: auto !important;
+    min-height: calc(var(--hp) + var(--pane-h) + var(--wz)) !important;
+    background: #07090c !important;   /* the strip the wave rides in, under the photo: the photo's own dark floor carried down */
+  }
+  :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: var(--pw) !important; height: var(--pane-h) !important; align-self: start !important; margin-bottom: var(--wz) !important; }
+  :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; max-height: none !important; min-height: 0 !important; }
+}
+@media not ((min-aspect-ratio: 11/10) and (min-width: 560px)) {
+  :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex-direction: column !important; min-height: var(--vh100) !important; }
+  :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; height: clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) !important; }
+  :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 1 1 auto !important; height: auto !important; max-height: none !important; min-height: 0 !important; border-left: 0 !important; }
+}
+/* a tall tablet stacks like a phone: the cover is sized so the release and its buttons still fit under the photo */
+@media (min-width: 768px) and (max-aspect-ratio: 11/10) {
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: min(40vw, 20svh) !important; max-width: min(40vw, 20svh) !important; min-width: 0 !important; min-height: 0 !important; height: auto !important; aspect-ratio: 1 / 1; flex: none !important; margin-block: 0 !important; }
+  :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 24px 24px 72px !important; justify-content: center !important; }
+}
+
+/* ── Video preview on hover (mouse only). After a short pause over a thumbnail the video itself plays in place,
+   silent, with a thin progress line; moving away stops it and drops the download. Script: wireVideos(). */
+.vid-thumb .vid-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .25s ease; pointer-events: none; z-index: 1; transform: none !important; background: #000; }
+.vid-card.previewing .vid-preview { opacity: 1; }
+.vid-card .vid-play-overlay { transition: opacity .2s ease; }
+.vid-card.previewing .vid-play-overlay { opacity: 0 !important; }
+.vid-thumb .vid-preview-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 2; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); opacity: 0; pointer-events: none; }
+.vid-card.previewing .vid-preview-bar { opacity: 1; }
+@media (forced-colors: active) { .vid-thumb .vid-preview-bar { background: Highlight; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
