@@ -21,6 +21,7 @@ import json
 import os
 import re
 import unicodedata
+import urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = 'https://ashstu.art'
@@ -180,12 +181,15 @@ def page(title, description, canonical, og_type, image, image_alt, body, jsonld,
 """
 
 
+ROBOTS_META = '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>\n'
+
+
 ARTIST_NODE = {'@type': ['MusicGroup', 'Person'], '@id': f'{SITE}/#artist', 'name': ARTIST,
                'alternateName': ARTIST_FULL, 'url': f'{SITE}/', 'genre': GENRE}
 
 
 HOME_HTML = None
-def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title):
+def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title, article=''):
     """A song's page is the whole site with that song opened: the built
     homepage (index.html) with this song's title, description, canonical
     address, Open Graph / Twitter tags and JSON-LD, <base href="/"> so every
@@ -213,6 +217,14 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'<meta property="og:type" content="[^"]*"\s*/?>', '<meta property="og:type" content="music.song"/>', h)
     h = sub(r'<meta property="og:url" content="[^"]*"\s*/?>', f'<meta property="og:url" content="{url}"/>', h)
     h = sub(r'<meta property="og:image" content="[^"]*"\s*/?>', f'<meta property="og:image" content="{esc(art)}"/>', h)
+    # the image tags must describe the cover now in og:image, not the homepage's social card
+    w, hgt, mime = image_facts(art)
+    h = sub(r'<meta property="og:image:type" content="[^"]*"\s*/?>', f'<meta property="og:image:type" content="{mime}"/>' if mime else '', h)
+    h = sub(r'<meta property="og:image:width" content="[^"]*"\s*/?>', f'<meta property="og:image:width" content="{w}"/>' if w else '', h)
+    h = sub(r'<meta property="og:image:height" content="[^"]*"\s*/?>', f'<meta property="og:image:height" content="{hgt}"/>' if hgt else '', h)
+    h = sub(r'<meta property="og:image:alt" content="[^"]*"\s*/?>', f'<meta property="og:image:alt" content="{esc(alt)}"/>', h)
+    h = sub(r'<meta name="twitter:image:alt" content="[^"]*"\s*/?>', f'<meta name="twitter:image:alt" content="{esc(alt)}"/>', h)
+    h = sub(r'<meta name="twitter:image" content="[^"]*"\s*/?>', f'<meta name="twitter:image" content="{esc(art)}"/>', h)
     h = sub(r'<meta name="twitter:title" content="[^"]*"\s*/?>', f'<meta name="twitter:title" content="{a}"/>', h)
     h = sub(r'<meta name="twitter:description" content="[^"]*"\s*/?>', f'<meta name="twitter:description" content="{d}"/>', h)
     head_add = ('<base href="/"/>\n'
@@ -228,7 +240,30 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'(<meta charset="[^"]*"\s*/?>)', None, h) if False else re.sub(r'(<meta charset="[^"]*"\s*/?>)', lambda m: m.group(1) + '\n' + head_add, h, count=1)
     # the song's lyrics already open in the static HTML
     h = h.replace(f'{esc(song_title)}<details class="rel-lyrics-static">', f'{esc(song_title)}<details class="rel-lyrics-static" open>', 1)
+    if article:
+        # This page is about one song. Its words sit in an <article> of their
+        # own under the page's only <h1>; the homepage's copy of every other
+        # song's words (static <details> and the all-songs JSON-LD) is left
+        # out, so 36 song pages are not 36 near-copies of the homepage.
+        h = re.sub(r'<details class="rel-lyrics-static"[^>]*>.*?</details>', '', h, flags=re.S)
+        h = re.sub(r'<script type="application/ld\+json" id="lyrics-ld">.*?</script>\n?', '', h, count=1, flags=re.S)
+        h, n1 = re.subn(r'<h1 class="hero-name">(.*?)</h1>', lambda m: '<p class="hero-name">' + m.group(1) + '</p>', h, count=1, flags=re.S)
+        h, n2 = re.subn(r'(<section[^>]*\bid="music"[^>]*>)', lambda m: m.group(1) + '\n' + article, h, count=1)
+        if not (n1 and n2):
+            return None
     return h
+
+
+def image_facts(url):
+    """(width, height, mime type) of a site image given its absolute URL."""
+    path = os.path.join(ROOT, urllib.parse.unquote(url.replace(SITE + '/', '', 1)))
+    mime = {'.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg'}.get(os.path.splitext(path)[1].lower(), '')
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            return im.size[0], im.size[1], mime
+    except Exception:
+        return None, None, mime
 
 
 def main():
@@ -276,7 +311,8 @@ def main():
         art_path = '/' + rel['art'].replace(' ', '%20') if rel.get('art') else '/Images/social-card.png'
         art = SITE + art_path   # absolute for Open Graph / JSON-LD
         text = '\n\n'.join('\n'.join(v) for v in s['verses'])
-        digest = hashlib.sha256((s['title'] + rel['name'] + text).encode()).hexdigest()[:16]
+        # 'layout 2' is part of the hash: bump it when the page template changes, so <lastmod> tells crawlers to come back
+        digest = hashlib.sha256(('layout 2' + s['title'] + rel['name'] + text).encode()).hexdigest()[:16]
         path = os.path.join(OUT, s['slug'], 'index.html')
         old_hash, old_date = previous_meta(path)
         modified = old_date if (old_hash == digest and old_date) else TODAY
@@ -286,7 +322,9 @@ def main():
         trad, unrel = s.get('traditional'), s.get('unreleased')
         who = f'the traditional song “{s["title"]}”, arranged by {ARTIST}' if trad else f'“{s["title"]}” by {ARTIST}'
         description = (f"Full lyrics to {who}, from the {kind.lower()} {rel['name']}"
-                       f"{' (not released yet)' if unrel else (' (' + year + ')' if year else '')}. Begins: “{first}”")[:300]
+                       f"{' (not released yet)' if unrel else (' (' + year + ')' if year else '')}. Begins: “{first}”")
+        if len(description) > 160:
+            description = description[:159].rsplit(' ', 1)[0].rstrip(' ,.;:“') + '…'
         title = f"{s['title']} Lyrics | {ARTIST}"
         listen = []
         if rel.get('apple'):
@@ -352,12 +390,15 @@ def main():
              **({'datePublished': s['date']} if s['date'] else {}),
              'inAlbum': {'@type': 'MusicAlbum', 'name': rel['name'], 'url': f'{SITE}/#music', 'image': art,
                          'albumReleaseType': 'SingleRelease' if kind == 'Single' else 'AlbumRelease', 'byArtist': {'@id': f'{SITE}/#artist'}},
-             'position': s['position'], 'recordingOf': {'@id': comp_id}}]),
+             'position': s['position'], 'recordingOf': {'@id': comp_id}, 'isAccessibleForFree': True,
+             'audio': {'@type': 'AudioObject', 'contentUrl': SITE + '/' + urllib.parse.quote(s['key']), 'encodingFormat': 'audio/mpeg'}}]),
             {'@type': 'MusicComposition', '@id': comp_id, 'name': s['title'], 'url': url, 'inLanguage': 'en', 'genre': GENRE,
              'composer': writer, 'lyricist': writer,
              **({'arranger': {'@id': f'{SITE}/#artist'}} if trad else {}),
              **({'datePublished': s['date']} if s['date'] else {}),
              'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text},
+             **({} if trad else {'copyrightHolder': {'@id': f'{SITE}/#artist'}}),
+             **({'recordedAs': {'@id': url + '#recording'}} if not unrel else {}),
              'dateModified': modified},
             {'@type': 'WebPage', '@id': url, 'url': url, 'name': title, 'inLanguage': 'en',
              'dateModified': modified, 'mainEntity': {'@id': comp_id}, 'primaryImageOfPage': art,
@@ -371,7 +412,14 @@ def main():
                  f'<meta property="music:musician" content="{SITE}/">\n')
         os.makedirs(os.path.dirname(path), exist_ok=True)
         deep_key = s.get('key')
-        html = clone_page(title, description, url, art, alt, jsonld, extra, deep_key, s['title'])
+        year_note = f' ({year})' if year and not unrel else ''
+        article = (f'<article class="song-page" id="song" aria-labelledby="song-h" lang="en">\n'
+                   f'<header class="song-page-head">\n<p class="song-page-kicker">Lyrics</p>\n<h1 id="song-h">{esc(s["title"])}</h1>\n'
+                   f'<p class="song-page-by">{"Traditional, arranged by" if trad else "Written and performed by"} <a href="/">{ARTIST}</a>'
+                   f' · track {s["position"]} of {s["total"]} on <cite>{esc(rel["name"])}</cite>{year_note}{" · not released yet" if unrel else ""}</p>\n</header>\n'
+                   f'<div class="song-page-lyrics" id="song-lyrics">\n<h2 class="sr-only">{esc(s["title"])}: full lyrics</h2>\n{verses_html}\n</div>\n'
+                   f'<p class="song-page-foot">Lyrics © {ARTIST} ({ARTIST_FULL}). <a href="/lyrics/">All lyrics</a></p>\n</article>')
+        html = clone_page(title, description, url, art, alt, jsonld, extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META), deep_key, s['title'], article)
         with open(path, 'w', encoding='utf-8') as f:
             f.write(html or page(title, description, url, 'music.song', art, alt, body, jsonld, extra))
         written.append((url, modified))
@@ -441,7 +489,20 @@ def main():
     with open(os.path.join(ROOT, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write(robots)
 
-    print(f'Lyrics pages: {len(written)} songs + index -> lyrics/; sitemap and robots.txt updated')
+    lines = [f'# {ARTIST}', '',
+             f'> Official site of {ARTIST} ({ARTIST_FULL}), outsider singer-songwriter from Guthrie, Oklahoma. '
+             'Every song\'s full lyrics are published here by the artist as plain HTML, one page per song.', '',
+             '## Lyrics', '', f'- [All lyrics]({index_url}): every song, grouped by release']
+    for rel in releases:
+        rs = [s for s in songs if s['release'] is rel]
+        if rs:
+            lines += ['', f'### {rel["name"]}', '']
+            lines += [f'- [{s["title"]}]({SITE}/lyrics/{s["slug"]}/)' + (' (not released yet)' if s.get('unreleased') else '') for s in rs]
+    lines += ['', '## Site', '', f'- [Home]({SITE}/): music, videos, press kit and contact', f'- [Sitemap]({SITE}/sitemap.xml)', '']
+    with open(os.path.join(ROOT, 'llms.txt'), 'w', encoding='utf-8') as f:
+        f.write('\n'.join(lines))
+
+    print(f'Lyrics pages: {len(written)} songs + index -> lyrics/; sitemap, robots.txt and llms.txt updated')
 
 
 if __name__ == '__main__':

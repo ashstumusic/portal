@@ -14,6 +14,7 @@
 <meta property="og:description" content="Official site of Ash Stu (Ashton Stubblefield) – outsider singer-songwriter from Guthrie, Oklahoma. Stream music, watch videos, and book shows."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://ashstu.art/"/>
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
 <meta property="og:image" content="https://ashstu.art/Images/social-card.png"/>
 <meta property="og:image:type" content="image/png"/>
 <meta property="og:image:width" content="1200"/>
@@ -1759,6 +1760,11 @@ if (!_deepDone && !_deepAt) _deepAt = performance.now();
 _deepDone = true;
 var lb = wrap.querySelector('.rel-lyrics-toggle');
 if (lb && !lb.classList.contains('open')) lb.click();
+// The song's words are also in the page's own HTML (for readers without
+// scripts and for crawlers); with the interactive copy open below, the
+// plain copy would just repeat it.
+var plain = document.getElementById('song-lyrics');
+if (plain && lb) plain.hidden = true;
 // Cued in the player, ready for Play - not started: browsers refuse to
 // autoplay sound on arrival anyway, and starting the download regardless
 // cost every visitor to a song page about 30MB (this song plus the next).

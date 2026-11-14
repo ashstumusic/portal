@@ -1,0 +1,57 @@
+# Ash Stu
+
+> Official site of Ash Stu (Ashton Stubblefield), outsider singer-songwriter from Guthrie, Oklahoma. Every song's full lyrics are published here by the artist as plain HTML, one page per song.
+
+## Lyrics
+
+- [All lyrics](https://ashstu.art/lyrics/): every song, grouped by release
+
+### My Anima
+
+- [The Cloud for the Desert](https://ashstu.art/lyrics/the-cloud-for-the-desert/) (not released yet)
+- [Pretty, May You Please](https://ashstu.art/lyrics/pretty-may-you-please/) (not released yet)
+- [Is This Limerence?](https://ashstu.art/lyrics/is-this-limerence/) (not released yet)
+- [Still Sad](https://ashstu.art/lyrics/still-sad/)
+- [St. James Infirmary](https://ashstu.art/lyrics/st-james-infirmary/) (not released yet)
+- [Worship Song](https://ashstu.art/lyrics/worship-song/)
+- [The Maid Freed From the Gallows](https://ashstu.art/lyrics/the-maid-freed-from-the-gallows/) (not released yet)
+- [You Are What You Love](https://ashstu.art/lyrics/you-are-what-you-love/)
+- [Lucky to Grieve](https://ashstu.art/lyrics/lucky-to-grieve/) (not released yet)
+- [Somewhere, Sometime](https://ashstu.art/lyrics/somewhere-sometime/)
+
+### Ash Stu, Vol. II
+
+- [Cool Cat Can't Comprehend](https://ashstu.art/lyrics/cool-cat-cant-comprehend/)
+- [Dirge for Ducklings](https://ashstu.art/lyrics/dirge-for-ducklings/)
+- [Savior Complicated](https://ashstu.art/lyrics/savior-complicated/)
+- [Annabel Lena](https://ashstu.art/lyrics/annabel-lena/)
+- [Summertime Even on the Moon](https://ashstu.art/lyrics/summertime-even-on-the-moon/)
+- [Performatives Anonymous](https://ashstu.art/lyrics/performatives-anonymous/)
+- [Theory of Hope](https://ashstu.art/lyrics/theory-of-hope/)
+- [Peacekeepers](https://ashstu.art/lyrics/peacekeepers/)
+- [The Wandering Jerk](https://ashstu.art/lyrics/the-wandering-jerk/)
+
+### Ash Stu, Vol. I
+
+- [The Cosmos Is Alive](https://ashstu.art/lyrics/the-cosmos-is-alive/)
+- [There Used To Be a Brighter Boy](https://ashstu.art/lyrics/there-used-to-be-a-brighter-boy/)
+- [Drive Me Home](https://ashstu.art/lyrics/drive-me-home/)
+- [AM Soda](https://ashstu.art/lyrics/am-soda/)
+- [Who Stuns the Birds](https://ashstu.art/lyrics/who-stuns-the-birds/)
+- [The Helpful Raven](https://ashstu.art/lyrics/the-helpful-raven/)
+- [VCR](https://ashstu.art/lyrics/vcr/)
+- [Waste My Time](https://ashstu.art/lyrics/waste-my-time/)
+- [Pretend](https://ashstu.art/lyrics/pretend/)
+- [Relapse Sonnet](https://ashstu.art/lyrics/relapse-sonnet/)
+- [Pick Up the Phone](https://ashstu.art/lyrics/pick-up-the-phone/)
+- [Outdoor Plant](https://ashstu.art/lyrics/outdoor-plant/)
+- [Why Have Eyes](https://ashstu.art/lyrics/why-have-eyes/)
+- [Unanswerable Questions](https://ashstu.art/lyrics/unanswerable-questions/)
+- [Future Lives](https://ashstu.art/lyrics/future-lives/)
+- [Don't Wish Your Life Away](https://ashstu.art/lyrics/dont-wish-your-life-away/)
+- [Anybody Still Awake?](https://ashstu.art/lyrics/anybody-still-awake/)
+
+## Site
+
+- [Home](https://ashstu.art/): music, videos, press kit and contact
+- [Sitemap](https://ashstu.art/sitemap.xml)
