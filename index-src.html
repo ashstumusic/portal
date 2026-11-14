@@ -373,7 +373,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
           <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
         </div>
         <div class="bio-rest">
-          <p class="bio-text bio-desc">Outsider singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield. Available for shows across Oklahoma.</p>
+          <p class="bio-text bio-desc">Outsider singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
         </div>
       </div>
       <div class="bio-card-media">
@@ -2469,7 +2469,7 @@ function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); raf
 start();
 if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
-// Background effects off (search: "Turn background effects off"): no fireworks or confetti.
+// Effects off (search: "Turn effects off"): no fireworks or confetti.
 new MutationObserver(function() { if (calm()) { stop(); for (const c of [cvs, fcvs]) if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); } else start(); })
 .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 })();
@@ -2829,7 +2829,7 @@ if(document.readyState==='complete')build();else addEventListener('load',build);
    A photo only enters its new window once it has completely left its old
    one, so the same picture is never on screen twice.
    Only while the section is on screen and the tab is visible; no movement
-   with reduced motion or background effects off (one random order per
+   with reduced motion or effects off (one random order per
    visit instead). */
 (function(){var imgs=[].slice.call(document.querySelectorAll('.epk-photos img'));if(imgs.length<2)return;
 var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),n=items.length,cur=items.map(function(_,i){return i;});
@@ -2860,7 +2860,7 @@ setInterval(turn,5200);})();</script>
    then (small tablets), the logos stay round and only trade places. The label is decorative (each link already has
    that name for assistive tech). They switch every five seconds, and hold still while the pointer is on the toolbar or something in it has focus,
    while the search or a menu is open, and in a hidden tab; none of this on phones or with reduced motion or
-   background effects off. */
+   effects off. */
 (function(){var as=[].slice.call(document.querySelectorAll('.nav .nav-platforms a.nav-platform'));if(as.length<2)return;
 var nav=document.querySelector('.nav'),box=as[0].parentNode,TXT={apple:'Listen on Apple Music',spotify:'Stream now on Spotify',youtube:'Watch on YouTube'};
 as.forEach(function(a,k){var m=/pt--(\w+)/.exec((a.querySelector('.pt')||{}).className||'');a.dataset.flash=TXT[m&&m[1]]||a.getAttribute('aria-label')||'';a.dataset.brand=m?m[1]:'';a.style.order=k;});
