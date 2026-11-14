@@ -2969,8 +2969,8 @@ html { overscroll-behavior-y: none; }
      - the panel's width / height stays between 1.375 and 1.625 (outside that, cover would cut into the rectangle);
      - object-position 92.9% 64.4% puts what little crop there is on the allowed margins.
    Wide windows: photo on the left at the full height of the screen, featured release on the right with at least
-   280px. The home section is one wave-height taller than the screen: the wave would otherwise cut into the
-   rectangle, so it sits just under the photo, cutting through a mirror image of the photo's lower edge (never a blank strip). If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
+   280px. The home section is exactly as tall as the screen, with the wave along its bottom edge. The wave would
+   cut into the rectangle, so the photo stops just above it and a mirror image of the photo's lower edge fills the wave (never a blank strip). If the window is not wide enough for both, the photo keeps its shape and the home section is shorter.
    Tall windows: photo across the full width on top, featured release below.
    Do not change these numbers without re-running the check (scratch script hb.py measures the rectangle). */
 :root { --vh100: 100vh; }
@@ -2982,7 +2982,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-height: none !important; min-height: 0 !important; flex: none !important; }
 @media (min-aspect-ratio: 11/10) and (min-width: 560px) {
   :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
-    --ph: calc(var(--vh100) - var(--hp));   /* the photo reaches the bottom of the screen; the wave rides in a dark strip just below it, past the fold */
+    --ph: calc(var(--vh100) - var(--hp) - var(--wz));   /* the home section ends at the bottom of the screen, so the wave is in view on arrival; the photo stops just above it and its mirror image carries on under the wave */
     --pw: min(100vw - 280px, var(--ph) * 1.625);
     --pane-h: min(var(--ph), var(--pw) / 1.375);
     display: grid !important; grid-template-columns: var(--pw) minmax(0, 1fr) !important; grid-template-rows: auto !important;
@@ -2995,7 +2995,9 @@ html { overscroll-behavior-y: none; }
   :root.psy .hero-split > .hero-split-left > .hero-photo-track:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: var(--pane-h) !important; bottom: auto !important; }
   :root.psy .hero-split > .hero-split-left > .hero-split-overlay:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { bottom: var(--wz) !important; }
   :root.psy .hero-split > .hero-split-left:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: '' !important; position: absolute !important; left: 0; top: calc(var(--pane-h) - 1px); width: 100%; height: var(--pane-h); background: url("Images/embedded/hero-ash-stu-guitar.webp") 92.9% 64.4% / cover no-repeat; transform: scaleY(-1); pointer-events: none; }
-  :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; max-height: none !important; min-height: 0 !important; }
+  :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; max-height: none !important; min-height: 0 !important; padding-top: 24px !important; padding-bottom: calc(var(--wz) + 24px) !important; }
+  /* the cover gives way before the column would grow taller than the screen and push the wave out of view */
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: max(96px, calc(var(--vh100) - var(--hp) - var(--wz) - 370px)) !important; }
 }
 @media not ((min-aspect-ratio: 11/10) and (min-width: 560px)) {
   :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex-direction: column !important; min-height: var(--vh100) !important; }
