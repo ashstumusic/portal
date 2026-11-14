@@ -1081,10 +1081,13 @@ html { overscroll-behavior-y: none; }
     radial-gradient(closest-side at 16% 86%, rgb(170 130 255 / .6), transparent) !important;
 }
 
-/* Background effects off: the haze holds still (psyche.js), the stars stop
-   flickering, the featured panel's lights stop drifting, and there are no
-   fireworks or confetti. */
+/* Effects off: the haze holds still (psyche.js), the stars stop
+   flickering, the featured panel's lights stop drifting, the "Latest
+   Release" tag's flare stops sweeping and its dot stops pulsing, and there
+   are no fireworks or confetti. */
 .psy-calm .party-aurora { animation: none !important; }
+.psy-calm .featured-badge::after { animation: none !important; display: none !important; }
+.psy-calm .featured-badge .party-dot { animation: none !important; }
 .psy-calm :is(.confetti-canvas, .fireworks-canvas, #confetti-canvas, #fireworks-canvas) { display: none !important; }
 
 /* The press-kit button visibly presses when the toolbar link triggers it. */
@@ -1211,7 +1214,7 @@ html { overscroll-behavior-y: none; }
 
 /* "Ash Stu" (home and About): the gradient flows slowly through the name.
    The colours repeat end-to-start so the loop is seamless. Holds still
-   when motion is reduced or the background effects are off. */
+   when motion is reduced or the effects are off. */
 @keyframes name-flow { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
 :root.psy :is(.hero-split .hero-name, .bio-name) {
   background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) !important;
@@ -1374,7 +1377,7 @@ html { overscroll-behavior-y: none; }
    a warm glow and the lit ones step along one bulb at a time: left to
    right on top, right to left along the bottom, so the light chases
    around the section. Slow enough to be comfortable (well under three
-   flashes a second); with reduced motion or background effects off, the
+   flashes a second); with reduced motion or effects off, the
    bulbs stay softly lit and still. Decorative only. */
 :root.psy .epk-section { position: relative; padding-block: 34px !important; }
 :root.psy .epk-section::before, :root.psy .epk-section::after {
@@ -1533,7 +1536,7 @@ html { overscroll-behavior-y: none; }
    and the lit ones step along, left to right. (The earlier version set
    the whole background with !important, which also froze the animated
    position: the layers are now set piece by piece so it runs again.)
-   Still, softly lit, with reduced motion or background effects off. */
+   Still, softly lit, with reduced motion or effects off. */
 :root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section) { position: relative; }
 :root.psy :is(.epk-section, .contact-section, .releases-section, .videos-section, .bio-section)::before {
   content: "" !important; display: block !important; position: absolute !important; inset: 0 0 auto 0 !important; height: 26px !important; z-index: 3; pointer-events: none;
@@ -1729,7 +1732,7 @@ html { overscroll-behavior-y: none; }
    Name: the first row is solid; the rows under it are outlined echoes
    that fade out, like a screen print running out of ink. Tagline: the
    mirror image, fading in to a solid last line. No offset shadows.
-   Still (pink) with reduced motion or background effects off. */
+   Still (pink) with reduced motion or effects off. */
 :root.psy .bio-wall { color: #FF2E7E; animation: pop-accent 24s linear infinite; }
 @keyframes pop-accent {
   0%, 20%  { color: #FF2E7E; }
@@ -2081,7 +2084,7 @@ html { overscroll-behavior-y: none; }
 /* The toolbar's "Ash Stu" wears the same flowing gradient as the big name
    in the home section (same colours, same 9-second flow, same red offset
    shadow, scaled to its size). It was plain black before. The flow holds
-   still with reduced motion or background effects off; in forced-colours
+   still with reduced motion or effects off; in forced-colours
    mode it is plain text. */
 :root.psy .nav .nav-logo .hero-name:not(#\#):not(#\#) {
   background-image: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) !important;

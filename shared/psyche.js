@@ -7,7 +7,7 @@
      ripple     a refraction ring across the viewport on button presses
 
    Everything decorative stops under prefers-reduced-motion and can be
-   switched off from the search palette ("Turn background effects off").
+   switched off from the search palette ("Turn effects off").
    ════════════════════════════════════════════════════════════════════ */
 (() => {
   'use strict';
@@ -378,7 +378,7 @@
 
   // Settings for the footer's settings panel (kinetic.js picks these up).
   window.kineticItems = () => [
-    { group: 'Settings', label: 'Background effects', on: fxPref, title: fxPref ? 'Turn background effects off' : 'Turn background effects on', sub: 'Haze, stars, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Background effects ${fxPref ? 'on' : 'off'}`); } },
+    { group: 'Settings', label: 'Effects', on: fxPref, title: fxPref ? 'Turn effects off' : 'Turn effects on', sub: 'Haze, stars, tag flare, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Effects ${fxPref ? 'on' : 'off'}`); } },
   ];
 
   syncFx();
