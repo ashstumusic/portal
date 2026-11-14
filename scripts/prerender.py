@@ -107,13 +107,13 @@ def render_video_card(v, v_idx):
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
     return (f'<div class="vid-card-wrap">'
-            f'<div class="vid-card" tabindex="0" role="button" '
+            f'<button type="button" class="vid-card" '
             f'aria-label="Play &quot;{esc(v["title"])}&quot;" data-video-index="{v_idx}">'
-            f'<div class="vid-thumb">{thumb_el}'
-            f'<div class="vid-play-overlay"><div class="vid-play-circle">'
+            f'<span class="vid-thumb">{thumb_el}'
+            f'<span class="vid-play-overlay"><span class="vid-play-circle">'
             f'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
-            f'<polygon points="5,3 19,12 5,21"/></svg></div></div></div>'
-            f'</div>'
+            f'<polygon points="5,3 19,12 5,21"/></svg></span></span></span>'
+            f'</button>'
             f'<div class="vid-info"><h3 class="vid-title">{esc(v["title"])}</h3>{yt_btn}</div>'
             f'</div>')
 

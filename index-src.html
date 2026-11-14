@@ -276,7 +276,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div class="featured-art-wrap featured-art-hero">
       <span class="party-eq" aria-hidden="true"><i></i><i></i><i></i><i></i> Now playing</span>
       <img src="Images/embedded/featured-only-a-baby-vol-2.webp" alt="Ash Stu, Vol. II" class="featured-art featured-art-rounded" width="498" height="498" fetchpriority="high"/>
-      <div class="featured-play-overlay" id="featured-play" role="button" tabindex="0" aria-label="Play Ash Stu, Vol. II" title="Play Ash Stu, Vol. II"><div class="rel-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      <button type="button" class="featured-play-overlay" id="featured-play" aria-label="Play Ash Stu, Vol. II" title="Play Ash Stu, Vol. II"><span class="rel-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></span></button>
     </div>
     <span class="featured-kicker">Album</span>
     <p class="featured-title">Ash Stu, Vol. II</p>
@@ -391,12 +391,12 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div class="np-bar-track" id="np-bar-track"><div id="np-fill"></div><div class="seek-thumb" id="np-thumb"></div></div>
     <span id="np-dur" class="np-time">&middot;</span>
   </div>
-    <div class="np-left" id="np-expand" role="button" tabindex="0" aria-label="Open full-screen player">
-      <div class="np-info">
+    <button type="button" class="np-left" id="np-expand" aria-label="Open full-screen player">
+      <span class="np-info">
       <span id="np-track" aria-live="polite">·</span>
       <span id="np-album" aria-hidden="true"></span>
-    </div>
-  </div>
+    </span>
+  </button>
   <button type="button" id="np-play" aria-label="Play">
     <svg aria-hidden="true" id="np-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
   </button>
@@ -962,7 +962,6 @@ if (_fabMusic) _fabMusic.addEventListener('click', fabClick);
 var _featuredPlay = document.getElementById('featured-play');
 if (_featuredPlay) {
 _featuredPlay.addEventListener('click', function() { toggleRelease(FEATURED_IDX); });
-_featuredPlay.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleRelease(FEATURED_IDX); } });
 }
 var _npArt = document.createElement('img');
 _npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = 'Now playing'; _npArt.hidden = true;
@@ -1363,7 +1362,7 @@ var _fsContentEl = document.querySelector('.fs-content');
 npBar.addEventListener('pointerdown', function(e) {
  _swipeConsumed = false;
  if (e.pointerType === 'touch') return; // touch path below owns touch
- if (e.target.closest('button, input, a, .np-bar-track')) return;
+ if (e.target.closest('button:not(#np-expand), input, a, .np-bar-track')) return;
  _swipe = { y: e.clientY, x: e.clientX, target: npBar, dir: null };
 }, { passive: true });
 npBar.addEventListener('pointermove', function(e) {
@@ -1395,7 +1394,7 @@ npBar.addEventListener('pointercancel', function() { _swipe = null; }, { passive
 var _npBarTouch = null;
 npBar.addEventListener('touchstart', function(e) {
  _swipeConsumed = false;
- if (e.target.closest('button, input, a, .np-bar-track')) return;
+ if (e.target.closest('button:not(#np-expand), input, a, .np-bar-track')) return;
  var t = e.touches[0];
  _npBarTouch = { y: t.clientY, x: t.clientX, active: false, dir: null };
 }, { passive: true });
@@ -1516,14 +1515,11 @@ if (e.key === 'Escape' && _fsOpen) fsClose();
 // and must not also expand.
 npBar.addEventListener('click', function(e) {
 if (_swipeConsumed) { _swipeConsumed = false; return; }
-if (e.target.closest('button, input, a, .np-bar-track')) return;
+if (e.target.closest('button:not(#np-expand), input, a, .np-bar-track')) return;
 fsOpen();
 });
-// Keyboard: the art/title area is a real button (role, tabindex, label in
-// the markup), so Enter or Space opens the full-screen player too.
-document.getElementById('np-expand').addEventListener('keydown', function(e) {
-if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fsOpen(); }
-});
+// Keyboard: the art/title area is a real <button>, so Enter or Space clicks it
+// and the click above opens the full-screen player.
 document.getElementById('fs-collapse').addEventListener('click', fsClose);
 document.getElementById('fs-play').addEventListener('click', function() { npToggle(); fsSync(); });
 document.getElementById('fs-prev').addEventListener('click', function() { npPrev(); fsSync(); });
@@ -1665,7 +1661,7 @@ if (otl) otl.style.maxHeight = '0';
 syncTracklistExpanded();
 }
 function syncTracklistExpanded() {
-document.querySelectorAll('.rel-card .rel-art-wrap[aria-expanded], .rel-card .rel-tl-toggle').forEach(function(w) {
+document.querySelectorAll('.rel-card .rel-play-overlay[aria-expanded], .rel-card .rel-tl-toggle').forEach(function(w) {
 w.setAttribute('aria-expanded', String(w.closest('.rel-card').classList.contains('tracks-open')));
 });
 }
@@ -1674,16 +1670,16 @@ document.querySelectorAll('.rel-card').forEach(function(card, rIdx) {
 card.dataset.release = rIdx;
 var wrap = card.querySelector('.rel-art-wrap');
 if (!wrap) return;
-wrap.setAttribute('role', 'button');
-wrap.setAttribute('tabindex', '0');
 // A clear name (not the image alt + hidden badge text) and, for albums,
 // whether its tracklist is showing.
 var relName = RELEASE_LIST[rIdx] ? RELEASE_LIST[rIdx].name : '';
-if (RELEASE_LIST[rIdx] && RELEASE_LIST[rIdx].type === 'Single') { wrap.setAttribute('aria-label', 'Play ' + relName); }
-else { wrap.setAttribute('aria-label', 'Show tracks for ' + relName); wrap.setAttribute('aria-expanded', 'false'); wrap.setAttribute('aria-controls', 'tracklist-' + rIdx); }
-var overlay = document.createElement('div');
+// The cover holds a heading, so it cannot itself be a button; the layer over it is the real <button>.
+var overlay = document.createElement('button');
+overlay.type = 'button';
 overlay.className = 'rel-play-overlay';
-overlay.innerHTML = '<div class="rel-play-circle">' + PLAY_SVG + '</div>';
+if (RELEASE_LIST[rIdx] && RELEASE_LIST[rIdx].type === 'Single') { overlay.setAttribute('aria-label', 'Play ' + relName); }
+else { overlay.setAttribute('aria-label', 'Show tracks for ' + relName); overlay.setAttribute('aria-expanded', 'false'); overlay.setAttribute('aria-controls', 'tracklist-' + rIdx); }
+overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
 wrap.appendChild(overlay);
 _discCache[rIdx] = overlay.querySelector('svg');
 var circle = overlay.querySelector('.rel-play-circle');
@@ -1691,7 +1687,6 @@ circle.addEventListener('click', function(e) { e.stopPropagation(); closeAllTrac
 wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
 var tlBtn = card.querySelector('.rel-tl-toggle');
 if (tlBtn) tlBtn.addEventListener('click', function() { setTracklist(rIdx, false); });
-wrap.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRelOverlay(e, rIdx); } });
 });
 }
 
@@ -1809,12 +1804,11 @@ var lyricsEntry = LYRICS[t.file];
 var hasLyrics = !!(lyricsEntry && lyricsEntry.lines && lyricsEntry.lines.length);
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
-var row = document.createElement('div');
+var row = document.createElement('button');
+row.type = 'button';
 row.className = 'rel-track';
 row.dataset.release = rIdx;
 row.dataset.track = tIdx;
-row.setAttribute('role', 'button');
-row.setAttribute('tabindex', '0');
 row.setAttribute('aria-label', 'Play ' + String(t.title).replace(/<[^>]*>/g, '') + ', track ' + r.num);
 row.innerHTML =
 '<span class="rel-track-num" aria-hidden="true">' + r.num + '</span>' +
@@ -1829,7 +1823,6 @@ if (hasLyrics) {
 lyrBtn = makeLyricsBtn(t.title);
 }
 row.addEventListener('click', function() { playTrack(rIdx, tIdx); });
-row.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); playTrack(rIdx, tIdx); } });
 wrap.appendChild(row);
 if (lyrBtn) wrap.appendChild(lyrBtn);
 if (hasLyrics) {
@@ -2083,7 +2076,6 @@ grid.querySelectorAll('.vid-card').forEach(card => {
 const v = VIDEO_LIST[parseInt(card.dataset.videoIndex, 10)];
 if (!v) return;
 card.addEventListener('click', () => openLightbox(v));
-card.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); openLightbox(v); } });
 // Loading metadata alone doesn't make every browser paint a first
 // frame (some just stay black until playback starts, and a bare
 // currentTime nudge can get silently ignored) - a muted play()
@@ -2146,12 +2138,12 @@ var thumbEl = v.thumb
 // keyboard nav) - .vid-card wraps only the thumbnail (the "play"
 // target), .vid-info sits beside it as a plain sibling row.
 return '<div class="vid-card-wrap">' +
-'<div class="vid-card" tabindex="0" role="button" aria-label="Play &quot;' + escHtml(v.title) + '&quot;" data-video-index="' + vIdx + '">' +
-'<div class="vid-thumb">' +
+'<button type="button" class="vid-card" aria-label="Play &quot;' + escHtml(v.title) + '&quot;" data-video-index="' + vIdx + '">' +
+'<span class="vid-thumb">' +
 thumbEl +
-'<div class="vid-play-overlay"><div class="vid-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></div></div>' +
-'</div>' +
-'</div>' +
+'<span class="vid-play-overlay"><span class="vid-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></span></span>' +
+'</span>' +
+'</button>' +
 '<div class="vid-info">' +
 '<h3 class="vid-title">' + escHtml(v.title) + '</h3>' +
 ytBtn +
