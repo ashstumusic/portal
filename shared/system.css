@@ -3064,6 +3064,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .song-page-lyrics p { margin: 0 0 1.4em; font-size: 18px; line-height: 1.7; }
 :root.psy .song-page-foot { margin-top: 24px; font-size: 14px; opacity: .8; }
 :root.psy .song-page-lyrics[hidden] + .song-page-foot { display: none; }
+:root.psy .song-page-short { margin: 8px 0 0; font-size: 14px; opacity: .8; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

@@ -279,6 +279,22 @@
     }));
     return out;
   }
+  // One-word song lookups (scripts/song_keys.py): every song has a word of its own ("cloud" is The Cloud for the Desert).
+  // "ash stu" in front of other words is ignored, so "ash stu cloud" works the way it would in a search engine.
+  // Returns the words to search with and, when one of them is a song's word, that song as a result to show first
+  // (songs that are not out yet have no row to play, so theirs opens the song's page).
+  function songWord(q, pool) {
+    let words = q;
+    if (q.length > 1) { const rest = q.filter((w) => w !== 'ash' && w !== 'stu'); if (rest.length) words = rest; }
+    const K = window.SONG_KEYS; let top = null;
+    if (K && K.words) for (const w of words) {
+      const n = K.words[w.replace(/[^a-z0-9]/g, '')]; const s = n === undefined ? null : K.songs[n]; if (!s) continue;
+      top = pool.find((i) => i.tag === 'Song' && i.title === s.title)
+        || { group: 'Play a song', tag: 'Song', title: s.title, sub: s.release + (s.unreleased ? ' · not released yet' : ''), run: () => { if (s.slug) location.href = '/lyrics/' + s.slug + '/'; } };
+      break;
+    }
+    return { words, top };
+  }
   const hayOf = (i) => `${i.title} ${i.sub || ''} ${i.tag || ''} ${TAG_WORDS[i.tag] || ''}`.toLowerCase();
   function goTo(target) {
     target.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
@@ -301,9 +317,11 @@
   const input = $('.k-palette-input', dlg), list = $('.k-palette-list', dlg);
   let all = [], shown = [], active = 0, opener = null, countT;
   function render() {
-    const q = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    const typed = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    const sw = songWord(typed, all), q = sw.words;
     shown = all.filter((i) => { const hay = `${i.title} ${i.sub || ''} ${i.group}`.toLowerCase(); return q.every((w) => hay.includes(w)); });
-    if (q.length) shown.sort((a, b) => (b.title.toLowerCase().startsWith(q[0]) ? 1 : 0) - (a.title.toLowerCase().startsWith(q[0]) ? 1 : 0));
+    if (sw.top) shown = [sw.top].concat(shown.filter((i) => i !== sw.top && i.title !== sw.top.title));
+    else if (q.length) shown.sort((a, b) => (b.title.toLowerCase().startsWith(q[0]) ? 1 : 0) - (a.title.toLowerCase().startsWith(q[0]) ? 1 : 0));
     active = Math.min(active, Math.max(0, shown.length - 1));
     const frag = doc.createDocumentFragment();
     let group = null;
@@ -397,7 +415,8 @@
     let items = [], lyrics = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
     function draw() {
-      const q = inp.value.toLowerCase().trim().split(/\s+/).map((w) => w.replace(/^[#@]+|:+$/g, '')).filter(Boolean);
+      const typed = inp.value.toLowerCase().trim().split(/\s+/).map((w) => w.replace(/^[#@]+|:+$/g, '')).filter(Boolean);
+      const sw = songWord(typed, items), q = sw.words;
       if (opt && opt.onQuery) opt.onQuery(q.length > 0);
       if (flow && !q.length) { shut(); return; }
       hits = items.filter((i) => { const hay = hayOf(i); return q.every((w) => hay.includes(w)); });
@@ -407,6 +426,7 @@
         hits = hits.concat(lyrics.filter((i) => { const own = i.own || (i.own = `${i.title} lyric lyrics words line lines`.toLowerCase()), all = i.hay || (i.hay = hayOf(i)); const hay = asked ? all : own; return q.every((w) => hay.includes(w)); }).slice(0, 25));
       }
       if (q.length) { const rank = (i) => (i.tag === 'Lyric' ? 0 : 2) + (i.title.toLowerCase().startsWith(q[0]) ? 1 : 0); hits.sort((a, b) => rank(b) - rank(a)); }
+      if (sw.top) hits = [sw.top].concat(hits.filter((i) => i !== sw.top && !(i.tag === 'Song' && i.title === sw.top.title)));
       hits = hits.slice(0, q.length ? 50 : 12);
       act = Math.min(act, Math.max(0, hits.length - 1));
       const frag = doc.createDocumentFragment();

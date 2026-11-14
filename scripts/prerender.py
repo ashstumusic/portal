@@ -29,6 +29,28 @@ from build_lyrics_pages import stanzas, slugify
 LYRICS = {}   # lyrics.json, loaded in main()
 
 
+def song_words(releases, lyrics):
+    """One-word lookups for the site's search: {'songs': [...], 'words': {word: index}}.
+    See scripts/song_keys.py."""
+    import song_keys
+    songs, used = [], set()
+    for rel in releases:
+        rows = [(t['title'], bool((lyrics.get(t['file']) or {}).get('lines')), False) for t in rel.get('tracks', [])]
+        rows += [(u['title'], bool((lyrics.get(u.get('lyrics') or '') or {}).get('lines')), True) for u in rel.get('upcoming', [])]
+        for title, has_page, unreleased in rows:
+            slug = slugify(title)
+            if has_page:
+                if slug in used:
+                    slug = f"{slug}-{slugify(rel['name'])}"
+                used.add(slug)
+            songs.append({'title': title, 'release': rel['name'], 'slug': slug if has_page else '', 'unreleased': unreleased})
+    keys, lookup = song_keys.assign([s['title'] for s in songs])
+    index = {s['title']: i for i, s in enumerate(songs)}
+    for s in songs:
+        s['key'] = keys[s['title']]
+    return {'songs': songs, 'words': {w: index[t] for w, t in sorted(lookup.items())}}
+
+
 def lyrics_html(file):
     """A song's full lyrics as a collapsed panel (one <p> per verse), so
     crawlers and no-JS readers get them in the page itself."""
@@ -259,6 +281,7 @@ def main():
     combined = {
         'releases': releases, 'videos': videos,
         'lyrics': lyrics,
+        'keys': song_words(releases, lyrics),
     }
     payload = json.dumps(combined, separators=(',', ':')).replace('</', '<\\/')
     blocks = f'<script type="application/json" id="data-all">{payload}</script>'

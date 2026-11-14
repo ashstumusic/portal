@@ -22,6 +22,9 @@ import os
 import re
 import unicodedata
 import urllib.parse
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import song_keys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = 'https://ashstu.art'
@@ -302,6 +305,11 @@ def main():
                           'date': None, 'verses': stanzas(entry, None),
                           'unreleased': True, 'traditional': bool(u.get('traditional'))})
     songs.sort(key=lambda s: (releases.index(s['release']), s['position']))
+    # one-word identifiers (scripts/song_keys.py), assigned across every song in the catalogue
+    every = [x['title'] for rel in releases for x in rel.get('tracks', []) + rel.get('upcoming', [])]
+    KEYS, _ = song_keys.assign(every)
+    for s in songs:
+        s['word'] = KEYS[s['title']]
 
     written = []
     ALTS = cover_alts()
@@ -393,6 +401,7 @@ def main():
              'position': s['position'], 'recordingOf': {'@id': comp_id}, 'isAccessibleForFree': True,
              'audio': {'@type': 'AudioObject', 'contentUrl': SITE + '/' + urllib.parse.quote(s['key']), 'encodingFormat': 'audio/mpeg'}}]),
             {'@type': 'MusicComposition', '@id': comp_id, 'name': s['title'], 'url': url, 'inLanguage': 'en', 'genre': GENRE,
+             'identifier': s['word'], 'keywords': f"{ARTIST} {s['word']}", 'sameAs': f"{SITE}/{s['word']}/",
              'composer': writer, 'lyricist': writer,
              **({'arranger': {'@id': f'{SITE}/#artist'}} if trad else {}),
              **({'datePublished': s['date']} if s['date'] else {}),
@@ -418,7 +427,8 @@ def main():
                    f'<p class="song-page-by">{"Traditional, arranged by" if trad else "Written and performed by"} <a href="/">{ARTIST}</a>'
                    f' · track {s["position"]} of {s["total"]} on <cite>{esc(rel["name"])}</cite>{year_note}{" · not released yet" if unrel else ""}</p>\n</header>\n'
                    f'<div class="song-page-lyrics" id="song-lyrics">\n<h2 class="sr-only">{esc(s["title"])}: full lyrics</h2>\n{verses_html}\n</div>\n'
-                   f'<p class="song-page-foot">Lyrics © {ARTIST} ({ARTIST_FULL}). <a href="/lyrics/">All lyrics</a></p>\n</article>')
+                   f'<p class="song-page-foot">Lyrics © {ARTIST} ({ARTIST_FULL}). <a href="/lyrics/">All lyrics</a></p>\n'
+                   f'<p class="song-page-short">Short link: <a href="/{s["word"]}/">ashstu.art/{s["word"]}</a></p>\n</article>')
         html = clone_page(title, description, url, art, alt, jsonld, extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META), deep_key, s['title'], article)
         with open(path, 'w', encoding='utf-8') as f:
             f.write(html or page(title, description, url, 'music.song', art, alt, body, jsonld, extra))
@@ -489,15 +499,42 @@ def main():
     with open(os.path.join(ROOT, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write(robots)
 
+    # Short links: ashstu.art/<word>/ sends people (and crawlers, through the
+    # canonical link) to the song. Each folder carries a .song-key marker so
+    # only folders made here are ever cleaned up.
+    page_of = {s['title']: s for s in songs}
+    made = set()
+    for title, word in KEYS.items():
+        s = page_of.get(title)
+        target = f"/lyrics/{s['slug']}/" if s else '/#music'
+        d = os.path.join(ROOT, word)
+        os.makedirs(d, exist_ok=True)
+        open(os.path.join(d, '.song-key'), 'w').write(title + '\n')
+        with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(f'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>{esc(title)} | {ARTIST}</title>\n'
+                    f'<link rel="canonical" href="{SITE}{target if s else "/"}">\n<meta http-equiv="refresh" content="0; url={target}">\n'
+                    f'<meta name="viewport" content="width=device-width, initial-scale=1">\n<script>location.replace({json.dumps(target)})</script>\n</head>\n'
+                    f'<body>\n<p><a href="{target}">{esc(title)} by {ARTIST}</a></p>\n</body>\n</html>\n')
+        made.add(word)
+    for d in os.listdir(ROOT):
+        mark = os.path.join(ROOT, d, '.song-key')
+        if d not in made and os.path.isfile(mark):
+            for fn in ('index.html', '.song-key'):
+                try: os.remove(os.path.join(ROOT, d, fn))
+                except OSError: pass
+            try: os.rmdir(os.path.join(ROOT, d))
+            except OSError: pass
+
     lines = [f'# {ARTIST}', '',
              f'> Official site of {ARTIST} ({ARTIST_FULL}), outsider singer-songwriter from Guthrie, Oklahoma. '
              'Every song\'s full lyrics are published here by the artist as plain HTML, one page per song.', '',
+             'Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashstu.art/<word> opens that song.', '',
              '## Lyrics', '', f'- [All lyrics]({index_url}): every song, grouped by release']
     for rel in releases:
         rs = [s for s in songs if s['release'] is rel]
         if rs:
             lines += ['', f'### {rel["name"]}', '']
-            lines += [f'- [{s["title"]}]({SITE}/lyrics/{s["slug"]}/)' + (' (not released yet)' if s.get('unreleased') else '') for s in rs]
+            lines += [f'- [{s["title"]}]({SITE}/lyrics/{s["slug"]}/): one-word lookup "{s["word"]}" ({SITE}/{s["word"]}/)' + (' (not released yet)' if s.get('unreleased') else '') for s in rs]
     lines += ['', '## Site', '', f'- [Home]({SITE}/): music, videos, press kit and contact', f'- [Sitemap]({SITE}/sitemap.xml)', '']
     with open(os.path.join(ROOT, 'llms.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))

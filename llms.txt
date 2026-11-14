@@ -2,54 +2,56 @@
 
 > Official site of Ash Stu (Ashton Stubblefield), outsider singer-songwriter from Guthrie, Oklahoma. Every song's full lyrics are published here by the artist as plain HTML, one page per song.
 
+Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashstu.art/<word> opens that song.
+
 ## Lyrics
 
 - [All lyrics](https://ashstu.art/lyrics/): every song, grouped by release
 
 ### My Anima
 
-- [The Cloud for the Desert](https://ashstu.art/lyrics/the-cloud-for-the-desert/) (not released yet)
-- [Pretty, May You Please](https://ashstu.art/lyrics/pretty-may-you-please/) (not released yet)
-- [Is This Limerence?](https://ashstu.art/lyrics/is-this-limerence/) (not released yet)
-- [Still Sad](https://ashstu.art/lyrics/still-sad/)
-- [St. James Infirmary](https://ashstu.art/lyrics/st-james-infirmary/) (not released yet)
-- [Worship Song](https://ashstu.art/lyrics/worship-song/)
-- [The Maid Freed From the Gallows](https://ashstu.art/lyrics/the-maid-freed-from-the-gallows/) (not released yet)
-- [You Are What You Love](https://ashstu.art/lyrics/you-are-what-you-love/)
-- [Lucky to Grieve](https://ashstu.art/lyrics/lucky-to-grieve/) (not released yet)
-- [Somewhere, Sometime](https://ashstu.art/lyrics/somewhere-sometime/)
+- [The Cloud for the Desert](https://ashstu.art/lyrics/the-cloud-for-the-desert/): one-word lookup "cloud" (https://ashstu.art/cloud/) (not released yet)
+- [Pretty, May You Please](https://ashstu.art/lyrics/pretty-may-you-please/): one-word lookup "pretty" (https://ashstu.art/pretty/) (not released yet)
+- [Is This Limerence?](https://ashstu.art/lyrics/is-this-limerence/): one-word lookup "limerence" (https://ashstu.art/limerence/) (not released yet)
+- [Still Sad](https://ashstu.art/lyrics/still-sad/): one-word lookup "sad" (https://ashstu.art/sad/)
+- [St. James Infirmary](https://ashstu.art/lyrics/st-james-infirmary/): one-word lookup "infirmary" (https://ashstu.art/infirmary/) (not released yet)
+- [Worship Song](https://ashstu.art/lyrics/worship-song/): one-word lookup "worship" (https://ashstu.art/worship/)
+- [The Maid Freed From the Gallows](https://ashstu.art/lyrics/the-maid-freed-from-the-gallows/): one-word lookup "gallows" (https://ashstu.art/gallows/) (not released yet)
+- [You Are What You Love](https://ashstu.art/lyrics/you-are-what-you-love/): one-word lookup "love" (https://ashstu.art/love/)
+- [Lucky to Grieve](https://ashstu.art/lyrics/lucky-to-grieve/): one-word lookup "lucky" (https://ashstu.art/lucky/) (not released yet)
+- [Somewhere, Sometime](https://ashstu.art/lyrics/somewhere-sometime/): one-word lookup "somewhere" (https://ashstu.art/somewhere/)
 
 ### Ash Stu, Vol. II
 
-- [Cool Cat Can't Comprehend](https://ashstu.art/lyrics/cool-cat-cant-comprehend/)
-- [Dirge for Ducklings](https://ashstu.art/lyrics/dirge-for-ducklings/)
-- [Savior Complicated](https://ashstu.art/lyrics/savior-complicated/)
-- [Annabel Lena](https://ashstu.art/lyrics/annabel-lena/)
-- [Summertime Even on the Moon](https://ashstu.art/lyrics/summertime-even-on-the-moon/)
-- [Performatives Anonymous](https://ashstu.art/lyrics/performatives-anonymous/)
-- [Theory of Hope](https://ashstu.art/lyrics/theory-of-hope/)
-- [Peacekeepers](https://ashstu.art/lyrics/peacekeepers/)
-- [The Wandering Jerk](https://ashstu.art/lyrics/the-wandering-jerk/)
+- [Cool Cat Can't Comprehend](https://ashstu.art/lyrics/cool-cat-cant-comprehend/): one-word lookup "cat" (https://ashstu.art/cat/)
+- [Dirge for Ducklings](https://ashstu.art/lyrics/dirge-for-ducklings/): one-word lookup "ducklings" (https://ashstu.art/ducklings/)
+- [Savior Complicated](https://ashstu.art/lyrics/savior-complicated/): one-word lookup "savior" (https://ashstu.art/savior/)
+- [Annabel Lena](https://ashstu.art/lyrics/annabel-lena/): one-word lookup "annabel" (https://ashstu.art/annabel/)
+- [Summertime Even on the Moon](https://ashstu.art/lyrics/summertime-even-on-the-moon/): one-word lookup "moon" (https://ashstu.art/moon/)
+- [Performatives Anonymous](https://ashstu.art/lyrics/performatives-anonymous/): one-word lookup "anonymous" (https://ashstu.art/anonymous/)
+- [Theory of Hope](https://ashstu.art/lyrics/theory-of-hope/): one-word lookup "hope" (https://ashstu.art/hope/)
+- [Peacekeepers](https://ashstu.art/lyrics/peacekeepers/): one-word lookup "peacekeepers" (https://ashstu.art/peacekeepers/)
+- [The Wandering Jerk](https://ashstu.art/lyrics/the-wandering-jerk/): one-word lookup "jerk" (https://ashstu.art/jerk/)
 
 ### Ash Stu, Vol. I
 
-- [The Cosmos Is Alive](https://ashstu.art/lyrics/the-cosmos-is-alive/)
-- [There Used To Be a Brighter Boy](https://ashstu.art/lyrics/there-used-to-be-a-brighter-boy/)
-- [Drive Me Home](https://ashstu.art/lyrics/drive-me-home/)
-- [AM Soda](https://ashstu.art/lyrics/am-soda/)
-- [Who Stuns the Birds](https://ashstu.art/lyrics/who-stuns-the-birds/)
-- [The Helpful Raven](https://ashstu.art/lyrics/the-helpful-raven/)
-- [VCR](https://ashstu.art/lyrics/vcr/)
-- [Waste My Time](https://ashstu.art/lyrics/waste-my-time/)
-- [Pretend](https://ashstu.art/lyrics/pretend/)
-- [Relapse Sonnet](https://ashstu.art/lyrics/relapse-sonnet/)
-- [Pick Up the Phone](https://ashstu.art/lyrics/pick-up-the-phone/)
-- [Outdoor Plant](https://ashstu.art/lyrics/outdoor-plant/)
-- [Why Have Eyes](https://ashstu.art/lyrics/why-have-eyes/)
-- [Unanswerable Questions](https://ashstu.art/lyrics/unanswerable-questions/)
-- [Future Lives](https://ashstu.art/lyrics/future-lives/)
-- [Don't Wish Your Life Away](https://ashstu.art/lyrics/dont-wish-your-life-away/)
-- [Anybody Still Awake?](https://ashstu.art/lyrics/anybody-still-awake/)
+- [The Cosmos Is Alive](https://ashstu.art/lyrics/the-cosmos-is-alive/): one-word lookup "cosmos" (https://ashstu.art/cosmos/)
+- [There Used To Be a Brighter Boy](https://ashstu.art/lyrics/there-used-to-be-a-brighter-boy/): one-word lookup "brighter" (https://ashstu.art/brighter/)
+- [Drive Me Home](https://ashstu.art/lyrics/drive-me-home/): one-word lookup "drive" (https://ashstu.art/drive/)
+- [AM Soda](https://ashstu.art/lyrics/am-soda/): one-word lookup "soda" (https://ashstu.art/soda/)
+- [Who Stuns the Birds](https://ashstu.art/lyrics/who-stuns-the-birds/): one-word lookup "birds" (https://ashstu.art/birds/)
+- [The Helpful Raven](https://ashstu.art/lyrics/the-helpful-raven/): one-word lookup "raven" (https://ashstu.art/raven/)
+- [VCR](https://ashstu.art/lyrics/vcr/): one-word lookup "vcr" (https://ashstu.art/vcr/)
+- [Waste My Time](https://ashstu.art/lyrics/waste-my-time/): one-word lookup "waste" (https://ashstu.art/waste/)
+- [Pretend](https://ashstu.art/lyrics/pretend/): one-word lookup "pretend" (https://ashstu.art/pretend/)
+- [Relapse Sonnet](https://ashstu.art/lyrics/relapse-sonnet/): one-word lookup "sonnet" (https://ashstu.art/sonnet/)
+- [Pick Up the Phone](https://ashstu.art/lyrics/pick-up-the-phone/): one-word lookup "phone" (https://ashstu.art/phone/)
+- [Outdoor Plant](https://ashstu.art/lyrics/outdoor-plant/): one-word lookup "plant" (https://ashstu.art/plant/)
+- [Why Have Eyes](https://ashstu.art/lyrics/why-have-eyes/): one-word lookup "eyes" (https://ashstu.art/eyes/)
+- [Unanswerable Questions](https://ashstu.art/lyrics/unanswerable-questions/): one-word lookup "questions" (https://ashstu.art/questions/)
+- [Future Lives](https://ashstu.art/lyrics/future-lives/): one-word lookup "future" (https://ashstu.art/future/)
+- [Don't Wish Your Life Away](https://ashstu.art/lyrics/dont-wish-your-life-away/): one-word lookup "wish" (https://ashstu.art/wish/)
+- [Anybody Still Awake?](https://ashstu.art/lyrics/anybody-still-awake/): one-word lookup "awake" (https://ashstu.art/awake/)
 
 ## Site
 

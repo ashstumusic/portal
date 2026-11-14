@@ -2222,6 +2222,7 @@ function loadDynamicContent() {
 // it immediately, zero fetches on the critical path.
 var dataAll = readEmbedded('data-all');
 var embedded = dataAll ? [dataAll.releases, dataAll.videos, dataAll.lyrics] : [null];
+if (dataAll && dataAll.keys) window.SONG_KEYS = dataAll.keys;   // one-word song lookups for the search (scripts/song_keys.py)
 if (embedded[0]) renderAllContent(embedded, false);
  // Still revalidate against the live .json files: content added through
  // the GitHub web UI (no local rebuild) updates those without touching
