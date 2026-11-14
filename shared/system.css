@@ -3051,6 +3051,20 @@ html { overscroll-behavior-y: none; }
 :root.psy #player-bar .np-bar-track:not(#\#):not(#\#)::before { content: "" !important; position: absolute !important; left: 0 !important; right: 0 !important; top: 50% !important; bottom: auto !important; height: 24px !important; transform: translateY(-50%); }
 @media (max-width: 767px) { :root.psy #player-bar .np-bar-track:not(#\#):not(#\#)::before { transform: translateY(-70%); } }   /* on phones the buttons sit close under the line, so the strip leans upward */
 
+/* Song pages (/lyrics/<song>/): the song's own heading and words, at the
+   top of the Music section. Plain HTML; the interactive tracklist below
+   takes over the words when scripts run (see openDeepSong). */
+:root.psy .song-page { max-width: 44rem; margin: 0 auto 48px; padding: 0 16px; text-align: center; color: inherit; }
+:root.psy .song-page-kicker { margin: 0 0 8px; font-family: var(--font-ui); font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .72; }
+:root.psy .song-page h1 { margin: 0; font-family: var(--font-ui); font-weight: 800; font-size: clamp(34px, 6vw, 56px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
+:root.psy .song-page-by { margin: 12px 0 0; font-size: 16px; line-height: 1.5; }
+:root.psy .song-page a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+:root.psy .song-page a:focus-visible { outline: var(--hl-outline); outline-offset: 2px; }
+:root.psy .song-page-lyrics { margin-top: 32px; }
+:root.psy .song-page-lyrics p { margin: 0 0 1.4em; font-size: 18px; line-height: 1.7; }
+:root.psy .song-page-foot { margin-top: 24px; font-size: 14px; opacity: .8; }
+:root.psy .song-page-lyrics[hidden] + .song-page-foot { display: none; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
