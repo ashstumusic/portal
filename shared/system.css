@@ -3071,6 +3071,21 @@ html { overscroll-behavior-y: none; }
 :root.psy { --tl-inset: 8px; --tl-num: 16px; --tl-gap: 8px; }
 :root.psy .rel-track-num:not(#\#) { font-size: 15px !important; font-weight: 500; }
 
+/* Track rows, pointer or keyboard on a playable row: the number gives way to a play arrow in the same 16px column.
+   The arrow is drawn (a 10x12 triangle), not a font glyph, so it is the same shape and size in every browser and sits
+   centred on the title's line. Rows that cannot be played (not released yet) keep their number; the playing row keeps its level bars. */
+:root.psy .rel-track:not(.rel-track--upcoming, .active):is(:hover, :focus-visible) .rel-track-num:not(#\#):not(#\#) {
+  font-size: 0 !important; display: flex; align-items: center; justify-content: center; align-self: stretch;
+}
+:root.psy .rel-track:not(.rel-track--upcoming, .active):is(:hover, :focus-visible) .rel-track-num:not(#\#)::before {
+  content: ""; width: 10px; height: 12px; flex: none; margin-left: 2px;   /* 2px right: a triangle's visual centre sits left of its box centre */
+  background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+:root.psy .rel-track.rel-track--upcoming .rel-track-num:not(#\#)::before { content: none; }
+@media (forced-colors: active) {
+  :root.psy .rel-track:not(.rel-track--upcoming, .active):is(:hover, :focus-visible) .rel-track-num:not(#\#)::before { background: ButtonText; forced-color-adjust: none; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
