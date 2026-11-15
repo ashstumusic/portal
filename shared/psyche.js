@@ -326,10 +326,55 @@
     // The chalk sheet is a stencil (mask): show this star's design and boil frame.
     function setFrame(o) { const p = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; o.el.style.webkitMaskPosition = p; o.el.style.maskPosition = p; }
 
-    // ── stop motion: 8 frames a second ("on threes") ──
+    // ── music: while a song plays, the sky becomes a visualizer ──
+    // Every star circles its own spot and swells with the music: the big
+    // stars follow the bass, the middle ones the mids, the small ones the
+    // highs. Where the browser lets the page listen to the player without
+    // touching its sound (captureStream: Chrome, Edge), the levels are the
+    // real ones; elsewhere a steady pulse stands in. The orbit eases in when
+    // a song starts and eases back home when it pauses. Stays within the room
+    // each star was given, so it never swings onto text.
+    const audio = doc.getElementById('np-audio');
+    const music = { on: false, amp: 0, lv: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
+    function listen() {
+      if (!audio || typeof audio.captureStream !== 'function') return;   // (Firefox's own version silences the player, Safari has none: both get the pulse)
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+        music.ctx = music.ctx || new AC();
+        if (music.ctx.state === 'suspended') music.ctx.resume().catch(() => {});
+        const stream = audio.captureStream();
+        if (!stream.getAudioTracks().length) return;
+        if (music.src) { try { music.src.disconnect(); } catch (e) {} }
+        music.an = music.an || Object.assign(music.ctx.createAnalyser(), { fftSize: 512, smoothingTimeConstant: 0.5 });
+        music.src = music.ctx.createMediaStreamSource(stream);
+        music.src.connect(music.an);   // analyser only: nothing is sent to the speakers from here
+        music.buf = music.buf || new Uint8Array(music.an.frequencyBinCount);
+      } catch (e) { music.an = null; }
+    }
+    function levels(t) {
+      if (music.an && music.buf) {
+        music.an.getByteFrequencyData(music.buf);
+        const hz = music.ctx.sampleRate / 2 / music.buf.length, band = (lo, hi) => { let a = 0, n = 0; for (let i = Math.max(1, Math.floor(lo / hz)); i <= Math.min(music.buf.length - 1, Math.ceil(hi / hz)); i++) { a += music.buf[i]; n++; } return n ? a / n : 0; };
+        const raw = [band(40, 250), band(250, 2000), band(2000, 8000)];
+        if (raw[0] + raw[1] + raw[2] > 0) {
+          raw.forEach((v, i) => { music.peak[i] = Math.max(40, music.peak[i] * 0.995, v); music.lv[i] = Math.min(1, Math.pow(v / music.peak[i], 1.6)); });
+          return;
+        }
+      }
+      // No real levels: a steady pulse (about 110 beats a minute), each band a little apart.
+      for (let i = 0; i < 3; i++) music.lv[i] = 0.35 + 0.35 * Math.pow(0.5 + 0.5 * Math.sin(t / 1000 * Math.PI * 2 * (1.83 / (i + 1)) + i * 1.3), 2);
+    }
+    if (audio) {
+      const sync = () => { const was = music.on; music.on = !audio.paused && !audio.ended; if (music.on && !was) listen(); kick(); };
+      ['playing', 'pause', 'ended', 'emptied'].forEach((ev) => audio.addEventListener(ev, () => { if (ev === 'playing') { music.on = false; } sync(); }));
+    }
+
+    // ── stop motion: 8 frames a second ("on threes"), 12 while music plays ──
     let raf = 0, lastT = 0, shake = 0;
-    function draw() {
+    function draw(t = performance.now()) {
       const vh = innerHeight, sy = scrollY, moving = fxOn();
+      music.amp += ((music.on && moving ? 1 : 0) - music.amp) * 0.22; if (music.amp < 0.004) music.amp = 0;
+      if (music.amp) levels(t);
       // Knocked about only by a genuinely fast flick, not ordinary scrolling.
       shake = Math.min(6, shake * 0.6 + Math.max(0, Math.abs(scrollVel) - 1.5) * 3);
       for (const o of placed) {
@@ -341,16 +386,24 @@
         // A pixel of jitter every frame, more when a fast scroll knocks it.
         const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
         const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
-        const sc = snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05);
-        o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${sc})`;
+        let sc = snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05), ox = 0, oy = 0, orot = 0;
+        if (music.amp) {
+          const lv = music.lv[o.cls], dir = o.spin < 0 ? -1 : 1;
+          o.orb = (o.orb ?? o.ph) + dir * (0.28 + lv * 0.5);                  // it circles faster when its band is loud
+          const rad = music.amp * Math.min(o.R * 0.2 + 4, 3 + o.R * 0.16) * (0.55 + lv * 0.9);   // within the room it was placed with
+          ox = Math.cos(o.orb) * rad; oy = Math.sin(o.orb) * rad;
+          orot = snap(o.orb * 57.3 * 0.5, 15) * music.amp;
+          sc = snap(sc + music.amp * lv * 0.22, 0.02);
+        }
+        o.el.style.transform = `translate(${(jx + ox).toFixed(1)}px,${(jy + oy).toFixed(1)}px) rotate(${rot + orot}deg) scale(${sc})`;
       }
     }
     // Runs while effects are on and the page is visible (requestAnimationFrame
     // stops in background tabs); only the stars on screen are touched.
     function loop(t) {
       raf = 0;
-      if (!fxOn()) { draw(); return; }
-      if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(); }
+      if (!fxOn()) { draw(t); return; }
+      if (t - lastT >= 1000 / (music.amp ? 12 : 8) - 4) { lastT = t; draw(t); }
       raf = requestAnimationFrame(loop);
     }
     const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
