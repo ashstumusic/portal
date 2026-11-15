@@ -3557,6 +3557,9 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 /* The current line scales up 6%; narrow it so the band ends flush instead of clipping. */
 .fs-lyric.is-current button { width: calc(100% / 1.06); }
 @media (prefers-reduced-motion: reduce) { .fs-lyric.is-current button { width: 100%; } }
+/* No bar at the start of the highlighted line: the gold fill marks it.
+   (Kept in forced-colours mode, where the fill is removed and the bar is what shows the line.) */
+@media not (forced-colors: active) { .fs-lyric.is-current button::before { content: none; } }
 
 /* Music-section lyrics: one line per row, and the line being sung (while
    that song plays) gets the same gold highlighter as the full-screen player. */
