@@ -3086,6 +3086,12 @@ html { overscroll-behavior-y: none; }
   :root.psy .rel-track:not(.rel-track--upcoming, .active):is(:hover, :focus-visible) .rel-track-num:not(#\#)::before { background: ButtonText; forced-color-adjust: none; }
 }
 
+/* The playing row: level bars sit in the number's 16px column (the number itself is hidden), still while paused. */
+:root.psy .rel-track.active .rel-track-num:not(#\#):not(#\#):not(#\#) { display: none !important; }
+:root.psy .rel-track.active .rel-track-eq { display: block !important; flex: none; width: var(--tl-num); height: 16px; color: var(--gold); }
+:root.psy .rel-track.active:hover .rel-track-eq { color: #111; }
+:root.psy .rel-track.active.is-paused .rel-track-eq rect { animation-play-state: paused; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

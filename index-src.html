@@ -1660,9 +1660,17 @@ _tracklistDebounce = now;
 setTracklist(rIdx, false);
 }
 }
+['play', 'pause', 'playing'].forEach(function(ev) { npAudio.addEventListener(ev, function() { updatePlayUI(); }); });
 var _partyPlayingIdx = -1;
 function updatePlayUI() {
 var _nowIdx = !npAudio.paused ? pState.releaseIdx : -1;
+// The row of the song in the player shows level bars in place of its number
+// (moving while it plays, still while paused). Not for the song that is only
+// cued up when the page opens.
+var _cur = pState.playlist[pState.plIdx];
+var _curRow = (_cur && (_everPlayed || !npAudio.paused)) ? document.querySelector('.rel-track[data-release="' + _cur.releaseIdx + '"][data-track="' + _cur.trackIdx + '"]') : null;
+document.querySelectorAll('.rel-track.active').forEach(function(r) { if (r !== _curRow) { r.classList.remove('active', 'is-paused'); r.removeAttribute('aria-current'); } });
+if (_curRow) { _curRow.classList.add('active'); _curRow.classList.toggle('is-paused', npAudio.paused); _curRow.setAttribute('aria-current', 'true'); }
 /* (No confetti pop from the card when a track starts.) */
 _partyPlayingIdx = _nowIdx;
 document.querySelectorAll('.rel-card.now-playing').forEach(function(c) { c.classList.remove('now-playing'); });
@@ -2269,6 +2277,7 @@ renderFeatured(RELEASE_LIST[FEATURED_IDX]);
 if (!isRefresh || !_src || !_everPlayed) initDefaultTrack();
 buildTracklists();
 setupCardListeners();
+updatePlayUI();   // rebuilt rows: mark the playing one again
 wireVideos();
 // a refresh re-render shortly after load would close the song again
 if (_deepDone && performance.now() - _deepAt < 6000) _deepDone = false;
