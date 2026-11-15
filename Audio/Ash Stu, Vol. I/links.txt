@@ -1,4 +1,4 @@
 date: 2026-11-07
 order: 3
 soon: yes
-no-lyrics: 15
+no-lyrics: 13

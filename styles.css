@@ -2908,7 +2908,9 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   user-select: text; -webkit-user-select: text;   /* lyrics are content: selectable */
   scrollbar-width: thin;
 }
-.fs-lyrics-list { list-style: none; margin: 0; padding: .5rem 0 45%; }
+.fs-lyrics { container-type: size; }
+/* Room under the last line (68% of the panel's height), so the final line can scroll up to the same spot as every other line. */
+.fs-lyrics-list { list-style: none; margin: 0; padding: .5rem 0 45%; padding-bottom: 68cqh; }
 .fs-lyric button {
   position: relative; display: block; width: 100%; padding: .4rem .5rem .4rem 1rem;
   border: 0; border-radius: 8px; background: none; text-align: left; cursor: pointer;

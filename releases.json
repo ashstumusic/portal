@@ -150,85 +150,75 @@
         "num": 3
       },
       {
-        "title": "AM Soda",
-        "file": "Audio/Ash Stu, Vol. I/04. AM Soda.mp3",
+        "title": "Who Stuns the Birds",
+        "file": "Audio/Ash Stu, Vol. I/04. Who Stuns the Birds.mp3",
         "num": 4
       },
       {
-        "title": "Who Stuns the Birds",
-        "file": "Audio/Ash Stu, Vol. I/05. Who Stuns the Birds.mp3",
+        "title": "The Helpful Raven",
+        "file": "Audio/Ash Stu, Vol. I/05. The Helpful Raven.mp3",
         "num": 5
       },
       {
-        "title": "The Helpful Raven",
-        "file": "Audio/Ash Stu, Vol. I/06. The Helpful Raven.mp3",
+        "title": "VCR",
+        "file": "Audio/Ash Stu, Vol. I/06. VCR.mp3",
         "num": 6
       },
       {
-        "title": "VCR",
-        "file": "Audio/Ash Stu, Vol. I/07. VCR.mp3",
+        "title": "Waste My Time",
+        "file": "Audio/Ash Stu, Vol. I/07. Waste My Time.mp3",
         "num": 7
       },
       {
-        "title": "Waste My Time",
-        "file": "Audio/Ash Stu, Vol. I/08. Waste My Time.mp3",
+        "title": "Pretend",
+        "file": "Audio/Ash Stu, Vol. I/08. Pretend.mp3",
         "num": 8
       },
       {
-        "title": "Pretend",
-        "file": "Audio/Ash Stu, Vol. I/09. Pretend.mp3",
+        "title": "Relapse Sonnet",
+        "file": "Audio/Ash Stu, Vol. I/09. Relapse Sonnet.mp3",
         "num": 9
       },
       {
-        "title": "Relapse Sonnet",
-        "file": "Audio/Ash Stu, Vol. I/10. Relapse Sonnet.mp3",
+        "title": "Pick Up the Phone",
+        "file": "Audio/Ash Stu, Vol. I/10. Pick Up the Phone.mp3",
         "num": 10
       },
       {
-        "title": "Pick Up the Phone",
-        "file": "Audio/Ash Stu, Vol. I/11. Pick Up the Phone.mp3",
+        "title": "Why Have Eyes",
+        "file": "Audio/Ash Stu, Vol. I/11. Why Have Eyes.mp3",
         "num": 11
       },
       {
-        "title": "Outdoor Plant",
-        "file": "Audio/Ash Stu, Vol. I/12. Outdoor Plant.mp3",
+        "title": "Unanswerable Questions",
+        "file": "Audio/Ash Stu, Vol. I/12. Unanswerable Questions.mp3",
         "num": 12
       },
       {
-        "title": "Why Have Eyes",
-        "file": "Audio/Ash Stu, Vol. I/13. Why Have Eyes.mp3",
+        "title": "A Grief Preserved",
+        "file": "Audio/Ash Stu, Vol. I/13. A Grief Preserved.mp3",
         "num": 13
       },
       {
-        "title": "Unanswerable Questions",
-        "file": "Audio/Ash Stu, Vol. I/14. Unanswerable Questions.mp3",
+        "title": "Future Lives",
+        "file": "Audio/Ash Stu, Vol. I/14. Future Lives.mp3",
         "num": 14
       },
       {
-        "title": "A Grief Preserved",
-        "file": "Audio/Ash Stu, Vol. I/15. A Grief Preserved.mp3",
+        "title": "Don't Wish Your Life Away",
+        "file": "Audio/Ash Stu, Vol. I/15. Don't Wish Your Life Away.mp3",
         "num": 15
       },
       {
-        "title": "Future Lives",
-        "file": "Audio/Ash Stu, Vol. I/16. Future Lives.mp3",
-        "num": 16
-      },
-      {
-        "title": "Don't Wish Your Life Away",
-        "file": "Audio/Ash Stu, Vol. I/17. Don't Wish Your Life Away.mp3",
-        "num": 17
-      },
-      {
         "title": "Anybody Still Awake?",
-        "file": "Audio/Ash Stu, Vol. I/18. Anybody Still Awake?.mp3",
-        "num": 18
+        "file": "Audio/Ash Stu, Vol. I/16. Anybody Still Awake?.mp3",
+        "num": 16
       }
     ],
     "featured": false,
     "zip": {
       "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-I.zip",
-      "bytes": 96897934
+      "bytes": 93599489
     }
   }
 ]
