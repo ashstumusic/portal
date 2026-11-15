@@ -327,14 +327,17 @@
     function setFrame(o) { const p = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; o.el.style.webkitMaskPosition = p; o.el.style.maskPosition = p; }
 
     // ── music: while a song plays, the sky becomes a visualizer ──
-    // Every star circles its own spot and swells with the music: the big
-    // stars follow the bass, the middle ones the mids, the small ones the
-    // highs. Where the browser lets the page listen to the player without
+    // The stars near the screen gather into one flock and wheel round a
+    // shared centre that drifts about the screen, all turning the same way;
+    // the wheel turns faster and opens wider on the bass, and each star swells
+    // with its own band (big stars the bass, middle ones the mids, small ones
+    // the highs). Where the browser lets the page listen to the player without
     // touching its sound (captureStream: Chrome, Edge), the levels are the
-    // real ones; elsewhere a steady pulse stands in. The orbit eases in when
-    // a song starts and eases back home when it pauses. Stays within the room
-    // each star was given, so it never swings onto text.
+    // real ones; elsewhere a steady pulse stands in. The stars gather when a
+    // song starts and glide back to their own spots when it pauses. While they
+    // fly the layer sits in front of the page (it never takes the pointer).
     const audio = doc.getElementById('np-audio');
+    const flock = { turn: 0, x: 0, y: 0, rx: 300, ry: 300 };
     const music = { on: false, amp: 0, lv: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
     function listen() {
       if (!audio || typeof audio.captureStream !== 'function') return;   // (Firefox's own version silences the player, Safari has none: both get the pulse)
@@ -374,29 +377,48 @@
     function draw(t = performance.now()) {
       const vh = innerHeight, sy = scrollY, moving = fxOn();
       music.amp += ((music.on && moving ? 1 : 0) - music.amp) * 0.22; if (music.amp < 0.004) music.amp = 0;
-      if (music.amp) levels(t);
+      if (music.amp) {
+        levels(t);
+        // One wheel for the whole flock: its centre drifts about the screen, it turns
+        // faster and opens wider on the bass.
+        const vw = doc.documentElement.clientWidth;
+        flock.turn += 0.05 + music.lv[0] * 0.13;
+        flock.x = vw / 2 + Math.sin(t / 1000 * 0.23) * vw * 0.06;
+        flock.y = vh / 2 + Math.cos(t / 1000 * 0.31) * vh * 0.05;
+        flock.rx = vw * 0.36; flock.ry = vh * 0.33;   // the wheel fills the screen's shape and stays inside it
+      }
       // Knocked about only by a genuinely fast flick, not ordinary scrolling.
       shake = Math.min(6, shake * 0.6 + Math.max(0, Math.abs(scrollVel) - 1.5) * 3);
+      let away = false;
       for (const o of placed) {
         const vy = o.cy - sy;
-        if (vy < -500 || vy > vh + 500) continue;
-        if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
+        if (o.j) away = true;
+        if ((vy < -500 || vy > vh + 500) && !o.j) continue;
+        if (!moving) { o.j = 0; o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
         o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o);
         // A pixel of jitter every frame, more when a fast scroll knocks it.
         const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
         const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
         let sc = snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05), ox = 0, oy = 0, orot = 0;
-        if (music.amp) {
-          const lv = music.lv[o.cls], dir = o.spin < 0 ? -1 : 1;
-          o.orb = (o.orb ?? o.ph) + dir * (0.28 + lv * 0.5);                  // it circles faster when its band is loud
-          const rad = music.amp * Math.min(o.R * 0.2 + 4, 3 + o.R * 0.16) * (0.55 + lv * 0.9);   // within the room it was placed with
-          ox = Math.cos(o.orb) * rad; oy = Math.sin(o.orb) * rad;
-          orot = snap(o.orb * 57.3 * 0.5, 15) * music.amp;
-          sc = snap(sc + music.amp * lv * 0.22, 0.02);
+        // The flock: stars near the screen leave their spots and wheel round a shared, wandering centre.
+        const want = music.amp > 0.5 && vy > -160 && vy < vh + 160 ? 1 : 0;
+        o.j = (o.j || 0) + (want - (o.j || 0)) * (want ? 0.1 : 0.16); if (o.j < 0.004) o.j = 0;
+        if (o.j) {
+          const lv = music.lv[o.cls];
+          const ring = 0.3 + 0.7 * ((o.ph * 0.618) % 1);                        // each star keeps its own lane in the wheel
+          const ang = o.ph * 1.047 + flock.turn * (0.7 + (1 - ring) * 0.9);     // inner lanes turn faster, like a vortex
+          const swell = ring * (1 + music.lv[0] * 0.15), sway = Math.sin(flock.turn * 2 + o.ph * 3) * 8;
+          const fx = flock.x + Math.cos(ang) * (flock.rx * swell + sway), fy = flock.y + Math.sin(ang) * (flock.ry * swell + sway);
+          ox = (fx - o.cx) * o.j; oy = (fy - vy) * o.j;
+          orot = snap(ang * 57.3, 15) * o.j;                                     // they bank as they turn
+          sc = snap(sc + o.j * lv * 0.22, 0.02);
         }
         o.el.style.transform = `translate(${(jx + ox).toFixed(1)}px,${(jy + oy).toFixed(1)}px) rotate(${rot + orot}deg) scale(${sc})`;
       }
+      // While any star is out flying the layer comes in front of the page (under the bar and the
+      // player), so the flock is seen over cards; at rest it goes back behind everything.
+      layer.classList.toggle('is-flocking', away);
     }
     // Runs while effects are on and the page is visible (requestAnimationFrame
     // stops in background tabs); only the stars on screen are touched.
