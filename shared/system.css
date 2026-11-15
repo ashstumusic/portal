@@ -3092,10 +3092,6 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-track.active:hover .rel-track-eq { color: #111; }
 :root.psy .rel-track.active.is-paused .rel-track-eq rect { animation-play-state: paused; }
 
-/* Stars flocking to the music fly in front of the page (above content, below the bar and the player).
-   They never take the pointer, and go back behind everything once they are home. */
-.cut-stars.is-flocking:not(#\#) { z-index: 150 !important; }
-
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
