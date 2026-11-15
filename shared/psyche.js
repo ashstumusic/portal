@@ -332,6 +332,12 @@
       const spot = (x, y, R) => map.free(x - R - CLEAR, y - R - CLEAR, x + R + CLEAR, y + R + CLEAR);
       const ringClear = (gx, gy, r, R) => { const n = Math.max(16, Math.ceil(r * TAU / 14)); for (let k = 0; k < n; k++) { const a = k / n * TAU; if (!spot(gx + Math.cos(a) * r, gy + Math.sin(a) * r, R * 1.12)) return false; } return true; };
       for (const o of placed) { o.g = null; let r = 0; while (r < 36 && spot(o.cx, o.cy, o.R * 1.2 + r + 4)) r += 4; o.room = r; }
+      // The side lanes: how wide a strip down each edge of the page is clear of content (nearly) all the way down.
+      // Wide enough (36px+: screens about 1280px wide and up) and every star joins one loop round the page; too narrow (phones) and they dance on the spot instead.
+      flock.map = map; flock.lane = 0;
+      const rowsClear = (x0, x1) => { let ok = 0, n = 0; for (let y = map.top + 40; y < map.H - 200; y += 160) { n++; if (map.free(x0, y, x1, y + 150)) ok++; } return n ? ok / n : 0; };
+      for (let w = 160; w >= 36; w -= 4) if (rowsClear(8, 8 + w) > 0.9 && rowsClear(map.W - 8 - w, map.W - 8) > 0.9) { flock.lane = w; break; }
+      if (flock.lane) return;   // one loop for everyone: no separate rings
       for (const a of placed) {
         if (a.g) continue;
         const near = placed.filter((b) => b !== a && !b.g).map((b) => ({ b, d: Math.hypot(b.cx - a.cx, b.cy - a.cy) })).filter((q) => q.d > 50 && q.d < 420).sort((p, q) => p.d - q.d);
@@ -347,14 +353,19 @@
       }
     }
     // The page moved under them (something opened or closed): everyone stands still on their spot until the map is redone.
-    function unpartner() { for (const o of placed) { o.g = null; o.room = 0; } }
+    function unpartner() { flock.map = null; for (const o of placed) { o.g = null; o.room = 0; } }
 
     // The chalk sheet is a stencil (mask): show this star's design and boil frame.
     function setFrame(o) { const p = `${(o.f / (FRAMES - 1)) * 100}% ${(o.d / (DESIGNS - 1)) * 100}%`; o.el.style.webkitMaskPosition = p; o.el.style.maskPosition = p; }
 
     // ── music: while a song plays, the sky becomes a visualizer ──
-    // The stars dance together, all turning the same way at the same moment,
-    // and always in open space: no star is ever drawn over text, a card, a
+    // On screens with clear margins down both sides, all the stars near the
+    // screen join ONE loop round the page: down the left edge, up the right,
+    // evenly spaced, one speed, turning at each end beyond the top and bottom
+    // of the screen. On their way to and from the loop they are only shown
+    // where the page is clear. On narrow screens (no clear margin) they dance
+    // on the spot instead, as described next, all turning the same way at the
+    // same moment, and always in open space: no star is ever drawn over text, a card, a
     // photo or a button. Stars that have clear room around a shared centre
     // circle each other (two or three to a ring, sometimes right round a
     // card); a star on its own circles its own spot within the room it has,
@@ -366,7 +377,7 @@
     // real ones; elsewhere a steady pulse stands in. When the song pauses
     // every ring finishes its lap and the stars stop where they started.
     const audio = doc.getElementById('np-audio');
-    const flock = { turn: 0 }, TAU = Math.PI * 2;
+    const flock = { turn: 0, lane: 0, map: null, out: false }, TAU = Math.PI * 2, OFF = 90;
     const music = { on: false, amp: 0, lv: [0, 0, 0], sm: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
     function listen() {
       if (!audio || typeof audio.captureStream !== 'function') return;   // (Firefox's own version silences the player, Safari has none: both get the pulse)
@@ -417,12 +428,32 @@
       if (!moving) flock.turn = 0;
       else if (music.on) flock.turn += dt * 0.5 * (0.9 + 0.25 * music.sm[0]);
       else { const lap = Math.ceil(flock.turn / TAU - 1e-4) * TAU, left = lap - flock.turn; flock.turn = left < 0.004 ? lap : flock.turn + Math.min(left, dt * Math.min(0.8, left * 1.4 + 0.06)); }
-      const turn = flock.turn % TAU, dance = music.amp > 0 || turn > 0;
+      const turn = flock.turn % TAU, dance = music.amp > 0 || turn > 0 || flock.out;
       const boil = !dance || t - boilT >= 118; if (boil) boilT = t;
+      // One loop round the page: down the left edge, up the right, every star evenly spaced and at one speed.
+      // The turn at each end happens beyond the top and bottom of the screen.
+      const W = doc.documentElement.clientWidth, lane = moving ? flock.lane : 0, LEN = vh + 2 * OFF;
+      if (lane) {
+        const inLoop = [];
+        for (const o of placed) {
+          const vy = o.cy - sy, want = music.on && vy > -vh * 0.6 && vy < vh * 1.6;
+          if (want && !o.j) o.u = o.cx < W / 2 ? Math.min(1, Math.max(0, (vy + OFF) / LEN)) / 2 : 0.5 + Math.min(1, Math.max(0, (vh + OFF - vy) / LEN)) / 2;
+          o.j = (o.j || 0) + ((want ? 1 : 0) - (o.j || 0)) * ease(want ? 800 : 550); if (o.j < 0.004) o.j = 0;
+          if (o.j) inLoop.push(o);
+        }
+        // Even spacing: in their order round the loop, each star is given the next of n equal places and eases into it;
+        // the places themselves move on at one speed.
+        const n = inLoop.length, frac = (v) => ((v % 1) + 1) % 1;
+        flock.u0 = frac((flock.u0 || 0) + dt * 62 * (0.9 + 0.25 * music.sm[0]) / (2 * LEN));
+        inLoop.sort((a, b) => frac(a.u - flock.u0) - frac(b.u - flock.u0));
+        const k = ease(650);
+        inLoop.forEach((o, i) => { const to = flock.u0 + i / n; let gap = frac(to - o.u); if (gap > 0.5) gap -= 1; o.u = frac(o.u + gap * k); });
+        flock.out = n > 0;
+      } else flock.out = false;
       for (const o of placed) {
         const vy = o.cy - sy;
-        if (vy < -500 || vy > vh + 500) continue;
-        if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
+        if ((vy < -500 || vy > vh + 500) && !o.j) continue;
+        if (!moving) { o.j = 0; if (o.el.style.opacity) o.el.style.opacity = ''; o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
         if (boil) { o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o); }
         const rot0 = o.base + snap(sy * o.spin, 15);
@@ -433,8 +464,19 @@
           o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05)})`;
           continue;
         }
-        let ox = 0, oy = 0, orot = 0;
-        if (o.g) {                    // in a ring: round the shared centre, on a path checked to be clear
+        let ox = 0, oy = 0, orot = 0, fit = 1;
+        if (lane) {
+          if (o.j) {
+            const d = o.u * 2 * LEN, left = d < LEN, x = left ? 8 + lane / 2 : W - 8 - lane / 2, y = left ? -OFF + d : vh + OFF - (d - LEN);
+            ox = (x - o.cx) * o.j; oy = (y - vy) * o.j;
+            fit = 1 + (Math.min(1, (lane - 6) / (o.R * 2.1)) - 1) * o.j;   // a star too wide for the lane shrinks to fit it
+            // Never drawn over anything: it fades out on its own spot, crosses unseen, and fades in on the lane
+            // (and the other way home); on the lane it is hidden a little before anything that juts into its path.
+            const h = o.R * fit, px = o.cx + ox, py = o.cy + oy;
+            const show = (o.j < 0.03 || o.j > 0.97) && flock.map && flock.map.free(px - h, py - h - 30, px + h, py + h + 30);
+            o.el.style.opacity = show ? '' : '0';
+          } else if (o.el.style.opacity) o.el.style.opacity = '';
+        } else if (o.g) {                    // in a ring: round the shared centre, on a path checked to be clear
           const a = o.g.a + turn;
           ox = o.g.x + Math.cos(a) * o.g.r - o.cx; oy = o.g.y + Math.sin(a) * o.g.r - o.cy;
           orot = turn * 57.2958;      // one full turn of its own per lap
@@ -442,7 +484,7 @@
           const a = flock.turn - o.cx * 0.003 - o.cy * 0.002, rad = Math.min(o.room, 26) * music.amp;
           ox = Math.cos(a) * rad; oy = Math.sin(a) * rad;
         }
-        const sc = 1 + Math.sin(sy * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
+        const sc = (1 + Math.sin(sy * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07) * fit;
         o.el.style.transform = `translate(${ox.toFixed(2)}px,${oy.toFixed(2)}px) rotate(${(rot0 + orot).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       }
     }
@@ -451,7 +493,7 @@
     function loop(t) {
       raf = 0;
       if (!fxOn()) { draw(t); return; }
-      if (music.on || music.amp || flock.turn % TAU) draw(t);                 // dancing: every frame
+      if (music.on || music.amp || flock.turn % TAU || flock.out) draw(t);                 // dancing: every frame
       else if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(t); }             // at rest: on threes
       raf = requestAnimationFrame(loop);
     }

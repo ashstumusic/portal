@@ -111,7 +111,7 @@
   background-color: #F4EDE4;
   -webkit-mask: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
           mask: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
-  opacity: .9;
+  opacity: .9; transition: opacity .3s linear;   /* fades when the script hides it (crossing content on its way to the loop) */
 }
 @media print { .cut-stars { display: none; } }
 /* Every section laid out up front, so the page's height (and the sky
