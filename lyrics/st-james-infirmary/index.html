@@ -25,8 +25,8 @@
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
 <meta property="og:image" content="https://ashstu.art/Images/Releases/My%20Anima.webp"/>
 <meta property="og:image:type" content="image/webp"/>
-
-
+<meta property="og:image:width" content="504"/>
+<meta property="og:image:height" content="504"/>
 <meta property="og:image:alt" content="Album cover of My Anima: a grainy black-and-white hand reaching down to take the hand of a figure drawn in pastel chalk, glowing in orange, red and yellow light"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="St. James Infirmary Lyrics | Ash Stu"/>
@@ -691,8 +691,8 @@ var _preSrc = '';
 function preloadNextTrack() {
 if (!pState.playlist.length || pState.shuffle) return;
 var n = pState.plIdx + 1;
-if (n >= pState.playlist.length) return;
 var item = pState.playlist[n];
+if (n >= pState.playlist.length) { var nr = nextReleaseIdx(); if (nr < 0) return; item = { releaseIdx: nr, trackIdx: 0 }; }   // last song: warm the next release's first
 var rel = RELEASE_LIST[item.releaseIdx];
 if (!rel || !rel.tracks[item.trackIdx]) return;
 var next = _safeAudioSrc(rel.tracks[item.trackIdx].file);
@@ -783,9 +783,21 @@ return;
 }
 playRelease(rIdx);
 }
+// The release that follows the one now playing, in the order they are shown
+// (after the last one, back to the first). -1 when there is nothing to move to.
+function nextReleaseIdx() {
+var last = pState.playlist[pState.playlist.length - 1];
+var from = last ? last.releaseIdx : pState.releaseIdx;
+for (var k = 1; k <= RELEASE_LIST.length; k++) {
+var i = (from + k) % RELEASE_LIST.length;
+if (RELEASE_LIST[i] && RELEASE_LIST[i].tracks && RELEASE_LIST[i].tracks.length) return i;
+}
+return -1;
+}
 function npNext() {
 if (!pState.playlist.length) return;
-if (!pState.shuffle && pState.plIdx >= pState.playlist.length - 1) return;
+// End of a release: carry straight on into the next one instead of stopping.
+if (!pState.shuffle && pState.plIdx >= pState.playlist.length - 1) { var nr = nextReleaseIdx(); if (nr >= 0) playTrack(nr, 0); return; }
 var nextIdx = pState.shuffle ? Math.floor(Math.random() * pState.playlist.length) : pState.plIdx + 1;
 pState.plIdx = nextIdx;
 var item = pState.playlist[nextIdx];
@@ -909,7 +921,7 @@ _lastTimeStore = now;
 });
 npAudio.addEventListener('ended', () => {
 if (pState.repeat) { npAudio.currentTime = 0; npAudio.play(); }
-else if (pState.playlist.length > 0 && (pState.shuffle || pState.plIdx < pState.playlist.length - 1)) { npNext(); }
+else if (pState.playlist.length > 0) { npNext(); }   // the last song of a release rolls into the next release
 else { npSetPlaying(false); }
 });
 npAudio.addEventListener('loadedmetadata', () => { _npDur.textContent = fmtT(npAudio.duration); });
