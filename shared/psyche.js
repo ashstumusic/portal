@@ -359,15 +359,15 @@
     // circle each other (two or three to a ring, sometimes right round a
     // card); a star on its own circles its own spot within the room it has,
     // in step with the rest, the turn rippling across the page like a flock
-    // changing direction. They turn faster on the bass and each star swells
-    // with its own band (big stars the bass, middle ones the mids, small ones
+    // changing direction. The pace is steady (a touch quicker when the bass is
+    // up) and each star swells gently with its own band (big stars the bass, middle ones the mids, small ones
     // the highs). Where the browser lets the page listen to the player without
     // touching its sound (captureStream: Chrome, Edge), the levels are the
     // real ones; elsewhere a steady pulse stands in. When the song pauses
     // every ring finishes its lap and the stars stop where they started.
     const audio = doc.getElementById('np-audio');
     const flock = { turn: 0 }, TAU = Math.PI * 2;
-    const music = { on: false, amp: 0, lv: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
+    const music = { on: false, amp: 0, lv: [0, 0, 0], sm: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
     function listen() {
       if (!audio || typeof audio.captureStream !== 'function') return;   // (Firefox's own version silences the player, Safari has none: both get the pulse)
       try {
@@ -401,37 +401,49 @@
       ['playing', 'pause', 'ended', 'emptied'].forEach((ev) => audio.addEventListener(ev, () => { if (ev === 'playing') { music.on = false; } sync(); }));
     }
 
-    // ── stop motion: 8 frames a second ("on threes"), 12 while music plays ──
+    // ── stop motion at rest: 8 frames a second ("on threes") ──
     let raf = 0, lastT = 0, shake = 0;
+    // At rest the sky is stop motion (8 drawings a second, a pixel of jitter). While a song plays the
+    // dance itself is smooth: every screen frame, one steady speed for everyone, no jitter and no
+    // stepped turns or sizes. Only the chalk line still boils at its 8 a second.
+    let drawT = 0, boilT = 0;
     function draw(t = performance.now()) {
       const vh = innerHeight, sy = scrollY, moving = fxOn();
-      music.amp += ((music.on && moving ? 1 : 0) - music.amp) * 0.22; if (music.amp < 0.004) music.amp = 0;
-      if (music.amp) levels(t);
-      // One turn for everyone. Playing: it runs on, faster on the bass. Paused: it finishes the lap and stops.
+      const dt = Math.min(60, Math.max(0, t - drawT)) / 1000; drawT = t;
+      const ease = (ms) => 1 - Math.exp(-dt * 1000 / ms);
+      music.amp += ((music.on && moving ? 1 : 0) - music.amp) * ease(450); if (music.amp < 0.004) music.amp = 0;
+      if (music.amp) { levels(t); for (let i = 0; i < 3; i++) music.sm[i] += (music.lv[i] - music.sm[i]) * ease(320); }
+      // One turn for everyone. Playing: a steady pace, a touch quicker when the bass is up. Paused: it finishes the lap and stops.
       if (!moving) flock.turn = 0;
-      else if (music.on) flock.turn += 0.045 + music.lv[0] * 0.11;
-      else { const lap = Math.ceil(flock.turn / TAU - 1e-4) * TAU, left = lap - flock.turn; flock.turn = left < 0.02 ? lap : flock.turn + Math.min(0.16, left * 0.3 + 0.01); }
-      const turn = flock.turn % TAU;
+      else if (music.on) flock.turn += dt * 0.5 * (0.9 + 0.25 * music.sm[0]);
+      else { const lap = Math.ceil(flock.turn / TAU - 1e-4) * TAU, left = lap - flock.turn; flock.turn = left < 0.004 ? lap : flock.turn + Math.min(left, dt * Math.min(0.8, left * 1.4 + 0.06)); }
+      const turn = flock.turn % TAU, dance = music.amp > 0 || turn > 0;
+      const boil = !dance || t - boilT >= 118; if (boil) boilT = t;
       for (const o of placed) {
         const vy = o.cy - sy;
         if (vy < -500 || vy > vh + 500) continue;
         if (!moving) { o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
-        o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o);
-        // A pixel of jitter every frame, more when a fast scroll knocks it.
-        const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
-        const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
-        let sc = snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05), ox = 0, oy = 0, orot = 0;
-        if (o.g && turn) {            // in a ring: round the shared centre, on a path checked to be clear
+        if (boil) { o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o); }
+        const rot0 = o.base + snap(sy * o.spin, 15);
+        if (!dance) {
+          // A pixel of jitter every frame, more when a fast scroll knocks it.
+          const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
+          const rot = rot0 + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
+          o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05)})`;
+          continue;
+        }
+        let ox = 0, oy = 0, orot = 0;
+        if (o.g) {                    // in a ring: round the shared centre, on a path checked to be clear
           const a = o.g.a + turn;
           ox = o.g.x + Math.cos(a) * o.g.r - o.cx; oy = o.g.y + Math.sin(a) * o.g.r - o.cy;
-          orot = snap(turn * 57.3, 15);
-        } else if (!o.g && music.amp && o.room > 3) {   // on its own: round its own spot, in step, within its room
-          const a = flock.turn * 2 - o.cx * 0.005 - o.cy * 0.003, rad = Math.min(o.room, 30) * music.amp * (0.55 + 0.45 * music.lv[o.cls]);
+          orot = turn * 57.2958;      // one full turn of its own per lap
+        } else if (o.room > 3) {      // on its own: round its own spot at the same pace, within its room
+          const a = flock.turn - o.cx * 0.003 - o.cy * 0.002, rad = Math.min(o.room, 26) * music.amp;
           ox = Math.cos(a) * rad; oy = Math.sin(a) * rad;
         }
-        if (music.amp) sc = snap(Math.min(sc, 1.04) + music.amp * music.lv[o.cls] * (o.g ? 0.1 : Math.min(0.2, (o.room || 0) / 150)), 0.02);
-        o.el.style.transform = `translate(${(jx + ox).toFixed(1)}px,${(jy + oy).toFixed(1)}px) rotate(${rot + orot}deg) scale(${sc})`;
+        const sc = 1 + Math.sin(sy * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
+        o.el.style.transform = `translate(${ox.toFixed(2)}px,${oy.toFixed(2)}px) rotate(${(rot0 + orot).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       }
     }
     // Runs while effects are on and the page is visible (requestAnimationFrame
@@ -439,7 +451,8 @@
     function loop(t) {
       raf = 0;
       if (!fxOn()) { draw(t); return; }
-      if (t - lastT >= 1000 / (music.amp || flock.turn % TAU ? 12 : 8) - 4) { lastT = t; draw(t); }
+      if (music.on || music.amp || flock.turn % TAU) draw(t);                 // dancing: every frame
+      else if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(t); }             // at rest: on threes
       raf = requestAnimationFrame(loop);
     }
     const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
