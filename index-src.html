@@ -787,9 +787,7 @@ if (_srAnnounce) _srAnnounce.textContent = 'Now playing: ' + track + (album ? ' 
 // instead of waiting for play() - so rapid skipping never queues up.
 _playIntent++;
 npAudio.pause();
-// (Only when it is about to play. A song that is merely cued up, such as
-// the one a song page opens with, fetches nothing until Play is pressed:
-// the files are 10-15MB each.)
+// (A song that is merely cued up is warmed a moment later by scheduleWarmCued, once the page is idle.)
 npAudio.preload = autoplay ? 'auto' : 'none';
 npAudio.src = _safeAudioSrc(src); _src = src;
 _npFill.style.transform = 'scaleX(0)';
@@ -802,6 +800,7 @@ npUpdateMediaSession(track, album, art);
 try { sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
 npShow();
 if (autoplay) { var intent = ++_playIntent; npAudio.play().then(function() { if (intent === _playIntent) npSetPlaying(true); }).catch(function(){}); }
+else scheduleWarmCued();
 }
 var _npResizeTimer;
 window.addEventListener('resize', function() {
@@ -835,6 +834,53 @@ _preSrc = next; _preAudio.src = next;
 // The next song is warmed only once this one is really sounding - never
 // for a song that was loaded but not started.
 npAudio.addEventListener('playing', preloadNextTrack);
+// ── Instant start ──────────────────────────────────────────────────────
+// 1. The song sitting in the player (the featured release's first track, or
+//    the one a song page opens with) starts downloading as soon as the page
+//    has finished loading and the browser is idle, so the first press of
+//    Play has sound ready instead of starting a cold download.
+// 2. Any other song starts downloading the moment a pointer rests on it, a
+//    finger touches it or the keyboard reaches it - a head start on the
+//    click that follows.
+// Visitors who asked their browser to save data get neither.
+function _dataSaver() { var c = navigator.connection; return !!(c && c.saveData); }
+var _warmCuedTimer = 0;
+function warmCued() {
+ if (_dataSaver() || !npAudio.getAttribute('src') || !npAudio.paused || npAudio.readyState > 0) return;
+ npAudio.preload = 'auto';
+ if (npAudio.networkState !== 2) { try { npAudio.load(); } catch (e) {} }   // 2 = already downloading
+}
+function scheduleWarmCued() {
+ clearTimeout(_warmCuedTimer);
+ var go = function() { if ('requestIdleCallback' in window) requestIdleCallback(warmCued, { timeout: 1500 }); else _warmCuedTimer = setTimeout(warmCued, 200); };
+ if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true });
+}
+var _warmAudio = new Audio();
+_warmAudio.preload = 'auto';
+_warmAudio.setAttribute('playsinline', '');
+var _warmSrc = '', _warmHover = 0;
+function warmTrack(file) {
+ if (!file || _dataSaver() || file === _src) return;
+ var u = _safeAudioSrc(file);
+ if (u === _warmSrc || u === _preSrc) return;
+ _warmSrc = u; _warmAudio.src = u;
+}
+function _warmTarget(el) {
+ if (!el || !el.closest) return null;
+ var row = el.closest('.rel-track[data-release]');
+ if (row) { var r = RELEASE_LIST[+row.dataset.release]; return r && r.tracks[+row.dataset.track] ? r.tracks[+row.dataset.track].file : null; }
+ var ov = el.closest('.rel-play-overlay, .rel-play-circle');
+ if (ov) { var card = ov.closest('.rel-card'); var r2 = card && RELEASE_LIST[+card.dataset.release]; return r2 && r2.tracks[0] ? r2.tracks[0].file : null; }
+ return null;
+}
+document.addEventListener('pointerover', function(e) {
+ if (e.pointerType !== 'mouse') return;
+ var f = _warmTarget(e.target); clearTimeout(_warmHover);
+ if (f) _warmHover = setTimeout(function() { warmTrack(f); }, 70);   // a brief rest, so sweeping down a list doesn't start a download per row
+}, { passive: true });
+['pointerdown', 'touchstart', 'focusin'].forEach(function(ev) {
+ document.addEventListener(ev, function(e) { var f = _warmTarget(e.target); if (f) warmTrack(f); }, { passive: true, capture: true });
+});
 function npToggle() {
 var intent = ++_playIntent;
 if (npAudio.paused) {
@@ -1582,6 +1628,7 @@ _npAlbumEl.textContent = rel.name;
  if (_npArt && art) { _npArt.src = encodeURI(art); _npArt.hidden = false; }
  npAudio.src = _safeAudioSrc(t.file); _src = t.file;
  npUpdateMediaSession(t.title, rel.name, art);
+ scheduleWarmCued();
 }
 var _tracklistDebounce = 0;
 function onRelOverlay(e, rIdx) {

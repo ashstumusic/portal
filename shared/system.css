@@ -3066,6 +3066,11 @@ html { overscroll-behavior-y: none; }
 :root.psy .song-page-lyrics[hidden] + .song-page-foot { display: none; }
 :root.psy .song-page-short { margin: 8px 0 0; font-size: 14px; opacity: .8; }
 
+/* Track rows: the number reads at nearly the title's size and sits close to the left edge.
+   A 16px right-aligned column holds two digits at 15px, so 1-9 and 10+ share a right edge beside the title. */
+:root.psy { --tl-inset: 8px; --tl-num: 16px; --tl-gap: 8px; }
+:root.psy .rel-track-num:not(#\#) { font-size: 15px !important; font-weight: 500; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
