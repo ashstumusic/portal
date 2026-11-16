@@ -3138,6 +3138,11 @@ html { overscroll-behavior-y: none; }
 :root .nav .nav-links .nav-glider:not(#\#) { will-change: translate, width; z-index: 0 !important; }
 @media (hover: none) { :root .nav .nav-links a:not(#\#):not(#\#):not(#\#) { transition-property: transform !important; } }
 
+/* "All lyrics" under the releases: the same button as the email one in Contact. */
+:root.psy .lyrics-all { margin: 28px 0 0; display: flex; justify-content: center; }
+:root.psy .song-page-nav { margin-top: 14px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 22px; }
+:root.psy .song-page-nav a { display: inline-flex; align-items: center; min-height: 44px; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

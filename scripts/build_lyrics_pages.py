@@ -192,6 +192,13 @@ ARTIST_NODE = {'@type': ['MusicGroup', 'Person'], '@id': f'{SITE}/#artist', 'nam
 
 
 HOME_HTML = None
+def _neighbours(songs, s):
+    i = songs.index(s); out = []
+    if i > 0: out.append(f'<a href="/lyrics/{songs[i-1]["slug"]}/" rel="prev">Previous: {esc(songs[i-1]["title"])} lyrics</a>')
+    if i < len(songs) - 1: out.append(f'<a href="/lyrics/{songs[i+1]["slug"]}/" rel="next">Next: {esc(songs[i+1]["title"])} lyrics</a>')
+    return '<nav class="song-page-nav" aria-label="More lyrics">' + ''.join(out) + '</nav>\n' if out else ''
+
+
 def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title, article=''):
     """A song's page is the whole site with that song opened: the built
     homepage (index.html) with this song's title, description, canonical
@@ -250,6 +257,18 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
         # out, so 36 song pages are not 36 near-copies of the homepage.
         h = re.sub(r'<details class="rel-lyrics-static"[^>]*>.*?</details>', '', h, flags=re.S)
         h = re.sub(r'<script type="application/ld\+json" id="lyrics-ld">.*?</script>\n?', '', h, count=1, flags=re.S)
+        # The homepage's own structured data describes its videos and its contact section; a song page is about
+        # neither, so those entries are left out here (the artist, the site and the album stay).
+        def _trim(m):
+            try:
+                j = json.loads(m.group(1))
+                j['@graph'] = [n for n in j['@graph'] if n.get('@type') not in ('VideoObject', 'ContactPage')]
+                return '<script type="application/ld+json">' + json.dumps(j, ensure_ascii=False).replace('</', '<\\/') + '</script>'
+            except Exception:
+                return m.group(0)
+        _home = re.search(r'<script type="application/ld\+json">(.*?)</script>', HOME_HTML, flags=re.S)
+        if _home:
+            h = h.replace(_home.group(0), _trim(_home), 1)
         h, n1 = re.subn(r'<h1 class="hero-name">(.*?)</h1>', lambda m: '<p class="hero-name">' + m.group(1) + '</p>', h, count=1, flags=re.S)
         h, n2 = re.subn(r'(<section[^>]*\bid="music"[^>]*>)', lambda m: m.group(1) + '\n' + article, h, count=1)
         if not (n1 and n2):
@@ -428,6 +447,8 @@ def main():
                    f' · track {s["position"]} of {s["total"]} on <cite>{esc(rel["name"])}</cite>{year_note}{" · not released yet" if unrel else ""}</p>\n</header>\n'
                    f'<div class="song-page-lyrics" id="song-lyrics">\n<h2 class="sr-only">{esc(s["title"])}: full lyrics</h2>\n{verses_html}\n</div>\n'
                    f'<p class="song-page-foot">Lyrics © {ARTIST} ({ARTIST_FULL}). <a href="/lyrics/">All lyrics</a></p>\n'
+                   # each song links to its neighbours, so a crawler (and a reader) can walk the whole set from any page
+                   + _neighbours(songs, s) +
                    f'<p class="song-page-short">Short link: <a href="/{s["word"]}/">ashstu.art/{s["word"]}</a></p>\n</article>')
         html = clone_page(title, description, url, art, alt, jsonld, extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META), deep_key, s['title'], article)
         with open(path, 'w', encoding='utf-8') as f:
