@@ -26,7 +26,7 @@ FONT_FILES = [
     "Fonts/fraunces/Fraunces-Regular-opsz.ttf",  # no longer used by the site's stylesheet (lyrics are in Reddit Sans Condensed); still read by scripts/build_lyrics_pages.py
     "Fonts/bricolage/BricolageGrotesque-VF.ttf", # UI (OFL, see Fonts/bricolage/OFL.txt)
     "Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf",  # body text and lyrics (OFL, see Fonts/redditsanscondensed/OFL.txt)
-    "Fonts/londrinasolid/LondrinaSolid-Regular.ttf",  # section headers (OFL, see Fonts/londrinasolid/OFL.txt)
+    "Fonts/rubikmoonrocks/RubikMoonrocks-Regular.ttf",  # section headers (OFL, see Fonts/rubikmoonrocks/OFL.txt)
     "Fonts/vastshadow/VastShadow-Regular.ttf",        # the name under the quote (OFL, see Fonts/vastshadow/OFL.txt)
 ]
 FONT_RELPATHS = {}
