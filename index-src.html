@@ -1041,7 +1041,7 @@ if (_featuredPlay) {
 _featuredPlay.addEventListener('click', function() { toggleRelease(FEATURED_IDX); });
 }
 var _npArt = document.createElement('img');
-_npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = 'Now playing'; _npArt.hidden = true;
+_npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = '';   /* decorative here: it sits inside the "Open full-screen player" button, which has its own name */ _npArt.hidden = true;
 document.getElementById('np-expand').insertBefore(_npArt, document.getElementById('np-expand').firstChild);
 let _lastTimeStore = 0;
 const _npFill = document.getElementById('np-fill');
@@ -1168,7 +1168,7 @@ if ('mediaSession' in navigator) {
 (function() {
 var fs = document.getElementById('fs-player');
 var fsArt = document.createElement('img');
-fsArt.id = 'fs-art'; fsArt.className = 'fs-art'; fsArt.alt = 'Now playing'; fsArt.hidden = true;
+fsArt.id = 'fs-art'; fsArt.className = 'fs-art'; fsArt.alt = '';   /* set to "Album cover: <album>" each time the cover changes (fsUpdateArt) */ fsArt.hidden = true;
 document.getElementById('fs-art-wrap').appendChild(fsArt);
 var fsTrack = document.getElementById('fs-track');
 var fsAlbum = document.getElementById('fs-album');
@@ -1189,6 +1189,8 @@ var encoded = encodeURI(art);
 fsArt.style.opacity = '0';
 fsArt.onload = function() { fsArt.style.opacity = '1'; };
 fsArt.src = encoded;
+// A real description for people who cannot see it (it used to say only "Now playing", whatever the cover was).
+var _rel = pState.releaseIdx >= 0 && RELEASE_LIST[pState.releaseIdx]; fsArt.alt = _rel && _rel.name ? 'Album cover: ' + _rel.name : '';
 fsArt.hidden = false;
 if (ph) ph.style.display = 'none';
 } else {
