@@ -3138,10 +3138,15 @@ html { overscroll-behavior-y: none; }
 :root .nav .nav-links .nav-glider:not(#\#) { will-change: translate, width; z-index: 0 !important; }
 @media (hover: none) { :root .nav .nav-links a:not(#\#):not(#\#):not(#\#) { transition-property: transform !important; } }
 
-/* "All lyrics" under the releases: the same button as the email one in Contact. */
-:root.psy .lyrics-all { margin: 28px 0 0; display: flex; justify-content: center; }
 :root.psy .song-page-nav { margin-top: 14px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 22px; }
 :root.psy .song-page-nav a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* The mini player's running time ("1:07 / 3:39"), beside the volume on wide screens. Fixed-width figures and a
+   set minimum width, so the controls beside it never shift as the seconds tick. On phones it is hidden: there
+   the two times already sit at the ends of the progress bar. */
+:root.psy #player-bar .np-clock:not(#\#):not(#\#) { display: inline-flex !important; gap: 5px; align-items: center; justify-content: center; min-width: 86px; grid-area: close; justify-self: end; align-self: center; margin: 0 56px 0 0; font-size: 13px !important; white-space: nowrap; font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+:root.psy #player-bar .np-clock-sep { opacity: .55; }
+@media (max-width: 740px) { :root.psy #player-bar .np-clock:not(#\#):not(#\#):not(#\#) { display: none !important; } }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

@@ -6,7 +6,6 @@ Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashst
 
 ## Lyrics
 
-- [All lyrics](https://ashstu.art/lyrics/): every song, grouped by release
 
 ### My Anima
 

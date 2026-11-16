@@ -322,8 +322,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <div class="section-inner">
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
-    <!-- A plain link to the lyrics index: without it nothing on this page led to the lyric pages (they were only in the sitemap). -->
-    <p class="lyrics-all"><a href="lyrics/" class="contact-email-link">All lyrics</a></p>
     <blockquote class="disc-quote">
       “Anybody caught singin’ these songs without our permission, will be <br/>mighty good friends of ourn, cause we don’t give a dern. <br/>Publish it. Write it. Sing it. Swing to it. Yodel it. <br/>We wrote it, that’s all we wanted to do.”
       <cite>Woody Guthrie</cite>
@@ -429,6 +427,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       </button>
       <input type="range" id="np-vol-slider" class="vol-slider" min="0" max="1" step="0.01" value="1" aria-label="Volume"/>
     </div>
+    <!-- Running time (wide screens; on phones the two times sit at the ends of the progress bar instead). -->
+    <span class="np-time np-clock" id="np-clock" aria-hidden="true"><span id="np-clock-cur">0:00</span><span class="np-clock-sep">/</span><span id="np-clock-dur">·</span></span>
     <button type="button" class="np-close" id="np-close" aria-label="Close player">✕</button>
   </div>
 </div>
@@ -803,6 +803,7 @@ _npFill.style.transform = 'scaleX(0)';
 if (_npThumb) _npThumb.style.transform = 'translateX(0)';
 _npCur.textContent = '0:00';
 _npDur.textContent = '·';
+document.getElementById('np-clock-cur').textContent = '0:00'; document.getElementById('np-clock-dur').textContent = '·';
 var art = npGetArt();
 if (_npArt) { _npArt.src = art ? encodeURI(art) : ''; _npArt.hidden = !art; }
 npUpdateMediaSession(track, album, art);
@@ -1039,6 +1040,7 @@ const _npFill = document.getElementById('np-fill');
 const _npThumb = document.getElementById('np-thumb');
 const _npCur = document.getElementById('np-cur');
 const _npDur = document.getElementById('np-dur');
+const _npClockCur = document.getElementById('np-clock-cur'), _npClockDur = document.getElementById('np-clock-dur');
 npAudio.addEventListener('timeupdate', () => {
 if (!npAudio.duration) return;
 const pct = npAudio.currentTime / npAudio.duration;
@@ -1049,7 +1051,7 @@ _npThumb.style.transform = 'translateX(' + (pct * 100) + '%)';
 // timeupdate fires ~4x/s but the label only changes once a second -
 // skip the identical textContent write (each one dirties layout).
 const txt = fmtT(npAudio.currentTime);
-if (_npCur.textContent !== txt) _npCur.textContent = txt;
+if (_npCur.textContent !== txt) { _npCur.textContent = txt; _npClockCur.textContent = txt; }
 const now = Date.now();
 if (now - _lastTimeStore > 1000) {
 try { sessionStorage.setItem('ash_time', npAudio.currentTime); } catch(e){}
@@ -1061,7 +1063,7 @@ if (pState.repeat) { npAudio.currentTime = 0; npAudio.play(); }
 else if (pState.playlist.length > 0) { npNext(); }   // the last song of a release rolls into the next release
 else { npSetPlaying(false); }
 });
-npAudio.addEventListener('loadedmetadata', () => { _npDur.textContent = fmtT(npAudio.duration); });
+npAudio.addEventListener('loadedmetadata', () => { _npDur.textContent = _npClockDur.textContent = fmtT(npAudio.duration); });
 // Shared by both the mini-bar and fullscreen seek tracks. Pointer Events
 // unify mouse/touch/pen into one path and, via setPointerCapture, keep
 // tracking movement for the rest of the drag even if the pointer strays
