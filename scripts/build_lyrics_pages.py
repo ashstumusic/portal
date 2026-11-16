@@ -257,8 +257,14 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
                 'var a=e.target.closest&&e.target.closest("a[href^=\'#\']");if(!a||a.target)return;e.preventDefault();'
                 'var id=decodeURIComponent(a.getAttribute("href").slice(1)),t=id&&document.getElementById(id);'
                 'var sm=matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";'
-                't?t.scrollIntoView({behavior:sm,block:"start"}):scrollTo({top:0,behavior:sm});});</script>\n')
+                't?t.scrollIntoView({behavior:sm,block:"start"}):scrollTo({top:0,behavior:sm});'
+                # ...and move keyboard focus there too. Without this the "Skip" link scrolled the page but left focus on
+                # itself, so the next Tab went through the whole toolbar anyway: it skipped nothing for keyboard users.
+                'if(t){if(!t.hasAttribute("tabindex"))t.setAttribute("tabindex","-1");t.focus({preventScroll:true});}});</script>\n')
     h = sub(r'(<meta charset="[^"]*"\s*/?>)', None, h) if False else re.sub(r'(<meta charset="[^"]*"\s*/?>)', lambda m: m.group(1) + '\n' + head_add, h, count=1)
+    # On a song's page the skip link goes to the song itself (the page is the whole site; the song is what was asked for).
+    if article:
+        h = h.replace('<a href="#main" class="skip">Skip to content</a>', '<a href="#song" class="skip">Skip to the song</a>', 1)
     # the song's lyrics already open in the static HTML
     h = h.replace(f'{esc(song_title)}<details class="rel-lyrics-static">', f'{esc(song_title)}<details class="rel-lyrics-static" open>', 1)
     if article:

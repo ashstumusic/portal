@@ -34,3 +34,6 @@ FIXED: shared/kinetic.js (links that open a new tab)
 FIXED: index-src.html (featured release buttons)
   — Meaningful contextual text: two links with the same name must go to the same place
   — "Listen on Apple Music" appeared twice with different destinations (artist page in the toolbar, the album on the first screen); the first-screen buttons now add the release name ("Listen on Apple Music: Ash Stu, Vol. II"), so no two controls on the page share a name
+FIXED: scripts/build_lyrics_pages.py (skip link on the 34 lyric pages)
+  — Keyboard operability: a skip link must move keyboard focus, not just scroll
+  — On lyric pages the skip link scrolled but left focus on itself, so it skipped nothing; it now moves focus and goes straight to the song ("Skip to the song"), and toolbar section links move focus to their section too
