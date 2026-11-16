@@ -3309,6 +3309,22 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.player-on { scroll-padding-bottom: 88px; }
 @media (max-width: 600px) { :root.player-on { scroll-padding-bottom: 128px; } }
 
+/* Section headers boil like the name in the toolbar: the sketched strokes of "Music", "Videos"... are redrawn six
+   times a second, each drawing wobbling the lines a little differently (four wobbles in turn, the four SVG filters
+   #hb1-#hb4 at the top of the page), the way a hand-drawn title shivers from frame to frame. Same beat as the
+   name's pencil-boil. It stops with Effects off and with reduced motion, rests while a header is off screen, and
+   is one of the stepped animations kinetic.js moves on by its slow clock. Where the browser can do it, the header
+   still slides up into place as it arrives (k-arrive), alongside. */
+/* (each step keeps the header's red offset, which is itself a filter: psyche.css, .section-h) */
+@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root.psy:not(.psy-calm) .section-h:not(#\#):not(#\#):not(#\#):not(#\#) { animation: head-boil .6667s step-end infinite; }
+  @supports (animation-timeline: view()) {
+    :root.psy:not(.psy-calm) .section-h:not(#\#):not(#\#):not(#\#):not(#\#) { animation: k-arrive linear both, head-boil .6667s step-end infinite; animation-timeline: view(), auto; animation-range: entry 0% cover 40%, normal; }
+  }
+}
+@media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#) { animation: none; filter: none; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
