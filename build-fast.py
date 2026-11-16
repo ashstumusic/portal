@@ -276,6 +276,11 @@ _loader = ('<script>(function(s){var d=document,done=0;function go(){if(done)ret
 html = html.replace("</body>", _loader + "\n</body>", 1)
 print(f"Wrote {p_out}: {len(_p)//1024}KB")
 
+# The press-kit download states its size (a 33MB surprise is unkind on a phone plan): measured here so it stays true.
+_kit = os.path.join(ROOT, "ash-stu-press-kit.zip")
+html = html.replace("__KIT_MB__", str(max(1, round(os.path.getsize(_kit) / 1048576))) if os.path.exists(_kit) else "")
+html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
+
 # strip HTML comments + indentation, collapse blank lines
 html = re.sub(r"<!--(?!\[).*?-->", "", html, flags=re.S)
 html = "\n".join(l.strip() for l in html.split("\n") if l.strip())

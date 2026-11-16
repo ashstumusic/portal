@@ -46,3 +46,6 @@ FIXED: shared/system.css (high-contrast / forced-colours mode)
 FIXED: index-src.html, shared/system.css (song pages)
   — Screen reader access to primary content: content hidden for visual tidiness must stay available to assistive technology
   — On each of the 34 song pages the lyrics under the song's heading were removed entirely once the interactive copy opened; they are now only visually hidden, so a screen-reader user hears the words directly after "Skip to the song" and the title
+FIXED: index-src.html, build-fast.py (press-kit download)
+  — Meaningful contextual text: say what a download is and how big, before it starts
+  — "Download Press Kit" is now announced (and shown on hover) as "Download Press Kit (ZIP file, 33 MB)"; the size is measured at build time so it stays correct
