@@ -282,8 +282,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="featured-kicker">Album</span>
     <p class="featured-title">Ash Stu, Vol. II</p>
     <div class="featured-btns">
-    <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>
-    <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>
+    <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: Ash Stu, Vol. II"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>
+    <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify: Ash Stu, Vol. II"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>
     </div>
   </div>
 </section>
@@ -2281,8 +2281,8 @@ if (title) title.textContent = rel.name;
 var btnsEl = document.querySelector('.featured-btns');
 if (btnsEl) {
 var h = '';
-if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>';
-if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>';
+if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: ' + escHtml(rel.name) + '"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>';
+if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify: ' + escHtml(rel.name) + '"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>';
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming
