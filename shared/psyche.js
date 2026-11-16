@@ -616,7 +616,7 @@
       if (Math.abs(h - lastH) < 2) return;
       lastH = h; follow(); scheduleRepair();
     }, 120); };
-    new ResizeObserver(relayout).observe(doc.body);
+    if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(doc.body);   // (older Safari has none: the resize listener below still covers window changes)
     addEventListener('resize', relayout, { passive: true });
     (doc.fonts?.ready || Promise.resolve()).then(() => setTimeout(relayout, 300));
     return { redraw: () => { draw(); kick(); } };
