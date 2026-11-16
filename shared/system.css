@@ -3106,6 +3106,11 @@ html { overscroll-behavior-y: none; }
 :root.psy .section-h:not(#\#):not(#\#) { font-family: 'SectionHead', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; letter-spacing: 0 !important; }
 :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { font-family: 'QuoteName', var(--font-ui) !important; font-weight: 400 !important; font-style: normal !important; font-synthesis: none; }
 
+/* ── Category labels (the small "ALBUM" / "SINGLE" / "EP" line above a release name) in National Park
+   (owner's choice; served from this site). */
+@font-face { font-family: 'Category'; src: url('Fonts/nationalpark/NationalPark-VF.ttf') format('truetype'); font-weight: 200 800; font-style: normal; font-display: swap; }
+:root.psy :is(.rel-cat, .featured-kicker):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
