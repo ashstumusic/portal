@@ -3099,30 +3099,11 @@ html { overscroll-behavior-y: none; }
   :root.psy .rel-card .rel-btns > a.rel-btn:not(.rel-dl, .rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-inline: 6px !important; gap: 5px !important; font-size: clamp(11px, 3.9vw, 14px) !important; letter-spacing: -.02em !important; min-width: 0 !important; }
 }
 
-/* ── Static behind the Woody Guthrie quote: a soft cloud of grey television "snow" between the dark fog and the
-   words, to say the quote comes from the past. It is faint (the words stay easy to read), fades out toward its
-   edges, and flickers a few times a second. With Effects off or reduced motion it holds still. Decoration only. */
-.disc-quote::after {
-  content: ""; position: absolute; z-index: -1; pointer-events: none; inset: -16% -9% -20%;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.62' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  2.4 0 0 0 -.95'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 220px 220px;
-  opacity: .5;
-  -webkit-mask-image: radial-gradient(ellipse 56% 58% at 50% 50%, #000 30%, rgb(0 0 0 / .55) 52%, transparent 74%);
-  mask-image: radial-gradient(ellipse 56% 58% at 50% 50%, #000 30%, rgb(0 0 0 / .55) 52%, transparent 74%);
-  animation: quote-static .9s steps(1) infinite;
-}
-@keyframes quote-static {
-  0% { background-position: 0 0; } 12% { background-position: -67px 41px; } 25% { background-position: 93px -118px; } 37% { background-position: -151px -29px; }
-  50% { background-position: 38px 127px; } 62% { background-position: -104px 86px; } 75% { background-position: 139px 17px; } 87% { background-position: -22px -143px; }
-}
-:root.psy-calm .disc-quote::after { animation: none; }
-@media (prefers-reduced-motion: reduce) { .disc-quote::after { animation: none; } }
-@media (forced-colors: active) { .disc-quote::after { display: none; } }
-
-/* ── Section headers in Rubik Moonrocks, and the name under the quote ("Woody Guthrie") in Vast Shadow
+/* ── Section headers in Cabin Sketch (bold), and the name under the quote ("Woody Guthrie") in Vast Shadow
    (owner's choice; both fonts are served from this site). The white fill and red offset layer of the headers stay. */
-@font-face { font-family: 'SectionHead'; src: url('Fonts/rubikmoonrocks/RubikMoonrocks-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'SectionHead'; src: url('Fonts/cabinsketch/CabinSketch-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
 @font-face { font-family: 'QuoteName'; src: url('Fonts/vastshadow/VastShadow-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
-:root.psy .section-h:not(#\#):not(#\#) { font-family: 'SectionHead', var(--font-ui) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important; }
+:root.psy .section-h:not(#\#):not(#\#) { font-family: 'SectionHead', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; letter-spacing: 0 !important; }
 :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { font-family: 'QuoteName', var(--font-ui) !important; font-weight: 400 !important; font-style: normal !important; font-synthesis: none; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
