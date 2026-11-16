@@ -276,7 +276,9 @@
       };
       const ceiling = (x, y) => { const c = Math.floor(x / G), r = Math.floor(y / G); if (c < 0 || c >= cols || r < 0 || r >= rows) return null; const a = above[r * cols + c]; return a < 0 ? null : (a + 1) * G - M + 2; };
       const top = hero ? hero.getBoundingClientRect().bottom + sy : 0;
-      return { W, H, top, free, pass, ceiling };
+      // under: is this square wholly behind one solid picture (so nothing of a star there can be seen)?
+      const under = (x0, y0, x1, y1) => covers.some((c) => x0 >= c[0] && y0 >= c[1] && x1 <= c[2] && y1 <= c[3]);
+      return { W, H, top, free, pass, under, ceiling };
     }
 
     let rt = 0;   // pending repair timer
@@ -434,7 +436,8 @@
       const s = Math.max(0.7, Math.min(1.05, innerWidth / 1300));
       const here = placed.filter((o) => Math.hypot(o.cx - mx, o.cy - my) < reach);
       // how many are on the screen while the sky is still: the number to keep in view as it turns
-      flock.target = placed.filter((o) => o.cx > 0 && o.cx < W && o.cy > flock.sy0 && o.cy < flock.sy0 + vh).length + 1;
+      // (and never more than the screen can carry: about one to every 300 x 300 pixels)
+      flock.target = Math.min(placed.filter((o) => o.cx > 0 && o.cx < W && o.cy > flock.sy0 && o.cy < flock.sy0 + vh).length + 1, Math.max(3, Math.round(W * vh / 90000)));
       if (!here.length) return;
       const pick = () => { const a = Math.random() * TAU, r = Math.sqrt(Math.random()) * reach; return [mx + Math.cos(a) * r, my + Math.sin(a) * r]; };
       const clear = (x, y, R) => map.free(x - R, y - R, x + R, y + R);
@@ -503,8 +506,10 @@
           const hid = o.el.style.opacity === '0', onScreen = px > -40 && px < W + 40 && py > -40 && py < vh + 40;
           // (no map for a moment while the page is re-measured: stay as it is)
           show = !flock.map ? !hid : onScreen && flock.map.pass(px - h, py + sy - h, px + h, py + sy + h) && flock.map.pass(ax - h, ay + sy - h, ax + h, ay + sy + h);
-          // (one behind a picture is out, but nobody sees it: it hardly counts)
-          const w = show && flock.map && !flock.map.free(px - h, py + sy - h, px + h, py + sy + h) ? 0.15 : 1;
+          // (one wholly behind a picture is out, but nobody sees it: it hardly counts)
+          const cov = show && flock.map && flock.map.under(px - h, py + sy - h, px + h, py + sy + h), w = cov ? 0.15 : 1;
+          // The cap: one about to come out from behind a picture while the sky is already full fades first, unseen.
+          if (cov && !hid && Math.max(seen, flock.seen) >= flock.target && !flock.map.under(ax - h, ay + sy - h, ax + h, ay + sy + h)) { show = false; o.look = turn + 0.06; }
           if (show && !hid) { seen += w; vis.push(o); }
           // A hidden star only comes out when a long clear run lies ahead of it (about three seconds of
           // turning), so none blinks on and off again through a small gap in the page. Looked up now and then.
