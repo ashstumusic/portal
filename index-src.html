@@ -1881,8 +1881,11 @@ if (lb && !lb.classList.contains('open')) lb.click();
 // The song's words are also in the page's own HTML (for readers without
 // scripts and for crawlers); with the interactive copy open below, the
 // plain copy would just repeat it.
+// It is taken out of SIGHT only, not removed: a screen-reader user who follows "Skip to the song" lands on the
+// song's heading and expects its words to come next, not to have to hunt for them inside the album's tracklist
+// further down. (It used to be fully hidden, so the song's own section had a title and no words for them.)
 var plain = document.getElementById('song-lyrics');
-if (plain && lb) plain.hidden = true;
+if (plain && lb) plain.classList.add('sr-only', 'is-tucked');
 // Cued in the player, ready for Play - not started: browsers refuse to
 // autoplay sound on arrival anyway, and starting the download regardless
 // cost every visitor to a song page about 30MB (this song plus the next).

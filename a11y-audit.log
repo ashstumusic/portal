@@ -43,3 +43,6 @@ FIXED: index-src.html (spoken announcements)
 FIXED: shared/system.css (high-contrast / forced-colours mode)
   — Visual clarity and system preferences: controls must stay visible when the system replaces the page's colours
   — In Windows Contrast Themes the menu button, Next, Close and most full-screen player icons were blank, the seek and volume tracks invisible and the current lyric unmarked; icons now take the system text colour, tracks are outlined and filled with the highlight colour, and the current lyric is outlined
+FIXED: index-src.html, shared/system.css (song pages)
+  — Screen reader access to primary content: content hidden for visual tidiness must stay available to assistive technology
+  — On each of the 34 song pages the lyrics under the song's heading were removed entirely once the interactive copy opened; they are now only visually hidden, so a screen-reader user hears the words directly after "Skip to the song" and the title
