@@ -37,3 +37,6 @@ FIXED: index-src.html (featured release buttons)
 FIXED: scripts/build_lyrics_pages.py (skip link on the 34 lyric pages)
   — Keyboard operability: a skip link must move keyboard focus, not just scroll
   — On lyric pages the skip link scrolled but left focus on itself, so it skipped nothing; it now moves focus and goes straight to the song ("Skip to the song"), and toolbar section links move focus to their section too
+FIXED: index-src.html (spoken announcements)
+  — Screen reader announcements: use polite live regions for routine updates, assertive only for errors
+  — A song change no longer interrupts the screen reader mid-sentence and is spoken once, not two to four times; error messages still interrupt. The pattern is documented beside the regions

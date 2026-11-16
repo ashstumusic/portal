@@ -401,7 +401,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   </div>
     <button type="button" class="np-left" id="np-expand" aria-label="Open full-screen player">
       <span class="np-info">
-      <span id="np-track" aria-live="polite">·</span>
+      <span id="np-track">·</span>
       <span id="np-album" aria-hidden="true"></span>
     </span>
   </button>
@@ -433,6 +433,13 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   </div>
 </div>
 <audio id="np-audio" preload="none"></audio>
+<!-- PATTERN (spoken messages). Two regions that are never seen:
+     #sr-status (polite) says which song has started. It waits for the screen reader to finish its sentence, because a
+       song changing by itself every few minutes must not cut in on someone reading the page.
+     #sr-announce (assertive) is only for things that have gone wrong and need attention now (a song that will not load).
+     The song title in the player bar is NOT a live region: it used to be, so every change was spoken twice, and twice
+     over again when the title was long enough to scroll (the scrolling copy repeats the text). -->
+<div id="sr-status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
 <div id="sr-announce" aria-live="assertive" aria-atomic="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
 <div id="fs-player" class="fs-player" role="dialog" aria-modal="true" aria-label="Now playing" aria-hidden="true" inert>
   <div class="fs-content">
@@ -799,7 +806,7 @@ _npTrackEl.dataset.label = label;
 (function() { var b = document.getElementById('np-expand'); if (b) b.setAttribute('aria-label', 'Open full-screen player. Playing: ' + track + (album ? ', from ' + album : '')); })();
 _npAlbumEl.textContent = album || '';
 npMarquee(_npTrackEl);
-if (_srAnnounce) _srAnnounce.textContent = 'Now playing: ' + track + (album ? ' from ' + album : '');
+var _srStatus = document.getElementById('sr-status'); if (_srStatus) _srStatus.textContent = 'Now playing: ' + track + (album ? ' from ' + album : '');
 // A skip (or a re-skip before the previous load finished) must tear down
 // the in-flight play() immediately: bumping the intent voids any still
 // pending promise, pausing aborts the current fetch, and preload="auto"
