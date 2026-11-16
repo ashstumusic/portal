@@ -57,6 +57,14 @@ for f in FONT_FILES:
         from fontTools.varLib import instancer
         font = instancer.instantiateVariableFont(font, {"wght": 400})
     exact = FIGMENT_TEXT if f == "Fonts/j.d.ttf" else None
+    # Cabin Sketch draws only the section headers ("Music", "Videos"...). Its sketched outlines are heavy (95KB for the
+    # usual character set), so it ships with exactly the letters those headers use, read from the page itself: a new
+    # or renamed header is picked up on the next build. (A header written by script would fall back to the UI font.)
+    if f.endswith("CabinSketch-Bold.ttf"):
+        _src = open("index-src.html", encoding="utf-8").read()
+        _heads = re.findall(r'<h[1-6][^>]*class="[^"]*\bsection-h\b[^"]*"[^>]*>(.*?)</h[1-6]>', _src, flags=re.S)
+        exact = "".join(re.sub(r"<[^>]+>", "", h) for h in _heads) + " "
+        assert len(_heads) >= 3, "no section headers found for the Cabin Sketch subset"
     if exact is not None:
         codes = sorted(set(ord(c) for c in exact))
     else:
