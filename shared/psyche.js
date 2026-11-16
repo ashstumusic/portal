@@ -50,6 +50,10 @@
     field.wake();
   }, { passive: true });
 
+  // How far the sky has turned to music so far (radians). The stars add to it while a song plays;
+  // the haze below is drawn turned by the same amount, so the colours wheel round with the stars.
+  let skyTurn = 0;
+
   // ── FIELD: liquid chrome + acid wash ─────────────────────────────
   // A low-resolution canvas (1/20 of the viewport) painted per pixel with a
   // domain-warped sine field, mapped through an ultraviolet / magenta /
@@ -81,11 +85,13 @@
     function paint() {
       const d = img.data, sin = Math.sin, cos = Math.cos, ar = w / h;
       const warp = 0.85 + ptr.energy * 0.15, px = (mx - 0.5) * 2.2, py = (my - 0.5) * 2.2;
+      // The whole picture is turned about the middle of the screen by the sky's turn (same way and pace as the stars).
+      const cx = 1.5 * ar, cy = 1.5, rc = cos(skyTurn), rs = sin(skyTurn);
       let o = 0;
       for (let j = 0; j < h; j++) {
-        const y = (j / h) * 3;
+        const y0 = (j / h) * 3 - cy;
         for (let i = 0; i < w; i++) {
-          const x = (i / w) * 3 * ar;
+          const x0 = (i / w) * 3 * ar - cx, x = cx + x0 * rc + y0 * rs, y = cy - x0 * rs + y0 * rc;
           const q1 = sin(x * 1.3 + t * 0.7 + px) + sin(y * 1.7 - t * 0.5);
           const q2 = sin(y * 1.1 + t * 0.6 + py) + cos(x * 1.5 + t * 0.4);
           const f = sin((x + q1 * warp) * 1.4 + (y + q2 * warp) * 1.1 + t * 0.3 + phase);
@@ -386,6 +392,44 @@
     // At rest the sky is stop motion (8 drawings a second, a pixel of jitter). While a song plays the
     // dance itself is smooth: every screen frame, one steady speed for everyone, no jitter and no
     // stepped turns or sizes. Only the chalk line still boils at its 8 a second.
+    // ── a full sky for the turn ──
+    // At rest every star sits in open space. Once the sky turns, a star is only seen while it is over open
+    // space, so most of them would be hidden behind the page most of the time and the sky would look thin.
+    // So for the turn the rest of the sky is filled in too: extra stars are scattered, at the same density,
+    // over the parts of the screen that are NOT open (they start out hidden, behind the page). As the sky
+    // wheels round, stars leaving open space are replaced by these coming into it, and about as many are in
+    // view at any moment as when the sky is still. They are removed when the song pauses.
+    let extra = [];
+    function emptySky() { for (const o of extra) o.el.remove(); extra = []; }
+    function fillSky(vh) {
+      emptySky();
+      const map = flock.map; if (!map) return;
+      const W = doc.documentElement.clientWidth, mx = W / 2, my = flock.sy0 + vh / 2, reach = Math.hypot(W, vh) / 2 + 110;
+      const s = Math.max(0.7, Math.min(1.05, innerWidth / 1300));
+      const here = placed.filter((o) => Math.hypot(o.cx - mx, o.cy - my) < reach);
+      if (!here.length) return;
+      const pick = () => { const a = Math.random() * TAU, r = Math.sqrt(Math.random()) * reach; return [mx + Math.cos(a) * r, my + Math.sin(a) * r]; };
+      const clear = (x, y, R) => map.free(x - R, y - R, x + R, y + R);
+      let open = 0; const N = 500;
+      for (let i = 0; i < N; i++) { const [x, y] = pick(); if (clear(x, y, 16)) open++; }
+      const share = Math.max(0.04, open / N);                        // how much of this part of the sky is open space
+      // (x2.4: a passing star needs clear room all round it and a moment to fade in, so fewer of them show than a plain count suggests)
+      const want = Math.min(260, Math.round(here.length * (1 - share) / share * 2.4));
+      const taken = here.map((o) => [o.cx, o.cy, o.R]);
+      for (let k = 0, tries = 0; k < want && tries < want * 40; tries++) {
+        const cls = Math.random() < 0.13 ? 0 : Math.random() < 0.42 ? 1 : 2, [lo, hi] = SIZES[cls];
+        const size = (lo + Math.random() * (hi - lo)) * s, R = size / 2, [x, y] = pick();
+        if (clear(x, y, R)) continue;                               // open space already has its stars
+        if (taken.some(([tx, ty, tR]) => Math.hypot(tx - x, ty - y) < R + tR + 12)) continue;
+        const base = Math.floor((Math.random() - 0.5) * 50), el = doc.createElement('i');
+        el.className = 'chalk-star';
+        el.style.cssText = `left:${(x - R).toFixed(1)}px;top:${(y - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;opacity:0;transform:rotate(${base}deg);background-color:${COLORS[Math.floor(Math.random() * COLORS.length)]}`;
+        layer.append(el);
+        const o = { el, extra: true, d: Math.floor(Math.random() * DESIGNS), cls, cx: x, cy: y, R, base, spin: 0, ph: Math.random() * 6, f: 0 };
+        setFrame(o); extra.push(o); taken.push([x, y, R]); k++;
+      }
+    }
+
     let drawT = 0, boilT = 0;
     function draw(t = performance.now()) {
       const vh = innerHeight, sy = scrollY, moving = fxOn();
@@ -396,15 +440,15 @@
       // The turn of the sky. Playing: a slow steady pace. Paused: fade out, square up, fade back in.
       // While it turns the sky is pinned to the screen (the page scrolls over it, like a fixed backdrop),
       // so scrolling never pushes the stars about; at rest it is part of the page again.
-      const pin = (on) => { if (flock.pinned === on) return; flock.pinned = on; layer.style.position = on ? 'fixed' : ''; layer.style.top = on ? -flock.sy0 + 'px' : ''; };
-      if (!moving) { flock.turn = 0; flock.reset = 0; layer.style.opacity = ''; pin(false); }
-      else if (music.on) { if (!flock.turn) { flock.sy0 = sy; pin(true); } flock.turn += dt * 0.085 * (0.9 + 0.25 * music.sm[0]); if (flock.reset) { flock.reset = 0; layer.style.opacity = ''; } }
+      const pin = (on) => { if (flock.pinned === on) return; flock.pinned = on; layer.style.position = on ? 'fixed' : ''; layer.style.top = on ? -flock.sy0 + 'px' : ''; if (on) fillSky(vh); else emptySky(); };
+      if (!moving) { flock.turn = 0; flock.reset = 0; layer.style.opacity = ''; pin(false); emptySky(); }
+      else if (music.on) { if (!flock.turn) { flock.sy0 = sy; pin(true); } const step = dt * 0.085 * (0.9 + 0.25 * music.sm[0]); flock.turn += step; skyTurn += step; if (flock.reset) { flock.reset = 0; layer.style.opacity = ''; } }
       else if (flock.turn) { if (!flock.reset) { flock.reset = t; layer.style.opacity = '0'; } else if (t - flock.reset > 430) { flock.turn = 0; flock.reset = 0; pin(false); layer.style.opacity = ''; } }
       const turn = flock.turn, dance = music.amp > 0 || turn !== 0, sy0 = flock.pinned ? flock.sy0 : sy;
       const boil = !dance || t - boilT >= 118; if (boil) boilT = t;
       const W = doc.documentElement.clientWidth, mx = W / 2, my = vh / 2, cs = Math.cos(turn), sn = Math.sin(turn), cs2 = Math.cos(turn + 0.05), sn2 = Math.sin(turn + 0.05);
       const reach = Math.hypot(W, vh) / 2 + 110;   // stars this near the middle of the screen (when the song started) are the turning sky; it ends beyond the screen's corners
-      for (const o of placed) {
+      for (const o of (extra.length ? placed.concat(extra) : placed)) {
         // Where it sits on the screen: fixed while the sky is pinned, moving with the page otherwise.
         const vy = o.cy - sy0, dx = o.cx - mx, dy = vy - my, turning = turn !== 0 && dx * dx + dy * dy < reach * reach;
         if ((vy < -500 || vy > vh + 500) && !turning) { if (o.el.style.opacity) { o.el.style.opacity = ''; o.el.style.transform = `rotate(${o.base}deg)`; } continue; }
@@ -429,7 +473,9 @@
           const ax = mx + dx * cs2 - dy * sn2, ay = my + dx * sn2 + dy * cs2;
           show = !flock.map || (flock.map.free(px - h, py + sy - h, px + h, py + sy + h) && flock.map.free(ax - h, ay + sy - h, ax + h, ay + sy + h));
         }
-        const want = show ? '' : '0'; if (o.el.style.opacity !== want) o.el.style.opacity = want;
+        if (o.extra && !turning) show = false;
+        const want = show ? '' : '0', was = o.el.style.opacity; if (was !== want) o.el.style.opacity = want;
+        if (!show && was === '0') continue;   // out of sight: nothing to move
         const sc = 1 + Math.sin(sy0 * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
         o.el.style.transform = `translate(${ox.toFixed(2)}px,${oy.toFixed(2)}px) rotate(${(rot0 + (turning ? turn * 57.2958 : 0)).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       }
