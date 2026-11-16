@@ -15,6 +15,13 @@
 
 @property --k-recess { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --k-weight { syntax: "<number>"; inherits: false; initial-value: 400; }
+/* The pointer-follow values (the light on a card, the pull on a magnetic button). Declared as NOT inherited: a plain
+   custom property is handed down to every element inside, so each pointer move restyled a whole card's contents
+   (tracklist and all) just to move one glow. The card's ::after asks for them by name instead (see .k-spot::after). */
+@property --mx { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
+@property --my { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
+@property --k-mx { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --k-my { syntax: "<length>"; inherits: false; initial-value: 0px; }
 
 :root {
   --k-accent: var(--clay, var(--amber, var(--ink)));
@@ -94,6 +101,7 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
 .k-spot { position: relative; isolation: isolate; }
 .k-spot::after {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
+  --mx: inherit; --my: inherit;   /* taken from the card by name (they are not handed down on their own) */
   background: radial-gradient(28rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--k-glow) 18%, transparent), transparent 55%);
   opacity: 0; transition: opacity .3s ease;
 }
@@ -188,12 +196,11 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
 }
 
 /* ── SCROLLBARS: recessed, rounded, fade when idle ───────────────────── */
-html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--k-text) 28%, transparent) transparent; }
-html.k-scrolling { scrollbar-color: color-mix(in srgb, var(--k-text) 55%, transparent) transparent; }
+html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--k-text) 40%, transparent) transparent; }   /* one steady strength: see the scroll listener in kinetic.js */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 999px; background: color-mix(in srgb, var(--k-text) 22%, transparent) padding-box; }
-.k-scrolling::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:hover { border-width: 2px; background-color: color-mix(in srgb, var(--k-text) 50%, transparent); }
+::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 999px; background: color-mix(in srgb, var(--k-text) 36%, transparent) padding-box; }
+::-webkit-scrollbar-thumb:hover { border-width: 2px; background-color: color-mix(in srgb, var(--k-text) 50%, transparent); }
 
 /* ── MEDIA ───────────────────────────────────────────────────────────── */
 /* Lock video frames to 16:9 before metadata loads (contain, not cover:
@@ -338,3 +345,6 @@ img.k-blurup { background-size: cover; background-position: center; }
 
 /* Touch-only devices (no keyboard detected): no key hints in the palette. */
 .k-nokeys .k-palette-foot { display: none; }
+
+/* A looping animation whose element is off screen is paused (set by kinetic.js; see "Looping animations rest"). */
+:root .k-rest:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .k-rest:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root .k-rest:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { animation-play-state: paused !important; }

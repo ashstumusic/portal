@@ -42,11 +42,23 @@
     ptr.x = e.clientX; ptr.y = e.clientY; ptr.vx = vx; ptr.vy = vy; ptr.t = now;
     field.wake();
   }, { passive: true });
+  // The window's size and scroll position, kept here so the per-frame code never has to ask the browser for them.
+  // Asking (scrollY, innerHeight, clientWidth) in the middle of a frame makes the browser stop and recompute the
+  // page's styles on the spot, and then again at the end of the frame once the stars have moved: twice the work.
+  // The scroll position is noted when the browser reports a scroll, the size when it reports a resize.
+  // While the full-screen player (or the video viewer) covers the page, the sky behind it holds still. Both are
+  // nearly opaque, blurred sheets: nothing behind them can be made out, yet every change behind them made the
+  // graphics card blur the whole screen again on every frame.
+  const fsEl = document.getElementById('fs-player'), lbEl = document.querySelector('.vid-lightbox');
+  const veiled = () => !!((fsEl && fsEl.classList.contains('open')) || (lbEl && lbEl.classList.contains('open')));
+  const view = { sy: scrollY, vh: innerHeight, iw: innerWidth, w: document.documentElement.clientWidth };
+  const measureView = () => { view.vh = innerHeight; view.iw = innerWidth; view.w = document.documentElement.clientWidth; view.sy = scrollY; };
+  addEventListener('resize', measureView, { passive: true });
   let scrollVel = 0, lastScrollY = scrollY, lastScrollT = performance.now();
   addEventListener('scroll', () => {
-    const now = performance.now(), dt = Math.max(8, now - lastScrollT);
-    scrollVel = scrollVel * 0.6 + ((scrollY - lastScrollY) / dt) * 0.4;   // px/ms, smoothed
-    lastScrollY = scrollY; lastScrollT = now;
+    const now = performance.now(), dt = Math.max(8, now - lastScrollT), y = view.sy = scrollY;
+    scrollVel = scrollVel * 0.6 + ((y - lastScrollY) / dt) * 0.4;   // px/ms, smoothed
+    lastScrollY = y; lastScrollT = now;
     field.wake();
   }, { passive: true });
 
@@ -116,7 +128,7 @@
     function frame(now) {
       raf = 0;
       if (doc.hidden || !fxOn()) return;   // effects off: the haze holds still
-      if (now - last >= 50) {   // 20 fps is plenty for a slow, blurred liquid
+      if (now - last >= 50 && !veiled()) {   // 20 fps is plenty for a slow, blurred liquid (and none at all while the player covers it)
         const dt = Math.min(0.1, (now - (last || now)) / 1000);
         last = now;
         const v = Math.min(3, Math.abs(scrollVel));
@@ -124,8 +136,8 @@
         phase += scrollVel * dt * 0.3;              // ...and rolls the colour bands with it
         scrollVel *= 0.9;
         ptr.energy *= 0.94;                         // pointer acceleration decays
-        mx += (ptr.x / innerWidth - mx) * 0.05;
-        my += (ptr.y / innerHeight - my) * 0.05;
+        mx += (ptr.x / view.iw - mx) * 0.05;
+        my += (ptr.y / view.vh - my) * 0.05;
         paint();
       }
       raf = requestAnimationFrame(frame);
@@ -463,7 +475,7 @@
 
     let drawT = 0, boilT = 0;
     function draw(t = performance.now()) {
-      const vh = innerHeight, sy = scrollY, moving = fxOn();
+      const vh = view.vh, sy = view.sy, moving = fxOn();   // (remembered values: see `view`)
       const dt = Math.min(60, Math.max(0, t - drawT)) / 1000; drawT = t;
       const ease = (ms) => 1 - Math.exp(-dt * 1000 / ms);
       music.amp += ((music.on && moving ? 1 : 0) - music.amp) * ease(450); if (music.amp < 0.004) music.amp = 0;
@@ -477,10 +489,11 @@
       else if (flock.turn) { if (!flock.reset) { flock.reset = t; layer.style.opacity = '0'; } else if (t - flock.reset > 430) { for (const o of placed) o.look = 0; flock.turn = 0; flock.reset = 0; pin(false); layer.style.opacity = ''; } }
       const turn = flock.turn, dance = music.amp > 0 || turn !== 0, sy0 = flock.pinned ? flock.sy0 : sy;
       const boil = !dance || t - boilT >= 118; if (boil) boilT = t;
-      const W = doc.documentElement.clientWidth, mx = W / 2, my = vh / 2, cs = Math.cos(turn), sn = Math.sin(turn), cs2 = Math.cos(turn + 0.05), sn2 = Math.sin(turn + 0.05);
+      const W = view.w, mx = W / 2, my = vh / 2, cs = Math.cos(turn), sn = Math.sin(turn), cs2 = Math.cos(turn + 0.05), sn2 = Math.sin(turn + 0.05);
       const reach = Math.hypot(W, vh) / 2 + 110;   // stars this near the middle of the screen (when the song started) are the turning sky; it ends beyond the screen's corners
       let seen = 0; const vis = [], apart = Math.max(48, Math.min(78, W * 0.054));
       for (const list of [placed, extra]) for (const o of list) {
+        if (turn === 0) { if (o.cv) { o.cv = 0; o.el.style.visibility = ''; } if (o.wc) { o.wc = 0; o.el.style.willChange = ''; } }   // (the sky has stopped: nothing stays switched off)
         // Where it sits on the screen: fixed while the sky is pinned, moving with the page otherwise.
         const vy = o.cy - sy0, dx = o.cx - mx, dy = vy - my, turning = turn !== 0 && dx * dx + dy * dy < reach * reach;
         if ((vy < -500 || vy > vh + 500) && !turning) { if (o.el.style.opacity) { o.el.style.opacity = ''; o.el.style.transform = `rotate(${o.base}deg)`; } continue; }
@@ -496,8 +509,11 @@
           continue;
         }
         const rot0 = o.base + snap(sy0 * o.spin, 15);   // (no scroll clicks or swells while the sky turns)
-        let ox = 0, oy = 0, show = true;
+        let ox = 0, oy = 0, show = true, under = false;
         if (turning) {
+          // A hidden star that was looked at a moment ago and had no reason to come out is not looked at again on
+          // every frame (there are some three hundred of them): it waits about a fifth of a second. See o.look below.
+          if (o.el.style.opacity === '0' && turn < (o.look || 0)) continue;
           const px = mx + dx * cs - dy * sn, py = my + dx * sn + dy * cs, h = o.R * 1.15 + 3;
           ox = px - o.cx; oy = py - vy;
           // Only ever seen in open space (px, py are on the screen; the map is of the page, so add the scroll).
@@ -507,7 +523,7 @@
           // (no map for a moment while the page is re-measured: stay as it is)
           show = !flock.map ? !hid : onScreen && flock.map.pass(px - h, py + sy - h, px + h, py + sy + h) && flock.map.pass(ax - h, ay + sy - h, ax + h, ay + sy + h);
           // (one wholly behind a picture is out, but nobody sees it: it hardly counts)
-          const cov = show && flock.map && flock.map.under(px - h, py + sy - h, px + h, py + sy + h), w = cov ? 0.15 : 1;
+          const cov = show && flock.map && flock.map.under(px - h, py + sy - h, px + h, py + sy + h), w = cov ? 0.15 : 1; under = !!cov;
           // The cap: one about to come out from behind a picture while the sky is already full fades first, unseen.
           if (cov && !hid && Math.max(seen, flock.seen) >= flock.target && !flock.map.under(ax - h, ay + sy - h, ax + h, ay + sy + h)) { show = false; o.look = turn + 0.06; }
           if (show && !hid) { seen += w; vis.push(o); }
@@ -527,8 +543,17 @@
             }
           }
         }
+        if (turning && !show && flock.map && o.el.style.opacity === '0') o.look = Math.max(o.look || 0, turn + 0.012 + Math.random() * 0.008);   // still hidden: look again shortly, not next frame
         if (o.extra && !turning) show = false;
         const want = show ? '' : '0', was = o.el.style.opacity; if (was !== want) o.el.style.opacity = want;
+        // A star that is out and travelling gets a layer of its own for as long as it travels, so the graphics card
+        // slides it along without the page being redrawn round it on every frame. Given back when it hides or stops.
+        const lift = turning && show && !under;
+        if (lift !== !!o.wc) { o.wc = lift ? 1 : 0; o.el.style.willChange = lift ? 'transform' : ''; }
+        // A star wholly behind a picture is switched off (not drawn at all) and left where it is: moving something
+        // nobody can see was half of all the work done on each frame. It is put back in place before it shows again.
+        if (show && under) { if (!o.cv) { o.cv = 1; o.el.style.visibility = 'hidden'; } continue; }
+        if (o.cv) { o.cv = 0; o.el.style.visibility = ''; }
         if (!show && was === '0') continue;   // out of sight: nothing to move
         const sc = 1 + Math.sin(sy0 * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
         o.el.style.transform = `translate(${ox.toFixed(2)}px,${oy.toFixed(2)}px) rotate(${(rot0 + (turning ? turn * 57.2958 : 0)).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
@@ -540,6 +565,7 @@
     function loop(t) {
       raf = 0;
       if (!fxOn()) { draw(t); return; }
+      if (veiled()) { drawT = t; raf = requestAnimationFrame(loop); return; }   // covered by the player: hold still (drawT kept current so nothing jumps on return)
       if (music.on || music.amp || flock.turn) draw(t);                 // dancing: every frame
       else if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(t); }             // at rest: on threes
       raf = requestAnimationFrame(loop);
@@ -556,7 +582,7 @@
       // page that shrinks (lyrics closed) is noticed and the layer shrinks too.
       const keep = layer.style.height; layer.style.height = '0px';
       const w = doc.documentElement.clientWidth, h = doc.documentElement.scrollHeight;
-      layer.style.height = keep;
+      layer.style.height = keep; measureView();
       if (w !== lastW) { lastW = w; lastH = h; clearTimeout(rt); rt = 0; layout(); kick(); return; }
       if (Math.abs(h - lastH) < 2) return;
       lastH = h; follow(); scheduleRepair();

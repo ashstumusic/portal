@@ -84,7 +84,7 @@
   --radius:     8px;      /* was a 16px "squircle" - a shade sharper reads as
                              a printed object (card, ticket) rather than an
                              app tile; still soft enough to touch comfortably */
-  --sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --sans:    system-ui, sans-serif;
   --body:    'Body', var(--sans);         /* body copy, section headers, release-type labels */
   --display: 'Display', Georgia, serif;   /* Playfair Display: editorial headlines */
   --grit:    'Grit', var(--sans);         /* gritty overline labels */
@@ -3204,7 +3204,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 }
 body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote cite { font-family: var(--psy); }
 .disc-quote, .bio-tagline { font-style: normal; }
-.np-time, .fs-times, .fs-times * { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+.np-time, .fs-times, .fs-times * { font-family: ui-monospace, monospace; }
 
 /* Small caps-style labels: this face clogs when tiny and widely tracked. */
 .f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .74rem; letter-spacing: .04em; }
@@ -3265,7 +3265,7 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 /* ── Readable exceptions to the psychedelic type ─────────────────────────
    The Guthrie quote goes back to its italic serif, lyrics read in a plain
    sans, and the About section keeps its original faces. */
-:root { --plain-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+:root { --plain-sans: system-ui, sans-serif; }
 .disc-quote { font-family: 'Body', Georgia, serif; font-style: italic; }
 .disc-quote cite { font-family: var(--plain-sans); font-style: normal; letter-spacing: .12em; }
 @media (min-width: 641px) { .disc-quote { font-size: clamp(.57rem, 3.28cqi, 4.15rem); } }
@@ -3334,7 +3334,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 /* Release and video titles: Playfair Display bold - a newspaper-headline
    serif (already self-hosted as 'Display'). */
 .rel-name, .featured-title, h3.vid-title, .vid-title {
-  font-family: 'Display', Georgia, 'Times New Roman', serif;
+  font-family: 'Display', Georgia, serif;
   font-weight: 700; letter-spacing: -.005em;
 }
 .rel-name, .featured-title { line-height: 1.15; }
@@ -3348,7 +3348,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
   font-display: swap;
 }
 .rel-name, .featured-title, h3.vid-title, .vid-title {
-  font-family: 'Headline', Georgia, 'Times New Roman', serif;
+  font-family: 'Headline', Georgia, serif;
   font-weight: normal; letter-spacing: 0;
 }
 
@@ -3362,7 +3362,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 @font-face { font-family: 'Text'; src: url('Fonts/outfit/Outfit-VF.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Labels'; src: url('Fonts/archivonarrow/ArchivoNarrow-VF.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
 @font-face { font-family: 'Quote'; src: url('Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
-:root { --plain-sans: 'Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+:root { --plain-sans: 'Text', system-ui, sans-serif; }
 .nav-links a, .nav-drawer a { font-family: var(--plain-sans); font-weight: 600; letter-spacing: .06em; }
 .featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label {
   font-family: 'Labels', 'Arial Narrow', var(--plain-sans); font-weight: 600;
@@ -3542,7 +3542,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
    in shared/system.css). The current line keeps its size, bar and full
    opacity; no faux bold. */
 .fs-lyric button, .fs-lyric--plain, .rel-lyrics-inner, .fs-lyric.is-current button {
-  font-family: 'LyricsText', 'Reddit Sans Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif; font-weight: 400; font-synthesis: none;
+  font-family: 'LyricsText', 'Arial Narrow', Arial, sans-serif; font-weight: 400; font-synthesis: none;
 }
 
 /* The line being sung gets a gold highlighter band (dark text on gold
@@ -3582,7 +3582,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 
 /* "Latest Release" badge in the device's standard system font. */
 .featured-badge {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: system-ui, sans-serif;
   font-weight: 700; font-style: normal; letter-spacing: .08em;
 }
 

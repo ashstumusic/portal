@@ -75,9 +75,9 @@
       root.classList.contains('fs-locked') || $('.nav-drawer[aria-hidden="false"]');
   }
   addEventListener('scroll', () => {
-    root.classList.add('k-scrolling');
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => root.classList.remove('k-scrolling'), 900);
+    // (This used to mark the page "k-scrolling" to brighten the scrollbar thumb while it moved. The scrollbar's colour
+    // is inherited by every element, so setting and clearing that mark made the browser restyle the whole page at the
+    // start and end of every scroll: a visible hitch, worst on phones. The thumb is now one steady strength.)
     kick();
   }, { passive: true });
   if (header) header.addEventListener('focusin', () => header.classList.remove('k-hide'));
@@ -95,7 +95,8 @@
 
   // ── SPOTLIGHT CARDS ───────────────────────────────────────────────
   const CARD_SEL = '.rel-card, .vid-card, .record, .book-card, .new-record, .video-link';
-  let litCard = null, litRect = null;
+  let litCard = null, litRect = null, stale = true, measuredT = 0;
+  addEventListener('scroll', () => { stale = true; }, { passive: true }); addEventListener('resize', () => { stale = true; }, { passive: true });
   if (finePointer) {
     for (const c of $$(CARD_SEL)) c.classList.add('k-spot');
     doc.addEventListener('pointerover', (e) => {
@@ -136,8 +137,18 @@
     const dt = Math.min(1 / 30, Math.max(1 / 240, lastT ? (now - lastT) / 1000 : 1 / 60));
     lastT = now;
     // READ
-    const y = scrollY, dy = y - lastY;
-    for (const m of magnets) if (m.el.isConnected) m.rect = m.el.getBoundingClientRect();
+    // (Only what this frame will actually use is measured. Asking the browser for a position in the middle of a frame
+    // makes it recompute the page's styles there and then; on a plain scroll, with the pointer nowhere near a magnetic
+    // button, nothing here needs measuring at all.)
+    const y = header && !timelineCSS ? scrollY : lastY, dy = y - lastY;
+    const live = ptr.active || magnets.some((m) => m.x || m.y || m.vx || m.vy);   // a pointer on the page, or a button still springing back
+    // Where the buttons and the lit card are is measured once and remembered until something could have moved them
+    // (a scroll, a resize, half a second passing), not on every frame the pointer moves.
+    if (live && (stale || now - measuredT > 500)) {
+      for (const m of magnets) if (m.el.isConnected) { const r = m.rect = m.el.getBoundingClientRect(); m.rx = r.left + r.width / 2 - m.x; m.ry = r.top + r.height / 2 - m.y; }
+      if (litCard) litRect = litCard.getBoundingClientRect();
+      stale = false; measuredT = now;
+    }
     if (litCard && !litRect) litRect = litCard.getBoundingClientRect();
     // WRITE
     if (header) {
@@ -147,10 +158,10 @@
       if (!timelineCSS) root.style.setProperty('--k-recess', Math.min(1, y / 240).toFixed(3));
     }
     lastY = y;
-    for (const m of magnets) {
+    if (live) for (const m of magnets) {
       const r = m.rect;
       if (!r) continue;
-      const cx = r.left + r.width / 2 - m.x, cy = r.top + r.height / 2 - m.y;   // rest position (minus current offset)
+      const cx = m.rx, cy = m.ry;   // rest position (measured without the current offset)
       const dx = ptr.x - cx, dyp = ptr.y - cy, reach = Math.max(r.width, r.height) * 0.9;
       const near = ptr.active && motionOK() && Math.abs(dx) < reach && Math.abs(dyp) < reach;
       m.tx = near ? Math.max(-6, Math.min(6, dx * 0.18)) : 0;
@@ -165,7 +176,6 @@
     if (litCard && litRect) {
       litCard.style.setProperty('--mx', `${(ptr.x - litRect.left).toFixed(0)}px`);
       litCard.style.setProperty('--my', `${(ptr.y - litRect.top).toFixed(0)}px`);
-      litRect = null;   // re-measure next frame (cards can scroll)
     }
     if (moving) kick();
   }
@@ -664,6 +674,34 @@
   // Search button tooltips: "⌘K" on Apple platforms, "Ctrl+K" elsewhere,
   // and no shortcut at all on touch-only devices (see hasKeys).
   syncKeys();
+
+  // ── Looping animations rest while off screen ──
+  // The site has a dozen animations that never end (the name's shimmer and pencil wobble, the wave, a button's
+  // glow). Most of them animate things the browser cannot hand to the graphics card (background position, masks,
+  // filters), so each one costs style work on every frame, and they used to keep running after being scrolled
+  // out of sight. Each is now paused the moment its element leaves the screen and resumed when it returns.
+  if ('IntersectionObserver' in window && doc.getAnimations) {
+    const watched = new WeakSet();
+    // (an inline !important is the one thing certain to outrank the stylesheet's own animation rules; the class covers ::before / ::after)
+    const rest1 = (el, off) => { el.classList.toggle('k-rest', off); if (off) el.style.setProperty('animation-play-state', 'paused', 'important'); else el.style.removeProperty('animation-play-state'); };
+    // (The first screen's wave is three animations that must stay in step: the section and its two halves. They are
+    // paused and resumed together, on the section's say-so; the halves are never judged on their own.)
+    const rest = (el, off) => { rest1(el, off); if (el.classList.contains('hero-split')) for (const c of el.children) rest1(c, off); };
+    const io = new IntersectionObserver((list) => { for (const en of list) rest(en.target, !en.isIntersecting); }, { rootMargin: '120px 0px' });
+    const scan = () => {
+      let all = []; try { all = doc.getAnimations(); } catch {}
+      for (const an of all) {
+        const fx = an.effect, el = fx && fx.target;
+        if (!el || watched.has(el) || !(an instanceof CSSAnimation)) continue;
+        if (an.animationName === 'wave-down') continue;
+        let endless = false; try { endless = fx.getComputedTiming().iterations === Infinity; } catch {}
+        if (!endless || getComputedStyle(el).position === 'fixed') continue;   // (fixed things are always on screen)
+        watched.add(el); io.observe(el);
+      }
+    };
+    for (const ms of [600, 2500, 7000, 16000]) setTimeout(scan, ms);
+    let st = 0; addEventListener('scroll', () => { clearTimeout(st); st = setTimeout(scan, 500); }, { passive: true });   // animations that start later (on reveal) are picked up once scrolling settles
+  }
 
   window.kinetic = { announce, swapLabel, openPalette, settings: settingsList };
   }

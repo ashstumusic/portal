@@ -591,15 +591,21 @@ if ('ResizeObserver' in window) new ResizeObserver(function() { clearTimeout(_re
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { cacheOffsets(); updateNav(); });
 let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false, _lastAboutIn = -1;
 const aboutName = document.querySelector('.bio-wall--top') || document.querySelector('.bio-name');
-function updateNav() {
+// What updateNav needs to know about the page, measured in one go (readNav) so that it can be asked for at the moment
+// the browser reports a scroll, when the answer is free. Asking later in the frame, after the stars have been moved,
+// made the browser recompute the page's styles a second time on every frame of a scroll.
+var _nv = { y: 0, vh: 0, sh: 0, aboutTop: 0 };
+function readNav() { _nv.y = window.scrollY; _nv.vh = window.innerHeight; _nv.sh = document.documentElement.scrollHeight; _nv.aboutTop = aboutName ? aboutName.getBoundingClientRect().top : 0; }
+function updateNav(measured) {
+if (measured !== true) readNav();
 let cur = '';
 // A section becomes the current one as soon as its top has come 40% of the way up the screen (it used to have to
 // reach the toolbar, so a section could fill most of the screen while the link for the one above was still lit).
-const mark = scrollY + Math.max(120, window.innerHeight * 0.6);
+const mark = _nv.y + Math.max(120, _nv.vh * 0.6);
 for (let i = 0; i < offsets.length; i++) { if (mark >= offsets[i].top) cur = offsets[i].id; }
 // The About section has no toolbar link of its own: once it is the section in view (by the same measure, or the
 // page is scrolled to the very end), no link is marked as current.
-if (aboutTop && (mark >= aboutTop || window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2)) cur = '';
+if (aboutTop && (mark >= aboutTop || _nv.vh + _nv.y >= _nv.sh - 2)) cur = '';
 // A section link that was just pressed stays the lit one until the visitor scrolls by hand: a short section (Contact)
 // can share the screen with the next one, and the link pressed must be the one that lights up.
 if (_picked) cur = _picked;
@@ -616,7 +622,7 @@ const h = heroH;
 // while the other fades in, over the same stretch of scrolling.
 // Top: the hero's name fades out as the toolbar's fades in.
 // (While the cat wall is up, the name is always the toolbar's: the big one steps out of the cats' way.)
-const heroOut = document.documentElement.classList.contains('cat-mode') ? 1 : Math.min(1, Math.max(0, (scrollY - h * 0.27) / (h * 0.2)));   /* starts a little later than it used to (was 0.15) */
+const heroOut = document.documentElement.classList.contains('cat-mode') ? 1 : Math.min(1, Math.max(0, (_nv.y - h * 0.27) / (h * 0.2)));   /* starts a little later than it used to (was 0.15) */
 const navIn = Math.min(1, Math.max(0, (heroOut - .65) / .35));   /* the toolbar's name comes and goes over a third of the stretch the big name takes: scrolling up, it is gone quickly */
 // Bottom: as the About card's "Ash Stu" rises into view, the toolbar's
 // fades out while the About one fades in (measured from the bottom of the
@@ -624,8 +630,8 @@ const navIn = Math.min(1, Math.max(0, (heroOut - .65) / .35));   /* the toolbar'
 // one is fully in.
 let navOut = 0, aboutIn = 1;
 if (aboutName) {
-const rise = innerHeight - aboutName.getBoundingClientRect().top;   /* how far it has come up into view */
-const atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
+const rise = _nv.vh - _nv.aboutTop;   /* how far it has come up into view */
+const atEnd = _nv.vh + _nv.y >= _nv.sh - 2;
 aboutIn = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.2)));
 navOut = atEnd ? 1 : Math.min(1, Math.max(0, (rise - h * 0.05) / (h * 0.07)));   /* the toolbar's name fades away about three times faster than the About name fades in */
 }
@@ -649,9 +655,10 @@ const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
 }
 window.addEventListener('scroll', () => {
+readNav();   // measure now (free at this moment); the changes are made on the next frame
 if (ticking) return;
 ticking = true;
-requestAnimationFrame(() => { updateNav(); ticking = false; });
+requestAnimationFrame(() => { updateNav(true); ticking = false; });
 }, { passive: true });
 requestAnimationFrame(function() { cacheOffsets(); updateNav(); });
 var _heroImg = document.querySelector('.hero-split-photo');
@@ -1343,7 +1350,7 @@ fsLyrToggle.addEventListener('click', function() {
  fitFsArt();
  fsLyricsKick();
 });
-var _fsOpener = null, _fsInerted = [];
+var _fsOpener = null, _fsInerted = [], _fsLate = 0;
 function fsOpen() {
  if (_fsOpen) return;   // two gestures can both fire; a second open would lose the inert list
  _fsOpener = document.activeElement;
@@ -1355,14 +1362,22 @@ function fsOpen() {
  // Real modal: everything else on the page becomes inert too (not just
  // the bar), so Tab can't wander behind the player and screen readers
  // don't read the page underneath. Only elements we change are restored.
- _fsInerted = [].filter.call(document.body.children, function(el) {
-   return el !== fs && !el.contains(fs) && !el.inert && el.getAttribute('aria-live') == null && el.tagName !== 'SCRIPT';
- });
- _fsInerted.forEach(function(el) { el.inert = true; });
+ // (Switching the whole page off and pinning it makes the browser restyle and re-lay-out everything behind the
+ // player: a tenth of a second on a laptop, a quarter of a second on a phone. Done at the moment of the tap, that
+ // work came before the player could even begin to appear. It now waits until the player has finished opening;
+ // focus is already inside the player by then.)
  _fsOpen = true;
- // Pin the page: nothing behind the maximized player scrolls (wheel,
- // touch, or keys) until it's collapsed again.
- document.documentElement.classList.add('fs-locked');
+ clearTimeout(_fsLate);
+ _fsLate = setTimeout(function() {
+   if (!_fsOpen) return;
+   _fsInerted = [].filter.call(document.body.children, function(el) {
+     return el !== fs && !el.contains(fs) && !el.inert && el.getAttribute('aria-live') == null && el.tagName !== 'SCRIPT';
+   });
+   _fsInerted.forEach(function(el) { el.inert = true; });
+   // Pin the page: nothing behind the maximized player scrolls (wheel,
+   // touch, or keys) until it's collapsed again.
+   document.documentElement.classList.add('fs-locked');
+ }, 460);
  fitFsArt();
  // Modal dialog: move focus inside so keyboard and screen-reader users
  // land in the player, not on the (now inert) bar behind it.
@@ -1370,6 +1385,7 @@ function fsOpen() {
 }
 function fsClose() {
  if (!_fsOpen) return;
+ clearTimeout(_fsLate);
  fs.classList.remove('open');
  fs.setAttribute('aria-hidden', 'true');
  // aria-hidden alone doesn't remove buttons/links/the seek bar from the

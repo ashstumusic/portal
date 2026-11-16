@@ -7,8 +7,8 @@
    the Quote serif, and the Figment handwriting.
    ════════════════════════════════════════════════════════════════════ */
 :root {
-  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
-  --font-ui-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-ui: system-ui, sans-serif;
+  --font-ui-display: system-ui, sans-serif;
   --plain-sans: var(--font-ui);
 
   /* 8px grid */
@@ -160,7 +160,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 
 /* Release titles keep their Young Serif headline face (album cards and
    the featured release); video titles stay SF Pro. */
-.rel-name, .featured-title { font-family: 'Headline', Georgia, 'Times New Roman', serif; font-weight: normal; letter-spacing: 0; }
+.rel-name, .featured-title { font-family: 'Headline', Georgia, serif; font-weight: normal; letter-spacing: 0; }
 
 /* The SOON pill matches the LYRICS pill: same size, type and border, and
    the same right edge (it sits inside the row's 12px padding, the Lyrics
@@ -205,13 +205,16 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   font-weight: 200 800; font-display: swap;
 }
 :root {
-  --font-ui: 'UI', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  /* (Short fallback lists on purpose. Until the site's own font arrives the browser walks down this list, asking the
+     system for each name in turn; every name it does not have is a wasted look-up, and the old list of eight cost up to
+     a tenth of a second before the first screen could be laid out. system-ui is each device's own interface face.) */
+  --font-ui: 'UI', system-ui, sans-serif;
   --font-ui-display: var(--font-ui);
   --plain-sans: var(--font-ui);
 }
 body, button, input, select, textarea { font-optical-sizing: auto; }
 /* Video titles match the release titles. */
-h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', serif; font-weight: normal; letter-spacing: 0; }
+h3.vid-title, .vid-title { font-family: 'Headline', Georgia, serif; font-weight: normal; letter-spacing: 0; }
 /* Grotesk tuning: a touch less tracking in caps labels, regular weight
    for running text, medium for tracks so titles read as titles. */
 .featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label,
@@ -224,7 +227,7 @@ h3.vid-title, .vid-title { font-family: 'Headline', Georgia, 'Times New Roman', 
    the title). */
 .rel-track:not(.rel-track--upcoming) .rel-track-title { font-weight: 650; color: rgb(242 242 247); }
 .rel-track-wrap .rel-lyrics-inner, .rel-track-wrap .rel-lyric-line {
-  font-family: 'LyricsText', 'Reddit Sans Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'LyricsText', 'Arial Narrow', Arial, sans-serif;
   font-size: 14px; line-height: 1.65; letter-spacing: 0; color: rgb(235 235 245 / .66);
 }
 .rel-track-wrap .rel-lyric-line.is-current { color: #08141A; }
@@ -1974,19 +1977,28 @@ html { overscroll-behavior-y: none; }
    (browsers without @property just show the wave still). Stops with
    reduced motion / effects off. */
 @property --wave-lift { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@keyframes wave-rise { 0%, 100% { --wave-lift: 0px; } 50% { --wave-lift: var(--wave-rise); } }
+/* How it moves (changed Nov 2026). It used to animate --wave-lift, which changes the mask's size: the browser then
+   had to restyle and redraw the entire first screen on every frame, the single most expensive thing on the page
+   while it sat idle. Now the mask never changes. The whole section slides up by the lift (wave-up) while its two
+   halves slide down by the same amount (wave-down), so everything in it stays exactly where it was and only the
+   wavy bottom edge travels. Sliding is done by the graphics card with nothing redrawn. (The section's own
+   background is one flat colour, so its slide cannot be seen.) The two must always run together: see kinetic.js,
+   "Looping animations rest", which pauses and resumes them as one. */
+@keyframes wave-up { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(var(--wave-rise) * -1); } }
+@keyframes wave-down { 0%, 100% { translate: 0 0; } 50% { translate: 0 var(--wave-rise); } }
 :root.psy .hero-split {
   --wave-rise: clamp(8px, 1.5vw, 20px);
   --wave-h: clamp(16px, 2.6vw, 36px);
   --wave-lift: 0px;
-  animation: wave-rise 3.6s ease-in-out infinite;
+  animation: wave-up 3.6s ease-in-out infinite;
   --wave-w: calc(var(--wave-h) * 4);   /* one swell is four times as wide as it is tall, repeated across */
   -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) - var(--wave-lift) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2023040%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H23040V22q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200Z'/%3E%3C/svg%3E") left 0 bottom var(--wave-lift) / calc(var(--wave-w) * 64) var(--wave-h) no-repeat;
   mask: linear-gradient(#000, #000) top / 100% calc(100% - var(--wave-h) - var(--wave-lift) + 1px) no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2023040%2044'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0%200H23040V22q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200q-90%2022-180%200t-180%200Z'/%3E%3C/svg%3E") left 0 bottom var(--wave-lift) / calc(var(--wave-w) * 64) var(--wave-h) no-repeat;
 }
 @media (forced-colors: active) { :root.psy .hero-split { -webkit-mask: none; mask: none; } }
-:root.psy.psy-calm .hero-split { animation: none; }
-@media (prefers-reduced-motion: reduce) { :root.psy .hero-split { animation: none; } }
+:root.psy .hero-split > :is(.hero-split-left, .hero-split-right) { animation: wave-down 3.6s ease-in-out infinite; }
+:root.psy.psy-calm .hero-split, :root.psy.psy-calm .hero-split > :is(.hero-split-left, .hero-split-right) { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root.psy .hero-split, :root.psy .hero-split > :is(.hero-split-left, .hero-split-right) { animation: none; } }
 
 /* Featured release: the Apple Music and Spotify buttons are large, as a
    matched pair (same height, type and icon size), and stay side by side.
@@ -3228,6 +3240,20 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-play-overlay:focus-visible .rel-play-circle:not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold) !important; color: #111 !important; outline: 3px solid #fff !important; outline-offset: 3px; }
 :root.psy .rel-play-overlay:focus-visible .rel-play-circle:not(#\#):not(#\#):not(#\#):not(#\#) svg { color: #111 !important; }
 @media (forced-colors: active) { :root.psy .rel-play-overlay:focus-visible .rel-play-circle { outline: 3px solid Highlight !important; } }
+
+/* While the full-screen player is up, the glass on the page behind it is switched off. The player is a 90%-opaque
+   sheet that blurs everything under it, so a button's own frosted blur under there cannot be told from a plain one,
+   yet the browser was still working out every one of those blurs (toolbar, mini player, each card's buttons) on
+   every frame: about half the frame rate on a laptop. The page itself stays drawn, so the sheet keeps the faint glow
+   of what is behind it. "fs-locked" is set once the player has finished opening and cleared as it starts to close. */
+html.fs-locked :is(main, .nav, #player-bar), html.fs-locked :is(main, .nav, #player-bar) *, html.fs-locked :is(main, .nav, #player-bar) *::before, html.fs-locked :is(main, .nav, #player-bar) *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are held still under the sheet anyway: see `veiled` in psyche.js) */
+
+/* The streaming buttons on the release cards and the YouTube buttons on the video cards sit on the cards' own solid
+   panels, where a frosted blur has nothing to blur: with it or without it they come out the same to within one
+   shade in 255 (measured). Each blur still had to be worked out again whenever anything moved on screen, so these
+   twelve are plain. Buttons over photos or over the sky keep their frost. */
+.rel-card .rel-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
