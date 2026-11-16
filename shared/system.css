@@ -3255,6 +3255,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    twelve are plain. Buttons over photos or over the sky keep their frost. */
 .rel-card .rel-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 
+/* Accessibility (motion). The name's colour drift and pencil wobble did not stop when a visitor switched Effects off,
+   or asked their device for reduced motion, part-way through a visit: an earlier rule that starts them outranked
+   the rules that stop them. This one is last and outranks both. Loaded with either setting already on, the name
+   was (and is) still. */
+:root.psy.psy-calm :is(.hero-name, .bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { :root.psy :is(.hero-name, .bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: none !important; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

@@ -713,8 +713,19 @@
       if (stepped.size && !clock) clock = setInterval(tick, 111);
     };
     const stepped = new Set(); let clock = 0;
+    // An animation paused from script is no longer ended by the browser when the stylesheet stops asking for it
+    // (Effects switched off, reduced motion chosen). So that is checked here: any stepped animation the styles no
+    // longer name is cancelled. Run when the page's classes or the motion setting change, and once a second.
+    const prune = () => {
+      for (const an of stepped) {
+        const el = an.effect && an.effect.target;
+        if (!el || !el.isConnected || !getComputedStyle(el).animationName.split(/,\s*/).includes(an.animationName)) { try { an.cancel(); } catch {} stepped.delete(an); }
+      }
+    };
+    let ticks = 0;
     const tick = () => {
       if (doc.hidden) return;
+      if (++ticks % 9 === 0) prune();
       const now = doc.timeline.currentTime ?? performance.now();
       for (const an of stepped) {
         const el = an.effect && an.effect.target;
@@ -725,8 +736,8 @@
       if (!stepped.size) { clearInterval(clock); clock = 0; }
     };
     // (Effects switched back on, or motion allowed again: the animations are made afresh, so look again.)
-    new MutationObserver(() => setTimeout(scan, 300)).observe(root, { attributes: true, attributeFilter: ['class'] });
-    matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', () => setTimeout(scan, 300));
+    new MutationObserver(() => { setTimeout(prune, 30); setTimeout(scan, 300); }).observe(root, { attributes: true, attributeFilter: ['class'] });
+    matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', () => { setTimeout(prune, 30); setTimeout(scan, 300); });
     for (const ms of [600, 2500, 7000, 16000]) setTimeout(scan, ms);
     let st = 0; addEventListener('scroll', () => { clearTimeout(st); st = setTimeout(scan, 500); }, { passive: true });   // animations that start later (on reveal) are picked up once scrolling settles
   }

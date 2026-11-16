@@ -1,0 +1,3 @@
+FIXED: shared/system.css, shared/kinetic.js
+  — Respect system preferences (reduced motion) and the site's own Effects switch
+  — The name's colour drift and pencil wobble now stop when Effects is switched off or reduced motion is chosen mid-visit (they used to keep going until the page was reloaded)
