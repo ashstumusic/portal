@@ -3126,7 +3126,7 @@ html { overscroll-behavior-y: none; }
    second (a transform only, so nothing on the page is redrawn). With Effects off or reduced motion it holds
    still. Clicks pass straight through it; it is hidden in forced-colours mode. */
 :root.psy .k-grain:not(#\#) {
-  inset: -220px !important; opacity: .1 !important;
+  inset: -220px !important; opacity: .15 !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .78  0 0 0 0 .78  0 0 0 0 .78  1.9 0 0 0 -.6'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E") !important;
   background-size: 220px 220px; will-change: transform;
   animation: film-grain .7s steps(1) infinite;
