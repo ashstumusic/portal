@@ -663,8 +663,8 @@
   // that panel shows. Each entry says what it is (label), whether it is on, and how to flip it (run).
   function settingsList() {
     const list = [];
-    if (hasKeys) list.push({ group: 'Settings', label: 'Single-key shortcuts', on: keysOn, title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'G then a letter to jump to a section, / to search', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
-    list.push({ group: 'Settings', label: 'Interface sounds', on: soundsOn, title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', sub: 'Xylophone notes when you press', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(true); } });
+    if (hasKeys) list.push({ group: 'Settings', label: 'Single-key shortcuts', on: keysOn, title: keysOn ? 'Turn off single-key shortcuts' : 'Turn on single-key shortcuts', sub: 'Press G, then the first letter of a section, to jump to it. Press / to search.', run: () => { keysOn = !keysOn; store.set('k-keys', keysOn ? 'on' : 'off'); announce(`Single-key shortcuts ${keysOn ? 'on' : 'off'}`); } });
+    list.push({ group: 'Settings', label: 'Interface sounds', on: soundsOn, title: soundsOn ? 'Turn off interface sounds' : 'Turn on interface sounds', sub: 'Plays a short note when you press a button', run: () => { soundsOn = !soundsOn; store.set('k-sounds', soundsOn ? 'on' : 'off'); announce(`Interface sounds ${soundsOn ? 'on' : 'off'}`); blip(true); } });
     // Page-specific settings (the homepage's psyche.js adds effects).
     if (typeof window.kineticItems === 'function') { try { list.push(...window.kineticItems().filter((it) => it.group === 'Settings')); } catch {} }
     return list;

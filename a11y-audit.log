@@ -16,3 +16,6 @@ FIXED: shared/kinetic.js (settings switches in the menu)
 FIXED: shared/kinetic.js (menu dialog, initial focus)
   — Keyboard operability: focus order must be safe and predictable; pattern documented in the component
   — Opening the menu by keyboard now puts focus on the first section button (or first setting on wide screens) instead of the "Listen on Apple Music" link, where a second press of Enter would have left the site
+FIXED: shared/kinetic.js (setting descriptions)
+  — Accessible content: instructions in plain, complete sentences
+  — "G then a letter to jump to a section, / to search" is now "Press G, then the first letter of a section, to jump to it. Press / to search."; "Xylophone notes when you press" is now "Plays a short note when you press a button"
