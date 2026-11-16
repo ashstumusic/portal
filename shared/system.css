@@ -3272,6 +3272,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root .skip:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; display: inline-flex; align-items: center; }
 }
 
+/* Mini player between 601 and 740px wide (small tablets, phones on their side). There was room for neither the
+   running time nor a readable song title here: the volume slider took it. The slider steps aside in this range
+   (Mute stays, and the full-screen player has the slider), which gives the title its space back and lets the time show. */
+@media (min-width: 601px) and (max-width: 740px) {
+  :root.psy #player-bar .np-vol .vol-slider:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy #player-bar .np-vol:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; min-width: 0 !important; }
+  :root.psy #player-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 1fr) 40px 40px 42px 40px 40px 40px minmax(0, 1fr) !important; }
+  :root.psy #player-bar .np-clock:not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex !important; min-width: 0; margin-right: 52px; font-size: 12px !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
