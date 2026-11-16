@@ -226,10 +226,16 @@ and always as large as the space allows: the type is sized so the first, longest
 margin to the other. Measured on a hidden copy at 100px, then scaled; redone when the fonts arrive or the space changes. */
 (function(){
 var q=document.querySelector('.disc-quote'); if(!q) return;
-var last='';
+var last='', lastKey='', queued=0;
+/* Measuring forces the browser to lay the page out, so it is done at most once per frame, never before the
+first paint (the stylesheet's starting size is a close guess), and only when something it depends on has
+changed: the width available, or the quote's own fonts arriving. */
 function fit(){
+queued=0;
 var cs=getComputedStyle(q), room=q.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
 if(!(room>0)) return;
+var key=room+'|'+(document.fonts&&document.fonts.check?document.fonts.check("italic 100px Quote")+'|'+document.fonts.check("100px QuoteName"):'');
+if(key===lastKey) return; lastKey=key;
 var c=q.cloneNode(true); c.removeAttribute('id'); c.setAttribute('aria-hidden','true');
 c.style.cssText='position:absolute!important;visibility:hidden!important;left:-99999px!important;top:0!important;width:max-content!important;max-width:none!important;padding:0!important;margin:0!important;border:0!important;font-size:100px!important;white-space:nowrap!important;';
 q.parentNode.appendChild(c); var w=c.getBoundingClientRect().width; c.remove();
@@ -237,11 +243,12 @@ if(!(w>0)) return;
 var fs=(Math.floor(room/w*100*100*.998)/100)+'px';
 if(fs!==last){ last=fs; q.style.setProperty('--q-fs',fs); }
 }
-requestAnimationFrame(fit);
-if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fit);
-if(document.fonts&&document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',fit);
-window.addEventListener('load',fit);
-if('ResizeObserver' in window) new ResizeObserver(fit).observe(q.parentNode); else window.addEventListener('resize',fit);
+function ask(){ if(!queued){ queued=1; requestAnimationFrame(function(){ setTimeout(fit,0); }); } }
+ask();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(ask);
+if(document.fonts&&document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',ask);
+window.addEventListener('load',ask);
+if('ResizeObserver' in window) new ResizeObserver(ask).observe(q.parentNode); else window.addEventListener('resize',ask,{passive:true});
 })();
 </script>
 </div>
@@ -2307,7 +2314,10 @@ const pieces = [];
 let cw, ch;
 let Q = 1;
 function resize() { const r = cvs.parentElement.getBoundingClientRect(); cw = r.width; ch = r.height; for (const c of [cvs, fcvs]) if (c) { c.width = Math.max(1, Math.round(cw * Q)); c.height = Math.max(1, Math.round(ch * Q)); } }
-resize();
+/* Sized after the first paint: measuring here, while the page is still being read, made the browser lay out
+the whole page early (about 100ms before anything showed). Until then a rough size is enough to scatter the pieces. */
+cw = window.innerWidth; ch = window.innerHeight;
+requestAnimationFrame(function() { setTimeout(resize, 0); });
 let resizeTimer;
 window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); }, { passive: true });
 for (let i = 0; i < COUNT; i++) pieces.push({ x: Math.random()*cw, y: Math.random()*ch, w: 3+Math.random()*4, h: 8+Math.random()*14, rot: Math.random()*TWO_PI, dx: (Math.random()-.5)*.5, dy: .5+Math.random()*1.2, dr: (Math.random()-.5)*3*DEG2RAD, wobble: Math.random()*TWO_PI, wobbleSpeed: .02+Math.random()*.03, flex: Math.random()*TWO_PI, flexSpeed: .03+Math.random()*.04, color: COLORS[Math.floor(Math.random()*COLORS.length)], opacity: .8+Math.random()*.2 });
