@@ -145,7 +145,8 @@
     // Where the buttons and the lit card are is measured once and remembered until something could have moved them
     // (a scroll, a resize, half a second passing), not on every frame the pointer moves.
     if (live && (stale || now - measuredT > 500)) {
-      for (const m of magnets) if (m.el.isConnected) { const r = m.rect = m.el.getBoundingClientRect(); m.rx = r.left + r.width / 2 - m.x; m.ry = r.top + r.height / 2 - m.y; }
+      // (not ones inside a closed dialog: measuring those makes the browser lay out a part of the page it is deliberately skipping)
+      for (const m of magnets) if (m.el.isConnected && (!m.el.checkVisibility || m.el.checkVisibility())) { const r = m.rect = m.el.getBoundingClientRect(); m.rx = r.left + r.width / 2 - m.x; m.ry = r.top + r.height / 2 - m.y; }
       if (litCard) litRect = litCard.getBoundingClientRect();
       stale = false; measuredT = now;
     }
@@ -698,7 +699,34 @@
         if (!endless || getComputedStyle(el).position === 'fixed') continue;   // (fixed things are always on screen)
         watched.add(el); io.observe(el);
       }
+      // Stepped loops (the name's pencil wobble: 3 drawings a second; its colour drift: 6 steps a second) only LOOK
+      // different a few times a second, but while they run the browser re-examines them on every one of its sixty
+      // frames, which kept an otherwise still page working flat out. Each is held paused and moved on by the clock
+      // below, nine times a second: the picture is the same, the browser gets to rest in between.
+      for (const an of all) {
+        if (stepped.has(an) || !(an instanceof CSSAnimation) || an.playState !== 'running') continue;
+        let ok = false;
+        try { const kf = an.effect.getKeyframes(); ok = an.effect.getComputedTiming().iterations === Infinity && kf.length > 1 && kf.slice(0, -1).every((k) => /^step/.test(k.easing)); } catch {}
+        if (!ok) continue;
+        try { an.pause(); stepped.add(an); } catch {}
+      }
+      if (stepped.size && !clock) clock = setInterval(tick, 111);
     };
+    const stepped = new Set(); let clock = 0;
+    const tick = () => {
+      if (doc.hidden) return;
+      const now = doc.timeline.currentTime ?? performance.now();
+      for (const an of stepped) {
+        const el = an.effect && an.effect.target;
+        if (an.playState === 'idle' || !el || !el.isConnected) { stepped.delete(an); continue; }   // switched off (effects off, reduced motion) or gone
+        if (el.classList.contains('k-rest')) continue;                                              // off screen: resting
+        try { an.currentTime = now; } catch {}
+      }
+      if (!stepped.size) { clearInterval(clock); clock = 0; }
+    };
+    // (Effects switched back on, or motion allowed again: the animations are made afresh, so look again.)
+    new MutationObserver(() => setTimeout(scan, 300)).observe(root, { attributes: true, attributeFilter: ['class'] });
+    matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', () => setTimeout(scan, 300));
     for (const ms of [600, 2500, 7000, 16000]) setTimeout(scan, ms);
     let st = 0; addEventListener('scroll', () => { clearTimeout(st); st = setTimeout(scan, 500); }, { passive: true });   // animations that start later (on reveal) are picked up once scrolling settles
   }

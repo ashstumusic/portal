@@ -49,6 +49,7 @@
   // While the full-screen player (or the video viewer) covers the page, the sky behind it holds still. Both are
   // nearly opaque, blurred sheets: nothing behind them can be made out, yet every change behind them made the
   // graphics card blur the whole screen again on every frame.
+  let musicLive = false;   // set by the stars' loop: music playing (or still fading out)
   const fsEl = document.getElementById('fs-player'), lbEl = document.querySelector('.vid-lightbox');
   const veiled = () => !!((fsEl && fsEl.classList.contains('open')) || (lbEl && lbEl.classList.contains('open')));
   const view = { sy: scrollY, vh: innerHeight, iw: innerWidth, w: document.documentElement.clientWidth };
@@ -85,7 +86,7 @@
       const s = u * u * (3 - 2 * u);   // smoothstep between stops: glossy rather than banded
       for (let c = 0; c < 3; c++) LUT[i * 3 + c] = STOPS[k][c] + (STOPS[k + 1][c] - STOPS[k][c]) * s;
     }
-    let img = null, w = 0, h = 0, t = Math.random() * 100, phase = 0, mx = 0.5, my = 0.5, raf = 0, last = 0, idleUntil = 0;
+    let img = null, w = 0, h = 0, t = Math.random() * 100, phase = 0, mx = 0.5, my = 0.5, raf = 0, tmo = 0, last = 0, idleUntil = 0;
     function size() {
       // 1/20 of the viewport: the field sits faint and blurred behind the page,
       // so a quarter of the old pixel count looks identical and costs far less.
@@ -128,7 +129,10 @@
     function frame(now) {
       raf = 0;
       if (doc.hidden || !fxOn()) return;   // effects off: the haze holds still
-      if (now - last >= 50 && !veiled()) {   // 20 fps is plenty for a slow, blurred liquid (and none at all while the player covers it)
+      // 20 fps is plenty for a slow, blurred liquid (and none at all while the player covers it). When nothing is
+      // stirring it (no scrolling or pointer for four seconds, no music) it only creeps, and 12 fps shows the same
+      // thing: each repaint of the haze makes the graphics card redo every frosted panel in front of it.
+      if (now - last >= (now > idleUntil && !musicLive ? 83 : 50) && !veiled()) {
         const dt = Math.min(0.1, (now - (last || now)) / 1000);
         last = now;
         const v = Math.min(3, Math.abs(scrollVel));
@@ -140,7 +144,12 @@
         my += (ptr.y / view.vh - my) * 0.05;
         paint();
       }
-      raf = requestAnimationFrame(frame);
+      // Sleep until the next repaint is due, then take one frame. (It used to ask for a frame every 1/60 s and
+      // mostly do nothing in it; each of those still cost the browser a full pass over the page, so a page sitting
+      // idle was producing sixty frames a second to show twelve.)
+      const wait = veiled() ? 250 : (now > idleUntil && !musicLive ? 83 : 50) - (now - last);
+      if (wait > 24) { raf = -1; tmo = setTimeout(() => { raf = requestAnimationFrame(frame); }, wait - 10); }
+      else raf = requestAnimationFrame(frame);
     }
     function wake() {
       if (!fxOn()) return;
@@ -153,7 +162,7 @@
     // It always drifts slowly while effects are on (that's the point); the
     // wake() calls just make sure a sleeping tab picks back up at once.
     if (fxOn()) wake();
-    return { wake, redraw() { if (fxOn()) wake(); else { cancelAnimationFrame(raf); raf = 0; paint(); } }, get idle() { return idleUntil; } };
+    return { wake, redraw() { if (fxOn()) wake(); else { cancelAnimationFrame(raf); clearTimeout(tmo); raf = 0; paint(); } }, get idle() { return idleUntil; } };
   })();
 
   // ── RIPPLE: a refraction ring across the viewport ────────────────
@@ -239,9 +248,20 @@
           const br = band.getBoundingClientRect(), bcs = getComputedStyle(band);
           if (br.width >= W * 0.92 && br.height > 0 && !/rgba\(0, 0, 0, 0\)|transparent/.test(bcs.backgroundColor)) { mark(0, br.top + sy, W, br.top + sy); mark(0, br.bottom + sy, W, br.bottom + sy); }
         }
+        // Once something is marked as a solid box (a card, a button), whatever lies wholly inside it adds nothing to the
+        // map, so it is passed over without asking for its styles or measuring its words: that was most of the work
+        // of mapping the page (cards hold the tracklists). A picture inside a box is still noted, as cover for stars.
+        let boxEl = null, bx0 = 0, by0 = 0, bx1 = 0, by1 = 0;
         for (const e of reg.querySelectorAll('*')) {
           const r = e.getBoundingClientRect();
           if (r.width < 1 || r.height < 1) continue;
+          if (boxEl) {
+            if (!boxEl.contains(e)) boxEl = null;
+            else if (r.left >= bx0 - 2 && r.top >= by0 - 2 && r.right <= bx1 + 2 && r.bottom <= by1 + 2) {
+              if (r.width > 40 && r.height > 40 && /^(IMG|VIDEO|IFRAME)$/.test(e.tagName)) { const c2 = getComputedStyle(e); if (c2.visibility !== 'hidden' && c2.display !== 'none' && +c2.opacity > 0.98) covers.push([r.left, r.top + sy, r.right, r.bottom + sy]); }
+              continue;
+            }
+          }
           const cs = getComputedStyle(e);
           // (Faded-out elements still count: they fade in as you scroll to them.)
           if (cs.visibility === 'hidden' || cs.display === 'none') continue;
@@ -250,7 +270,9 @@
           if (box) {
             soft = /^(IMG|VIDEO|IFRAME)$/.test(e.tagName) && +cs.opacity > 0.98 && r.width > 40 && r.height > 40 ? 1 : 0;
             if (soft) covers.push([r.left, r.top + sy, r.right, r.bottom + sy]);
-            mark(r.left, r.top + sy, r.right, r.bottom + sy); soft = 0; continue;
+            mark(r.left, r.top + sy, r.right, r.bottom + sy); soft = 0;
+            if (!boxEl || !boxEl.contains(e)) { boxEl = e; bx0 = r.left; by0 = r.top; bx1 = r.right; by1 = r.bottom; }
+            continue;
           }
           for (const n of e.childNodes) {
             if (n.nodeType !== 3 || !n.nodeValue.trim()) continue;
@@ -475,7 +497,7 @@
 
     let drawT = 0, boilT = 0;
     function draw(t = performance.now()) {
-      const vh = view.vh, sy = view.sy, moving = fxOn();   // (remembered values: see `view`)
+      const vh = view.vh, sy = view.sy, moving = fxOn(); musicLive = music.on || music.amp > 0;   // (remembered values: see `view`)
       const dt = Math.min(60, Math.max(0, t - drawT)) / 1000; drawT = t;
       const ease = (ms) => 1 - Math.exp(-dt * 1000 / ms);
       music.amp += ((music.on && moving ? 1 : 0) - music.amp) * ease(450); if (music.amp < 0.004) music.amp = 0;
@@ -565,10 +587,11 @@
     function loop(t) {
       raf = 0;
       if (!fxOn()) { draw(t); return; }
-      if (veiled()) { drawT = t; raf = requestAnimationFrame(loop); return; }   // covered by the player: hold still (drawT kept current so nothing jumps on return)
-      if (music.on || music.amp || flock.turn) draw(t);                 // dancing: every frame
-      else if (t - lastT >= 1000 / 8 - 4) { lastT = t; draw(t); }             // at rest: on threes
-      raf = requestAnimationFrame(loop);
+      const nap = (ms) => { raf = -1; setTimeout(() => { raf = requestAnimationFrame(loop); }, ms); };   // sleep, then one frame (see the haze's loop for why)
+      if (veiled()) { drawT = t; nap(200); return; }   // covered by the player: hold still (drawT kept current so nothing jumps on return)
+      if (music.on || music.amp || flock.turn) { draw(t); raf = requestAnimationFrame(loop); return; }   // dancing: every frame
+      if (t - lastT >= 60) { lastT = t; draw(t); }                                                    // at rest: on threes (about 8 a second)
+      nap(108);
     }
     const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
     addEventListener('scroll', kick, { passive: true });
