@@ -794,6 +794,9 @@ function npUpdateMediaSession(track, album, art) {
 function npLoad(track, album, src, autoplay) {
 var label = track;   // (the title alone: the track number is list information, shown in the tracklist)
 _npTrackEl.dataset.label = label;
+// The bar's main button says what it does AND what is playing: its visible words (song, album) are replaced by its
+// aria-label for screen-reader users, who would otherwise find a button called only "Open full-screen player".
+(function() { var b = document.getElementById('np-expand'); if (b) b.setAttribute('aria-label', 'Open full-screen player. Playing: ' + track + (album ? ', from ' + album : '')); })();
 _npAlbumEl.textContent = album || '';
 npMarquee(_npTrackEl);
 if (_srAnnounce) _srAnnounce.textContent = 'Now playing: ' + track + (album ? ' from ' + album : '');
