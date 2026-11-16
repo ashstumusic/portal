@@ -721,9 +721,11 @@
         if (!ok) continue;
         try { an.pause(); stepped.add(an); } catch {}
       }
-      if (stepped.size && !clock) clock = setInterval(tick, 111);
+      if (stepped.size && !clock) beat();
     };
     const stepped = new Set(); let clock = 0;
+    // (On the same 111 ms beat as the haze and the stars in psyche.js, counted from the page's clock, so all three land in one frame.)
+    const beat = () => { const n = performance.now(); clock = setTimeout(() => { clock = 0; tick(); if (stepped.size) beat(); }, Math.max(8, Math.ceil((n + 4) / 111) * 111 - n)); };
     // An animation paused from script is no longer ended by the browser when the stylesheet stops asking for it
     // (Effects switched off, reduced motion chosen). So that is checked here: any stepped animation the styles no
     // longer name is cancelled. Run when the page's classes or the motion setting change, and once a second.
@@ -744,7 +746,6 @@
         if (el.classList.contains('k-rest')) continue;                                              // off screen: resting
         try { an.currentTime = now; } catch {}
       }
-      if (!stepped.size) { clearInterval(clock); clock = 0; }
     };
     // (Effects switched back on, or motion allowed again: the animations are made afresh, so look again.)
     new MutationObserver(() => { setTimeout(prune, 30); setTimeout(scan, 300); }).observe(root, { attributes: true, attributeFilter: ['class'] });

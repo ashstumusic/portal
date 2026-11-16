@@ -49,6 +49,11 @@
   // While the full-screen player (or the video viewer) covers the page, the sky behind it holds still. Both are
   // nearly opaque, blurred sheets: nothing behind them can be made out, yet every change behind them made the
   // graphics card blur the whole screen again on every frame.
+  // One shared beat (every 111 ms, counted from the page's own clock) for everything that only needs to move a few times
+  // a second while the page is still: the haze, the stars' boil, and the stepped animations kinetic.js drives. Each
+  // used to wake the page on its own schedule, some thirty frames a second between them; waking on the same beat they
+  // share one frame, about nine a second.
+  const BEAT = 111, toBeat = () => { const n = performance.now(); return Math.max(8, Math.ceil((n + 4) / BEAT) * BEAT - n); };
   let musicLive = false;   // set by the stars' loop: music playing (or still fading out)
   const fsEl = document.getElementById('fs-player'), lbEl = document.querySelector('.vid-lightbox');
   const veiled = () => !!((fsEl && fsEl.classList.contains('open')) || (lbEl && lbEl.classList.contains('open')));
@@ -132,7 +137,7 @@
       // 20 fps is plenty for a slow, blurred liquid (and none at all while the player covers it). When nothing is
       // stirring it (no scrolling or pointer for four seconds, no music) it only creeps, and 12 fps shows the same
       // thing: each repaint of the haze makes the graphics card redo every frosted panel in front of it.
-      if (now - last >= (now > idleUntil && !musicLive ? 83 : 50) && !veiled()) {
+      if (now - last >= (now > idleUntil && !musicLive ? 90 : 50) && !veiled()) {
         const dt = Math.min(0.1, (now - (last || now)) / 1000);
         last = now;
         const v = Math.min(3, Math.abs(scrollVel));
@@ -147,8 +152,9 @@
       // Sleep until the next repaint is due, then take one frame. (It used to ask for a frame every 1/60 s and
       // mostly do nothing in it; each of those still cost the browser a full pass over the page, so a page sitting
       // idle was producing sixty frames a second to show twelve.)
-      const wait = veiled() ? 250 : (now > idleUntil && !musicLive ? 83 : 50) - (now - last);
-      if (wait > 24) { raf = -1; tmo = setTimeout(() => { raf = requestAnimationFrame(frame); }, wait - 10); }
+      const calm = now > idleUntil && !musicLive;
+      const wait = veiled() ? 250 : calm ? toBeat() + 6 : 50 - (now - last);
+      if (wait > 24 || calm) { raf = -1; tmo = setTimeout(() => { raf = requestAnimationFrame(frame); }, calm ? wait - 6 : wait - 10); }
       else raf = requestAnimationFrame(frame);
     }
     function wake() {
@@ -591,7 +597,7 @@
       if (veiled()) { drawT = t; nap(200); return; }   // covered by the player: hold still (drawT kept current so nothing jumps on return)
       if (music.on || music.amp || flock.turn) { draw(t); raf = requestAnimationFrame(loop); return; }   // dancing: every frame
       if (t - lastT >= 60) { lastT = t; draw(t); }                                                    // at rest: on threes (about 8 a second)
-      nap(108);
+      nap(toBeat());
     }
     const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
     addEventListener('scroll', kick, { passive: true });
