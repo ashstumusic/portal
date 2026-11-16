@@ -3180,6 +3180,30 @@ html { overscroll-behavior-y: none; }
   :root.psy #player-bar :is(#np-shuffle, #np-prev, #np-repeat, .np-vol):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
 }
 
+/* ── The menu panel, tidied ──────────────────────────────────────────────────────────────────────
+   1. No bright outline round the whole panel (it lit up whenever anything inside had focus, i.e. always,
+      and was the loudest thing on screen). Each control inside shows its own focus ring.
+   2. The streaming logos get a label, "Listen on", on the same line: they read as a choice, not decoration.
+   3. On phones Settings is one row that opens (see renderMenu in kinetic.js): a button from the Button
+      system (real <button>, aria-expanded, 44px, gold on hover/focus, 96% press). */
+.k-palette[data-mode="menu"] .k-palette-box:focus-within { outline: none !important; }
+.k-menu .k-menu-listen { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 8px; padding: 8px 0 0 8px; border-top: 1px solid rgb(255 255 255 / .12); }
+.k-menu .k-menu-listen .k-menu-plats:not(#\#):not(#\#) { padding: 0; gap: 8px; justify-content: flex-end; }
+.k-menu .k-menu-label { font: 600 13px/1.3 var(--font-ui); letter-spacing: .06em; text-transform: uppercase; color: rgb(242 244 246 / .7); }
+@media (min-width: 768px) { .k-menu .k-menu-listen { display: none; } }
+.k-menu.searching .k-menu-listen { display: none; }
+.k-menu button.settings-fold:not(#\#):not(#\#) { appearance: none; -webkit-appearance: none; width: 100%; min-height: 44px; margin: 8px 0 0; padding: 0 8px; border: 0; border-top: 1px solid rgb(255 255 255 / .12); border-radius: 0; background: transparent; color: rgb(242 244 246 / .82); cursor: pointer; text-align: left; transition: var(--btn-fade); }
+.k-menu .k-menu-settings[hidden]:not(#\#):not(#\#) { display: none !important; }
+.k-menu button.settings-fold > span { flex: 1; }
+.k-menu button.settings-fold .settings-chev { flex: none; transition: rotate .2s var(--ease-ui); }
+.k-menu button.settings-fold[aria-expanded="true"] .settings-chev { rotate: 180deg; }
+.k-menu button.settings-fold:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#) { background: var(--gold); color: #111; border-radius: var(--btn-r-sm, 10px); border-top-color: transparent; outline: none; }
+.k-menu button.settings-fold:focus-visible:not(#\#):not(#\#):not(#\#) { outline: 3px solid #fff; outline-offset: 2px; }
+.k-menu button.settings-fold:active:where(:root:not(.touch) *) { scale: .96; }
+:root.touch .k-menu button.settings-fold:hover:not(:focus-visible):not(#\#):not(#\#):not(#\#):not(#\#) { background: transparent; color: rgb(242 244 246 / .82); border-top-color: rgb(255 255 255 / .12); border-radius: 0; }
+@media (prefers-reduced-motion: reduce) { .k-menu button.settings-fold, .k-menu button.settings-fold .settings-chev { transition: none; scale: none !important; } }
+@media (forced-colors: active) { .k-menu button.settings-fold { border: 1px solid ButtonText; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

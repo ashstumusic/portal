@@ -364,6 +364,7 @@
   const menuBox = $('.k-menu', dlg);
   const GEAR = '<svg class="k-gear" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   const escHtml = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let setsOpen = false;   // the phone menu's Settings fold (shut each time the menu opens)
   function renderMenu(keep) {
     const links = $$('.nav-links a').filter((a) => a.getAttribute('href'));
     const plats = $$('.nav-platforms a');
@@ -372,8 +373,13 @@
     // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
     h += '<div class="k-si k-si--flow"></div>';
     if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
-    if (plats.length) h += '<div class="k-menu-plats" aria-label="Streaming platforms">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}" title="${escHtml(a.getAttribute('title') || '')}">${a.innerHTML}</a>`).join('') + '</div>';
-    if (sets.length) h += '<p class="settings-title" id="k-menu-settings">' + GEAR + 'Settings</p><div class="k-menu-settings" role="group" aria-labelledby="k-menu-settings">' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
+    if (plats.length) h += '<div class="k-menu-listen"><span class="k-menu-label" id="k-menu-listen">Listen on</span><div class="k-menu-plats" role="group" aria-labelledby="k-menu-listen">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}" title="${escHtml(a.getAttribute('title') || '')}">${a.innerHTML}</a>`).join('') + '</div></div>';
+    // On phones the menu is for going somewhere; the settings wait folded behind one row (wider screens: this panel IS the settings, so they are always open).
+    const fold = links.length && matchMedia('(max-width: 767px)').matches;
+    if (sets.length) h += (fold
+      ? '<button type="button" class="settings-title settings-fold" id="k-menu-settings" aria-expanded="' + (setsOpen ? 'true' : 'false') + '" aria-controls="k-menu-settings-group">' + GEAR + '<span>Settings</span><svg class="settings-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>'
+      : '<p class="settings-title" id="k-menu-settings">' + GEAR + 'Settings</p>')
+      + '<div class="k-menu-settings" id="k-menu-settings-group" role="group" aria-labelledby="k-menu-settings"' + (fold && !setsOpen ? ' hidden' : '') + '>' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
     menuBox.innerHTML = h; menuBox.classList.remove('searching');
     makeSearch($('.k-si', menuBox), { flow: true, onQuery: (has) => menuBox.classList.toggle('searching', has), beforeRun: () => closePalette(false) });
     { const f = $('.k-si-input', menuBox); if (f) f.placeholder = 'Search songs, lyrics'; }   // the field shares its line with Close: a hint short enough to show whole
@@ -387,8 +393,9 @@
     else { list.replaceChildren(); input.removeAttribute('aria-activedescendant'); renderMenu(null); }
   }
   menuBox.addEventListener('click', (e) => {
-    const l = e.target.closest('.k-menu-link'), r = e.target.closest('.settings-row');
+    const l = e.target.closest('.k-menu-link'), r = e.target.closest('.settings-row'), f = e.target.closest('.settings-fold');
     if (e.target.closest('.k-si')) return;
+    if (f) { setsOpen = !setsOpen; f.setAttribute('aria-expanded', String(setsOpen)); const g = $('#k-menu-settings-group', menuBox); if (g) g.hidden = !setsOpen; return; }
     if (l) { const a = $$('.nav-links a').filter((x) => x.getAttribute('href'))[+l.dataset.link]; closePalette(false); a?.click(); }
     else if (r) { const i = +r.dataset.set, it = settingsList()[i]; if (it) { try { it.run(); } catch {} setTimeout(() => { if (dlg.open && dlg.dataset.mode === 'menu') renderMenu(i); }, 60); } }
     else if (e.target.closest('.k-menu-plat')) closePalette(false);
@@ -464,7 +471,7 @@
     input.value = '';
     palette.open = true;
     header?.classList.remove('k-hide');
-    dlg.dataset.mode = '';
+    dlg.dataset.mode = ''; setsOpen = false;
     dlg.showModal();
     setMode(menu ? 'menu' : 'search');
     syncMenuBtns(true);
