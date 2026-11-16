@@ -10,3 +10,6 @@ FIXED: index-src.html (player cover images)
 FIXED: shared/system.css (touch targets)
   — Keyboard and pointer operability: controls must be large enough to press (the site's own rule: 44px on touch)
   — On touch screens the streaming, YouTube and email buttons, the full-screen player's controls, the per-track lyrics buttons, the lyric lines and the skip link grow from 40px to 44px; mouse screens are unchanged
+FIXED: shared/kinetic.js (settings switches in the menu)
+  — Screen reader semantics + pattern documentation: a control's name and its description are separate things
+  — Each switch is now announced as "Effects, switch, on" with its explanation as the description, instead of one run-together name ("Single-key shortcutsG then a letter…"); the switch and fold patterns are documented in the component's comments

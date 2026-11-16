@@ -388,11 +388,18 @@
     // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
     h += '<div class="k-si k-si--flow"></div>';
     // On phones the menu is for going somewhere; the settings wait folded behind one row (wider screens: this panel IS the settings, so they are always open).
+    // PATTERN (settings switches): each row is a real <button role="switch"> with aria-checked. Its NAME is the setting's
+    // label alone and its DESCRIPTION the line under it (aria-labelledby / aria-describedby): a screen reader says
+    // "Effects, switch, on. Haze, stars, tag flare, confetti and fireworks", not the two run together as one word.
+    // Keyboard: Tab to a row, Enter or Space flips it, focus stays on the row. The "On"/"Off" text is for sighted
+    // users (state is never shown by colour alone) and hidden from screen readers, who get it from aria-checked.
+    // PATTERN (Settings fold, phones): a <button aria-expanded aria-controls>; Enter or Space opens and closes it;
+    // the group it opens is hidden with the `hidden` attribute, so it is out of the tab order while shut.
     const fold = links.length && matchMedia('(max-width: 767px)').matches;
     if (sets.length) h += (fold
       ? '<button type="button" class="settings-title settings-fold" id="k-menu-settings" aria-expanded="' + (setsOpen ? 'true' : 'false') + '" aria-controls="k-menu-settings-group">' + GEAR + '<span>Settings</span><svg class="settings-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>'
       : '<p class="settings-title" id="k-menu-settings">' + GEAR + 'Settings</p>')
-      + '<div class="k-menu-settings" id="k-menu-settings-group" role="group" aria-labelledby="k-menu-settings"' + (fold && !setsOpen ? ' hidden' : '') + '>' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}"><span class="settings-text"><span class="settings-label">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
+      + '<div class="k-menu-settings" id="k-menu-settings-group" role="group" aria-labelledby="k-menu-settings"' + (fold && !setsOpen ? ' hidden' : '') + '>' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}" aria-labelledby="k-set-l${i}"${it.sub ? ` aria-describedby="k-set-d${i}"` : ''}><span class="settings-text"><span class="settings-label" id="k-set-l${i}">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub" id="k-set-d${i}">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
     menuBox.innerHTML = h; menuBox.classList.remove('searching');
     makeSearch($('.k-si', menuBox), { flow: true, onQuery: (has) => menuBox.classList.toggle('searching', has), beforeRun: () => closePalette(false) });
     { const f = $('.k-si-input', menuBox); if (f) f.placeholder = 'Search songs, lyrics'; }   // the field shares its line with Close: a hint short enough to show whole
