@@ -706,8 +706,8 @@ const _npPlayBtn = document.getElementById('np-play');
 const _npTrackEl = document.getElementById('np-track');
 const _npAlbumEl = document.getElementById('np-album');
 const _srAnnounce = document.getElementById('sr-announce');
-function npShow() { npBar.classList.add('show'); document.body.classList.add('player-active'); if(_fabMusic) _fabMusic.classList.add('hidden'); }
-function npHide() { npBar.classList.remove('show'); document.body.classList.remove('player-active'); if(_fabMusic) _fabMusic.classList.remove('hidden'); }
+function npShow() { npBar.classList.add('show'); document.body.classList.add('player-active'); document.documentElement.classList.add('player-on');   /* (player-on: keeps keyboard focus clear of the bar; see system.css) */ if(_fabMusic) _fabMusic.classList.add('hidden'); }
+function npHide() { npBar.classList.remove('show'); document.body.classList.remove('player-active'); document.documentElement.classList.remove('player-on'); if(_fabMusic) _fabMusic.classList.remove('hidden'); }
 function npSetPlaying(p) {
 _npIcon.innerHTML = p ? PAUSE : PLAY;
 _npPlayBtn.setAttribute('aria-label', p ? 'Pause' : 'Play');

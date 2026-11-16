@@ -49,3 +49,6 @@ FIXED: index-src.html, shared/system.css (song pages)
 FIXED: index-src.html, build-fast.py (press-kit download)
   — Meaningful contextual text: say what a download is and how big, before it starts
   — "Download Press Kit" is now announced (and shown on hover) as "Download Press Kit (ZIP file, 33 MB)"; the size is measured at build time so it stays correct
+FIXED: index-src.html, shared/system.css (focus hidden behind the player bar)
+  — Keyboard operability: the focused control must be visible (WCAG 2.4.11 Focus Not Obscured)
+  — Tabbing down the page with the player open put track and card buttons underneath the fixed player bar; the page now keeps that strip clear when scrolling a focused control into view (88px, 128px on phones)

@@ -3303,6 +3303,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root .party-eq i:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { forced-color-adjust: none; background: CanvasText !important; }
 }
 
+/* Accessibility (focus not hidden). The player bar is fixed over the bottom of the screen. Tabbing down the page, the
+   browser scrolled each newly focused button only just into view, which put it under the bar: focus was on screen
+   but could not be seen. While the bar is up, the page keeps that strip clear when it scrolls something into view. */
+:root.player-on { scroll-padding-bottom: 88px; }
+@media (max-width: 600px) { :root.player-on { scroll-padding-bottom: 128px; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
