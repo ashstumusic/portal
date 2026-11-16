@@ -182,12 +182,6 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
    caused layout shift (CLS 0.058 on Night Radio). */
 @keyframes k-arrive { from { translate: 0 .6rem; } to { translate: 0 0; } }
 
-/* ── GRAIN (banding mitigation) ─────────────────────────────────────── */
-.k-grain {
-  position: fixed; inset: 0; z-index: 8000; pointer-events: none; opacity: .035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 /* ── OKLCH GRADIENTS (no muddy midpoint) ─────────────────────────────── */
 @supports (background: linear-gradient(in oklch, red, blue)) {
   .seek-fill, #np-fill, .fs-fill { background: linear-gradient(90deg in oklch, var(--k-accent), var(--k-glow)); }
@@ -338,7 +332,7 @@ img.k-blurup { background-size: cover; background-position: center; }
   ::view-transition-new(root) { animation: none !important; }
 }
 @media (forced-colors: active) {
-  .k-spot::after, .k-grain { display: none; }
+  .k-spot::after { display: none; }
   .k-opt[aria-selected="true"] { outline: 2px solid Highlight; }
 }
 

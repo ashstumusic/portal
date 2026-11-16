@@ -170,11 +170,6 @@
     if (moving) kick();
   }
 
-  // ── GRAIN (static banding mitigation) ────────────────────────────
-  const grain = doc.createElement('div');
-  grain.className = 'k-grain';
-  grain.setAttribute('aria-hidden', 'true');
-  doc.body.append(grain);
 
   // ── PREFETCH ON INTENT ───────────────────────────────────────────
   // Speculation Rules where supported (browser prefetches same-origin
