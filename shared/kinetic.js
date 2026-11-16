@@ -753,6 +753,26 @@
     let st = 0; addEventListener('scroll', () => { clearTimeout(st); st = setTimeout(scan, 500); }, { passive: true });   // animations that start later (on reveal) are picked up once scrolling settles
   }
 
+  // ── Links that open a new tab say so ──
+  // PATTERN: every link with target="_blank" (the streaming and YouTube buttons) has "(opens in a new tab)" added to
+  // its spoken name, so a screen-reader user is not moved to another site and tab without warning. The words are
+  // added to the aria-label where there is one (after the existing words, so the visible label still comes first),
+  // otherwise as visually hidden text inside the link. Cards are drawn by script after load, so this is re-run
+  // (cheaply, at most twice a second) whenever links are added.
+  {
+    const NOTE = ' (opens in a new tab)';
+    const mark = () => {
+      for (const a of doc.querySelectorAll('a[target="_blank"]:not([data-newtab])')) {
+        a.dataset.newtab = '1';
+        const l = a.getAttribute('aria-label');
+        if (l != null) { if (!/new tab/i.test(l)) a.setAttribute('aria-label', l + NOTE); }
+        else if (!/new tab/i.test(a.textContent)) { const sp = doc.createElement('span'); sp.className = 'sr-only'; sp.textContent = NOTE; a.append(sp); }
+      }
+    };
+    let mt = 0; mark();
+    new MutationObserver(() => { if (!mt) mt = setTimeout(() => { mt = 0; mark(); }, 500); }).observe(doc.body, { childList: true, subtree: true });
+  }
+
   window.kinetic = { announce, swapLabel, openPalette, settings: settingsList };
   }
 })();

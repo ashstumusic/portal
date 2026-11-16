@@ -28,3 +28,6 @@ FIXED: index-src.html (play button over each album cover)
 FIXED: index-src.html, scripts/prerender.py (tracklist buttons)
   — Meaningful contextual text: names must make sense out of context and include the visible label
   — The three "10 tracks" / "9 tracks" / "16 tracks" buttons are now announced with their album ("10 tracks on My Anima"), in both the pre-built page and the live-rendered cards
+FIXED: shared/kinetic.js (links that open a new tab)
+  — Meaningful contextual text: warn before a change of context
+  — All 19 streaming and YouTube links (toolbar, cards, menu, both players, video viewer) now say "(opens in a new tab)" in their spoken name; the pattern is documented in the code and applies to links added later
