@@ -27,7 +27,7 @@ FONT_FILES = [
     "Fonts/bricolage/BricolageGrotesque-VF.ttf", # UI (OFL, see Fonts/bricolage/OFL.txt)
     "Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf",  # body text and lyrics (OFL, see Fonts/redditsanscondensed/OFL.txt)
     "Fonts/nationalpark/NationalPark-VF.ttf",  # category labels such as "ALBUM" (OFL, see Fonts/nationalpark/OFL.txt)
-    "Fonts/zenantiquesoft/ZenAntiqueSoft-Regular.ttf",  # release titles (OFL, see Fonts/zenantiquesoft/OFL.txt)
+    "Fonts/battambang/Battambang-Bold.ttf",  # release titles (OFL, see Fonts/battambang/OFL.txt)
     "Fonts/cabinsketch/CabinSketch-Bold.ttf",  # section headers (OFL, see Fonts/cabinsketch/OFL.txt)
     "Fonts/vastshadow/VastShadow-Regular.ttf",        # the name under the quote (OFL, see Fonts/vastshadow/OFL.txt)
 ]

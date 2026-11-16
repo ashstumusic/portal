@@ -3111,10 +3111,10 @@ html { overscroll-behavior-y: none; }
 @font-face { font-family: 'Category'; src: url('Fonts/nationalpark/NationalPark-VF.ttf') format('truetype'); font-weight: 200 800; font-style: normal; font-display: swap; }
 :root.psy :is(.rel-cat, .featured-kicker):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; }
 
-/* ── Release titles (the name of each release on its cover, and of the featured release) in Zen Antique Soft
+/* ── Release titles (the name of each release on its cover, and of the featured release) in Battambang (bold)
    (owner's choice; served from this site, Latin letters only). Video titles keep their own font. */
-@font-face { font-family: 'ReleaseTitle'; src: url('Fonts/zenantiquesoft/ZenAntiqueSoft-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
-:root.psy :is(.rel-name, .featured-title):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'ReleaseTitle', 'Headline', Georgia, serif !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important; }
+@font-face { font-family: 'ReleaseTitle'; src: url('Fonts/battambang/Battambang-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+:root.psy :is(.rel-name, .featured-title):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'ReleaseTitle', 'Headline', Georgia, serif !important; font-weight: 700 !important; font-synthesis: none; letter-spacing: 0 !important; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
