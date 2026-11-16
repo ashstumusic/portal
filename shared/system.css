@@ -2038,11 +2038,11 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 1023px) { :root.psy .bio-head { padding: 20px 20px 10px; } :root.psy .bio-rest { padding: 10px 20px 20px; } }
 @media (max-width: 767px) { :root.psy .bio-head { padding: 18px 18px 8px; } :root.psy .bio-rest { padding: 8px 18px 18px; } }
 
-/* Body text is set in Reddit Sans Condensed: the sentences people read (the About
+/* Body text is set in Bpmf Iansui (owner's choice): the sentences people read (the About
    description, the Press Kit and Contact lines). Only the regular weight is
    shipped. (Lyrics have their own face, below.)
    Buttons, labels and titles keep their own faces. */
-@font-face { font-family: 'BodyText'; src: url('Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'BodyText'; src: url('Fonts/bpmfiansui/BpmfIansui-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 /* Lyrics (album cards, the full-screen player, lyrics pages) use the same face, Reddit Sans Condensed: it is narrow,
    so long lyric lines fit their card at a larger size. */
 @font-face { font-family: 'LyricsText'; src: url('Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
@@ -3110,11 +3110,33 @@ html { overscroll-behavior-y: none; }
    (owner's choice; served from this site). */
 @font-face { font-family: 'Category'; src: url('Fonts/nationalpark/NationalPark-VF.ttf') format('truetype'); font-weight: 200 800; font-style: normal; font-display: swap; }
 :root.psy :is(.rel-cat, .featured-kicker):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; }
+/* a bit bigger than the 12px they had (the featured release's label: 14px to 16px) */
+:root.psy .rel-cat:not(#\#):not(#\#):not(#\#) { font-size: 14px !important; }
+:root.psy .featured-kicker:not(#\#):not(#\#):not(#\#) { font-size: 16px !important; }
+@media (max-width: 767px) { :root.psy .featured-kicker:not(#\#):not(#\#):not(#\#) { font-size: 15px !important; } }
 
 /* ── Release titles (the name of each release on its cover, and of the featured release) in Battambang (bold)
    (owner's choice; served from this site, Latin letters only). Video titles keep their own font. */
 @font-face { font-family: 'ReleaseTitle'; src: url('Fonts/battambang/Battambang-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
 :root.psy :is(.rel-name, .featured-title):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'ReleaseTitle', 'Headline', Georgia, serif !important; font-weight: 700 !important; font-synthesis: none; letter-spacing: 0 !important; }
+
+/* ── Film grain over the whole page (owner's choice): the fine grey speckle of old film, faint enough that text and
+   photos read exactly as before. It uses the existing grain layer (.k-grain, from shared/kinetic), made a little
+   stronger and set flickering: the sheet is larger than the screen and jumps to a new spot about twelve times a
+   second (a transform only, so nothing on the page is redrawn). With Effects off or reduced motion it holds
+   still. Clicks pass straight through it; it is hidden in forced-colours mode. */
+:root.psy .k-grain:not(#\#) {
+  inset: -220px !important; opacity: .1 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .78  0 0 0 0 .78  0 0 0 0 .78  1.9 0 0 0 -.6'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E") !important;
+  background-size: 220px 220px; will-change: transform;
+  animation: film-grain .7s steps(1) infinite;
+}
+@keyframes film-grain {
+  0% { transform: translate(0, 0); } 12% { transform: translate(-67px, 41px); } 25% { transform: translate(93px, -118px); } 37% { transform: translate(-151px, -29px); }
+  50% { transform: translate(38px, 127px); } 62% { transform: translate(-104px, 86px); } 75% { transform: translate(139px, 17px); } 87% { transform: translate(-22px, -143px); }
+}
+:root.psy.psy-calm .k-grain:not(#\#) { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root.psy .k-grain:not(#\#) { animation: none; } }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

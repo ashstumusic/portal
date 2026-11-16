@@ -28,6 +28,7 @@ FONT_FILES = [
     "Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf",  # body text and lyrics (OFL, see Fonts/redditsanscondensed/OFL.txt)
     "Fonts/nationalpark/NationalPark-VF.ttf",  # category labels such as "ALBUM" (OFL, see Fonts/nationalpark/OFL.txt)
     "Fonts/battambang/Battambang-Bold.ttf",  # release titles (OFL, see Fonts/battambang/OFL.txt)
+    "Fonts/bpmfiansui/BpmfIansui-Regular.ttf",  # body text (OFL, see Fonts/bpmfiansui/OFL.txt); only its Latin letters are shipped
     "Fonts/cabinsketch/CabinSketch-Bold.ttf",  # section headers (OFL, see Fonts/cabinsketch/OFL.txt)
     "Fonts/vastshadow/VastShadow-Regular.ttf",        # the name under the quote (OFL, see Fonts/vastshadow/OFL.txt)
 ]
