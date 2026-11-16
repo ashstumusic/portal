@@ -3129,6 +3129,15 @@ html { overscroll-behavior-y: none; }
 /* Vast Shadow's inner shadow line closes up at 12px: the quote's name is set a step larger so it reads. */
 :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { font-size: 14px !important; letter-spacing: .08em !important; }
 
+/* iPad: the current section's label went missing for a moment each time the highlight slid to it.
+   Safari was drawing the sliding highlight (which moves on its own layer) over the label until the
+   slide ended. Each label now has its own layer above the highlight, so the order holds while it
+   moves; and on touch screens the label's colour changes at once instead of fading. */
+:root .nav .nav-links a:not(#\#) { will-change: transform; -webkit-transform: translateZ(0); z-index: 2 !important; }
+:root .nav .nav-links a:active:not(#\#) { -webkit-transform: none; }
+:root .nav .nav-links .nav-glider:not(#\#) { will-change: translate, width; z-index: 0 !important; }
+@media (hover: none) { :root .nav .nav-links a:not(#\#):not(#\#):not(#\#) { transition-property: transform !important; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

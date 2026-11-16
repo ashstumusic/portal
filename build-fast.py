@@ -205,14 +205,35 @@ def minify_js_body(body):
         lines.append(t)
     return "\n".join(lines)
 
-_m = re.search(r"<script>(.*?)</script>", html, flags=re.S)
-if _m:
-    js_min = minify_js_body(_m.group(1))
+# The main script is the LARGEST plain inline <script> (not the first one: the first is a few
+# lines that must run before the first paint, and taking it by mistake left ~125KB of script
+# inside the page, where it delayed the first paint and was downloaded again on every visit).
+# The small inline scripts that follow it rely on what it sets up, so they go into the same
+# file, in the same order, each in its own try block so one failing cannot stop the rest.
+_plain = list(re.finditer(r"<script>(.*?)</script>", html, flags=re.S))
+if _plain:
+    _m = max(_plain, key=lambda m: len(m.group(1)))
+    _tail = [m for m in _plain if m.start() > _m.start()]
+    _end = _m.end()
+    for m in _tail:
+        assert not html[_end:m.start()].strip(), "markup between the main script and a later inline script"
+        _end = m.end()
+    js_src = _m.group(1) + "".join(
+        "\n;try{\n" + m.group(1) + "\n}catch(e){setTimeout(function(){throw e})}" for m in _tail)
+    _esb0 = os.path.join(ROOT, "node_modules", ".bin", "esbuild")
+    if os.path.exists(_esb0):
+        import subprocess as _sp0
+        js_min = _sp0.run([_esb0, "--minify", "--target=es2020", "--legal-comments=none"], input=js_src,
+                          capture_output=True, text=True, check=True).stdout
+    else:
+        js_min = minify_js_body(js_src)
     js_hash = __import__('hashlib').sha256(js_min.encode()).hexdigest()[:8]
     js_out = f"main.{js_hash}.js"
+    for _old in __import__('glob').glob("main.*.js"):
+        if _old != js_out: os.remove(_old)
     with open(js_out, "w") as fh:
         fh.write(js_min)
-    html = html.replace(_m.group(0), f'<script src="{js_out}" defer></script>')
+    html = html[:_m.start()] + f'<script src="{js_out}" defer></script>' + html[_end:]
     print(f"Wrote {js_out}: {len(js_min)//1024}KB")
 
 # Shared interaction script (shared/kinetic.js), minified by esbuild into a

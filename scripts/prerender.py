@@ -267,7 +267,8 @@ def main():
                           'lyrics': {'@type': 'CreativeWork', 'inLanguage': 'en', 'text': text}})
     if comps:
         ld = json.dumps({'@context': 'https://schema.org', '@graph': comps}, ensure_ascii=False).replace('</', '<\\/')
-        page = page.replace('</head>', f'<script type="application/ld+json" id="lyrics-ld">{ld}</script>\n</head>', 1)
+        # (at the end of the page, not in the head: 48KB there held back the stylesheet and the first paint)
+        page = page.replace('</body>', f'<script type="application/ld+json" id="lyrics-ld">{ld}</script>\n</body>', 1)
     page = inject_container(page, 'video-grid', 'video-grid', videos_html)
     page = inject_featured(page, next((r for r in releases if r.get('featured')), releases[0] if releases else None))
 
@@ -289,8 +290,11 @@ def main():
     # It used to go before the last <script> on the page, which stopped being the main one once later scripts were
     # added: the page then never found its own data, always waited on the three .json requests, and lost its
     # releases if one of them failed.
-    reader = page.index("readEmbedded('data-all')")
-    idx = page.rindex('<script', 0, reader)
+    # (The main script is now its own deferred file, main.<hash>.js: the data goes just before its tag.)
+    if "readEmbedded('data-all')" in page:
+        idx = page.rindex('<script', 0, page.index("readEmbedded('data-all')"))
+    else:
+        idx = page.index('<script src="main.')
     page = page[:idx] + blocks + page[idx:]
 
     with open('index.html', 'w', encoding='utf-8') as f:
