@@ -64,7 +64,15 @@ for f in FONT_FILES:
         _src = open("index-src.html", encoding="utf-8").read()
         _heads = re.findall(r'<h[1-6][^>]*class="[^"]*\bsection-h\b[^"]*"[^>]*>(.*?)</h[1-6]>', _src, flags=re.S)
         exact = "".join(re.sub(r"<[^>]+>", "", h) for h in _heads) + " "
+        exact += exact.upper() + exact.lower()   # (both cases, in case the headers are ever set in capitals)
         assert len(_heads) >= 3, "no section headers found for the Cabin Sketch subset"
+    # Vast Shadow sets one thing: the name under the quote ("Woody Guthrie"). Same treatment, read from the page.
+    if f.endswith("VastShadow-Regular.ttf"):
+        _src = open("index-src.html", encoding="utf-8").read()
+        _cites = re.findall(r'<blockquote class="disc-quote">.*?<cite>(.*?)</cite>', _src, flags=re.S)
+        assert _cites, "no quote name found for the Vast Shadow subset"
+        exact = "".join(re.sub(r"<[^>]+>", "", c) for c in _cites) + " "
+        exact += exact.upper() + exact.lower()   # (it is shown in capitals by the stylesheet: both cases, so a style change cannot strand letters)
     if exact is not None:
         codes = sorted(set(ord(c) for c in exact))
     else:
