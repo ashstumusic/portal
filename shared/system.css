@@ -3325,6 +3325,25 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 }
 @media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#) { animation: none; filter: none; } }
 
+/* ── PRINT ────────────────────────────────────────────────────────────────────────────────────────
+   People print lyrics. A song's page used to print as seven dark screens of the whole site with the toolbar and the
+   player bar across them. On paper nothing that floats or moves is shown, and a song's page prints as the song alone:
+   its title, its credit, its words and its short address, black on white. (The page keeps the words in its own HTML
+   under the title; on screen that copy is tucked out of sight while the interactive one is open, and it comes back
+   here.) Other pages simply lose the floating bars. */
+@media print {
+  :root .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root #player-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .fs-player:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .vid-lightbox:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .cut-stars:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root canvas:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .k-palette:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .skip:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root:has(.song-page), :root:has(.song-page) body:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:has(.song-page) main:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:has(.song-page) #music:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #fff !important; background-image: none !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; }
+  :root:has(.song-page) main > section:not(#music):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:has(.song-page) #music > :not(.song-page):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:has(.song-page) .song-page-nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root .song-page:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .song-page *:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #000 !important; -webkit-text-fill-color: #000 !important; background: none !important; text-shadow: none !important; filter: none !important; animation: none !important; opacity: 1 !important; }
+  :root .song-page:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: block !important; max-width: 34rem !important; margin: 0 auto !important; padding: 0 !important; }
+  :root .song-page .song-page-lyrics:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: block !important; position: static !important; width: auto !important; height: auto !important; margin: 24px 0 !important; overflow: visible !important; clip: auto !important; clip-path: none !important; white-space: normal !important; }
+  :root .song-page .song-page-lyrics p:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 12pt !important; line-height: 1.5 !important; }
+  :root .song-page .song-page-foot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: block !important; }
+  :root .song-page a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { text-decoration: none !important; }
+  @page { margin: 18mm; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
