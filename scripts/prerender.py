@@ -294,7 +294,9 @@ def main():
     if "readEmbedded('data-all')" in page:
         idx = page.rindex('<script', 0, page.index("readEmbedded('data-all')"))
     else:
-        idx = page.index('<script src="main.')
+        # (the scripts are started by a small loader after the first paint: the data goes just before it)
+        _ld = '<script>(function(s){var d=document,done=0'
+        idx = page.index(_ld) if _ld in page else page.index('<script src="main.')
     page = page[:idx] + blocks + page[idx:]
 
     with open('index.html', 'w', encoding='utf-8') as f:

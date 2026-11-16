@@ -587,7 +587,8 @@ window.addEventListener('resize', function() { clearTimeout(_resizeTimer); _resi
 // are filled in after load, images arrive, a tracklist or lyrics open): re-measure then too, so the highlighted link
 // never lags behind where the sections really are.
 if ('ResizeObserver' in window) new ResizeObserver(function() { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(function() { cacheOffsets(); updateNav(); }, 150); }).observe(document.body);
-window.addEventListener('load', function() { cacheOffsets(); updateNav(); });
+/* (this script now starts after the first paint, which can be after the page's load event: run at once if so) */
+(function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { cacheOffsets(); updateNav(); });
 let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false, _lastAboutIn = -1;
 const aboutName = document.querySelector('.bio-wall--top') || document.querySelector('.bio-name');
 function updateNav() {
@@ -1850,7 +1851,7 @@ if (!upcoming && (_src !== key || !npBar.classList.contains('show'))) playTrack(
 var land = function() { var top = wrap.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' }); };
 setTimeout(land, 450); setTimeout(land, 1100);
 }
-window.addEventListener('load', function() { setTimeout(openDeepSong, 300); });
+(function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepSong, 300); });
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';

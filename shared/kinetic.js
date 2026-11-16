@@ -370,11 +370,12 @@
     const plats = $$('.nav-platforms a');
     const sets = typeof settingsList === 'function' ? settingsList() : [];
     let h = '<p class="k-menu-title">Menu</p>';
-    // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
-    h += '<div class="k-si k-si--flow"></div>';
     // "Listen on" is the first section, directly under the Search / Close row (the owner's order)
     if (plats.length) h += '<div class="k-menu-listen"><span class="k-menu-label" id="k-menu-listen">Listen on</span><div class="k-menu-plats" role="group" aria-labelledby="k-menu-listen">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}" title="${escHtml(a.getAttribute('title') || '')}">${a.innerHTML}</a>`).join('') + '</div></div>';
     if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
+    // (the owner's order: Listen on, the sections, then Search; the top row is the menu's name with Close)
+    // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
+    h += '<div class="k-si k-si--flow"></div>';
     // On phones the menu is for going somewhere; the settings wait folded behind one row (wider screens: this panel IS the settings, so they are always open).
     const fold = links.length && matchMedia('(max-width: 767px)').matches;
     if (sets.length) h += (fold

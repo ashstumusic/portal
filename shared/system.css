@@ -3204,6 +3204,15 @@ html { overscroll-behavior-y: none; }
 @media (prefers-reduced-motion: reduce) { .k-menu button.settings-fold, .k-menu button.settings-fold .settings-chev { transition: none; scale: none !important; } }
 @media (forced-colors: active) { .k-menu button.settings-fold { border: 1px solid ButtonText; } }
 
+/* Phone menu order (the owner's): top row "Menu" with Close at its right; Listen on; the section buttons; Search;
+   Settings. Search no longer shares a row with Close, so its field runs the full width. */
+@media (max-width: 767px) {
+  .k-palette[data-mode="menu"] .k-menu .k-menu-title:not(#\#):not(#\#) { display: flex !important; min-height: 44px; margin: 0 88px 4px 8px; }
+  .k-palette[data-mode="menu"] .k-menu .k-si--flow:not(#\#):not(#\#) { margin: 8px 0 4px; }
+  .k-palette[data-mode="menu"] .k-menu .k-si--flow .k-si-input:not(#\#):not(#\#):not(#\#) { width: 100%; }
+  .k-menu .k-menu-listen:not(#\#) { margin-top: 0; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
