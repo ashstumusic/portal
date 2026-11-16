@@ -205,11 +205,16 @@
       layer.style.height = '0px';   // don't let the layer's own height count as page (it would only ever grow)
       const W = doc.documentElement.clientWidth, H = doc.documentElement.scrollHeight, sy = scrollY;
       const cols = Math.ceil(W / G), rows = Math.ceil(H / G), occ = new Uint8Array(cols * rows);
+      // A second map for the turning sky. Solid pictures are left off it: the stars are drawn behind the
+      // page, so one that drifts under a picture is simply covered by it and need not fade out first.
+      const hard = new Uint8Array(cols * rows), covers = [], boxes = [], texts = [];
       const mark = (x0, y0, x1, y1, m = M) => {
         const c0 = Math.max(0, Math.floor((x0 - m) / G)), c1 = Math.min(cols - 1, Math.floor((x1 + m) / G));
         const r0 = Math.max(0, Math.floor((y0 - m) / G)), r1 = Math.min(rows - 1, Math.floor((y1 + m) / G));
         for (let r = r0; r <= r1; r++) occ.fill(1, r * cols + c0, r * cols + c1 + 1);
+        if (soft !== 1) (soft ? texts : boxes).push([x0, y0, x1, y1, Math.min(m, 5)]);   // (the turning sky may come closer to things than a resting star is ever placed)
       };
+      let soft = 0;   // what is being marked: 0 a box, 1 a solid picture, 2 words
       const hero = $('.hero-split');
       if (hero) mark(0, 0, W, hero.getBoundingClientRect().bottom + sy, 0);   // the hero (and above) is off limits
       const rg = doc.createRange();
@@ -230,17 +235,32 @@
           if (cs.visibility === 'hidden' || cs.display === 'none') continue;
           const box = /^(IMG|VIDEO|CANVAS|IFRAME|INPUT|BUTTON|TEXTAREA|SELECT|svg)$/.test(e.tagName)
             || (r.width < W * 0.92 && (!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor) || cs.backgroundImage !== 'none' || parseFloat(cs.borderTopWidth) > 0 || cs.boxShadow !== 'none'));
-          if (box) { mark(r.left, r.top + sy, r.right, r.bottom + sy); continue; }
+          if (box) {
+            soft = /^(IMG|VIDEO|IFRAME)$/.test(e.tagName) && +cs.opacity > 0.98 && r.width > 40 && r.height > 40 ? 1 : 0;
+            if (soft) covers.push([r.left, r.top + sy, r.right, r.bottom + sy]);
+            mark(r.left, r.top + sy, r.right, r.bottom + sy); soft = 0; continue;
+          }
           for (const n of e.childNodes) {
             if (n.nodeType !== 3 || !n.nodeValue.trim()) continue;
             rg.selectNodeContents(n);
-            for (const q of rg.getClientRects()) if (q.width) mark(q.left, q.top + sy, q.right, q.bottom + sy);
+            soft = 2; for (const q of rg.getClientRects()) if (q.width) mark(q.left, q.top + sy, q.right, q.bottom + sy); soft = 0;
           }
         }
       }
       mark(0, 0, 4, H, 0); mark(W - 4, 0, W, H, 0);   // keep off the very edges
-      const sat = new Int32Array((cols + 1) * (rows + 1));
-      for (let r = 0; r < rows; r++) { let run = 0; for (let c = 0; c < cols; c++) { run += occ[r * cols + c]; sat[(r + 1) * (cols + 1) + c + 1] = sat[r * (cols + 1) + c + 1] + run; } }
+      // The turning sky's map. Boxes first; then a picture clears itself and the rim round it (the edge of the card
+      // it sits in), so a star can slide under it from open space; then words; and last, whatever lies wholly
+      // under a picture (a title printed over it) is cleared again, since the picture covers the star anyway.
+      const put = (v, x0, y0, x1, y1, n) => {
+        const c0 = Math.max(0, Math.floor((x0 - n) / G)), c1 = Math.min(cols - 1, Math.floor((x1 + n) / G)), r0 = Math.max(0, Math.floor((y0 - n) / G)), r1 = Math.min(rows - 1, Math.floor((y1 + n) / G));
+        for (let r = r0; r <= r1; r++) if (c1 >= c0) hard.fill(v, r * cols + c0, r * cols + c1 + 1);
+      };
+      for (const [x0, y0, x1, y1, n] of boxes) put(1, x0, y0, x1, y1, n);
+      for (const [x0, y0, x1, y1] of covers) put(0, x0, y0, x1, y1, 8);
+      for (const [x0, y0, x1, y1, n] of texts) put(1, x0, y0, x1, y1, n);
+      for (const [x0, y0, x1, y1] of covers) put(0, x0 + G, y0 + G, x1 - G - 1, y1 - G - 1, 0);
+      const sum = (g) => { const t = new Int32Array((cols + 1) * (rows + 1)); for (let r = 0; r < rows; r++) { let run = 0; for (let c = 0; c < cols; c++) { run += g[r * cols + c]; t[(r + 1) * (cols + 1) + c + 1] = t[r * (cols + 1) + c + 1] + run; } } return t; };
+      const sat = sum(occ), sat2 = sum(hard);
       const above = new Int32Array(cols * rows).fill(-1);   // row index of the nearest content cell above
       for (let c = 0; c < cols; c++) { let last = -1; for (let r = 0; r < rows; r++) { if (occ[r * cols + c]) last = r; else above[r * cols + c] = last; } }
       const free = (x0, y0, x1, y1) => {
@@ -248,9 +268,15 @@
         if (c0 < 0 || r0 < 0 || c1 > cols || r1 > rows) return false;
         return sat[r1 * (cols + 1) + c1] - sat[r0 * (cols + 1) + c1] - sat[r1 * (cols + 1) + c0] + sat[r0 * (cols + 1) + c0] === 0;
       };
+      // pass: may a star be there while the sky turns (open space, or behind a picture)?
+      const pass = (x0, y0, x1, y1) => {
+        const c0 = Math.floor(x0 / G), c1 = Math.ceil(x1 / G), r0 = Math.floor(y0 / G), r1 = Math.ceil(y1 / G);
+        if (c0 < 0 || r0 < 0 || c1 > cols || r1 > rows) return false;
+        return sat2[r1 * (cols + 1) + c1] - sat2[r0 * (cols + 1) + c1] - sat2[r1 * (cols + 1) + c0] + sat2[r0 * (cols + 1) + c0] === 0;
+      };
       const ceiling = (x, y) => { const c = Math.floor(x / G), r = Math.floor(y / G); if (c < 0 || c >= cols || r < 0 || r >= rows) return null; const a = above[r * cols + c]; return a < 0 ? null : (a + 1) * G - M + 2; };
       const top = hero ? hero.getBoundingClientRect().bottom + sy : 0;
-      return { W, H, top, free, ceiling };
+      return { W, H, top, free, pass, ceiling };
     }
 
     let rt = 0;   // pending repair timer
@@ -476,8 +502,10 @@
           const ax = mx + dx * cs2 - dy * sn2, ay = my + dx * sn2 + dy * cs2;
           const hid = o.el.style.opacity === '0', onScreen = px > -40 && px < W + 40 && py > -40 && py < vh + 40;
           // (no map for a moment while the page is re-measured: stay as it is)
-          show = !flock.map ? !hid : onScreen && flock.map.free(px - h, py + sy - h, px + h, py + sy + h) && flock.map.free(ax - h, ay + sy - h, ax + h, ay + sy + h);
-          if (show && !hid) { seen++; vis.push(o); }
+          show = !flock.map ? !hid : onScreen && flock.map.pass(px - h, py + sy - h, px + h, py + sy + h) && flock.map.pass(ax - h, ay + sy - h, ax + h, ay + sy + h);
+          // (one behind a picture is out, but nobody sees it: it hardly counts)
+          const w = show && flock.map && !flock.map.free(px - h, py + sy - h, px + h, py + sy + h) ? 0.15 : 1;
+          if (show && !hid) { seen += w; vis.push(o); }
           // A hidden star only comes out when a long clear run lies ahead of it (about three seconds of
           // turning), so none blinks on and off again through a small gap in the page. Looked up now and then.
           // And only while fewer are in view than when the sky is still, so it is never busier than at rest.
@@ -488,9 +516,9 @@
               const r = Math.hypot(dx, dy), n = Math.max(3, Math.min(24, Math.ceil(r * RUN / (h * 1.5))));
               for (let i = 1; i <= n && show; i++) {
                 const a = turn + RUN * i / n, c = Math.cos(a), d = Math.sin(a), qx = mx + dx * c - dy * d, qy = my + dx * d + dy * c;
-                show = qx > -40 && qx < W + 40 && qy > -40 && qy < vh + 40 && flock.map.free(qx - h, qy + sy - h, qx + h, qy + sy + h);
+                show = qx > -40 && qx < W + 40 && qy > -40 && qy < vh + 40 && flock.map.pass(qx - h, qy + sy - h, qx + h, qy + sy + h);
               }
-              if (!show) o.look = turn + 0.02 + Math.random() * 0.01; else { flock.seen++; seen++; vis.push(o); flock.vis.push(o); }
+              if (!show) o.look = turn + 0.02 + Math.random() * 0.01; else { flock.seen += w; seen += w; vis.push(o); flock.vis.push(o); }
             }
           }
         }
