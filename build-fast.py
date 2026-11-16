@@ -269,7 +269,7 @@ _late = [u for u in (globals().get("js_out"), k_out, p_out) if u]
 for u in _late:
     assert f'<script src="{u}" defer></script>' in html, u
     html = html.replace(f'<script src="{u}" defer></script>\n', "").replace(f'<script src="{u}" defer></script>', "")
-html = html.replace("</head>", "".join(f'<link rel="preload" as="script" href="{u}">\n' for u in _late) + "</head>", 1)
+html = html.replace("</head>", "".join(f'<link rel="preload" as="script" href="{u}" fetchpriority="low">\n' for u in _late) + "</head>", 1)
 _loader = ('<script>(function(s){var d=document,done=0;function go(){if(done)return;done=1;s.forEach(function(u){var e=d.createElement("script");e.src=u;e.async=false;d.body.appendChild(e)})}'
            'function after(){if(d.hidden)return go();requestAnimationFrame(function(){setTimeout(go,0)});setTimeout(go,600)}'
            'd.readyState==="loading"?d.addEventListener("DOMContentLoaded",after):after()})(' + __import__("json").dumps(_late) + ')</script>')

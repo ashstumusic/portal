@@ -750,7 +750,7 @@ if (navigator.maxTouchPoints > 0 && window.innerWidth < 900) {
 function npArtwork() {
  var src = npGetArt();
  if (!src) return [];
- var abs = new URL(src, location.href).href;
+ var abs = new URL(src, document.baseURI).href;   // (baseURI, not the address bar: on /lyrics/<song>/ the page's files are at the site root)
  return [96, 128, 192, 256, 384, 512].map(function(s) {
    return { src: abs, sizes: s + 'x' + s, type: 'image/webp' };
  });

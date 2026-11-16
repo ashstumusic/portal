@@ -3213,14 +3213,15 @@ html { overscroll-behavior-y: none; }
   .k-menu .k-menu-listen:not(#\#) { margin-top: 0; }
 }
 
-/* Phone menu: semi-transparent glass (the page shows through, blurred). Solid again for anyone who has asked
-   their device for less transparency, or whose browser cannot blur. Worst case behind it (a white button on the
-   page) still leaves the small grey labels above 4.5:1. */
-@media (max-width: 767px) {
-  .k-palette[data-mode="menu"] .k-palette-box:not(#\#):not(#\#) { background: rgb(14 22 28 / .58) !important; -webkit-backdrop-filter: blur(22px) saturate(1.3) !important; backdrop-filter: blur(22px) saturate(1.3) !important; }
-  @media (prefers-reduced-transparency: reduce) { .k-palette[data-mode="menu"] .k-palette-box:not(#\#):not(#\#):not(#\#) { background: #0f1b20 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .k-palette[data-mode="menu"] .k-palette-box:not(#\#):not(#\#):not(#\#) { background: #0f1b20 !important; } }
-}
+/* One glass for everything the toolbar opens: the phone menu, the settings panel and search (the panel's own
+   search and the suggestions under the toolbar's search field). Semi-transparent, the page showing through
+   blurred. Solid again for anyone who has asked their device for less transparency, or whose browser cannot
+   blur. Worst case behind it (a white button on the page) still leaves the small grey labels above 4.5:1. */
+.k-palette .k-palette-box:not(#\#):not(#\#), :root.psy .k-si--bar .k-si-list:not(#\#):not(#\#):not(#\#) { background: rgb(14 22 28 / .58) !important; -webkit-backdrop-filter: blur(22px) saturate(1.3) !important; backdrop-filter: blur(22px) saturate(1.3) !important; }
+/* (the suggestions list hangs from the toolbar, which is itself glass, and a browser cannot blur the page a second time through it: with nothing blurred behind, it is kept denser so the words stay readable over a photo) */
+:root.psy .k-si--bar .k-si-list:not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(14 22 28 / .86) !important; }
+@media (prefers-reduced-transparency: reduce) { .k-palette .k-palette-box:not(#\#):not(#\#):not(#\#), :root.psy .k-si--bar .k-si-list:not(#\#):not(#\#):not(#\#):not(#\#) { background: #0f1b20 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .k-palette .k-palette-box:not(#\#):not(#\#):not(#\#), :root.psy .k-si--bar .k-si-list:not(#\#):not(#\#):not(#\#):not(#\#) { background: #0f1b20 !important; } }
 /* Accessibility: the play button over each album cover showed nothing when reached with the keyboard.
    It now gets the same focus look as every other button: gold, with a white ring. */
 :root.psy .rel-play-overlay:focus-visible:not(#\#):not(#\#) { outline: none; }

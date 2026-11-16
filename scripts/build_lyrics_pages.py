@@ -199,6 +199,17 @@ def _neighbours(songs, s):
     return '<nav class="song-page-nav" aria-label="More lyrics">' + ''.join(out) + '</nav>\n' if out else ''
 
 
+def iso_duration(rel_path):
+    """The audio file's running time as ISO 8601 (PT3M41S), or '' if it cannot be read
+    (no file, or the mutagen library is not installed where this runs)."""
+    try:
+        from mutagen.mp3 import MP3
+        secs = int(round(MP3(os.path.join(ROOT, rel_path)).info.length))
+        return f'PT{secs // 60}M{secs % 60}S' if secs > 0 else ''
+    except Exception:
+        return ''
+
+
 def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title, article=''):
     """A song's page is the whole site with that song opened: the built
     homepage (index.html) with this song's title, description, canonical
@@ -409,6 +420,7 @@ def main():
 </article>
 </main>"""
         comp_id = url + '#composition'
+        dur = '' if unrel else iso_duration(s.get('key'))   # running time, e.g. PT3M41S (a hard fact for crawlers; read from the audio file)
         writer = {'@type': 'Person', 'name': 'Traditional'} if trad else {'@id': f'{SITE}/#artist'}
         jsonld = {'@context': 'https://schema.org', '@graph': [
             ARTIST_NODE,
@@ -418,7 +430,8 @@ def main():
              'inAlbum': {'@type': 'MusicAlbum', 'name': rel['name'], 'url': f'{SITE}/#music', 'image': art,
                          'albumReleaseType': 'SingleRelease' if kind == 'Single' else 'AlbumRelease', 'byArtist': {'@id': f'{SITE}/#artist'}},
              'position': s['position'], 'recordingOf': {'@id': comp_id}, 'isAccessibleForFree': True,
-             'audio': {'@type': 'AudioObject', 'contentUrl': SITE + '/' + urllib.parse.quote(s['key']), 'encodingFormat': 'audio/mpeg'}}]),
+             **({'duration': dur} if dur else {}),
+             'audio': {'@type': 'AudioObject', 'contentUrl': SITE + '/' + urllib.parse.quote(s['key']), 'encodingFormat': 'audio/mpeg', **({'duration': dur} if dur else {})}}]),
             {'@type': 'MusicComposition', '@id': comp_id, 'name': s['title'], 'url': url, 'inLanguage': 'en', 'genre': GENRE,
              'identifier': s['word'], 'keywords': f"{ARTIST} {s['word']}", 'sameAs': f"{SITE}/{s['word']}/",
              'composer': writer, 'lyricist': writer,

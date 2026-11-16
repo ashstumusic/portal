@@ -44,6 +44,10 @@ jobs:
       - name: Generate releases.json / videos.json
         run: python3 scripts/generate_content.py
 
+      # The lyric pages state each song's running time (read from the mp3 with mutagen).
+      - name: Install mutagen
+        run: python3 -m pip install --quiet mutagen==1.46.0
+
       - name: Build static lyric pages, sitemap entries and robots.txt
         run: python3 scripts/build_lyrics_pages.py
 
