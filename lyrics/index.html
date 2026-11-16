@@ -260,9 +260,9 @@
 }
 </script>
 <style>
-@font-face { font-family: 'Headline'; src: url('/Fonts/subsetted/YoungSerif-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Headline'; src: url('/Fonts/subsetted/Battambang-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }   /* titles of works: same face as the release titles on the home page */
 @font-face { font-family: 'Lyrics'; src: url('/Fonts/subsetted/Fraunces-Regular-opsz.woff2') format('woff2'); font-display: swap; }
-@font-face { font-family: 'Text'; src: url('/Fonts/subsetted/Outfit-VF.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Text'; src: url('/Fonts/subsetted/BricolageGrotesque-VF.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }   /* the site's interface and body face */
 :root { --paper: #F0F5F6; --surface: #FAFCFC; --ink: #084C61; --ink-soft: #3A6574; --gold: #F7C549; --rule: rgba(8,76,97,.14); color-scheme: light; }
 @media (prefers-color-scheme: dark) { :root { --paper: #0B171C; --surface: #13232A; --ink: #DCEEF2; --ink-soft: #9DB7C0; --rule: rgba(220,238,242,.14); color-scheme: dark; } }
 * { box-sizing: border-box; }
@@ -274,7 +274,7 @@ body { max-width: 44rem; margin-inline: auto; padding-block: 1.5rem 4rem; }
 .site a:hover, .site a:focus-visible { text-decoration: underline; }
 .crumbs { font-size: .9rem; color: var(--ink-soft); }
 .crumbs a { color: inherit; }
-h1, h2 { font-family: 'Headline', Georgia, serif; font-weight: 400; line-height: 1.15; text-wrap: balance; margin: 0; }
+h1, h2 { font-family: 'Headline', Georgia, serif; font-weight: 700; font-synthesis: none; line-height: 1.15; text-wrap: balance; margin: 0; }
 h1 { font-size: clamp(2rem, 6vw, 2.8rem); }
 h2 { font-size: 1.35rem; margin-top: 2rem; }
 .song-head { display: grid; grid-template-columns: 9rem 1fr; gap: 1.25rem; align-items: center; margin-top: 2rem; }

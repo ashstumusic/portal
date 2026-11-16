@@ -28,7 +28,6 @@ FONT_FILES = [
     "Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf",  # body text and lyrics (OFL, see Fonts/redditsanscondensed/OFL.txt)
     "Fonts/nationalpark/NationalPark-VF.ttf",  # category labels such as "ALBUM" (OFL, see Fonts/nationalpark/OFL.txt)
     "Fonts/battambang/Battambang-Bold.ttf",  # release titles (OFL, see Fonts/battambang/OFL.txt)
-    "Fonts/bpmfiansui/BpmfIansui-Regular.ttf",  # body text (OFL, see Fonts/bpmfiansui/OFL.txt); only its Latin letters are shipped
     "Fonts/cabinsketch/CabinSketch-Bold.ttf",  # section headers (OFL, see Fonts/cabinsketch/OFL.txt)
     "Fonts/vastshadow/VastShadow-Regular.ttf",        # the name under the quote (OFL, see Fonts/vastshadow/OFL.txt)
 ]
@@ -155,7 +154,7 @@ html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 # (UI = Bricolage is the nav and all body text; Outfit used to be preloaded
 # here but nothing on the page renders in it any more, so that preload was
 # 20KB fetched at top priority and thrown away.)
-_PRELOAD_FONTS = {"Fonts/youngserif/YoungSerif-Regular.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/bricolage/BricolageGrotesque-VF.ttf"}
+_PRELOAD_FONTS = {"Fonts/battambang/Battambang-Bold.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/bricolage/BricolageGrotesque-VF.ttf"}
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS

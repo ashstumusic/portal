@@ -2038,25 +2038,24 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 1023px) { :root.psy .bio-head { padding: 20px 20px 10px; } :root.psy .bio-rest { padding: 10px 20px 20px; } }
 @media (max-width: 767px) { :root.psy .bio-head { padding: 18px 18px 8px; } :root.psy .bio-rest { padding: 8px 18px 18px; } }
 
-/* Body text is set in Bpmf Iansui (owner's choice): the sentences people read (the About
+/* Body text is set in the toolbar's font (Bricolage Grotesque, 'UI'; owner's choice): the sentences people read (the About
    description, the Press Kit and Contact lines). Only the regular weight is
    shipped. (Lyrics have their own face, below.)
    Buttons, labels and titles keep their own faces. */
-@font-face { font-family: 'BodyText'; src: url('Fonts/bpmfiansui/BpmfIansui-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 /* Lyrics (album cards, the full-screen player, lyrics pages) use the same face, Reddit Sans Condensed: it is narrow,
    so long lyric lines fit their card at a larger size. */
 @font-face { font-family: 'LyricsText'; src: url('Fonts/redditsanscondensed/RedditSansCondensed-VF.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
-:root.psy { --font-body: 'BodyText', 'Reddit Sans Condensed', 'Arial Narrow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+:root.psy { --font-body: var(--font-ui); }
 :root.psy :is(.bio-text, .bio-desc, .contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) {
   font-family: var(--font-body) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important;
 }
 :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: 1.45 !important; }
-:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 25px !important; line-height: 1.38 !important; max-width: 32em; }
+:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 22px !important; line-height: 1.4 !important; max-width: 32em; }
 /* iPad widths: the text panel is narrow, so a step down keeps it from running long */
-@media (min-width: 768px) and (max-width: 1023px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 22px !important; } }
+@media (min-width: 768px) and (max-width: 1023px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; } }
 @media (max-width: 767px) {
   :root.psy :is(.contact-intro, .epk-text):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; }
-  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 20px !important; line-height: 1.4 !important; }
+  :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#) { font-size: 18px !important; line-height: 1.4 !important; }
 }
 
 /* Lyrics in the album cards. */
@@ -3109,7 +3108,7 @@ html { overscroll-behavior-y: none; }
 /* ── Category labels (the small "ALBUM" / "SINGLE" / "EP" line above a release name) in National Park
    (owner's choice; served from this site). */
 @font-face { font-family: 'Category'; src: url('Fonts/nationalpark/NationalPark-VF.ttf') format('truetype'); font-weight: 200 800; font-style: normal; font-display: swap; }
-:root.psy :is(.rel-cat, .featured-kicker):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; }
+:root.psy :is(.rel-cat, .featured-kicker, .featured-badge, .party-eq, .song-page-kicker, .k-si-tag):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-weight: 700 !important; font-synthesis: none; }
 /* a bit bigger than the 12px they had (the featured release's label: 14px to 16px) */
 :root.psy .rel-cat:not(#\#):not(#\#):not(#\#) { font-size: 14px !important; }
 :root.psy .featured-kicker:not(#\#):not(#\#):not(#\#) { font-size: 16px !important; }
@@ -3118,7 +3117,7 @@ html { overscroll-behavior-y: none; }
 /* ── Release titles (the name of each release on its cover, and of the featured release) in Battambang (bold)
    (owner's choice; served from this site, Latin letters only). Video titles keep their own font. */
 @font-face { font-family: 'ReleaseTitle'; src: url('Fonts/battambang/Battambang-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
-:root.psy :is(.rel-name, .featured-title):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'ReleaseTitle', 'Headline', Georgia, serif !important; font-weight: 700 !important; font-synthesis: none; letter-spacing: 0 !important; }
+:root.psy :is(.rel-name, .featured-title, .vid-title, .song-page h1):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'ReleaseTitle', 'Headline', Georgia, serif !important; font-weight: 700 !important; font-synthesis: none; letter-spacing: 0 !important; }
 
 /* ── Film grain over the whole page (owner's choice): the fine grey speckle of old film, faint enough that text and
    photos read exactly as before. It uses the existing grain layer (.k-grain, from shared/kinetic), made a little
@@ -3137,6 +3136,16 @@ html { overscroll-behavior-y: none; }
 }
 :root.psy.psy-calm .k-grain:not(#\#) { animation: none; }
 @media (prefers-reduced-motion: reduce) { :root.psy .k-grain:not(#\#) { animation: none; } }
+
+/* ── TYPE SYSTEM (one face per level; see the two rules above for the lists)
+   Name: Boiled Pasta ('Logo') · signature line: j.d. ('Figment') · section headers: Cabin Sketch ('SectionHead')
+   · titles of works (releases, videos, song pages): Battambang bold ('ReleaseTitle') · small capital labels
+   (ALBUM, LATEST RELEASE, NOW PLAYING, LYRICS, search tags): National Park ('Category') · the quote: Crimson Pro
+   italic ('Quote'), its name in Vast Shadow ('QuoteName') · everything you press or read: Bricolage Grotesque
+   ('UI') · lyrics: Reddit Sans Condensed ('LyricsText'). A new element takes the face of its level. */
+:root.psy .song-page h1:not(#\#):not(#\#):not(#\#):not(#\#) { letter-spacing: 0 !important; }
+/* Vast Shadow's inner shadow line closes up at 12px: the quote's name is set a step larger so it reads. */
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { font-size: 14px !important; letter-spacing: .08em !important; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

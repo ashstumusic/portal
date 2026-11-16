@@ -3029,9 +3029,9 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 :root[data-theme="dark"] .bio-card-media img:not(.bio-media-main) { filter: grayscale(1) brightness(.88) contrast(1.06); }
 :root[data-theme="dark"] .bio-card-media img:not(.bio-media-main):hover,
 :root[data-theme="dark"] .bio-card-media img:not(.bio-media-main).bio-revealed { filter: grayscale(0) brightness(.88) contrast(1.06); }
-:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(1.23) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(.88) contrast(1.06); }
 :root[data-theme="dark"] .bio-card-media img:last-child:hover,
-:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(1.23) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(.88) contrast(1.06); }
 
 /* ════════════════════════════════════════════
    FEATURED "PARTY" PANEL - latest release in the hero
