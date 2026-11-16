@@ -352,7 +352,7 @@
     // stands in. On pause the sky fades out, goes back to its resting
     // arrangement, and fades in again.
     const audio = doc.getElementById('np-audio');
-    const flock = { turn: 0, map: null, reset: 0, sy0: 0, pinned: false }, TAU = Math.PI * 2;
+    const flock = { turn: 0, map: null, reset: 0, sy0: 0, pinned: false, seen: 0, target: 0, vis: [] }, TAU = Math.PI * 2, RUN = 0.28;
     const music = { on: false, amp: 0, lv: [0, 0, 0], sm: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
     function listen() {
       if (!audio || typeof audio.captureStream !== 'function') return;   // (Firefox's own version silences the player, Safari has none: both get the pulse)
@@ -407,14 +407,16 @@
       const W = doc.documentElement.clientWidth, mx = W / 2, my = flock.sy0 + vh / 2, reach = Math.hypot(W, vh) / 2 + 110;
       const s = Math.max(0.7, Math.min(1.05, innerWidth / 1300));
       const here = placed.filter((o) => Math.hypot(o.cx - mx, o.cy - my) < reach);
+      // how many are on the screen while the sky is still: the number to keep in view as it turns
+      flock.target = placed.filter((o) => o.cx > 0 && o.cx < W && o.cy > flock.sy0 && o.cy < flock.sy0 + vh).length + 1;
       if (!here.length) return;
       const pick = () => { const a = Math.random() * TAU, r = Math.sqrt(Math.random()) * reach; return [mx + Math.cos(a) * r, my + Math.sin(a) * r]; };
       const clear = (x, y, R) => map.free(x - R, y - R, x + R, y + R);
       let open = 0; const N = 500;
       for (let i = 0; i < N; i++) { const [x, y] = pick(); if (clear(x, y, 16)) open++; }
       const share = Math.max(0.04, open / N);                        // how much of this part of the sky is open space
-      // (x2.4: a passing star needs clear room all round it and a moment to fade in, so fewer of them show than a plain count suggests)
-      const want = Math.min(260, Math.round(here.length * (1 - share) / share * 2.4));
+      // (x3.4: a passing star needs clear room all round it and a moment to fade in, so fewer of them show than a plain count suggests)
+      const want = Math.min(340, Math.round(here.length * (1 - share) / share * 3.4));
       const taken = here.map((o) => [o.cx, o.cy, o.R]);
       for (let k = 0, tries = 0; k < want && tries < want * 40; tries++) {
         const cls = Math.random() < 0.13 ? 0 : Math.random() < 0.42 ? 1 : 2, [lo, hi] = SIZES[cls];
@@ -425,7 +427,7 @@
         el.className = 'chalk-star';
         el.style.cssText = `left:${(x - R).toFixed(1)}px;top:${(y - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;opacity:0;transform:rotate(${base}deg);background-color:${COLORS[Math.floor(Math.random() * COLORS.length)]}`;
         layer.append(el);
-        const o = { el, extra: true, d: Math.floor(Math.random() * DESIGNS), cls, cx: x, cy: y, R, base, spin: 0, ph: Math.random() * 6, f: 0 };
+        const o = { el, extra: true, d: Math.floor(Math.random() * DESIGNS), cls, cx: x, cy: y, R, base, spin: 0, ph: Math.random() * 6, f: 0, look: 0 };
         setFrame(o); extra.push(o); taken.push([x, y, R]); k++;
       }
     }
@@ -443,18 +445,19 @@
       const pin = (on) => { if (flock.pinned === on) return; flock.pinned = on; layer.style.position = on ? 'fixed' : ''; layer.style.top = on ? -flock.sy0 + 'px' : ''; if (on) fillSky(vh); else emptySky(); };
       if (!moving) { flock.turn = 0; flock.reset = 0; layer.style.opacity = ''; pin(false); emptySky(); }
       else if (music.on) { if (!flock.turn) { flock.sy0 = sy; pin(true); } const step = dt * 0.085 * (0.9 + 0.25 * music.sm[0]); flock.turn += step; skyTurn += step; if (flock.reset) { flock.reset = 0; layer.style.opacity = ''; } }
-      else if (flock.turn) { if (!flock.reset) { flock.reset = t; layer.style.opacity = '0'; } else if (t - flock.reset > 430) { flock.turn = 0; flock.reset = 0; pin(false); layer.style.opacity = ''; } }
+      else if (flock.turn) { if (!flock.reset) { flock.reset = t; layer.style.opacity = '0'; } else if (t - flock.reset > 430) { for (const o of placed) o.look = 0; flock.turn = 0; flock.reset = 0; pin(false); layer.style.opacity = ''; } }
       const turn = flock.turn, dance = music.amp > 0 || turn !== 0, sy0 = flock.pinned ? flock.sy0 : sy;
       const boil = !dance || t - boilT >= 118; if (boil) boilT = t;
       const W = doc.documentElement.clientWidth, mx = W / 2, my = vh / 2, cs = Math.cos(turn), sn = Math.sin(turn), cs2 = Math.cos(turn + 0.05), sn2 = Math.sin(turn + 0.05);
       const reach = Math.hypot(W, vh) / 2 + 110;   // stars this near the middle of the screen (when the song started) are the turning sky; it ends beyond the screen's corners
-      for (const o of (extra.length ? placed.concat(extra) : placed)) {
+      let seen = 0; const vis = [], apart = Math.max(48, Math.min(78, W * 0.054));
+      for (const list of [placed, extra]) for (const o of list) {
         // Where it sits on the screen: fixed while the sky is pinned, moving with the page otherwise.
         const vy = o.cy - sy0, dx = o.cx - mx, dy = vy - my, turning = turn !== 0 && dx * dx + dy * dy < reach * reach;
         if ((vy < -500 || vy > vh + 500) && !turning) { if (o.el.style.opacity) { o.el.style.opacity = ''; o.el.style.transform = `rotate(${o.base}deg)`; } continue; }
         if (!moving) { if (o.el.style.opacity) o.el.style.opacity = ''; o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
-        if (boil) { o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o); }
+        if (boil && o.el.style.opacity !== '0') { o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o); }   // (a hidden star is not redrawn)
         if (!dance) {
           if (o.el.style.opacity) o.el.style.opacity = '';
           // A pixel of jitter every frame, more when a fast scroll knocks it.
@@ -471,7 +474,25 @@
           // Only ever seen in open space (px, py are on the screen; the map is of the page, so add the scroll).
           // It also looks half a second ahead along its path, so it has finished fading before it reaches anything.
           const ax = mx + dx * cs2 - dy * sn2, ay = my + dx * sn2 + dy * cs2;
-          show = !flock.map || (flock.map.free(px - h, py + sy - h, px + h, py + sy + h) && flock.map.free(ax - h, ay + sy - h, ax + h, ay + sy + h));
+          const hid = o.el.style.opacity === '0', onScreen = px > -40 && px < W + 40 && py > -40 && py < vh + 40;
+          // (no map for a moment while the page is re-measured: stay as it is)
+          show = !flock.map ? !hid : onScreen && flock.map.free(px - h, py + sy - h, px + h, py + sy + h) && flock.map.free(ax - h, ay + sy - h, ax + h, ay + sy + h);
+          if (show && !hid) { seen++; vis.push(o); }
+          // A hidden star only comes out when a long clear run lies ahead of it (about three seconds of
+          // turning), so none blinks on and off again through a small gap in the page. Looked up now and then.
+          // And only while fewer are in view than when the sky is still, so it is never busier than at rest.
+          if (show && flock.map && hid) {
+            // Nor beside a star that is already out (the sky turns as one piece, so two that start apart stay apart): no clusters.
+            if (turn < (o.look || 0) || flock.seen >= flock.target || flock.vis.some((v) => v !== o && Math.hypot(v.cx - o.cx, v.cy - o.cy) < apart)) show = false;
+            else {
+              const r = Math.hypot(dx, dy), n = Math.max(3, Math.min(24, Math.ceil(r * RUN / (h * 1.5))));
+              for (let i = 1; i <= n && show; i++) {
+                const a = turn + RUN * i / n, c = Math.cos(a), d = Math.sin(a), qx = mx + dx * c - dy * d, qy = my + dx * d + dy * c;
+                show = qx > -40 && qx < W + 40 && qy > -40 && qy < vh + 40 && flock.map.free(qx - h, qy + sy - h, qx + h, qy + sy + h);
+              }
+              if (!show) o.look = turn + 0.02 + Math.random() * 0.01; else { flock.seen++; seen++; vis.push(o); flock.vis.push(o); }
+            }
+          }
         }
         if (o.extra && !turning) show = false;
         const want = show ? '' : '0', was = o.el.style.opacity; if (was !== want) o.el.style.opacity = want;
@@ -479,6 +500,7 @@
         const sc = 1 + Math.sin(sy0 * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
         o.el.style.transform = `translate(${ox.toFixed(2)}px,${oy.toFixed(2)}px) rotate(${(rot0 + (turning ? turn * 57.2958 : 0)).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       }
+      flock.seen = seen; flock.vis = vis;
     }
     // Runs while effects are on and the page is visible (requestAnimationFrame
     // stops in background tabs); only the stars on screen are touched.

@@ -54,7 +54,7 @@ app.use(express.json({ limit: '16kb' }));
 // Only these are web-visible. Everything else (data.db, .git, server code,
 // node_modules, scripts, package files, .env) is a 404.
 const PUBLIC_DIRS = ['Audio', 'Videos', 'Images', 'Icons', 'Fonts', 'Journal', 'redesign', 'redesign-2', 'redesign-3', 'lyrics'];
-const PUBLIC_ROOT_FILE = /^\/(?:index|resume|google[\w-]+)\.html$|^\/(?:(?:main|kinetic|psyche)\.[0-9a-f]+\.js|styles(?:\.[0-9a-f]+\.min)?\.css)$|^\/(?:releases|videos|lyrics)\.json$|^\/(?:favicon\.(?:png|webp|ico|svg)|apple-touch-icon\.png|icon-(?:192|512)\.png|site\.webmanifest|robots\.txt|sitemap\.xml|ash-stu-press-kit\.zip|Ashton[._]Stubblefield_Resume\.pdf)$/;
+const PUBLIC_ROOT_FILE = /^\/(?:index|resume|google[\w-]+)\.html$|^\/(?:(?:main|kinetic|psyche)\.[0-9a-f]+\.js|styles(?:\.[0-9a-f]+\.min)?\.css)$|^\/(?:releases|videos|lyrics)\.json$|^\/(?:favicon\.(?:png|webp|ico|svg)|apple-touch-icon\.png|icon-(?:192|512)\.png|site\.webmanifest|robots\.txt|llms\.txt|sitemap\.xml|ash-stu-press-kit\.zip|Ashton[._]Stubblefield_Resume\.pdf)$/;
 const BLOCKED_IN_DIRS = /(?:^|\/)\.|\.(?:md|py|sh)$|\/facts\.json$|\/index\.template\.html$/i;
 const staticOpts = {
   index: 'index.html',
@@ -85,6 +85,15 @@ for (const site of ['redesign', 'redesign-2']) {
   });
 }
 for (const dir of PUBLIC_DIRS) {
+  app.use(`/${dir}`, (req, res, next) => (BLOCKED_IN_DIRS.test(req.path) ? res.status(404).end() : next()),
+    express.static(path.join(__dirname, dir), staticOpts));
+}
+// One-word song links (ashstu.art/raven): each is a folder holding a ".song-key" marker and an index.html.
+// They are found at startup, so a new song needs no change here. (The marker itself is a dotfile: never served.)
+const SONG_LINKS = fs.readdirSync(__dirname, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && /^[a-z0-9-]+$/.test(d.name) && fs.existsSync(path.join(__dirname, d.name, '.song-key')))
+  .map((d) => d.name);
+for (const dir of SONG_LINKS) {
   app.use(`/${dir}`, (req, res, next) => (BLOCKED_IN_DIRS.test(req.path) ? res.status(404).end() : next()),
     express.static(path.join(__dirname, dir), staticOpts));
 }

@@ -3092,6 +3092,20 @@ html { overscroll-behavior-y: none; }
 :root.psy .rel-track.active:hover .rel-track-eq { color: #111; }
 :root.psy .rel-track.active.is-paused .rel-track-eq rect { animation-play-state: paused; }
 
+/* Very narrow phones (under 360px), or text enlarged to 200%: the two streaming buttons on a release sit
+   side by side with little room, and "Apple Music" was cut off at both ends. Tighter padding and slightly
+   smaller text there; the buttons keep their 44px height. */
+@media (max-width: 400px) {
+  :root.psy .rel-card .rel-btns > a.rel-btn:not(.rel-dl, .rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-inline: 6px !important; gap: 5px !important; font-size: clamp(11px, 3.9vw, 14px) !important; letter-spacing: -.02em !important; min-width: 0 !important; }
+}
+
+/* ── Section headers in Londrina Solid, and the name under the quote ("Woody Guthrie") in Vast Shadow
+   (owner's choice; both fonts are served from this site). The white fill and red offset layer of the headers stay. */
+@font-face { font-family: 'SectionHead'; src: url('Fonts/londrinasolid/LondrinaSolid-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'QuoteName'; src: url('Fonts/vastshadow/VastShadow-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+:root.psy .section-h:not(#\#):not(#\#) { font-family: 'SectionHead', var(--font-ui) !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important; }
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { font-family: 'QuoteName', var(--font-ui) !important; font-weight: 400 !important; font-style: normal !important; font-synthesis: none; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
