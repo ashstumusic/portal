@@ -765,7 +765,7 @@ function npUpdateMediaSession(track, album, art) {
  if (!('mediaSession' in navigator)) return;
  var ms = navigator.mediaSession;
  ms.metadata = new MediaMetadata({
-   title: npTrackLabel() + track,
+   title: track,
    artist: 'Ash Stu',
    album: album || '',
    artwork: art ? npArtwork() : []
@@ -784,7 +784,7 @@ function npUpdateMediaSession(track, album, art) {
  npSyncMediaState();
 }
 function npLoad(track, album, src, autoplay) {
-var label = npTrackLabel() + track;
+var label = track;   // (the title alone: the track number is list information, shown in the tracklist)
 _npTrackEl.dataset.label = label;
 _npAlbumEl.textContent = album || '';
 npMarquee(_npTrackEl);
@@ -1644,7 +1644,7 @@ pState.releaseIdx = FEATURED_IDX;
 pState.playlist = rel.tracks.map(function(t,i) { return { title: t.title, file: t.file, releaseIdx: FEATURED_IDX, trackIdx: i }; });
 pState.plIdx = 0;
 var t = rel.tracks[0];
-_npTrackEl.dataset.label = '1. ' + t.title;
+_npTrackEl.dataset.label = t.title;
 npMarquee(_npTrackEl);
 _npAlbumEl.textContent = rel.name;
  var art = npGetArt();
