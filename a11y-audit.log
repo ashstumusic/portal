@@ -25,3 +25,6 @@ FIXED: index-src.html (mini player's main button)
 FIXED: index-src.html (play button over each album cover)
   — Keyboard operability + meaningful names: a control must do from the keyboard what it shows, and be named for it
   — The cover button showed a play icon but was named "Show tracks for <album>" and opened the tracklist from the keyboard; it is now "Play <album>" / "Pause <album>" and plays or pauses with Enter or Space (mouse and touch unchanged; the pattern is documented in the code)
+FIXED: index-src.html, scripts/prerender.py (tracklist buttons)
+  — Meaningful contextual text: names must make sense out of context and include the visible label
+  — The three "10 tracks" / "9 tracks" / "16 tracks" buttons are now announced with their album ("10 tracks on My Anima"), in both the pre-built page and the live-rendered cards

@@ -98,7 +98,9 @@ def render_release_card(rel, r_idx):
         items = ''.join(f'<li value="{n}">{title}</li>' for n, title in sorted(rows, key=lambda r: r[0]))
         tracklist = (f'<div class="rel-tracklist" id="tracklist-{r_idx}">'
                      f'<ol aria-label="Tracklist for {esc(rel["name"])}">{items}</ol></div>')
-    tl_toggle = (f'<button type="button" class="rel-tl-toggle" aria-expanded="false" aria-controls="tracklist-{r_idx}">'
+    # (aria-label: the visible words, "10 tracks", plus which album - three buttons that differ only by a number tell a
+    # screen-reader user nothing about what each one opens)
+    tl_toggle = (f'<button type="button" class="rel-tl-toggle" aria-expanded="false" aria-controls="tracklist-{r_idx}" aria-label="{len(rel["tracks"]) + len(upcoming)} tracks on {esc(rel["name"])}">'
                  '<svg class="rel-tl-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>'
                  f'<span class="rel-tl-label">{len(rel["tracks"]) + len(upcoming)} tracks</span>'
                  '<svg class="rel-tl-chev" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
