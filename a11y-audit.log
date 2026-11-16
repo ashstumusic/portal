@@ -13,3 +13,6 @@ FIXED: shared/system.css (touch targets)
 FIXED: shared/kinetic.js (settings switches in the menu)
   — Screen reader semantics + pattern documentation: a control's name and its description are separate things
   — Each switch is now announced as "Effects, switch, on" with its explanation as the description, instead of one run-together name ("Single-key shortcutsG then a letter…"); the switch and fold patterns are documented in the component's comments
+FIXED: shared/kinetic.js (menu dialog, initial focus)
+  — Keyboard operability: focus order must be safe and predictable; pattern documented in the component
+  — Opening the menu by keyboard now puts focus on the first section button (or first setting on wide screens) instead of the "Listen on Apple Music" link, where a second press of Enter would have left the site

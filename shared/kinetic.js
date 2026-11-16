@@ -496,7 +496,11 @@
     setMode(menu ? 'menu' : 'search');
     syncMenuBtns(true);
     dlg.setAttribute('aria-label', menu ? 'Menu and settings' : 'Search');
-    if (menu) (menuBox.querySelector('button, a') || $('.k-palette-close', dlg)).focus({ preventScroll: true }); else input.focus();
+    // PATTERN (menu dialog): a native <dialog> opened with showModal(), so the page behind is inert and Tab stays inside.
+    // Focus starts on the first SECTION button (phones) or the first setting (wide screens), never on a streaming
+    // link: those open another site, and a second press of Enter after opening the menu would have left this one.
+    // Escape or Close shuts it and focus goes back to the button that opened it.
+    if (menu) { const vis = (e) => e && e.getClientRects().length; ([...menuBox.querySelectorAll('.k-menu-link, .settings-row, .settings-fold')].find(vis) || $('.k-palette-close', dlg)).focus({ preventScroll: true }); } else input.focus();
   }
   function closePalette(restore = true) {
     if (!dlg.open) return;
