@@ -3153,8 +3153,7 @@ html { overscroll-behavior-y: none; }
    button, the same white progress fill, the same album label (small capitals), the times at the two
    ends of the progress bar in both.
    Full screen: everything under the cover keeps to the cover's own left and right edges.
-   Bar on phones: the five transport buttons sit together in the middle; mute moves up beside close and
-   the volume slider goes (a phone has volume buttons), so the card is one row shorter. */
+   Bar on phones: see the block further down. */
 :root.psy .fs-player .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #fff !important; background-image: none !important; color: #111 !important; }
 :root.psy .fs-player .fs-play:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) svg { color: #111 !important; fill: currentColor; }
 :root.psy .fs-player .fs-fill:not(#\#):not(#\#):not(#\#) { background: #fff !important; background-image: none !important; }
@@ -3169,18 +3168,16 @@ html { overscroll-behavior-y: none; }
 :root.psy .fs-player .fs-bar:not(#\#):not(#\#):not(#\#) { grid-column: 2; grid-row: 1; margin: 0 !important; }
 :root.psy .fs-player #fs-cur:not(#\#) { grid-column: 1; grid-row: 1; color: rgb(242 244 246 / .8) !important; }
 :root.psy .fs-player #fs-dur:not(#\#) { grid-column: 3; grid-row: 1; color: rgb(242 244 246 / .8) !important; }
+/* Bar on phones, second pass: a mini player's job is to stay out of the way. Two rows only: the song with
+   play, next and close; then the seekable progress bar with its two times. Shuffle, previous, repeat and
+   mute are one tap away in the full-screen player (tap the song), where there is room for them. */
 @media (max-width: 600px) {
-  :root.psy #player-bar:not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 1fr) 40px 40px 42px 40px 40px minmax(0, 1fr) !important; grid-template-rows: auto auto auto !important; column-gap: 12px !important;
-    grid-template-areas: "left left left left left vol close" "time time time time time time time" ". shuf prev play next rep ." !important; }
-  :root.psy #player-bar #np-shuffle:not(#\#):not(#\#) { grid-area: shuf !important; }
-  :root.psy #player-bar #np-prev:not(#\#):not(#\#) { grid-area: prev !important; }
-  :root.psy #player-bar #np-play:not(#\#):not(#\#) { grid-area: play !important; }
-  :root.psy #player-bar #np-next:not(#\#):not(#\#) { grid-area: next !important; }
-  :root.psy #player-bar #np-repeat:not(#\#):not(#\#) { grid-area: rep !important; }
-  :root.psy #player-bar .np-vol:not(#\#):not(#\#):not(#\#):not(#\#) { grid-area: vol !important; width: 40px !important; min-width: 0 !important; justify-self: end; }
-  :root.psy #player-bar .np-vol .vol-slider:not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy #player-bar:not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 1fr) 42px 40px 40px !important; grid-template-rows: auto auto !important; column-gap: 8px !important; row-gap: 2px !important;
+    grid-template-areas: "left play next close" "time time time time" !important; align-items: center !important; }
+  :root.psy #player-bar #np-play:not(#\#):not(#\#) { grid-area: play !important; margin: 0 !important; }
+  :root.psy #player-bar #np-next:not(#\#):not(#\#) { grid-area: next !important; margin: 0 !important; }
   :root.psy #player-bar .np-close:not(#\#):not(#\#):not(#\#):not(#\#) { grid-area: close !important; justify-self: end !important; }
-  :root.psy #player-bar :is(#np-shuffle, #np-prev, #np-play, #np-next, #np-repeat):not(#\#):not(#\#):not(#\#) { justify-self: center !important; margin: 0 !important; }
+  :root.psy #player-bar :is(#np-shuffle, #np-prev, #np-repeat, .np-vol):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
 }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
