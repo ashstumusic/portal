@@ -3262,6 +3262,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy.psy-calm :is(.hero-name, .bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { :root.psy :is(.hero-name, .bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: none !important; } }
 
+/* Accessibility (touch). The button rules below ask for 44px targets on touch screens, but a number of buttons were
+   still 40px there: the streaming, YouTube and email buttons, the full-screen player's controls and its Close chip,
+   and the lyrics button on each track. On a finger-operated screen they are now 44px (mouse screens unchanged). */
+@media (pointer: coarse) {
+  :root.psy :is(.rel-card .rel-btn, .vid-yt, .contact-email-link, .fs-player a.f-btn, .fs-player .fs-collapse):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; }
+  :root.psy :is(.fs-player .fs-ctrl, .rel-lyrics-toggle):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-width: 44px !important; min-height: 44px !important; }
+  :root.psy .fs-lyrics-list button:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; }
+  :root .skip:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; display: inline-flex; align-items: center; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

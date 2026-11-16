@@ -7,3 +7,6 @@ FIXED: index-src.html (seek bars of the mini and full-screen players)
 FIXED: index-src.html (player cover images)
   — Meaningful contextual text: alt text must describe the image; decorative images get alt=""
   — The full-screen player's cover is now described as "Album cover: <album name>" instead of the placeholder "Now playing"; the mini player's cover (inside an already-named button) is marked decorative
+FIXED: shared/system.css (touch targets)
+  — Keyboard and pointer operability: controls must be large enough to press (the site's own rule: 44px on touch)
+  — On touch screens the streaming, YouTube and email buttons, the full-screen player's controls, the per-track lyrics buttons, the lyric lines and the skip link grow from 40px to 44px; mouse screens are unchanged
