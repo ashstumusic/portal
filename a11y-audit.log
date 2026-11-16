@@ -22,3 +22,6 @@ FIXED: shared/kinetic.js (setting descriptions)
 FIXED: index-src.html (mini player's main button)
   — Meaningful contextual text: an aria-label replaces the button's visible words, so it must carry their meaning
   — The button is now announced as "Open full-screen player. Playing: <song>, from <album>" and updates with each song, instead of only "Open full-screen player"
+FIXED: index-src.html (play button over each album cover)
+  — Keyboard operability + meaningful names: a control must do from the keyboard what it shows, and be named for it
+  — The cover button showed a play icon but was named "Show tracks for <album>" and opened the tracklist from the keyboard; it is now "Play <album>" / "Pause <album>" and plays or pauses with Enter or Space (mouse and touch unchanged; the pattern is documented in the code)

@@ -1686,7 +1686,7 @@ function onRelOverlay(e, rIdx) {
 // Same behavior everywhere (desktop and touch): the play disc plays,
 // tapping the rest of the artwork expands the tracklist. Singles have no
 // tracklist, so any tap plays them.
-if (RELEASE_LIST[rIdx].type === 'Single') {
+if (RELEASE_LIST[rIdx].type === 'Single' || (e.detail === 0 && e.target.closest('.rel-play-overlay'))) {   // (detail 0: pressed with the keyboard or by a screen reader, not a pointer)
 closeAllTracklists();
 toggleRelease(rIdx);
 } else if (e.target.closest('.rel-play-circle')) {
@@ -1718,6 +1718,7 @@ var svg = _discCache[rIdx];
 var isPlaying = parseInt(rIdx) === pState.releaseIdx && !npAudio.paused;
 svg.innerHTML = isPlaying ? PAUSE : PLAY;
 svg.style.marginLeft = isPlaying ? '0' : '3px';
+var _ov = svg.closest('.rel-play-overlay'); if (_ov && _ov.dataset.rel) _ov.setAttribute('aria-label', (isPlaying ? 'Pause ' : 'Play ') + _ov.dataset.rel);
 if (isPlaying) {
 var card = svg.closest('.rel-card');
 if (card) card.classList.add('now-playing');
@@ -1784,8 +1785,12 @@ var relName = RELEASE_LIST[rIdx] ? RELEASE_LIST[rIdx].name : '';
 var overlay = document.createElement('button');
 overlay.type = 'button';
 overlay.className = 'rel-play-overlay';
-if (RELEASE_LIST[rIdx] && RELEASE_LIST[rIdx].type === 'Single') { overlay.setAttribute('aria-label', 'Play ' + relName); }
-else { overlay.setAttribute('aria-label', 'Show tracks for ' + relName); overlay.setAttribute('aria-expanded', 'false'); overlay.setAttribute('aria-controls', 'tracklist-' + rIdx); }
+// PATTERN (cover button): what it shows is a play/pause disc, so that is what it is called and what it does from the
+// keyboard or a screen reader: "Play <album>" / "Pause <album>" (the name follows the state; see updatePlayUI).
+// It used to be named "Show tracks for <album>" and open the tracklist from the keyboard while showing a play icon
+// and playing on a mouse click. Opening the tracklist is the separate "<n> tracks" button under the cover (it has
+// aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
+overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
 wrap.appendChild(overlay);
 _discCache[rIdx] = overlay.querySelector('svg');
