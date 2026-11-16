@@ -339,13 +339,14 @@
     // stars the bass, middle ones the mids, small ones the highs). The stars
     // are behind the page, so cards cover them as they pass, and a star is
     // faded out wherever it would otherwise show through text or sit against
-    // content: it is only ever seen in open space. Where the browser lets the
+    // content: it is only ever seen in open space. While it turns the sky is
+    // pinned to the screen, so scrolling the page does not move the stars. Where the browser lets the
     // page listen to the player without touching its sound (captureStream:
     // Chrome, Edge) the levels are the real ones; elsewhere a steady pulse
     // stands in. On pause the sky fades out, goes back to its resting
     // arrangement, and fades in again.
     const audio = doc.getElementById('np-audio');
-    const flock = { turn: 0, map: null, reset: 0 }, TAU = Math.PI * 2;
+    const flock = { turn: 0, map: null, reset: 0, sy0: 0, pinned: false }, TAU = Math.PI * 2;
     const music = { on: false, amp: 0, lv: [0, 0, 0], sm: [0, 0, 0], ctx: null, an: null, src: null, buf: null, peak: [40, 40, 40] };
     function listen() {
       if (!audio || typeof audio.captureStream !== 'function') return;   // (Firefox's own version silences the player, Safari has none: both get the pulse)
@@ -393,39 +394,43 @@
       music.amp += ((music.on && moving ? 1 : 0) - music.amp) * ease(450); if (music.amp < 0.004) music.amp = 0;
       if (music.amp) { levels(t); for (let i = 0; i < 3; i++) music.sm[i] += (music.lv[i] - music.sm[i]) * ease(320); }
       // The turn of the sky. Playing: a slow steady pace. Paused: fade out, square up, fade back in.
-      if (!moving) { flock.turn = 0; flock.reset = 0; layer.style.opacity = ''; }
-      else if (music.on) { flock.turn += dt * 0.085 * (0.9 + 0.25 * music.sm[0]); if (flock.reset) { flock.reset = 0; layer.style.opacity = ''; } }
-      else if (flock.turn) { if (!flock.reset) { flock.reset = t; layer.style.opacity = '0'; } else if (t - flock.reset > 430) { flock.turn = 0; flock.reset = 0; layer.style.opacity = ''; } }
-      const turn = flock.turn, dance = music.amp > 0 || turn !== 0;
+      // While it turns the sky is pinned to the screen (the page scrolls over it, like a fixed backdrop),
+      // so scrolling never pushes the stars about; at rest it is part of the page again.
+      const pin = (on) => { if (flock.pinned === on) return; flock.pinned = on; layer.style.position = on ? 'fixed' : ''; layer.style.top = on ? -flock.sy0 + 'px' : ''; };
+      if (!moving) { flock.turn = 0; flock.reset = 0; layer.style.opacity = ''; pin(false); }
+      else if (music.on) { if (!flock.turn) { flock.sy0 = sy; pin(true); } flock.turn += dt * 0.085 * (0.9 + 0.25 * music.sm[0]); if (flock.reset) { flock.reset = 0; layer.style.opacity = ''; } }
+      else if (flock.turn) { if (!flock.reset) { flock.reset = t; layer.style.opacity = '0'; } else if (t - flock.reset > 430) { flock.turn = 0; flock.reset = 0; pin(false); layer.style.opacity = ''; } }
+      const turn = flock.turn, dance = music.amp > 0 || turn !== 0, sy0 = flock.pinned ? flock.sy0 : sy;
       const boil = !dance || t - boilT >= 118; if (boil) boilT = t;
-      const W = doc.documentElement.clientWidth, mx = W / 2, my = sy + vh / 2, cs = Math.cos(turn), sn = Math.sin(turn), cs2 = Math.cos(turn + 0.05), sn2 = Math.sin(turn + 0.05);
-      const reach = Math.hypot(W, vh) / 2 + 110;   // stars this near the middle of the screen are part of the turning sky; it ends beyond the screen's corners
+      const W = doc.documentElement.clientWidth, mx = W / 2, my = vh / 2, cs = Math.cos(turn), sn = Math.sin(turn), cs2 = Math.cos(turn + 0.05), sn2 = Math.sin(turn + 0.05);
+      const reach = Math.hypot(W, vh) / 2 + 110;   // stars this near the middle of the screen (when the song started) are the turning sky; it ends beyond the screen's corners
       for (const o of placed) {
-        const vy = o.cy - sy, dx = o.cx - mx, dy = o.cy - my, turning = turn !== 0 && dx * dx + dy * dy < reach * reach;
+        // Where it sits on the screen: fixed while the sky is pinned, moving with the page otherwise.
+        const vy = o.cy - sy0, dx = o.cx - mx, dy = vy - my, turning = turn !== 0 && dx * dx + dy * dy < reach * reach;
         if ((vy < -500 || vy > vh + 500) && !turning) { if (o.el.style.opacity) { o.el.style.opacity = ''; o.el.style.transform = `rotate(${o.base}deg)`; } continue; }
         if (!moving) { if (o.el.style.opacity) o.el.style.opacity = ''; o.f = 0; setFrame(o); o.el.style.transform = `rotate(${o.base}deg)`; continue; }
         // The line boils: the next of its three drawings, never the same twice running.
         if (boil) { o.f = (o.f + 1 + Math.floor(rnd() * (FRAMES - 1))) % FRAMES; setFrame(o); }
-        const rot0 = o.base + snap(sy * o.spin, 15);
         if (!dance) {
           if (o.el.style.opacity) o.el.style.opacity = '';
           // A pixel of jitter every frame, more when a fast scroll knocks it.
           const jx = Math.round((rnd() - 0.5) * (1.6 + shake)), jy = Math.round((rnd() - 0.5) * (1.6 + shake));
-          const rot = rot0 + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
+          const rot = o.base + snap(sy * o.spin, 15) + (shake > 2 ? Math.round((rnd() - 0.5) * shake * 2) : 0);
           o.el.style.transform = `translate(${jx}px,${jy}px) rotate(${rot}deg) scale(${snap(1 + Math.sin(sy * 0.006 + o.ph) * 0.1, 0.05)})`;
           continue;
         }
+        const rot0 = o.base + snap(sy0 * o.spin, 15);   // (no scroll clicks or swells while the sky turns)
         let ox = 0, oy = 0, show = true;
         if (turning) {
           const px = mx + dx * cs - dy * sn, py = my + dx * sn + dy * cs, h = o.R * 1.15 + 3;
-          ox = px - o.cx; oy = py - o.cy;
-          // Only ever seen in open space. It also looks half a second ahead along its path, so it has
-          // finished fading before it reaches anything.
+          ox = px - o.cx; oy = py - vy;
+          // Only ever seen in open space (px, py are on the screen; the map is of the page, so add the scroll).
+          // It also looks half a second ahead along its path, so it has finished fading before it reaches anything.
           const ax = mx + dx * cs2 - dy * sn2, ay = my + dx * sn2 + dy * cs2;
-          show = !flock.map || (flock.map.free(px - h, py - h, px + h, py + h) && flock.map.free(ax - h, ay - h, ax + h, ay + h));
+          show = !flock.map || (flock.map.free(px - h, py + sy - h, px + h, py + sy + h) && flock.map.free(ax - h, ay + sy - h, ax + h, ay + sy + h));
         }
         const want = show ? '' : '0'; if (o.el.style.opacity !== want) o.el.style.opacity = want;
-        const sc = 1 + Math.sin(sy * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
+        const sc = 1 + Math.sin(sy0 * 0.006 + o.ph) * 0.1 * (1 - music.amp) + music.amp * music.sm[o.cls] * 0.07;
         o.el.style.transform = `translate(${ox.toFixed(2)}px,${oy.toFixed(2)}px) rotate(${(rot0 + (turning ? turn * 57.2958 : 0)).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       }
     }
