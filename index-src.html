@@ -1098,6 +1098,12 @@ function wireSeekBar(el) {
  el.setAttribute('aria-valuetext', d ? fmtT(c) + ' of ' + fmtT(d) : 'Nothing playing');
  }
  syncAria(); el.addEventListener('focus', function() { syncAria(); });
+ // A screen reader's reading cursor can land on the bar without focusing it (so no focus event), and it then read
+ // "Nothing playing" in the middle of a song. The value is also brought up to date whenever the song loads, starts,
+ // pauses, jumps or ends, and every 15 seconds while it plays - but never while the bar itself has focus, where a
+ // changing value would be read out over the music.
+ ['loadedmetadata', 'durationchange', 'play', 'pause', 'seeked', 'ended', 'emptied'].forEach(function(ev) { npAudio.addEventListener(ev, function() { if (document.activeElement !== el) syncAria(); }); });
+ var _ariaT = 0; npAudio.addEventListener('timeupdate', function() { var n = Date.now(); if (n - _ariaT > 15000 && document.activeElement !== el) { _ariaT = n; syncAria(); } });
  el.addEventListener('keydown', function(e) {
  var d = npAudio.duration; if (!d || e.altKey || e.ctrlKey || e.metaKey) return;
  var c = npAudio.currentTime, t;

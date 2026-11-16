@@ -1,3 +1,6 @@
 FIXED: shared/system.css, shared/kinetic.js
   — Respect system preferences (reduced motion) and the site's own Effects switch
   — The name's colour drift and pencil wobble now stop when Effects is switched off or reduced motion is chosen mid-visit (they used to keep going until the page was reloaded)
+FIXED: index-src.html (seek bars of the mini and full-screen players)
+  — Screen reader announcements: a control must state its current value
+  — The seek slider no longer reads "Nothing playing" during a song; it now reports "1:00 of 2:57" on load, play, pause, jump and every 15 s (not while focused, to avoid talking over the music)
