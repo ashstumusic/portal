@@ -3282,6 +3282,26 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy #player-bar .np-clock:not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex !important; min-width: 0; margin-right: 52px; font-size: 12px !important; }
 }
 
+/* Accessibility (high-contrast / forced colours, e.g. Windows Contrast Themes). In this mode the system replaces the
+   page's colours with its own. Three things did not survive it:
+   1. Icons. Their colour was set on the <svg> itself, which the system leaves alone, so pale icons sat on a pale
+      system background: the menu button, Next, Close and most of the full-screen player's controls were blank boxes.
+      Icons now take the system's text colour like the words beside them.
+   2. Seek and volume tracks had no visible line (only a floating knob): they get an outline, and the played part
+      is filled with the system's highlight colour.
+   3. The current lyric line was marked by colour alone, which this mode removes: it gets an outline. */
+@media (forced-colors: active) {
+  :root svg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { forced-color-adjust: auto !important; color: inherit !important; }
+  :root :is(.np-bar-track, .fs-bar):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 1px solid CanvasText !important; forced-color-adjust: none; background: Canvas !important; }
+  :root :is(#np-fill, .fs-fill):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { forced-color-adjust: none; background: Highlight !important; }
+  :root .seek-thumb::before { forced-color-adjust: none; background: CanvasText !important; }
+  :root .vol-slider:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-appearance: auto !important; appearance: auto !important; accent-color: Highlight; background: none !important; }
+  :root .fs-lyric.is-current button:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 2px solid Highlight !important; outline-offset: -2px; }
+  /* (two icons are not drawn as SVG but as filled shapes, which this mode paints in the background colour: the menu button's three bars and the mini player's close cross) */
+  :root .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root #player-bar .np-close::before { forced-color-adjust: none; background-color: ButtonText !important; }
+  :root .party-eq i:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { forced-color-adjust: none; background: CanvasText !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

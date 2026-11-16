@@ -40,3 +40,6 @@ FIXED: scripts/build_lyrics_pages.py (skip link on the 34 lyric pages)
 FIXED: index-src.html (spoken announcements)
   — Screen reader announcements: use polite live regions for routine updates, assertive only for errors
   — A song change no longer interrupts the screen reader mid-sentence and is spoken once, not two to four times; error messages still interrupt. The pattern is documented beside the regions
+FIXED: shared/system.css (high-contrast / forced-colours mode)
+  — Visual clarity and system preferences: controls must stay visible when the system replaces the page's colours
+  — In Windows Contrast Themes the menu button, Next, Close and most full-screen player icons were blank, the seek and volume tracks invisible and the current lyric unmarked; icons now take the system text colour, tracks are outlined and filled with the highlight colour, and the current lyric is outlined
