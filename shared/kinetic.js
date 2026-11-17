@@ -754,7 +754,8 @@
     const prune = () => {
       for (const an of stepped) {
         const el = an.effect && an.effect.target;
-        if (!el || !el.isConnected || !getComputedStyle(el).animationName.split(/,\s*/).includes(an.animationName)) { try { an.cancel(); } catch {} stepped.delete(an); }
+        // (an animation on ::before or ::after is named in that pseudo-element's styles, not the element's)
+        if (!el || !el.isConnected || !getComputedStyle(el, an.effect.pseudoElement || null).animationName.split(/,\s*/).includes(an.animationName)) { try { an.cancel(); } catch {} stepped.delete(an); }
       }
     };
     let ticks = 0;
