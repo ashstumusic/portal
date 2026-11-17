@@ -3026,14 +3026,24 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* Dark mode: dim photos a touch like the rest (see shared/kinetic.css)
    while keeping the black-and-white shots black and white. Same function
    list in every state (grayscale 1 -> 0) so the hover fade interpolates. */
-:root[data-theme="dark"] .epk-photos img { filter: grayscale(1) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .epk-photos img { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
 :root[data-theme="dark"] .bio-card-media img.bio-media-main { filter: brightness(.88) contrast(1.06); }
-:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main) { filter: grayscale(1) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main) { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
 :root[data-theme="dark"] .bio-card-media img:not(.bio-media-main):hover,
-:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main).bio-revealed { filter: grayscale(0) brightness(.88) contrast(1.06); }
-:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main).bio-revealed { filter: grayscale(0) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
+:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
 :root[data-theme="dark"] .bio-card-media img:last-child:hover,
-:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(.88) contrast(1.06); }
+:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
+
+/* Black-and-white photos, normalised: each shot gets its own brightness and contrast so the set reads as one roll of
+   film (same average grey and the same spread from dark to light, measured as drawn on the page). The colour state
+   keeps the same values, so the hover fade changes colour only. Re-measure if a photo is replaced. */
+.bio-card-media img[src*="Profile-4"] { --tone-b: .89; --tone-c: 1.01; }
+.bio-card-media img[src*="Profile-6"] { --tone-b: .87; --tone-c: 1.12; }
+.epk-photos img[src*="studio-session"] { --tone-b: 1.22; }
+.epk-photos img[src*="portrait"] { --tone-b: .71; }
+.epk-photos img[src*="epk-ash-stu-piano"] { --tone-b: .9; }
+.epk-photos img[src*="performing"] { --tone-b: .83; }
 
 /* ════════════════════════════════════════════
    FEATURED "PARTY" PANEL - latest release in the hero
