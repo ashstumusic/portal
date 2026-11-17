@@ -699,6 +699,9 @@ npAudio.addEventListener('error', function() {
  if (_srAnnounce) _srAnnounce.textContent = msg;
  if (typeof npSetPlaying === 'function') npSetPlaying(false);
 });
+// Printing: pictures further down the page are only fetched when scrolled to, so a page printed from the top came
+// out with empty boxes. Just before printing they are all asked for at once.
+window.addEventListener('beforeprint', function() { document.querySelectorAll('img[loading="lazy"]').forEach(function(i) { i.loading = 'eager'; }); });
 // Slow connection: while the song is still arriving (before it starts, or when it runs dry mid-song) the play
 // buttons show a turning ring instead of sitting there looking idle. Only after 400ms, so a normal start never
 // flashes it. The buttons are marked busy for assistive technology; nothing extra is spoken.
