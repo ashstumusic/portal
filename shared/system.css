@@ -3364,6 +3364,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; max-width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; min-width: 0 !important; height: auto !important; min-height: 0 !important; aspect-ratio: 1 / 1 !important; flex: none !important; margin-block: 0 !important; }
 }
 
+/* Video viewer: the picture always fits the height of the screen. It was sized from the width alone, so on a phone
+   held sideways (or a short window) the bottom of the video, its play controls and the dots were cut off below the
+   screen with no way to scroll to them. 104px is the title bar above plus the dots and margins below. */
+:root.psy .vid-lightbox .lb-inner:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: min(880px, 100%, calc((100vh - 104px) * 16 / 9)) !important; max-width: min(880px, 100%, calc((100svh - 104px) * 16 / 9)) !important; margin-inline: auto !important; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
