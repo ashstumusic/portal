@@ -3344,6 +3344,17 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   @page { margin: 18mm; }
 }
 
+/* Full-screen player on a phone held sideways. The Close button used to float over the middle of the screen, on top
+   of the shuffle button and the elapsed time, and the centred layout pushed the song title off the top where no
+   scrolling could reach it. Now everything starts at the top: Close sits above the cover in the left column, the
+   title heads the right column, and anything that doesn't fit scrolls. */
+@media (orientation: landscape) and (max-height: 520px) {
+  :root.psy .fs-player .fs-content:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { align-content: start !important; padding-top: calc(env(safe-area-inset-top, 0px) + 14px) !important; }
+  :root.psy .fs-player .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: static !important; left: auto !important; top: auto !important; transform: none !important; grid-column: 1 !important; grid-row: 1 !important; justify-self: center !important; align-self: start !important; margin: 0 0 12px !important; }
+  :root.psy .fs-player .fs-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-row: 2 / 5 !important; align-self: start !important; justify-self: center !important; }
+  :root.psy .fs-player .fs-grabber:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
