@@ -3486,6 +3486,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (prefers-reduced-motion: no-preference) { :root:not(.psy-calm) .vid-lightbox.open::before { animation: tv-static .8s step-end infinite; } }
 @media (forced-colors: active) { .vid-lightbox::before { display: none; } }
 
+/* ── Section headers are never cut off by their own section ──
+   The Music and About sections used to clip everything outside their box (overflow: hidden), and the header sits only
+   16-24px inside the top edge. On a phone where the header was drawn higher or taller than expected, its top was
+   sliced off along that edge (owner's screenshot of "Music" with the top of the M missing). The sections now clip
+   sideways only, so nothing can scroll the page sideways, and never vertically. */
+:root.psy :is(.releases-section, .bio-section):not(#\#):not(#\#) { overflow: visible !important; overflow-x: clip !important; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
