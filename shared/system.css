@@ -3369,6 +3369,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    screen with no way to scroll to them. 104px is the title bar above plus the dots and margins below. */
 :root.psy .vid-lightbox .lb-inner:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: min(880px, 100%, calc((100vh - 104px) * 16 / 9)) !important; max-width: min(880px, 100%, calc((100svh - 104px) * 16 / 9)) !important; margin-inline: auto !important; }
 
+/* Song still loading (slow connection): the play buttons swap their icon for a turning ring. See _npWait in
+   index-src.html. With reduced motion or Effects off the ring stays, without turning. */
+@keyframes np-spin { to { transform: rotate(1turn); } }
+:root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative !important; }
+:root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) svg { opacity: 0 !important; }
+:root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: '' !important; position: absolute !important; left: 50% !important; top: 50% !important; width: 20px !important; height: 20px !important; margin: -10px 0 0 -10px !important; box-sizing: border-box !important; border-radius: 50% !important; border: 3px solid rgb(17 17 17 / .22) !important; border-top-color: #111 !important; background: none !important; opacity: 1 !important; transform: none; animation: np-spin .8s linear infinite !important; pointer-events: none !important; }
+:root.np-wait.psy-calm :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { :root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { animation: none !important; } }
+@media (forced-colors: active) { :root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { border-color: GrayText !important; border-top-color: ButtonText !important; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

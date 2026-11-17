@@ -694,6 +694,17 @@ npAudio.addEventListener('error', function() {
  if (_srAnnounce) _srAnnounce.textContent = msg;
  if (typeof npSetPlaying === 'function') npSetPlaying(false);
 });
+// Slow connection: while the song is still arriving (before it starts, or when it runs dry mid-song) the play
+// buttons show a turning ring instead of sitting there looking idle. Only after 400ms, so a normal start never
+// flashes it. The buttons are marked busy for assistive technology; nothing extra is spoken.
+var _npWaitT = 0;
+function _npWait(on) {
+ clearTimeout(_npWaitT);
+ var set = function(v) { document.documentElement.classList.toggle('np-wait', v); ['np-play', 'fs-play'].forEach(function(id) { var b = document.getElementById(id); if (b) { if (v) b.setAttribute('aria-busy', 'true'); else b.removeAttribute('aria-busy'); } }); };
+ if (on) _npWaitT = setTimeout(function() { if (!npAudio.paused && npAudio.readyState < 3) set(true); }, 400); else set(false);
+}
+npAudio.addEventListener('waiting', function() { _npWait(true); });
+['playing', 'canplay', 'pause', 'error', 'emptied'].forEach(function(ev) { npAudio.addEventListener(ev, function() { _npWait(false); }); });
 // True while a finger/mouse is scrubbing a seek bar - timeupdate keeps
 // its hands off the fill/thumb then (pointer position drives them).
 var _seekDragging = false;
