@@ -3379,6 +3379,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (prefers-reduced-motion: reduce) { :root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { animation: none !important; } }
 @media (forced-colors: active) { :root.np-wait :is(#np-play, .fs-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { border-color: GrayText !important; border-top-color: ButtonText !important; } }
 
+/* Video viewer: the message shown in place of the picture when a video can't be loaded. Its "Try again" button is
+   an ordinary Button-system button (.vid-yt). The side arrows stay above it and usable. */
+.lb-error { position: absolute; inset: 0; z-index: 1; display: grid; place-content: center; justify-items: center; gap: 16px; padding: 16px 64px; text-align: center; background: #07090C; color: #F2F4F6; font: 500 16px/1.5 'UI', sans-serif; border-radius: inherit; }
+.lb-error[hidden] { display: none; }
+.lb-error p { margin: 0; max-width: 26em; text-wrap: balance; }
+.lb-video-wrap .lb-arrow { z-index: 2; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
