@@ -3410,6 +3410,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .fs-player .fs-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: clamp(160px, calc(100vh - 477px), 340px) !important; max-width: min(100%, clamp(160px, calc(100vh - 477px), 340px)) !important; height: auto !important; aspect-ratio: 1 !important; margin-inline: auto !important; }
 }
 
+/* Where the featured cover is tiny (a phone on its side, or a very short upright phone) the "Now playing" tag was
+   as big as the cover and sat on top of its pause button. The pause icon already shows that it is playing, so the
+   tag is left out at these sizes. */
+@media (max-height: 500px) and (orientation: landscape), (max-width: 767px) and (max-height: 700px) {
+  :root.psy #party .featured-art-wrap .party-eq:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
