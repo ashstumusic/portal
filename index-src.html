@@ -1006,11 +1006,12 @@ return -1;
 // Shuffle deals from a bag: every song of the list plays once, in random order, before any comes round again
 // (a plain random pick repeated songs within a few plays, and could pick the song that had just finished).
 // The bag is refilled when it runs out or when the list changes.
-var _npBag = [], _npBagFor = null;
+var _npBag = [], _npBagFor = null, _npHist = [];
 function npShufflePick() {
 var n = pState.playlist.length;
 if (n < 2) return 0;
 if (_npBagFor !== pState.playlist || !_npBag.length) {
+  if (_npBagFor !== pState.playlist) _npHist = [];
   _npBagFor = pState.playlist; _npBag = [];
   for (var i = 0; i < n; i++) if (i !== pState.plIdx) _npBag.push(i);
 }
@@ -1021,6 +1022,7 @@ if (!pState.playlist.length) return;
 // End of a release: carry straight on into the next one instead of stopping.
 if (!pState.shuffle && pState.plIdx >= pState.playlist.length - 1) { var nr = nextReleaseIdx(); if (nr >= 0) playTrack(nr, 0); return; }
 var nextIdx = pState.shuffle ? npShufflePick() : pState.plIdx + 1;
+if (pState.shuffle) { _npHist.push(pState.plIdx); if (_npHist.length > 60) _npHist.shift(); }
 pState.plIdx = nextIdx;
 var item = pState.playlist[nextIdx];
 var rel = RELEASE_LIST[item.releaseIdx];
@@ -1030,7 +1032,8 @@ updatePlayUI();
 function npPrev() {
 if (!pState.playlist.length) return;
 if (npAudio.currentTime > 3) { npAudio.currentTime = 0; return; }
-var prevIdx = (pState.plIdx - 1 + pState.playlist.length) % pState.playlist.length;
+// With shuffle on, Previous goes back to the song that was actually heard before this one, not the one before it on the album.
+var prevIdx = (pState.shuffle && _npBagFor === pState.playlist && _npHist.length) ? _npHist.pop() : (pState.plIdx - 1 + pState.playlist.length) % pState.playlist.length;
 pState.plIdx = prevIdx;
 var item = pState.playlist[prevIdx];
 var rel = RELEASE_LIST[item.releaseIdx];
