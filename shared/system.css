@@ -3386,6 +3386,14 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 .lb-error p { margin: 0; max-width: 26em; text-wrap: balance; }
 .lb-video-wrap .lb-arrow { z-index: 2; }
 
+/* First screen on short upright phones (320 x 568, 360 x 640): the release under the photo came out a little taller
+   than the screen, so the Spotify button and the wave were cut off at the bottom. The cover now gives way by exactly
+   the missing height (screen, minus toolbar, minus photo, minus the 244px the badge, title, buttons and padding
+   need). Taller phones are unaffected: the limit there is larger than the cover already is. */
+@media (max-width: 767px) and (max-aspect-ratio: 11/10) {
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: max(64px, calc(var(--vh100) - 49px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 244px)) !important; max-height: max(64px, calc(var(--vh100) - 49px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 244px)) !important; aspect-ratio: 1 / 1 !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
