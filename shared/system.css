@@ -3493,6 +3493,19 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    sideways only, so nothing can scroll the page sideways, and never vertically. */
 :root.psy :is(.releases-section, .bio-section):not(#\#):not(#\#) { overflow: visible !important; overflow-x: clip !important; }
 
+/* ── Tablet toolbar: streaming icons get full 44px touch targets that do not overlap ──
+   Between 768 and 1179px wide on a touch screen the three icons had 36px targets set edge to edge (overlapping by 4px
+   at 768). The drawn icons stay 26px; the invisible target round each grows to 44px and the spacing grows to match. */
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 1179px) {
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#) { padding: 9px !important; margin: -9px !important; }
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#) { gap: 18px !important; }
+}
+/* (768-799px has no room for that: 36px targets set edge to edge, no longer overlapping, keep the toolbar on one row) */
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 799px) {
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#) { padding: 5px !important; margin: -5px !important; }
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 10px !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
