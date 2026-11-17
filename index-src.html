@@ -677,6 +677,7 @@ if (_heroImg) _heroImg.addEventListener('load', function() { cacheOffsets(); upd
 const npAudio = document.getElementById('np-audio');
 const npBar = document.getElementById('player-bar');
 let _src = '';
+var _npNow = null;   // the song now in the player (title, album, file), kept so a failed load can be retried
 function _safeAudioSrc(p){return p.split('/').map(encodeURIComponent).join('/');}
 // True once audio has actually sounded (user hit play at least once).
 // A background content refresh uses this to decide whether the idle
@@ -802,6 +803,8 @@ function npUpdateMediaSession(track, album, art) {
  npSyncMediaState();
 }
 function npLoad(track, album, src, autoplay) {
+_npNow = { track: track, album: album, src: src };
+if (typeof _srAnnounce !== 'undefined' && _srAnnounce) _srAnnounce.textContent = '';   // an old error is cleared, so the same message is spoken again if this load fails too
 var label = track;   // (the title alone: the track number is list information, shown in the tracklist)
 _npTrackEl.dataset.label = label;
 // The bar's main button says what it does AND what is playing: its visible words (song, album) are replaced by its
@@ -913,6 +916,9 @@ document.addEventListener('pointerover', function(e) {
  document.addEventListener(ev, function(e) { var f = _warmTarget(e.target); if (f) warmTrack(f); }, { passive: true, capture: true });
 });
 function npToggle() {
+// After "Couldn't load this song... try again", pressing Play really does try again: a failed <audio> will not
+// restart with play() alone, so the song is loaded afresh (this also puts its title back in place of the message).
+if (npAudio.error && _npNow) { npLoad(_npNow.track, _npNow.album, _npNow.src, true); return; }
 var intent = ++_playIntent;
 if (npAudio.paused) {
 npAudio.play().then(function() { if (intent === _playIntent) npSetPlaying(true); }).catch(function(){});
