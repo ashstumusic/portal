@@ -978,11 +978,24 @@ if (RELEASE_LIST[i] && RELEASE_LIST[i].tracks && RELEASE_LIST[i].tracks.length) 
 }
 return -1;
 }
+// Shuffle deals from a bag: every song of the list plays once, in random order, before any comes round again
+// (a plain random pick repeated songs within a few plays, and could pick the song that had just finished).
+// The bag is refilled when it runs out or when the list changes.
+var _npBag = [], _npBagFor = null;
+function npShufflePick() {
+var n = pState.playlist.length;
+if (n < 2) return 0;
+if (_npBagFor !== pState.playlist || !_npBag.length) {
+  _npBagFor = pState.playlist; _npBag = [];
+  for (var i = 0; i < n; i++) if (i !== pState.plIdx) _npBag.push(i);
+}
+return _npBag.splice(Math.floor(Math.random() * _npBag.length), 1)[0];
+}
 function npNext() {
 if (!pState.playlist.length) return;
 // End of a release: carry straight on into the next one instead of stopping.
 if (!pState.shuffle && pState.plIdx >= pState.playlist.length - 1) { var nr = nextReleaseIdx(); if (nr >= 0) playTrack(nr, 0); return; }
-var nextIdx = pState.shuffle ? Math.floor(Math.random() * pState.playlist.length) : pState.plIdx + 1;
+var nextIdx = pState.shuffle ? npShufflePick() : pState.plIdx + 1;
 pState.plIdx = nextIdx;
 var item = pState.playlist[nextIdx];
 var rel = RELEASE_LIST[item.releaseIdx];
