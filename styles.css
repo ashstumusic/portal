@@ -181,7 +181,9 @@ html {
   font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
   padding: .5rem 1rem; text-decoration: none; z-index: 9999;
 }
-.skip:focus { top: 1rem; }
+/* Fixed to the screen while focused, not to the top of the page: a song page opens already scrolled down to its
+   song, and a link pinned to the page top made the first press of Tab throw the reader all the way back up. */
+.skip:focus { position: fixed; top: 1rem; }
 ::selection { background: rgba(8,76,97,.15); background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
 :focus:not(:focus-visible) { outline: none; }   /* hide rings only for mouse/touch focus; keyboard focus always shows one */
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }

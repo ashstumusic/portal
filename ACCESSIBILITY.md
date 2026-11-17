@@ -22,6 +22,7 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - First thing in the page. "Skip to content" on the home page; "Skip to the song" on lyric pages.
 - It must move keyboard focus to its target, not only scroll. Lyric pages have `<base href="/">`, so in-page links
   are handled by a small script that scrolls **and** focuses the target (`scripts/build_lyrics_pages.py`).
+- While focused it is fixed to the screen (not the page top), so focusing it never scrolls the page.
 
 ### Toolbar
 - A `<nav aria-label="Main navigation">`. The current section's link has `aria-current`; it is also outlined, not
@@ -75,6 +76,15 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 
 ### Video viewer (dialog)
 - `role="dialog" aria-modal="true"`; focus is kept inside; Escape closes and returns focus to the video's button.
+
+### Loading and failure
+- Song still arriving: the play buttons show a turning ring (still, with reduced motion) and carry `aria-busy`.
+- Song failed: the message is shown in the bar and spoken; pressing Play tries again.
+- Video failed: a message replaces the picture, is spoken, and offers a "Try again" button.
+
+### Short and sideways screens
+- Every dialog and the first screen must fit a phone held sideways (844 x 390, 667 x 375, 568 x 320) with nothing
+  overlapping and every control reachable. Check these sizes when changing the players, the video viewer or the hero.
 
 ### Spoken messages (live regions)
 - `#sr-status` (polite): which song has started. Must not interrupt.
