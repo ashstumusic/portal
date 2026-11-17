@@ -95,6 +95,8 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - Every `target="_blank"` link gets "(opens in a new tab)" added to its spoken name by `shared/kinetic.js`,
   including links drawn later by script.
 - Two links with different destinations never share a name (the first-screen buttons add the release name).
+- A control's spoken name contains its visible words, so voice-control users can say what they see (the email link
+  is "Email Ash Stu: " followed by the address shown).
 
 ### Downloads
 - Say the file type and size: "Download Press Kit (ZIP file, 33 MB)" (size measured at build time).
