@@ -811,8 +811,10 @@ function npUpdateMediaSession(track, album, art) {
  // Handlers are re-registered on every load so the notification always
  // carries the full transport. Always-on: npNext/npPrev already no-op at
  // the boundaries, so even a single-track release shows skip buttons.
- ms.setActionHandler('play', function() { npToggle(); });
- ms.setActionHandler('pause', function() { npToggle(); });
+ // (each does only what it says: a "pause" from the lock screen or from unplugged headphones must never start the
+ //  music when it is already paused, which a plain toggle would do)
+ ms.setActionHandler('play', function() { if (npAudio.paused) npToggle(); });
+ ms.setActionHandler('pause', function() { if (!npAudio.paused) npToggle(); });
  ms.setActionHandler('previoustrack', function() { npPrev(); });
  ms.setActionHandler('nexttrack', function() { npNext(); });
  ms.setActionHandler('seekbackward', function() { npAudio.currentTime = Math.max(0, npAudio.currentTime - 10); });
