@@ -52,3 +52,6 @@ FIXED: index-src.html, build-fast.py (press-kit download)
 FIXED: index-src.html, shared/system.css (focus hidden behind the player bar)
   — Keyboard operability: the focused control must be visible (WCAG 2.4.11 Focus Not Obscured)
   — Tabbing down the page with the player open put track and card buttons underneath the fixed player bar; the page now keeps that strip clear when scrolling a focused control into view (88px, 128px on phones)
+FIXED: ACCESSIBILITY.md (new)
+  — Pattern documentation: an internal library of accessible design patterns
+  — Every interactive component's keyboard behaviour, names, states and system-preference handling is written down in one place, with the by-hand checks to run on every change
