@@ -3038,7 +3038,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* Black-and-white photos, normalised: each shot gets its own brightness and contrast so the set reads as one roll of
    film (same average grey and the same spread from dark to light, measured as drawn on the page). The colour state
    keeps the same values, so the hover fade changes colour only. Re-measure if a photo is replaced. */
-.bio-card-media img[src*="Profile-4"] { --tone-b: .98; --tone-c: 1.45; }
+.bio-card-media img[src*="Profile-4"] { --tone-b: .96; --tone-c: 1.2; }
 .bio-card-media img[src*="Profile-6"] { --tone-b: 1.1; --tone-c: 1; }
 .epk-photos img[src*="studio-session"] { --tone-b: 1.22; }
 .epk-photos img[src*="portrait"] { --tone-b: .71; }

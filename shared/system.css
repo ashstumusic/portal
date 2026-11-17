@@ -2182,9 +2182,9 @@ html { overscroll-behavior-y: none; }
 @media (max-width: 767px) {
   :root.psy .bio-card:not(#\#):not(#\#):not(#\#) { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0 2px !important; }
   :root.psy .bio-card > .bio-card-media:not(#\#):not(#\#) { display: contents !important; }
-  :root.psy .bio-card-media > .bio-media-main:not(#\#):not(#\#) { grid-column: 1 / -1; order: 0; }
+  :root.psy .bio-card-media > .bio-media-main:not(#\#):not(#\#) { grid-column: 1 / -1; order: 2; }
   :root.psy .bio-card > .bio-card-text:not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; order: 1; }
-  :root.psy .bio-card-media > .bw-shot:not(#\#):not(#\#) { order: 2; grid-column: auto; width: 100%; }
+  :root.psy .bio-card-media > .bw-shot:not(#\#):not(#\#) { order: 0; grid-column: auto; width: 100%; }
 }
 
 /* ── Phone menu ───────────────────────────────────────────────────────
@@ -3457,7 +3457,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    photos. It never moves, so it costs nothing while scrolling and needs no reduced-motion rule. Decorative only
    (a pseudo-element, ignored by screen readers and by pointer events); dropped in print and in forced colours. */
 .bw-shot { display: block; position: relative; overflow: hidden; border-radius: 16px; min-width: 0; }
-.bw-shot::after, :root.psy .epk-photos .epk-slot::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: url("../Images/grain.webp") 0 0 / 128px 128px; }
+.bw-shot::after, :root.psy .epk-photos .epk-slot::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: url("../Images/grain.webp") 0 0 / 80px 80px; }
 .bw-shot::after { mix-blend-mode: overlay; opacity: .42; }
 :root.psy .epk-photos .epk-slot { position: relative; }
 /* The press-kit photos are dim and mostly black, where overlay grain would vanish: here the grain is sparse light
@@ -3465,6 +3465,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .epk-photos .epk-slot::after { mix-blend-mode: screen; opacity: .14; filter: brightness(.55) contrast(2.2); }
 @media print { .bw-shot::after, :root.psy .epk-photos .epk-slot::after { display: none; } }
 @media (forced-colors: active) { .bw-shot::after, :root.psy .epk-photos .epk-slot::after { display: none; } }
+
+/* About photos: the two black-and-white shots sit on top, the colour portrait below (owner's choice). On phones the
+   order is black-and-white shots, the name and text, then the portrait (set in the phone block above). */
+:root.psy .bio-card-media > .bio-media-main:not(#\#) { order: 2; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
