@@ -238,6 +238,13 @@
       seen.add(href);
       items.push({ group: 'Go to', tag: 'Section', title: textOf(a), run: () => goTo(target) });
     }
+    // Sections that have a heading but no toolbar button (About) can be searched for too.
+    for (const sec of $$('main section[id][aria-labelledby]')) {
+      const h = doc.getElementById(sec.getAttribute('aria-labelledby')), name = h && textOf(h);
+      if (!name || seen.has('#' + sec.id) || items.some((i) => i.title.toLowerCase() === name.toLowerCase())) continue;
+      seen.add('#' + sec.id);
+      items.push({ group: 'Go to', tag: 'Section', title: name, run: () => goTo(sec) });
+    }
     // Songs: static pages expose a.track links; the homepage exposes RELEASE_LIST + playTrack().
     const tracks = $$('a.track[data-play]');
     if (tracks.length) {
@@ -301,7 +308,18 @@
     }
     return { words, top };
   }
-  const hayOf = (i) => `${i.title} ${i.sub || ''} ${i.tag || ''} ${TAG_WORDS[i.tag] || ''}`.toLowerCase();
+  // What a result can be found by: its title, sub-line and kind, plus the ways people really type them. The title with
+  // punctuation dropped ("cant" finds Can't), the title run together ("presskit" finds Press Kit), and the volume
+  // numbers written as digits or words ("vol 2", "volume two" find Vol. II).
+  const VOL = [['vol. ii', ' vol 2 volume 2 volume two volume ii second'], ['vol. i', ' vol 1 volume 1 volume one volume i first']];
+  const hayOf = (i) => {
+    if (i._hay) return i._hay;
+    const base = `${i.title} ${i.sub || ''} ${i.tag || ''} ${TAG_WORDS[i.tag] || ''}`.toLowerCase(), t = i.title.toLowerCase();
+    let extra = ' ' + t.replace(/[^a-z0-9 ]/g, '') + ' ' + t.replace(/[^a-z0-9]/g, '');
+    const padded = base.replace(/[^a-z0-9. ]/g, ' ') + ' ';
+    for (const [key, words] of VOL) if (padded.includes(key + ' ')) extra += words;
+    return (i._hay = base + extra);
+  };
   function goTo(target) {
     target.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
     const focusable = target.matches('h1,h2,h3,[tabindex]') ? target : target.querySelector('h1, h2, h3');
@@ -458,7 +476,7 @@
         const g = doc.createElement('span'); g.className = 'k-si-tag'; g.dataset.tag = it.tag; g.textContent = it.tag;
         li.dataset.tag = it.tag; li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
       });
-      if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches.'; frag.append(e); }
+      if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches. Try a song title or a few words of a lyric.'; frag.append(e); }
       ul.replaceChildren(frag); ul.hidden = false; host.classList.add('open');
       inp.setAttribute('aria-expanded', 'true'); if (hits.length) inp.setAttribute('aria-activedescendant', id + '-' + act); else inp.removeAttribute('aria-activedescendant');
       clearTimeout(cT); cT = setTimeout(() => announce(`${hits.length} suggestion${hits.length === 1 ? '' : 's'}`), 500);
