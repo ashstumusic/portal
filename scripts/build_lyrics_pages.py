@@ -237,6 +237,8 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'<meta property="og:description" content="[^"]*"\s*/?>', f'<meta property="og:description" content="{d}"/>', h)
     h = sub(r'<meta property="og:type" content="[^"]*"\s*/?>', '<meta property="og:type" content="music.song"/>', h)
     h = sub(r'<meta property="og:url" content="[^"]*"\s*/?>', f'<meta property="og:url" content="{url}"/>', h)
+    page_art = art
+    art = share_art(art)   # link previews get the JPEG copy; the page itself and its structured data keep the WebP
     h = sub(r'<meta property="og:image" content="[^"]*"\s*/?>', f'<meta property="og:image" content="{esc(art)}"/>', h)
     # the image tags must describe the cover now in og:image, not the homepage's social card
     w, hgt, mime = image_facts(art)
@@ -246,6 +248,9 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'<meta property="og:image:alt" content="[^"]*"\s*/?>', f'<meta property="og:image:alt" content="{esc(alt)}"/>', h)
     h = sub(r'<meta name="twitter:image:alt" content="[^"]*"\s*/?>', f'<meta name="twitter:image:alt" content="{esc(alt)}"/>', h)
     h = sub(r'<meta name="twitter:image" content="[^"]*"\s*/?>', f'<meta name="twitter:image" content="{esc(art)}"/>', h)
+    # a square cover on the wide card is cropped to a strip (the face cut in half); the small card shows it whole
+    h = sub(r'<meta name="twitter:card" content="[^"]*"\s*/?>', '<meta name="twitter:card" content="summary"/>', h)
+    art = page_art
     h = sub(r'<meta name="twitter:title" content="[^"]*"\s*/?>', f'<meta name="twitter:title" content="{a}"/>', h)
     h = sub(r'<meta name="twitter:description" content="[^"]*"\s*/?>', f'<meta name="twitter:description" content="{d}"/>', h)
     head_add = ('<base href="/"/>\n'
@@ -291,6 +296,30 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
         if not (n1 and n2):
             return None
     return h
+
+
+def share_art(url):
+    """The picture link previews should use for a cover: a 1000px JPEG in Images/share/.
+
+    The covers on the page are small WebP files, which several apps that draw link previews (LinkedIn, some
+    chat apps and older scrapers) cannot read, so a shared song link showed no picture there. The JPEG is made
+    once from the full-size PNG beside the WebP (needs pillow) and committed; without it the WebP is used as before.
+    """
+    rel = urllib.parse.unquote(url.replace(SITE + '/', '', 1))
+    stem = os.path.splitext(os.path.basename(rel))[0]
+    out_rel = 'Images/share/' + re.sub(r'[^a-z0-9]+', '-', stem.lower()).strip('-') + '.jpg'
+    out = os.path.join(ROOT, out_rel)
+    if not os.path.isfile(out):
+        src = os.path.join(ROOT, os.path.splitext(rel)[0] + '.png')
+        try:
+            from PIL import Image
+            with Image.open(src) as im:
+                im = im.convert('RGB').resize((1000, 1000), Image.LANCZOS)   # 1000px at quality 80 keeps each under 300 KB, the limit some chat apps set for preview pictures
+                os.makedirs(os.path.dirname(out), exist_ok=True)
+                im.save(out, 'JPEG', quality=80, optimize=True, progressive=True)
+        except Exception:
+            return url
+    return SITE + '/' + urllib.parse.quote(out_rel)
 
 
 def image_facts(url):
