@@ -3394,6 +3394,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: max(64px, calc(var(--vh100) - 49px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 244px)) !important; max-height: max(64px, calc(var(--vh100) - 49px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 244px)) !important; aspect-ratio: 1 / 1 !important; }
 }
 
+/* Full-screen player on laptops and tablets: the cover gives way on shorter screens so the lyrics are in view.
+   At a fixed 340px the cover pushed the lyrics entirely below the bottom of a common laptop window (1366 x 650),
+   with the volume row cut in half; you had to scroll to learn the lyrics were there at all. The cover is now sized
+   so about 200px of lyrics show under the controls (357px is everything else above them), never under 140px.
+   Screens 900px tall or more keep the full 340px. */
+@media (min-width: 768px) and (min-height: 521px) {
+  :root.psy .fs-player .fs-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: clamp(140px, calc(100vh - 557px), 340px) !important; max-width: clamp(140px, calc(100vh - 557px), 340px) !important; height: auto !important; aspect-ratio: 1 !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
