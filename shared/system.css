@@ -3403,6 +3403,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .fs-player .fs-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: clamp(140px, calc(100vh - 557px), 340px) !important; max-width: clamp(140px, calc(100vh - 557px), 340px) !important; height: auto !important; aspect-ratio: 1 !important; }
 }
 
+/* The same on upright phones: on short ones (320 x 568 up to 375 x 667) a full-width cover pushed the volume row
+   half off the bottom and hid the lyrics completely. The cover shrinks just enough to leave about 120px of lyrics
+   showing. Phones around 820px tall or more are unchanged. */
+@media (max-width: 767px) and (orientation: portrait) {
+  :root.psy .fs-player .fs-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: clamp(160px, calc(100vh - 477px), 340px) !important; max-width: min(100%, clamp(160px, calc(100vh - 477px), 340px)) !important; height: auto !important; aspect-ratio: 1 !important; margin-inline: auto !important; }
+}
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
