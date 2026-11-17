@@ -2494,6 +2494,14 @@ lb.inert = true;
 document.body.style.overflow = '';
 if (_lbPrevFocus) { _lbPrevFocus.focus(); _lbPrevFocus = null; }
 }
+// "Watch the video" on a song's page: a real link to YouTube that, here, opens the site's own viewer instead.
+// A click with Ctrl / Cmd / Shift or the middle button is left alone, so "open in a new tab" still goes to YouTube.
+document.addEventListener('click', function(e) {
+var a = e.target.closest && e.target.closest('a[data-song-video]');
+if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || typeof VIDEO_LIST === 'undefined') return;
+var v = VIDEO_LIST.filter(function(x) { return x.title === a.dataset.songVideo; })[0];
+if (v && v.file) { e.preventDefault(); openLightbox(v); }
+});
 document.getElementById('lb-close').addEventListener('click', closeLightbox);
 document.getElementById('lb-prev').addEventListener('click', function() { lbNav(-1); });
 document.getElementById('lb-next').addEventListener('click', function() { lbNav(1); });

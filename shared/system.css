@@ -3446,6 +3446,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root:not(:has(.song-page)) main a[href^="mailto:"]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:not(:has(.song-page)) main .f-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:not(:has(.song-page)) main .rel-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:not(:has(.song-page)) main .vid-yt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root:not(:has(.song-page)) main .btn-epk:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border: 1px solid #999 !important; }
 }
 
+/* Song pages: "Watch the video" under the credit line, for the songs that have one (an ordinary Button-system
+   link, .vid-yt). Left off the printed page. */
+:root.psy .song-page-watch { margin: 16px 0 0; }
+:root.psy .song-page .song-page-watch a:not(#\#):not(#\#):not(#\#):not(#\#) { text-decoration: none !important; }
+@media print { :root .song-page-watch:not(#\#):not(#\#):not(#\#) { display: none !important; } }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

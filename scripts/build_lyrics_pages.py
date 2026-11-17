@@ -339,6 +339,13 @@ def main():
         releases = json.load(f)
     with open(os.path.join(ROOT, 'lyrics.json'), encoding='utf-8') as f:
         lyrics = json.load(f)
+    # Songs that have a video on the site: their pages offer it (for a song that is not released yet it is the only
+    # way to hear it). Matched by title.
+    try:
+        with open(os.path.join(ROOT, 'videos.json'), encoding='utf-8') as f:
+            videos = {v['title'].strip().lower(): v for v in json.load(f) if v.get('title')}
+    except Exception:
+        videos = {}
     os.makedirs(OUT, exist_ok=True)
 
     songs, used = [], set()
@@ -488,10 +495,15 @@ def main():
         os.makedirs(os.path.dirname(path), exist_ok=True)
         deep_key = s.get('key')
         year_note = f' ({year})' if year and not unrel else ''
+        vid = videos.get(s['title'].strip().lower())
+        # A plain link to YouTube that works with scripts off; with scripts on, index-src.html opens the site's own
+        # video viewer instead (data-song-video).
+        watch = (f'<p class="song-page-watch"><a class="vid-yt" href="{esc(vid["youtube"])}" data-song-video="{esc(vid["title"])}">'
+                 f'<span class="pt pt--youtube" aria-hidden="true"></span>Watch the video</a></p>\n') if vid and vid.get('youtube') else ''
         article = (f'<article class="song-page" id="song" aria-labelledby="song-h" lang="en">\n'
                    f'<header class="song-page-head">\n<p class="song-page-kicker">Lyrics</p>\n<h1 id="song-h">{esc(s["title"])}</h1>\n'
                    f'<p class="song-page-by">{"Traditional, arranged by" if trad else "Written and performed by"} <a href="/">{ARTIST}</a>'
-                   f' · track {s["position"]} of {s["total"]} on <cite>{esc(rel["name"])}</cite>{year_note}{" · not released yet" if unrel else ""}</p>\n</header>\n'
+                   f' · track {s["position"]} of {s["total"]} on <cite>{esc(rel["name"])}</cite>{year_note}{" · not released yet" if unrel else ""}</p>\n{watch}</header>\n'
                    f'<div class="song-page-lyrics" id="song-lyrics">\n<h2 class="sr-only">{esc(s["title"])}: full lyrics</h2>\n{verses_html}\n</div>\n'
                    f'<p class="song-page-foot">Lyrics © {ARTIST} ({ARTIST_FULL}).</p>\n'
                    # each song links to its neighbours, so a crawler (and a reader) can walk the whole set from any page
