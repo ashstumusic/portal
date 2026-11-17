@@ -850,7 +850,7 @@ document.getElementById('np-clock-cur').textContent = '0:00'; document.getElemen
 var art = npGetArt();
 if (_npArt) { _npArt.src = art ? encodeURI(art) : ''; _npArt.hidden = !art; }
 npUpdateMediaSession(track, album, art);
-try { sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
+try { if (sessionStorage.getItem('ash_src') !== src) sessionStorage.setItem('ash_time','0'); sessionStorage.setItem('ash_track',track); sessionStorage.setItem('ash_album',album||''); sessionStorage.setItem('ash_src',src); } catch(e){}
 npShow();
 if (autoplay) { var intent = ++_playIntent; npAudio.play().then(function() { if (intent === _playIntent) npSetPlaying(true); }).catch(function(){}); }
 else scheduleWarmCued();
@@ -947,6 +947,31 @@ npAudio.pause(); npSetPlaying(false);
 }
 function npClose() {
 npAudio.pause(); npSetPlaying(false); npHide();
+try { sessionStorage.removeItem('ash_src'); sessionStorage.removeItem('ash_time'); } catch(e){}   // closed stays closed after a reload
+}
+// Coming back to the page in the same tab (a reload, or back from a song page): the song that was in the player is
+// cued up again at the place it had reached, paused (browsers do not allow sound to start by itself), so one press
+// of Play carries on. The song and the time are saved as it plays (npLoad, and the time once a second). A song page
+// still cues its own song; the saved place is used there only if it is that same song. Closing the player forgets it.
+function npRestore() {
+var src, at;
+try { src = sessionStorage.getItem('ash_src'); at = parseFloat(sessionStorage.getItem('ash_time')) || 0; } catch(e) { return; }
+if (!src) return;
+// (the home page has its latest release's first song standing by in _src, not shown: that does not count as cued)
+if (document.querySelector('.song-page')) { if (_src !== src) return; }
+else if (_src !== src || !npBar.classList.contains('show')) {
+  var found = null;
+  RELEASE_LIST.forEach(function(rel, r) { (rel.tracks || []).forEach(function(t, i) { if (!found && t.file === src) found = [r, i]; }); });
+  if (!found) return;
+  playTrack(found[0], found[1], true);
+}
+if (at < 2) return;
+try { sessionStorage.setItem('ash_time', at); } catch(e){}
+var seek = function() {
+  npAudio.removeEventListener('loadedmetadata', seek);
+  if (_src === src && npAudio.currentTime < 1 && at < npAudio.duration - 3) npAudio.currentTime = at;
+};
+npAudio.addEventListener('loadedmetadata', seek);
 }
 function playTrack(rIdx, tIdx, cueOnly) {
 var rel = RELEASE_LIST[rIdx];
@@ -2378,6 +2403,7 @@ wireVideos();
 // a refresh re-render shortly after load would close the song again
 if (_deepDone && performance.now() - _deepAt < 6000) _deepDone = false;
 openDeepSong();
+if (!isRefresh) npRestore();
 watchCardSizes();
 queueMarquees();
 }
