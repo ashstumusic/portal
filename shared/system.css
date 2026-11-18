@@ -2576,6 +2576,8 @@ html { overscroll-behavior-y: none; }
   -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
 }
 @media (forced-colors: active) { :root.psy :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; } }
+/* The shading image did not load (set from script): an unshaded name beats an invisible one. */
+:root.psy.no-hatch :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; }
 /* Stop motion: the name is "redrawn" six times a second. The colours no longer glide - they move on one step per
    drawing (54 drawings to the 9-second cycle) - and each drawing has different pencil strokes (the shading sheet jumps
    to a new place every step, four placements in turn), the way a hand-coloured animation boils from frame to frame. */

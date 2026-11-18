@@ -1934,6 +1934,9 @@ return rows.sort(function(a, b) { return a.num - b.num; });
    the player (and plays, where the browser allows autoplay; otherwise the
    play button is ready). Songs not out yet just open their lyrics. */
 var _deepDone = false, _deepAt = 0;
+// The name is drawn through a pencil-shading image used as a mask. If that one image fails to load, the browser
+// masks the name to nothing and the first screen has no name at all: show it unshaded instead.
+(function() { var im = new Image(); im.crossOrigin = 'anonymous'; im.onerror = function() { document.documentElement.classList.add('no-hatch'); }; im.src = 'Images/pencil-hatch.webp'; })();
 function openDeepSong() {
 if (_deepDone) return;
 var m = document.querySelector('meta[name="deep-song"]');
