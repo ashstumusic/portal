@@ -3018,6 +3018,11 @@ html { overscroll-behavior-y: none; }
   :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; max-height: none !important; min-height: 0 !important; padding-top: 24px !important; padding-bottom: calc(var(--wz) + 24px) !important; }
   /* the cover gives way before the column would grow taller than the screen and push the wave out of view */
   :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: max(96px, calc(var(--vh100) - var(--hp) - var(--wz) - 370px)) !important; }
+  /* ...and it stays square as it gives way. Only its width had this limit; its height kept the stylesheet's own
+     (45% of the screen's height), so on an ordinary laptop window the cover became a tall rectangle with its sides cut
+     off, and that extra height pushed the wave off the first screen. The height now has the same limit as the width. */
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-height: min(400px, 45dvh, 80cqw, max(96px, calc(var(--vh100) - var(--hp) - var(--wz) - 370px))) !important; min-height: 0 !important; }
+  @media (min-width: 1100px) { :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-height: min(400px, 45dvh, 90cqw, max(96px, calc(var(--vh100) - var(--hp) - var(--wz) - 370px))) !important; } }
 }
 @media not ((min-aspect-ratio: 11/10) and (min-width: 560px)) {
   :root.psy .hero-split:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex-direction: column !important; min-height: var(--vh100) !important; }
@@ -3403,7 +3408,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    a square cover that shrinks with the height) so the cover, title, both buttons and the wave are on screen. */
 @media (min-aspect-ratio: 11/10) and (min-width: 768px) and (max-height: 500px) {
   :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 6px !important; padding-top: 12px !important; padding-bottom: calc(var(--wz) + 12px) !important; justify-content: center !important; }
-  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; max-width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; min-width: 0 !important; height: auto !important; min-height: 0 !important; aspect-ratio: 1 / 1 !important; flex: none !important; margin-block: 0 !important; }
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; max-width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; min-width: 0 !important; height: auto !important; min-height: 0 !important; max-height: none !important; aspect-ratio: 1 / 1 !important; flex: none !important; margin-block: 0 !important; }
 }
 
 /* Video viewer: the picture always fits the height of the screen. It was sized from the width alone, so on a phone
