@@ -951,7 +951,18 @@ npAudio.pause(); npSetPlaying(false);
 }
 }
 function npClose() {
+// Closed from the keyboard, focus was on a button that is about to disappear, and it used to drop to nothing (the next
+// Tab started again from the top of the page). It goes to the song that was playing if its row is showing, else to
+// that album's cover button. A mouse or touch close has no focus in the bar and is left alone.
+var _ae = document.activeElement, hadFocus = false;
+try { hadFocus = npBar.contains(_ae) && _ae.matches(':focus-visible'); } catch (e) {}   // keyboard focus only: a click also focuses the button
 npAudio.pause(); npSetPlaying(false); npHide();
+if (hadFocus) {
+  var card = document.querySelector('.rel-card[data-release="' + pState.releaseIdx + '"]');
+  var row = card && card.classList.contains('tracks-open') ? card.querySelector('.rel-track[data-track="' + pState.plIdx + '"]') : null;
+  var to = (row && row.checkVisibility && row.checkVisibility() ? row : null) || (card && card.querySelector('.rel-play-overlay'));
+  if (to) to.focus();
+}
 try { sessionStorage.removeItem('ash_src'); sessionStorage.removeItem('ash_time'); } catch(e){}   // closed stays closed after a reload
 }
 // Coming back to the page in the same tab (a reload, or back from a song page): the song that was in the player is
