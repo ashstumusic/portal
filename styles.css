@@ -3043,8 +3043,8 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* The colour state (hover, tap) has its own values, so the two shots sit with the colour portrait beside them: that
    portrait is soft and matte, while the guitar shot in colour was punchy and saturated and the piano shot was dark.
    (--tone-bc brightness, --tone-cc contrast, --tone-sc saturation; the black-and-white values above are untouched.) */
-.bio-card-media img[src*="Profile-4"] { --tone-bc: 1.02; --tone-cc: 1.0; --tone-sc: .78; }
-.bio-card-media img[src*="Profile-6"] { --tone-bc: 1.32; --tone-cc: .94; --tone-sc: 1.0; }
+.bio-card-media img[src*="Profile-4"] { --tone-bc: 1.02; --tone-cc: 1.0; --tone-sc: .66; }
+.bio-card-media img[src*="Profile-6"] { --tone-bc: 1.32; --tone-cc: .94; --tone-sc: .7; }   /* (.7: rematched to the cooler, softer portrait that replaced the first one) */
 .epk-photos img[src*="studio-session"] { --tone-b: 1.22; }
 .epk-photos img[src*="portrait"] { --tone-b: .71; }
 .epk-photos img[src*="epk-ash-stu-piano"] { --tone-b: .9; }
