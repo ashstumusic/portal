@@ -251,7 +251,14 @@
       for (const a of tracks) items.push({ group: 'Play a song', tag: 'Song', title: a.textContent.trim(), sub: textOf(a.closest('.record')?.querySelector('.record-title')), run: () => a.click() });
     } else if (Array.isArray(window.RELEASE_LIST) && typeof window.playTrack === 'function') {
       // albums first (each goes to its release), then every song on them
-      window.RELEASE_LIST.forEach((rel, r) => { const card = $$('.rel-card')[r]; if (card && rel.name) items.push({ group: 'Albums', tag: 'Album', title: rel.name, sub: `${rel.tracks.length} song${rel.tracks.length === 1 ? '' : 's'}`, run: () => goTo(card) }); });
+      window.RELEASE_LIST.forEach((rel, r) => { const card = $$('.rel-card')[r]; if (card && rel.name) items.push({ group: 'Albums', tag: 'Album', title: rel.name, sub: `${rel.tracks.length} song${rel.tracks.length === 1 ? '' : 's'}`, run: () => {
+        goTo(card);
+        // ringed for a few seconds, as on the album's own page (/albums/<album>/), so the eye finds it among the others
+        const now = $$('.rel-card')[r] || card;
+        for (const c of $$('.rel-card.album-arrived')) c.classList.remove('album-arrived');
+        now.classList.add('album-arrived'); clearTimeout(window.__albumRing);
+        window.__albumRing = setTimeout(() => now.classList.remove('album-arrived'), 4200);
+      } }); });
       window.RELEASE_LIST.forEach((rel, r) => rel.tracks.forEach((t, ti) => items.push({ group: 'Play a song', tag: 'Song', title: t.title, sub: rel.name, run: () => window.playTrack(r, ti) })));
     }
     for (const v of $$('a.video-link')) items.push({ group: 'Watch a video', tag: 'Video', title: textOf(v.closest('.video')?.querySelector('.video-name')), run: () => v.click() });
