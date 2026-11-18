@@ -3277,6 +3277,9 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
      The buttons are 44px here; the dots keep their look and get a tap strip 44px tall and as wide as their spacing. */
   :root.psy :is(.lb-close, .lb-arrow):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }
   :root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; }
+  /* Search suggestions and the settings panel's Close were 40px tall. */
+  :root.psy :is(.k-si-opt, .k-palette-close):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; }
+  :root.psy .k-si-opt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 10px !important; }
   /* The phone toolbar's home link is 40px: a 44px-tall tap area. */
   :root.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ''; position: absolute; inset: -3px 0; }
   /* (.nav-home is already positioned: absolute. Do not set it to relative - that puts it back in the toolbar's row and wraps the toolbar.) */
