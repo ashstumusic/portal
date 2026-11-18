@@ -83,11 +83,12 @@
       "name": "Ash Stu, Vol. II",
       "albumProductionType": "SelfReleasedAlbum",
       "albumReleaseType": "AlbumRelease",
-      "datePublished": "2026-01-01",
+      "datePublished": "2026-06-12",
       "byArtist": { "@id": "https://ashstu.art/#artist" },
       "image": "https://ashstu.art/Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp",
       "numTracks": 9,
-      "url": "https://music.apple.com/us/album/only-a-baby-vol-2/6779983161",
+      "url": "https://ashstu.art/albums/ash-stu-vol-ii/",
+      "sameAs": ["https://music.apple.com/us/album/only-a-baby-vol-2/6779983161"],
       "track": [
         {"@type":"MusicRecording","name":"Cool Cat Can't Comprehend","position":1,"byArtist":{"@id":"https://ashstu.art/#artist"}},
         {"@type":"MusicRecording","name":"Dirge for Ducklings","position":2,"byArtist":{"@id":"https://ashstu.art/#artist"}},
@@ -2459,7 +2460,10 @@ ytBtn +
 function renderFeatured(rel) {
 if (!rel) return;
 var img = document.querySelector('.featured-art-hero .featured-art');
-if (img) { img.src = rel.art; img.alt = rel.name; }
+if (img) {
+  if (rel.art2x) { img.srcset = encodeURI(rel.art) + ' 504w, ' + encodeURI(rel.art2x) + ' 800w'; img.sizes = '(max-width: 767px) 50vw, 400px'; } else { img.removeAttribute('srcset'); img.removeAttribute('sizes'); }
+  img.src = rel.art; img.alt = rel.name;
+}
 var play = document.getElementById('featured-play');
 if (play) { play.setAttribute('aria-label', 'Play ' + rel.name); play.setAttribute('title', 'Play ' + rel.name); }
 var kicker = document.querySelector('.featured-kicker');

@@ -159,7 +159,10 @@ def inject_featured(page, rel):
         return page
     page = re.sub(
         r'(<img src=")[^"]*(" alt=")[^"]*("\s*class="featured-art featured-art-rounded")',
-        lambda m: m.group(1) + esc(rel['art']) + m.group(2) + esc(rel['name']) + m.group(3),
+        # (a sharper copy for high-resolution screens, when the release has one: the same files the album cards use)
+        lambda m: m.group(1) + esc(rel['art'])
+        + (f'" srcset="{esc(rel["art"].replace(" ", "%20"))} 504w, {esc(rel["art2x"].replace(" ", "%20"))} 800w" sizes="(max-width: 767px) 50vw, 400px' if rel.get('art2x') else '')
+        + m.group(2) + esc(rel['name']) + m.group(3),
         page, count=1,
     )
     page = re.sub(
