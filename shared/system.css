@@ -3337,6 +3337,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    but could not be seen. While the bar is up, the page keeps that strip clear when it scrolls something into view. */
 :root.player-on { scroll-padding-bottom: 88px; }
 @media (max-width: 600px) { :root.player-on { scroll-padding-bottom: 128px; } }
+/* The same at the top, for tabbing back UP the page: the toolbar is fixed over the top of the screen, and the browser
+   put each newly focused control flush with the top edge, its upper part (and the top of its focus ring) under the
+   toolbar. The page now keeps the toolbar's strip clear too. Section links used to get their offset from a margin on
+   every element with an id; that margin moves here (it would otherwise be added to this and land every link too low).
+   (A margin on the controls themselves does not work: several sit inside clipped boxes, which swallow it.) */
+:root { scroll-padding-top: 64px; }
+[id] { scroll-margin-top: 0; }
+.rel-track-wrap { scroll-margin-top: 16px; }
+@media (max-width: 767px) { :root { scroll-padding-top: 56px; } .rel-track-wrap { scroll-margin-top: 24px; } }
 
 /* Section headers boil like the name in the toolbar: the sketched strokes of "Music", "Videos"... are redrawn six
    times a second, each drawing wobbling the lines a little differently (four wobbles in turn, the four SVG filters

@@ -65,6 +65,8 @@ sizes and must stay at zero issues. It only catches about half of real problems:
   focus (a changing value there would be read over the music).
 - While the bar is showing, the page keeps the strip under it clear when scrolling a focused control into view
   (`scroll-padding-bottom`), so focus is never hidden behind it.
+- The toolbar's strip at the top is kept clear the same way (`scroll-padding-top` on the page), for tabbing back
+  up. Section links take their offset from that too: do not add `scroll-margin-top` to sections as well.
 
 ### Full-screen player (dialog)
 - `role="dialog" aria-modal="true"`, labelled "Now playing". Focus moves to "Close player" on opening and back

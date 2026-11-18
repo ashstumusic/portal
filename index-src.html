@@ -1945,6 +1945,22 @@ return rows.sort(function(a, b) { return a.num - b.num; });
    the player (and plays, where the browser allows autoplay; otherwise the
    play button is ready). Songs not out yet just open their lyrics. */
 var _deepDone = false, _deepAt = 0;
+// A link straight to a section (ashstu.art/#videos): the browser picks where to scroll before the page has finished
+// laying out (the quote above Videos is re-fitted when its font arrives and grows by a line's worth), so the sections
+// below it landed about 30px low. Land once more when things have settled, unless the visitor has moved meanwhile.
+(function() {
+  var id = location.hash.slice(1), t = id && document.getElementById(id);
+  if (!t || t.tagName !== 'SECTION') return;
+  var moved = false;
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function(ev) { addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
+  function land() {
+    if (moved) return;
+    var d = t.getBoundingClientRect().top - (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0);
+    if (Math.abs(d) > 4 && Math.abs(d) < 240) t.scrollIntoView({ block: 'start' });
+  }
+  var go = function() { ((document.fonts && document.fonts.ready) || Promise.resolve()).then(function() { setTimeout(land, 1700); }); };
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+})();
 // The name is drawn through a pencil-shading image used as a mask. If that one image fails to load, the browser
 // masks the name to nothing and the first screen has no name at all: show it unshaded instead.
 (function() { var im = new Image(); im.crossOrigin = 'anonymous'; im.onerror = function() { document.documentElement.classList.add('no-hatch'); }; im.src = 'Images/pencil-hatch.webp'; })();
