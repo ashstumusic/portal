@@ -3273,6 +3273,25 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy :is(.fs-player .fs-ctrl, .rel-lyrics-toggle):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-width: 44px !important; min-height: 44px !important; }
   :root.psy .fs-lyrics-list button:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; }
   :root .skip:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 44px !important; display: inline-flex; align-items: center; }
+  /* The video viewer was missed: Close and the two arrows were 40px, and the six dots were 6px with nothing round them.
+     The buttons are 44px here; the dots keep their look and get a tap strip 44px tall and as wide as their spacing. */
+  :root.psy :is(.lb-close, .lb-arrow):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }
+  :root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; }
+  /* The phone toolbar's home link is 40px: a 44px-tall tap area. */
+  :root.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ''; position: absolute; inset: -3px 0; }
+  /* (.nav-home is already positioned: absolute. Do not set it to relative - that puts it back in the toolbar's row and wraps the toolbar.) */
+  :root.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ''; position: absolute; inset: -2px; }
+  /* The toolbar's Settings button (tablets) stays 40px to look at, so the toolbar keeps its fit; its tap area is 44px. */
+  :root.psy .k-tool:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; }
+  :root.psy .k-tool:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ''; position: absolute; inset: -2px; }
+  :root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ''; position: absolute; inset: -19px -3px; }
+}
+
+/* Mini player on touch screens wider than a phone (tablets): its buttons are 40px to look at; phones already had a
+   wider tap area round each, tablets had none. 44px here. (Close uses ::after: its ::before is the drawn x.) */
+@media (pointer: coarse) and (min-width: 601px) {
+  :root.psy #player-bar :is(.np-ctrl, #np-play, .np-close):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; }
+  :root.psy #player-bar :is(.np-ctrl, #np-play):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy #player-bar .np-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ''; position: absolute; inset: -2px; }
 }
 
 /* Mini player between 601 and 740px wide (small tablets, phones on their side). There was room for neither the
