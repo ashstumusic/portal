@@ -56,6 +56,15 @@ Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashst
 - [Ash Stu, Vol. II](https://ashstu.art/albums/ash-stu-vol-ii/): track list, with each song linking to its lyrics
 - [Ash Stu, Vol. I](https://ashstu.art/albums/ash-stu-vol-i/): track list, with each song linking to its lyrics
 
+## Videos
+
+- [Brain Dead Corollary](https://ashstu.art/watch/brain-dead-corollary/): the video, with its words
+- [Theory of Hope](https://ashstu.art/watch/theory-of-hope/): the video, with its words
+- [VCR](https://ashstu.art/watch/vcr/): the video, with its words
+- [Why Have Eyes](https://ashstu.art/watch/why-have-eyes/): the video, with its words
+- [The Cloud for the Desert](https://ashstu.art/watch/the-cloud-for-the-desert/): the video, with its words
+- [The Helpful Raven](https://ashstu.art/watch/the-helpful-raven/): the video, with its words
+
 ## Site
 
 - [Home](https://ashstu.art/): music, videos, press kit and contact

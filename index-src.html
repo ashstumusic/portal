@@ -2060,6 +2060,27 @@ var land = function() { if (moved) return; var c = document.querySelector('.rel-
 setTimeout(land, 450); setTimeout(land, 1100);
 }
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepAlbum, 300); });
+/* Video pages (/watch/<video>/, what a search for the video lands on, and the link to share) are this page with
+   <meta name="deep-video"> naming the video: the page goes to the Videos section, rings that video's card and opens
+   it in the viewer, ready to play (browsers do not let sound start by itself, so it waits for Play). */
+var _videoDone = false;
+function openDeepVideo() {
+if (_videoDone) return;
+var m = document.querySelector('meta[name="deep-video"]');
+if (!m || !m.content || !VIDEO_LIST.length) return;
+var v = VIDEO_LIST.filter(function(x) { return x.title === m.content; })[0];
+if (!v) return;
+var card = document.querySelectorAll('.vid-card')[VIDEO_LIST.indexOf(v)];
+_videoDone = true;
+if (card) {
+  card.classList.add('album-arrived');
+  setTimeout(function() { card.classList.remove('album-arrived'); }, 4200);
+  var top = card.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+  try { card.focus({ preventScroll: true }); } catch (e) {}   // so closing the viewer returns focus to this video's card
+}
+if (!_lbOpen) openLightbox(v);
+}
+(function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepVideo, 350); });
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';

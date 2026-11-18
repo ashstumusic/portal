@@ -48,7 +48,7 @@ jobs:
       - name: Install mutagen
         run: python3 -m pip install --quiet mutagen==1.46.0
 
-      - name: Build static lyric pages, album pages, sitemap entries and robots.txt
+      - name: Build static lyric, album and video pages, sitemap entries and robots.txt
         run: python3 scripts/build_lyrics_pages.py
 
       # The Download button on each release links to a ready-made ZIP kept on
@@ -63,7 +63,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add releases.json videos.json lyrics.json sitemap.xml robots.txt llms.txt lyrics albums
+          git add releases.json videos.json lyrics.json sitemap.xml robots.txt llms.txt lyrics albums watch
           if git diff --cached --quiet; then
             echo "No content changes - nothing to commit."
           else

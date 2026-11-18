@@ -3576,12 +3576,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .album-page:not(#\#):not(#\#):not(#\#):not(#\#) { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; clip-path: inset(50%) !important; white-space: nowrap !important; }
 :root.psy .album-page-tracks ol { display: inline-block; margin: 0; padding: 0 0 0 1.6em; text-align: left; font-size: 18px; line-height: 1.7; }
 :root.psy .album-page-tracks li { margin: 0; }
-:root.psy .rel-card.album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549) !important; outline-offset: 5px !important; }
+:root.psy :is(.rel-card, .vid-card).album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549) !important; outline-offset: 5px !important; }
 @keyframes album-arrive { 0%, 100% { outline-color: rgb(247 197 73 / 1); } 50% { outline-color: rgb(247 197 73 / .25); } }
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) .rel-card.album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { animation: album-arrive 1.4s ease-in-out 2; }
+  :root.psy:not(.psy-calm) :is(.rel-card, .vid-card).album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { animation: album-arrive 1.4s ease-in-out 2; }
 }
-@media (forced-colors: active) { :root.psy .rel-card.album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline-color: Highlight !important; } }
+@media (forced-colors: active) { :root.psy :is(.rel-card, .vid-card).album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline-color: Highlight !important; } }
 
 /* A song title too long for its row, with motion off (reduced motion or Effects off): it cannot scroll, so it wraps
    onto a second line (class set by initMarquees in index-src.html). The row grows to hold it. */

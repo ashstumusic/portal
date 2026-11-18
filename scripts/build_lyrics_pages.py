@@ -90,7 +90,7 @@ def previous_meta(path):
             head = f.read(4000)
     except OSError:
         return None, None
-    h = re.search(r'<meta name="(?:lyrics|album)-hash" content="([0-9a-f]+)"', head)
+    h = re.search(r'<meta name="(?:lyrics|album|video)-hash" content="([0-9a-f]+)"', head)
     d = re.search(r'<meta property="article:modified_time" content="(\d{4}-\d{2}-\d{2})"', head)
     return (h.group(1) if h else None), (d.group(1) if d else None)
 
@@ -363,6 +363,52 @@ def image_facts(url):
     return None, None, mime
 
 
+def share_thumb(rel_path, slug):
+    """The picture link previews should use for a video: a 1280px-wide JPEG in Images/share/ made once from the
+    full-size PNG beside the WebP thumbnail (needs pillow) and committed; without it the WebP is used."""
+    out_rel = 'Images/share/video-' + slug + '.jpg'
+    out = os.path.join(ROOT, out_rel)
+    if not os.path.isfile(out):
+        src = os.path.join(ROOT, os.path.splitext(rel_path)[0] + '.png')
+        try:
+            from PIL import Image
+            with Image.open(src) as im:
+                im = im.convert('RGB')
+                if im.size[0] > 1280: im = im.resize((1280, round(1280 * im.size[1] / im.size[0])), Image.LANCZOS)
+                os.makedirs(os.path.dirname(out), exist_ok=True)
+                im.save(out, 'JPEG', quality=82, optimize=True, progressive=True)
+        except Exception:
+            return SITE + '/' + urllib.parse.quote(rel_path)
+    return SITE + '/' + urllib.parse.quote(out_rel)
+
+
+def vtt_lines(rel_path):
+    """The words of a caption file, one entry per caption, in order."""
+    try:
+        text = open(os.path.join(ROOT, rel_path), encoding='utf-8').read().replace('\r', '')
+    except OSError:
+        return []
+    out = []
+    for block in re.split(r'\n\n+', text):
+        lines = block.split('\n')
+        i = next((k for k, l in enumerate(lines) if '-->' in l), -1)
+        if i < 0:
+            continue
+        words = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', ' '.join(lines[i + 1:]))).strip()
+        if words:
+            out.append(words)
+    return out
+
+
+def video_seconds(rel_path):
+    """Running time of a video in whole seconds, or 0 (no file, or the mutagen library is not installed here)."""
+    try:
+        from mutagen.mp4 import MP4
+        return int(round(MP4(os.path.join(ROOT, rel_path)).info.length))
+    except Exception:
+        return 0
+
+
 def main():
     with open(os.path.join(ROOT, 'releases.json'), encoding='utf-8') as f:
         releases = json.load(f)
@@ -528,7 +574,7 @@ def main():
         vid = videos.get(s['title'].strip().lower())
         # A plain link to YouTube that works with scripts off; with scripts on, index-src.html opens the site's own
         # video viewer instead (data-song-video).
-        watch = (f'<p class="song-page-watch"><a class="vid-yt" href="{esc(vid["youtube"])}" data-song-video="{esc(vid["title"])}">'
+        watch = (f'<p class="song-page-watch"><a class="vid-yt" href="/watch/{slugify(vid["title"])}/" data-song-video="{esc(vid["title"])}">'
                  f'<span class="pt pt--youtube" aria-hidden="true"></span>Watch the video</a></p>\n') if vid and vid.get('youtube') else ''
         article = (f'<article class="song-page" id="song" aria-labelledby="song-h" lang="en">\n'
                    f'<header class="song-page-head">\n<p class="song-page-kicker">Lyrics</p>\n<h1 id="song-h">{esc(s["title"])}</h1>\n'
@@ -660,6 +706,113 @@ def main():
             except OSError:
                 pass
 
+    # ── Video pages ──────────────────────────────────────────────────────────────────────────────────────────────
+    # /watch/<video>/ is a video's own page: what a search for the video lands on, and a link to share. It is the
+    # whole site with <meta name="deep-video"> naming the video; the page script (openDeepVideo in index-src.html)
+    # goes to the Videos section, rings that video and opens it in the viewer, ready to play. The video's facts and
+    # its words (from its caption file) are in the page's own HTML under the page's only <h1>, out of sight like an
+    # album page's heading block. (Not /videos/: the files themselves live in /Videos/, and two folders that differ
+    # only by a capital letter cannot both exist on a Mac or Windows copy of the site.)
+    WATCH = os.path.join(ROOT, 'watch')
+    os.makedirs(WATCH, exist_ok=True)
+    try:
+        with open(os.path.join(ROOT, 'videos.json'), encoding='utf-8') as f:
+            video_list = [v for v in json.load(f) if v.get('title') and v.get('file')]
+    except Exception:
+        video_list = []
+    # upload dates and YouTube embeds are kept in the home page's own structured data: reuse those entries
+    home_nodes = {}
+    try:
+        hp = HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+        for m in re.finditer(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', hp, flags=re.S):
+            for n in (json.loads(m.group(1)).get('@graph') or []):
+                if n.get('@type') == 'VideoObject' and n.get('name'):
+                    home_nodes[n['name'].strip().lower()] = n
+    except Exception:
+        pass
+    song_by_title = {x['title'].strip().lower(): x for x in songs}
+    vslugs, videos_written = {}, []
+    for v in video_list:
+        vs = slugify(v['title'])
+        while vs in vslugs.values():
+            vs += '-video'
+        vslugs[v['title']] = vs
+    for v in video_list:
+        vs = vslugs[v['title']]
+        url = f'{SITE}/watch/{vs}/'
+        words = vtt_lines(v['captions']) if v.get('captions') else []
+        thumb = share_thumb(v['thumb'], vs) if v.get('thumb') else SITE + '/Images/social-card.jpg'
+        secs = video_seconds(v['file'])
+        sg = song_by_title.get(v['title'].strip().lower())
+        base = home_nodes.get(v['title'].strip().lower(), {})
+        title = f"{v['title']} | Video by {ARTIST}"
+        description = f"Watch “{v['title']}”, a music video by {ARTIST} ({ARTIST_FULL})" + (f". Begins: “{words[0]}”" if words else '.')
+        if len(description) > 160:
+            description = description[:159].rsplit(' ', 1)[0].rstrip(' ,.;:“') + '…'
+        digest = hashlib.sha256(('video layout 1' + v['title'] + (v.get('youtube') or '') + v['file'] + '\n'.join(words)
+                                 + (base.get('uploadDate') or '')).encode()).hexdigest()[:16]
+        path = os.path.join(WATCH, vs, 'index.html')
+        old_hash, old_date = previous_meta(path)
+        modified = old_date if (old_hash == digest and old_date) else TODAY
+        others = [o for o in video_list if o is not v]
+        more = ('<nav class="song-page-nav" aria-label="More videos">'
+                + ''.join(f'<a href="/watch/{vslugs[o["title"]]}/">{esc(o["title"])}</a>' for o in others) + '</nav>\n') if others else ''
+        links = []
+        if sg: links.append(f'<a href="/lyrics/{sg["slug"]}/">Lyrics</a>')
+        if v.get('youtube'): links.append(f'<a href="{esc(v["youtube"])}" rel="noopener">YouTube</a>')
+        mins = f' · {secs // 60}:{secs % 60:02d}' if secs else ''
+        article = (f'<article class="song-page album-page video-page" id="video" aria-labelledby="video-h" lang="en">\n'
+                   f'<header class="song-page-head">\n<p class="song-page-kicker">Video</p>\n<h1 id="video-h">{esc(v["title"])}</h1>\n'
+                   f'<p class="song-page-by">Music video by <a href="/">{ARTIST}</a>{mins}'
+                   f'{" · " + " · ".join(links) if links else ""}</p>\n</header>\n'
+                   + (f'<div class="song-page-lyrics" id="video-words">\n<h2 class="sr-only">{esc(v["title"])}: words</h2>\n<p>'
+                      + '<br>\n'.join(esc(w) for w in words) + '</p>\n</div>\n' if words else '')
+                   + more + '</article>')
+        article = article.replace('<a href=', '<a tabindex="-1" href=')   # (out of sight, so out of the Tab order: see the album pages)
+        vid_id = url + '#video'
+        node = {'@type': 'VideoObject', '@id': vid_id, 'name': v['title'],
+                'description': base.get('description') or f'Official music video for "{v["title"]}" by {ARTIST}.',
+                'thumbnailUrl': thumb, 'contentUrl': SITE + '/' + urllib.parse.quote(v['file']), 'url': url, 'inLanguage': 'en',
+                'creator': {'@id': f'{SITE}/#artist'}, 'isFamilyFriendly': True,
+                **({'uploadDate': base['uploadDate']} if base.get('uploadDate') else {}),
+                **({'embedUrl': base['embedUrl']} if base.get('embedUrl') else {}),
+                **({'sameAs': v['youtube']} if v.get('youtube') else {}),
+                **({'duration': f'PT{secs // 60}M{secs % 60}S'} if secs else {}),
+                **({'transcript': ' / '.join(words)} if words else {}),
+                'dateModified': modified}
+        jsonld = {'@context': 'https://schema.org', '@graph': [
+            ARTIST_NODE, node,
+            {'@type': 'WebPage', '@id': url, 'url': url, 'name': title, 'inLanguage': 'en', 'dateModified': modified,
+             'mainEntity': {'@id': vid_id}, 'primaryImageOfPage': thumb,
+             'breadcrumb': {'@type': 'BreadcrumbList', 'itemListElement': [
+                 {'@type': 'ListItem', 'position': 1, 'name': ARTIST, 'item': f'{SITE}/'},
+                 {'@type': 'ListItem', 'position': 2, 'name': v['title'], 'item': url}]}},
+        ]}
+        extra = (f'<meta name="video-hash" content="{digest}">\n'
+                 f'<meta property="article:modified_time" content="{modified}">\n'
+                 f'<meta property="og:video" content="{SITE}/{urllib.parse.quote(v["file"])}">\n'
+                 f'<meta property="og:video:type" content="video/mp4">\n')
+        html = clone_page(title, description, url, thumb, f'Still from the video “{v["title"]}” by {ARTIST}', jsonld,
+                          extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META),
+                          v['title'], None, article, deep_meta='deep-video', og_type='video.other', skip=('#video', 'Skip to the video'))
+        if not html:
+            continue
+        # a wide picture: the large card suits it (song and album pages use the small card for their square covers)
+        html = html.replace('<meta name="twitter:card" content="summary"/>', '<meta name="twitter:card" content="summary_large_image"/>', 1)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        videos_written.append((url, modified, v['title']))
+    live_videos = {u.rstrip('/').rsplit('/', 1)[-1] for u, _, _ in videos_written}
+    for d in os.listdir(WATCH):
+        pth = os.path.join(WATCH, d, 'index.html')
+        if d not in live_videos and os.path.isfile(pth) and 'name="video-hash"' in open(pth, encoding='utf-8').read(4000):
+            os.unlink(pth)
+            try:
+                os.rmdir(os.path.join(WATCH, d))
+            except OSError:
+                pass
+
     # Index of every song, grouped by release.
     groups = []
     for rel in releases:
@@ -718,6 +871,12 @@ def main():
         sm = re.sub(r'  <!-- ALBUMS:START.*?<!-- ALBUMS:END -->', lambda m: a_block, sm, flags=re.S)
     else:
         sm = sm.replace('  <!-- LYRICS:START', a_block + '\n  <!-- LYRICS:START', 1) if '<!-- LYRICS:START' in sm else sm.replace('</urlset>', a_block + '\n</urlset>')
+    v_entries = [f'  <url>\n    <loc>{u}</loc>\n    <lastmod>{m}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>' for u, m, _ in videos_written]
+    v_block = '  <!-- VIDEOS:START (generated by scripts/build_lyrics_pages.py) -->\n' + '\n'.join(v_entries) + '\n  <!-- VIDEOS:END -->'
+    if '<!-- VIDEOS:START' in sm:
+        sm = re.sub(r'  <!-- VIDEOS:START.*?<!-- VIDEOS:END -->', lambda m: v_block, sm, flags=re.S)
+    else:
+        sm = sm.replace('  <!-- LYRICS:START', v_block + '\n  <!-- LYRICS:START', 1) if '<!-- LYRICS:START' in sm else sm.replace('</urlset>', v_block + '\n</urlset>')
     with open(sm_path, 'w', encoding='utf-8') as f:
         f.write(sm)
 
@@ -770,11 +929,13 @@ def main():
             lines += [f'- [{s["title"]}]({SITE}/lyrics/{s["slug"]}/): one-word lookup "{s["word"]}" ({SITE}/{s["word"]}/)' + (' (not released yet)' if s.get('unreleased') else '') for s in rs]
     if albums_written:
         lines += ['', '## Albums', ''] + [f'- [{n}]({u}): track list, with each song linking to its lyrics' for u, _, n in albums_written]
+    if videos_written:
+        lines += ['', '## Videos', ''] + [f'- [{n}]({u}): the video, with its words' for u, _, n in videos_written]
     lines += ['', '## Site', '', f'- [Home]({SITE}/): music, videos, press kit and contact', f'- [Sitemap]({SITE}/sitemap.xml)', '']
     with open(os.path.join(ROOT, 'llms.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
-    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; sitemap, robots.txt and llms.txt updated')
+    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; video pages: {len(videos_written)} -> watch/; sitemap, robots.txt and llms.txt updated')
 
 
 if __name__ == '__main__':
