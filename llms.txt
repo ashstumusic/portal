@@ -65,6 +65,14 @@ Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashst
 - [The Cloud for the Desert](https://ashstu.art/watch/the-cloud-for-the-desert/): the video, with its words
 - [The Helpful Raven](https://ashstu.art/watch/the-helpful-raven/): the video, with its words
 
+## Sections
+
+- [Press Kit](https://ashstu.art/press-kit/)
+- [Contact](https://ashstu.art/contact/)
+- [Music](https://ashstu.art/music/)
+- [Videos](https://ashstu.art/music-videos/)
+- [About](https://ashstu.art/about/)
+
 ## Site
 
 - [Home](https://ashstu.art/): music, videos, press kit and contact

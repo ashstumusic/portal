@@ -2081,6 +2081,24 @@ if (card) {
 if (!_lbOpen) openLightbox(v);
 }
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepVideo, 350); });
+/* Section pages (/press-kit/, /contact/, /music/, /music-videos/, /about/: an address of its own for each section,
+   to share and for search engines) are this page with <meta name="deep-section"> naming the section: the page goes
+   there, as a "#music" link would. It lands once more after the page has settled (the quote above Videos grows by a
+   line when its font arrives), unless the visitor has moved in the meantime. */
+(function() {
+  var m = document.querySelector('meta[name="deep-section"]');
+  var t = m && m.content && document.getElementById(m.content);
+  if (!t) return;
+  var moved = false;
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function(ev) { addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
+  function land() {
+    if (moved) return;
+    var b = document.documentElement.style.scrollBehavior; document.documentElement.style.scrollBehavior = 'auto';
+    t.scrollIntoView({ block: 'start' }); document.documentElement.style.scrollBehavior = b;
+  }
+  var go = function() { setTimeout(land, 300); ((document.fonts && document.fonts.ready) || Promise.resolve()).then(function() { setTimeout(land, 1500); }); };
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+})();
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';

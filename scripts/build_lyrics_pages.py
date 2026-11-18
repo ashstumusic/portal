@@ -90,7 +90,7 @@ def previous_meta(path):
             head = f.read(4000)
     except OSError:
         return None, None
-    h = re.search(r'<meta name="(?:lyrics|album|video)-hash" content="([0-9a-f]+)"', head)
+    h = re.search(r'<meta name="(?:lyrics|album|video|section)-hash" content="([0-9a-f]+)"', head)
     d = re.search(r'<meta property="article:modified_time" content="(\d{4}-\d{2}-\d{2})"', head)
     return (h.group(1) if h else None), (d.group(1) if d else None)
 
@@ -813,6 +813,79 @@ def main():
             except OSError:
                 pass
 
+    # ── Section pages ────────────────────────────────────────────────────────────────────────────────────────────
+    # /press-kit/, /contact/, /music/, /music-videos/ and /about/ are the site opened at one of its sections: an
+    # address of its own for each (a "#music" ending is not an address a search engine lists), to share and to index.
+    # Each is the whole site with <meta name="deep-section"> naming the section's id; the page script
+    # (openDeepSection in index-src.html) goes there. Its heading and a line about it are in the page's own HTML under
+    # the page's only <h1>, out of sight like an album page's. (The videos section is /music-videos/, not /videos/:
+    # the video files live in /Videos/, and two folders differing only by a capital cannot both exist on a Mac or
+    # Windows copy of the site.)
+    kit_mb = ''
+    try:
+        kit_mb = f' (ZIP file, {round(os.path.getsize(os.path.join(ROOT, "ash-stu-press-kit.zip")) / 1048576)} MB)'
+    except OSError:
+        pass
+    album_names = [r['name'] for r in releases if r.get('tracks') or r.get('upcoming')]
+    video_names = [v['title'] for v in video_list]
+    def _join(names):
+        return ', '.join(names[:-1]) + (' and ' if len(names) > 1 else '') + names[-1] if names else ''
+    SECTION_PAGES = [
+        ('press-kit', 'epk', 'Press Kit', 'WebPage',
+         f'Press kit for {ARTIST} ({ARTIST_FULL}), outsider singer-songwriter from Guthrie, Oklahoma: songs, photos and logo for booking and press, in one download{kit_mb}.',
+         [f'<a href="/ash-stu-press-kit.zip">Download the press kit{kit_mb}</a>']),
+        ('contact', 'contact', 'Contact', 'ContactPage',
+         f'Contact {ARTIST} ({ARTIST_FULL}) for shows, press or anything else: ashstumusic@gmail.com.',
+         ['<a href="mailto:ashstumusic@gmail.com">ashstumusic@gmail.com</a>']),
+        ('music', 'music', 'Music', 'CollectionPage',
+         f'Music by {ARTIST}: the albums {_join(album_names)}. Listen on the site, read the lyrics and download each album.',
+         [f'<a href="/albums/{album_slugs[n]}/">{esc(n)}</a>' for n in album_names if n in album_slugs]),
+        ('music-videos', 'videos', 'Videos', 'CollectionPage',
+         f'Music videos by {ARTIST}: {_join(video_names)}.',
+         [f'<a href="/watch/{vslugs[n]}/">{esc(n)}</a>' for n in video_names if n in vslugs]),
+        ('about', 'about', 'About', 'AboutPage',
+         f'About {ARTIST}: outsider singer-songwriter from Guthrie, Oklahoma, formerly known as {ARTIST_FULL}.',
+         []),
+    ]
+    sections_written = []
+    card = SITE + '/Images/social-card.jpg'
+    for slug, sec_id, name, ld_type, description, links in SECTION_PAGES:
+        url = f'{SITE}/{slug}/'
+        title = f'{name} | {ARTIST}'
+        if len(description) > 160:
+            description = description[:159].rsplit(' ', 1)[0].rstrip(' ,.;:') + '…'
+        digest = hashlib.sha256(('section layout 1' + slug + sec_id + name + description + ''.join(links)).encode()).hexdigest()[:16]
+        path = os.path.join(ROOT, slug, 'index.html')
+        old_hash, old_date = previous_meta(path)
+        modified = old_date if (old_hash == digest and old_date) else TODAY
+        others = [(sl, nm) for sl, _, nm, _, _, _ in SECTION_PAGES if sl != slug]
+        article = (f'<article class="song-page album-page section-page" id="section" aria-labelledby="section-h" lang="en">\n'
+                   f'<header class="song-page-head">\n<p class="song-page-kicker">{ARTIST}</p>\n<h1 id="section-h">{esc(name)}</h1>\n'
+                   f'<p class="song-page-by">{esc(description)}</p>\n</header>\n'
+                   + ('<ul>\n' + '\n'.join(f'<li>{l}</li>' for l in links) + '\n</ul>\n' if links else '')
+                   + '<nav class="song-page-nav" aria-label="More sections">' + ''.join(f'<a href="/{sl}/">{esc(nm)}</a>' for sl, nm in others) + '</nav>\n</article>')
+        article = article.replace('<a href=', '<a tabindex="-1" href=')   # (out of sight, so out of the Tab order: see the album pages)
+        jsonld = {'@context': 'https://schema.org', '@graph': [
+            ARTIST_NODE,
+            {'@type': ld_type, '@id': url, 'url': url, 'name': title, 'description': description, 'inLanguage': 'en', 'dateModified': modified,
+             'about': {'@id': f'{SITE}/#artist'}, 'isPartOf': {'@type': 'WebSite', 'url': f'{SITE}/', 'name': ARTIST}, 'primaryImageOfPage': card,
+             'breadcrumb': {'@type': 'BreadcrumbList', 'itemListElement': [
+                 {'@type': 'ListItem', 'position': 1, 'name': ARTIST, 'item': f'{SITE}/'},
+                 {'@type': 'ListItem', 'position': 2, 'name': name, 'item': url}]}},
+        ]}
+        extra = (f'<meta name="section-hash" content="{digest}">\n'
+                 f'<meta property="article:modified_time" content="{modified}">\n')
+        html = clone_page(title, description, url, card, f'{ARTIST} ({ARTIST_FULL}) - Outsider singer-songwriter from Guthrie, Oklahoma', jsonld,
+                          extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META),
+                          sec_id, None, article, deep_meta='deep-section', og_type='website', skip=('#' + sec_id, f'Skip to {name}'))
+        if not html:
+            continue
+        html = html.replace('<meta name="twitter:card" content="summary"/>', '<meta name="twitter:card" content="summary_large_image"/>', 1)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        sections_written.append((url, modified, name))
+
     # Index of every song, grouped by release.
     groups = []
     for rel in releases:
@@ -871,6 +944,12 @@ def main():
         sm = re.sub(r'  <!-- ALBUMS:START.*?<!-- ALBUMS:END -->', lambda m: a_block, sm, flags=re.S)
     else:
         sm = sm.replace('  <!-- LYRICS:START', a_block + '\n  <!-- LYRICS:START', 1) if '<!-- LYRICS:START' in sm else sm.replace('</urlset>', a_block + '\n</urlset>')
+    s_entries = [f'  <url>\n    <loc>{u}</loc>\n    <lastmod>{m}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>' for u, m, _ in sections_written]
+    s_block = '  <!-- SECTIONS:START (generated by scripts/build_lyrics_pages.py) -->\n' + '\n'.join(s_entries) + '\n  <!-- SECTIONS:END -->'
+    if '<!-- SECTIONS:START' in sm:
+        sm = re.sub(r'  <!-- SECTIONS:START.*?<!-- SECTIONS:END -->', lambda m: s_block, sm, flags=re.S)
+    else:
+        sm = sm.replace('  <!-- ALBUMS:START', s_block + '\n  <!-- ALBUMS:START', 1) if '<!-- ALBUMS:START' in sm else sm.replace('</urlset>', s_block + '\n</urlset>')
     v_entries = [f'  <url>\n    <loc>{u}</loc>\n    <lastmod>{m}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>' for u, m, _ in videos_written]
     v_block = '  <!-- VIDEOS:START (generated by scripts/build_lyrics_pages.py) -->\n' + '\n'.join(v_entries) + '\n  <!-- VIDEOS:END -->'
     if '<!-- VIDEOS:START' in sm:
@@ -931,11 +1010,13 @@ def main():
         lines += ['', '## Albums', ''] + [f'- [{n}]({u}): track list, with each song linking to its lyrics' for u, _, n in albums_written]
     if videos_written:
         lines += ['', '## Videos', ''] + [f'- [{n}]({u}): the video, with its words' for u, _, n in videos_written]
+    if sections_written:
+        lines += ['', '## Sections', ''] + [f'- [{n}]({u})' for u, _, n in sections_written]
     lines += ['', '## Site', '', f'- [Home]({SITE}/): music, videos, press kit and contact', f'- [Sitemap]({SITE}/sitemap.xml)', '']
     with open(os.path.join(ROOT, 'llms.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
-    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; video pages: {len(videos_written)} -> watch/; sitemap, robots.txt and llms.txt updated')
+    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; video pages: {len(videos_written)} -> watch/; section pages: {len(sections_written)}; sitemap, robots.txt and llms.txt updated')
 
 
 if __name__ == '__main__':
