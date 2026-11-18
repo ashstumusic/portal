@@ -3028,18 +3028,23 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    list in every state (grayscale 1 -> 0) so the hover fade interpolates. */
 :root[data-theme="dark"] .epk-photos img { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
 :root[data-theme="dark"] .bio-card-media img.bio-media-main { filter: brightness(.88) contrast(1.06); }
-:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main) { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main) { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)) saturate(1); }
 :root[data-theme="dark"] .bio-card-media img:not(.bio-media-main):hover,
-:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main).bio-revealed { filter: grayscale(0) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
-:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
+:root[data-theme="dark"] .bio-card-media img:not(.bio-media-main).bio-revealed { filter: grayscale(0) brightness(var(--tone-bc, var(--tone-b, .88))) contrast(var(--tone-cc, var(--tone-c, 1.06))) saturate(var(--tone-sc, 1)); }
+:root[data-theme="dark"] .bio-card-media img:last-child { filter: grayscale(1) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)) saturate(1); }
 :root[data-theme="dark"] .bio-card-media img:last-child:hover,
-:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(var(--tone-b, .88)) contrast(var(--tone-c, 1.06)); }
+:root[data-theme="dark"] .bio-card-media img:last-child.bio-revealed { filter: grayscale(0) brightness(var(--tone-bc, var(--tone-b, .88))) contrast(var(--tone-cc, var(--tone-c, 1.06))) saturate(var(--tone-sc, 1)); }
 
 /* Black-and-white photos, normalised: each shot gets its own brightness and contrast so the set reads as one roll of
-   film (same average grey and the same spread from dark to light, measured as drawn on the page). The colour state
-   keeps the same values, so the hover fade changes colour only. Re-measure if a photo is replaced. */
+   film (same average grey and the same spread from dark to light, measured as drawn on the page). Re-measure if a photo is replaced.
+   (The colour state has its own values, further down, matched to the colour portrait.) */
 .bio-card-media img[src*="Profile-4"] { --tone-b: .96; --tone-c: 1.2; }
 .bio-card-media img[src*="Profile-6"] { --tone-b: 1.1; --tone-c: 1; }
+/* The colour state (hover, tap) has its own values, so the two shots sit with the colour portrait beside them: that
+   portrait is soft and matte, while the guitar shot in colour was punchy and saturated and the piano shot was dark.
+   (--tone-bc brightness, --tone-cc contrast, --tone-sc saturation; the black-and-white values above are untouched.) */
+.bio-card-media img[src*="Profile-4"] { --tone-bc: 1.02; --tone-cc: 1.0; --tone-sc: .78; }
+.bio-card-media img[src*="Profile-6"] { --tone-bc: 1.32; --tone-cc: .94; --tone-sc: 1.0; }
 .epk-photos img[src*="studio-session"] { --tone-b: 1.22; }
 .epk-photos img[src*="portrait"] { --tone-b: .71; }
 .epk-photos img[src*="epk-ash-stu-piano"] { --tone-b: .9; }
