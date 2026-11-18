@@ -117,9 +117,12 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - Printed, a lyric page is the song alone: title, credit, words, short address.
 
 ### Album pages
-- `/albums/<album>/` is the whole site opened at one album: its heading is the page's only `<h1>`, the skip link is
-  "Skip to the album", and its plain track list (each song a link to its lyrics page) stays in the HTML for screen
-  readers when the real tracklist opens (`.sr-only`, never removed).
+- `/albums/<album>/` is the whole site opened at one album. Its heading block (the page's only `<h1>`, the album's
+  facts and a plain track list linking to each song's lyrics page) is hidden from sight at the owner's request but
+  kept for screen readers and search engines; because it cannot be seen, its links are out of the Tab order. The
+  skip link is "Skip to the album".
+- Search also looks through the videos' transcripts (their caption files, fetched the first time search is used).
+  A transcript line is tagged "Video" and opens that video at that line.
 - On arrival the album is ringed for about four seconds. The ring is an outline, so it is never the only cue (the
   page has also scrolled to the album and opened it); it pulses only when motion is allowed and uses the system
   highlight colour in forced colours.

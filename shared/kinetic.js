@@ -292,6 +292,53 @@
     }));
     return out;
   }
+  // Video transcripts: every line of every video's captions (Videos/Captions/*.vtt, the same files the video viewer
+  // shows as captions) can be searched like a lyric. Picking one opens that video at that line. One of the videos is
+  // a song that is on no album, so its words could not be found any other way. The caption files are small text
+  // files, fetched once, the first time the search field is used (never on page load); results appear as soon as
+  // they have arrived.
+  let transcripts = null, transcriptsBusy = false, transcriptsReady = null;
+  function parseVtt(text) {
+    const out = [], blocks = String(text || '').replace(/\r/g, '').split(/\n\n+/);
+    for (const b of blocks) {
+      const lines = b.split('\n'), ti = lines.findIndex((l) => l.includes('-->'));
+      if (ti < 0) continue;
+      const m = lines[ti].match(/(?:(\d+):)?(\d{1,2}):(\d{2})[.,](\d{1,3})\s*-->/);
+      if (!m) continue;
+      const at = (+(m[1] || 0)) * 3600 + (+m[2]) * 60 + (+m[3]) + (+m[4]) / 1000;
+      const words = lines.slice(ti + 1).join(' ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+      if (words) out.push({ at, text: words });
+    }
+    return out;
+  }
+  function loadTranscripts() {
+    if (transcripts || transcriptsBusy) return;
+    const V = window.VIDEO_LIST;
+    if (!Array.isArray(V) || !V.some((v) => v && v.captions) || typeof fetch !== 'function') return;
+    transcriptsBusy = true;
+    Promise.all(V.map((v) => (v && v.captions) ? fetch(encodeURI(v.captions)).then((r) => (r.ok ? r.text() : '')).catch(() => '') : Promise.resolve('')))
+      .then((texts) => { transcripts = texts.map(parseVtt); transcriptsBusy = false; if (transcriptsReady) transcriptsReady(); });
+  }
+  function transcriptItems() {
+    const V = window.VIDEO_LIST, out = [];
+    if (!transcripts || !Array.isArray(V) || typeof window.openLightbox !== 'function') return out;
+    transcripts.forEach((cues, vi) => {
+      const v = V[vi]; if (!v || !cues.length) return;
+      const seen = new Set();
+      for (const c of cues) {
+        const key = c.text.toLowerCase(); if (seen.has(key)) continue; seen.add(key);
+        out.push({ group: 'Videos', tag: 'Video', line: true, title: c.text, sub: v.title + ' (video)',
+          own: `${c.text} video videos transcript transcripts caption captions words line lines`.toLowerCase(),
+          run: () => {
+            window.openLightbox(v);
+            const el = doc.getElementById('lb-video'); if (!el) return;
+            const seek = () => { try { el.currentTime = Math.max(0, c.at - .3); } catch {} };
+            if (el.readyState >= 1) seek(); else el.addEventListener('loadedmetadata', seek, { once: true });
+          } });
+      }
+    });
+    return out;
+  }
   // One-word song lookups (scripts/song_keys.py): every song has a word of its own ("cloud" is The Cloud for the Desert).
   // "ash stu" in front of other words is ignored, so "ash stu cloud" works the way it would in a search engine.
   // Returns the words to search with and, when one of them is a song's word, that song as a result to show first
@@ -469,7 +516,7 @@
         const asked = q.some((w) => 'lyrics'.startsWith(w) && w.length >= 3);
         hits = hits.concat(lyrics.filter((i) => { const own = i.own || (i.own = `${i.title} lyric lyrics words line lines`.toLowerCase()), all = i.hay || (i.hay = hayOf(i)); const hay = asked ? all : own; return q.every((w) => hay.includes(w)); }).slice(0, 25));
       }
-      if (q.length) { const rank = (i) => (i.tag === 'Lyric' ? 0 : 2) + (i.title.toLowerCase().startsWith(q[0]) ? 1 : 0); hits.sort((a, b) => rank(b) - rank(a)); }
+      if (q.length) { const rank = (i) => ((i.tag === 'Lyric' || i.line) ? 0 : 2) + (i.title.toLowerCase().startsWith(q[0]) ? 1 : 0); hits.sort((a, b) => rank(b) - rank(a)); }
       if (sw.top) hits = [sw.top].concat(hits.filter((i) => i !== sw.top && !(i.tag === 'Song' && i.title === sw.top.title)));
       hits = hits.slice(0, q.length ? 50 : 12);
       act = Math.min(act, Math.max(0, hits.length - 1));
@@ -478,7 +525,7 @@
         const li = doc.createElement('li'); li.className = 'k-si-opt'; li.id = id + '-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === act));
         const t = doc.createElement('span'); t.className = 'k-si-t'; t.textContent = it.title; const u = doc.createElement('span'); u.className = 'k-si-sub'; u.textContent = it.sub || '';
         const g = doc.createElement('span'); g.className = 'k-si-tag'; g.dataset.tag = it.tag; g.textContent = it.tag;
-        li.dataset.tag = it.tag; li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
+        li.dataset.tag = it.tag; if (it.line) li.dataset.line = "1"; li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
       });
       if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches. Try a song title or a few words of a lyric.'; frag.append(e); }
       ul.replaceChildren(frag); ul.hidden = false; host.classList.add('open');
@@ -490,7 +537,11 @@
       /* A song or lyric starts playing in the bar at the bottom. From the toolbar field, focus used to be left on nothing
          (the next Tab started again from the top of the page): it goes to the bar's Play/Pause, the control for what just began. */
       if (!flow && (it.tag === 'Song' || it.tag === 'Lyric')) setTimeout(() => { const b = doc.getElementById('np-play'); if (b && b.checkVisibility && b.checkVisibility() && doc.activeElement === doc.body) b.focus({ preventScroll: true }); }, 120); }
-    inp.addEventListener('focus', () => { items = gatherItems(); lyrics = lyricItems(); act = 0; draw(); });
+    inp.addEventListener('focus', () => {
+      items = gatherItems(); lyrics = lyricItems().concat(transcriptItems()); act = 0; draw();
+      // (the transcripts are fetched the first time the field is used; when they arrive, the open list is redrawn with them)
+      if (!transcripts) { transcriptsReady = () => { if (doc.activeElement === inp) { lyrics = lyricItems().concat(transcriptItems()); draw(); } }; loadTranscripts(); }
+    });
     inp.addEventListener('input', () => { act = 0; draw(); });
     inp.addEventListener('keydown', (e) => {
       const open = !ul.hidden;

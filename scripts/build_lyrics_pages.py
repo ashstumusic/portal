@@ -616,6 +616,10 @@ def main():
                    f'<div class="song-page-lyrics album-page-tracks" id="album-tracks">\n<h2 class="sr-only">{esc(rel["name"])}: track list</h2>\n'
                    f'<ol>\n' + '\n'.join(items) + '\n</ol>\n</div>\n'
                    + more + '</article>')
+        # The owner does not want this block on the page: the album itself (its card, opened and ringed) is the page.
+        # It stays in the HTML for crawlers and screen readers and is hidden from sight by the stylesheet (.album-page),
+        # so its links are taken out of the Tab order (focus must never land on something that cannot be seen).
+        article = article.replace('<a href=', '<a tabindex="-1" href=')
         album_id = url + '#album'
         jsonld = {'@context': 'https://schema.org', '@graph': [
             ARTIST_NODE,
