@@ -2741,10 +2741,14 @@ ctx.globalAlpha = 1;
 rafId = requestAnimationFrame(draw);
 }
 function calm() { return document.documentElement.classList.contains('psy-calm'); }
-function start() { if (!running && !calm()) { running = true; rafId = requestAnimationFrame(draw); } }
+// Drawn only while the panel is on screen. (start() used to be called by the class watcher below on ANY change to the
+// page's classes - a song starting adds one - without asking whether the panel was in view: scrolled down with music
+// playing, this loop then ran 60 times a second out of sight for as long as the visitor stayed there.)
+let onScreen = true;
+function start() { if (!running && !calm() && onScreen && !document.hidden) { running = true; rafId = requestAnimationFrame(draw); } }
 function stop() { running = false; if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
 start();
-if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { entries[0].isIntersecting ? start() : stop(); }).observe(cvs); }
+if ('IntersectionObserver' in window) { new IntersectionObserver(function(entries) { onScreen = entries[0].isIntersecting; onScreen ? start() : stop(); }).observe(cvs); }
 document.addEventListener('visibilitychange', function() { document.hidden ? stop() : start(); });
 // Effects off (search: "Turn effects off"): no fireworks or confetti.
 new MutationObserver(function() { if (calm()) { stop(); for (const c of [cvs, fcvs]) if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); } else start(); })
