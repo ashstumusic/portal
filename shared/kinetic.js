@@ -552,7 +552,7 @@
   doc.addEventListener('keydown', (e) => {
     const typing = /^(input|textarea|select)$/i.test(doc.activeElement?.tagName || '') || doc.activeElement?.isContentEditable;
     if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) { if (dlg.open) closePalette(false); barSearch.focus(); barSearch.select(); } else if (!dlg.open) openPalette({ menu: true }); else closePalette(); }
-    else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) barSearch.focus(); else openPalette({ menu: true }); }
+    else if (e.key === '/' && !typing && !dlg.open && !e.metaKey && !e.ctrlKey && !e.altKey && !doc.querySelector('#fs-player.open, #vid-lightbox.open')) { e.preventDefault(); if (barSearch && barSearch.offsetWidth) barSearch.focus(); else openPalette({ menu: true }); }
   });
   for (const b of $$('.k-search-btn')) b.addEventListener('click', () => openPalette());
   // the one menu button: opens the box as the menu (search field + sections + settings)
@@ -596,10 +596,18 @@
       const k = textOf(a).trim()[0]?.toLowerCase();
       if (t && k && !map[k]) map[k] = t;
     }
+    // Sections with a heading but no toolbar button (About) are listed in search with a "G, A" hint: honour it.
+    for (const sec of $$('main section[id][aria-labelledby]')) {
+      const h = doc.getElementById(sec.getAttribute('aria-labelledby')), k = h && textOf(h).trim()[0]?.toLowerCase();
+      if (k && !map[k]) map[k] = sec;
+    }
     return map;
   };
   doc.addEventListener('keydown', (e) => {
     if (!keysOn || dlg.open || e.metaKey || e.ctrlKey || e.altKey) return;
+    // (not while the full-screen player or the video viewer is up: the page behind them is switched off, and
+    // "G, M" used to scroll it anyway, unseen, so closing the player left the visitor somewhere else)
+    if (doc.querySelector('#fs-player.open, #vid-lightbox.open')) { gPending = 0; return; }
     const el = doc.activeElement;
     if (/^(input|textarea|select)$/i.test(el?.tagName || '') || el?.isContentEditable || el?.closest?.('dialog[open]')) return;
     const k = e.key.toLowerCase();
