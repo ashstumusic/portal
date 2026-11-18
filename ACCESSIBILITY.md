@@ -48,6 +48,8 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - A combobox (`role="combobox"`, `aria-expanded`, `aria-controls`, `aria-activedescendant`) with a listbox of
   options. Arrow keys move, Enter opens, Escape clears then closes.
 - The number of suggestions is announced politely after typing pauses ("3 suggestions", "0 suggestions").
+- Choosing a song or a lyric from the toolbar field starts it in the mini player and moves focus to its Play/Pause
+  button (focus is never left on nothing).
 
 ### Album cards
 - Cover button: named "Play <album>" / "Pause <album>" and plays or pauses with Enter or Space. With a mouse or

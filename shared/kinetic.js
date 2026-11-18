@@ -486,7 +486,10 @@
       clearTimeout(cT); cT = setTimeout(() => announce(`${hits.length} suggestion${hits.length === 1 ? '' : 's'}`), 500);
     }
     function mark(i) { if (!hits.length) return; act = (i + hits.length) % hits.length; for (const o of $$('.k-si-opt', ul)) o.setAttribute('aria-selected', String(o.id === id + '-' + act)); inp.setAttribute('aria-activedescendant', id + '-' + act); $('#' + id + '-' + act, ul)?.scrollIntoView({ block: 'nearest' }); }
-    function pick(i) { const it = hits[i]; if (!it) return; inp.value = ''; shut(); if (opt && opt.onQuery) opt.onQuery(false); inp.blur(); if (opt && opt.beforeRun) opt.beforeRun(); it.run(); }
+    function pick(i) { const it = hits[i]; if (!it) return; inp.value = ''; shut(); if (opt && opt.onQuery) opt.onQuery(false); inp.blur(); if (opt && opt.beforeRun) opt.beforeRun(); it.run();
+      /* A song or lyric starts playing in the bar at the bottom. From the toolbar field, focus used to be left on nothing
+         (the next Tab started again from the top of the page): it goes to the bar's Play/Pause, the control for what just began. */
+      if (!flow && (it.tag === 'Song' || it.tag === 'Lyric')) setTimeout(() => { const b = doc.getElementById('np-play'); if (b && b.checkVisibility && b.checkVisibility() && doc.activeElement === doc.body) b.focus({ preventScroll: true }); }, 120); }
     inp.addEventListener('focus', () => { items = gatherItems(); lyrics = lyricItems(); act = 0; draw(); });
     inp.addEventListener('input', () => { act = 0; draw(); });
     inp.addEventListener('keydown', (e) => {
