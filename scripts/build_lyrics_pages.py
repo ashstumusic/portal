@@ -331,7 +331,34 @@ def image_facts(url):
         with Image.open(path) as im:
             return im.size[0], im.size[1], mime
     except Exception:
-        return None, None, mime
+        pass
+    # No pillow (the update-content GitHub Action does not install it): read the size from the file's own header, so
+    # the pages come out the same there as on a computer that has it. (Without this every Action run took the
+    # og:image width and height out of all the lyric pages, and the next local build put them back.)
+    try:
+        import struct
+        with open(path, 'rb') as f:
+            head = f.read(32)
+            if head[:8] == b'\x89PNG\r\n\x1a\n':
+                w, h = struct.unpack('>II', head[16:24]); return w, h, mime
+            if head[:4] == b'RIFF' and head[8:12] == b'WEBP':
+                kind = head[12:16]
+                if kind == b'VP8X': return 1 + int.from_bytes(head[24:27], 'little'), 1 + int.from_bytes(head[27:30], 'little'), mime
+                if kind == b'VP8 ': return struct.unpack('<H', head[26:28])[0] & 0x3FFF, struct.unpack('<H', head[28:30])[0] & 0x3FFF, mime
+                if kind == b'VP8L':
+                    b = int.from_bytes(head[21:25], 'little'); return 1 + (b & 0x3FFF), 1 + ((b >> 14) & 0x3FFF), mime
+            if head[:2] == b'\xff\xd8':
+                f.seek(2)
+                while True:
+                    m = f.read(4)
+                    if len(m) < 4 or m[0] != 0xFF: break
+                    size = struct.unpack('>H', m[2:4])[0]
+                    if 0xC0 <= m[1] <= 0xCF and m[1] not in (0xC4, 0xC8, 0xCC):
+                        d = f.read(5); h, w = struct.unpack('>HH', d[1:5]); return w, h, mime
+                    f.seek(size - 2, 1)
+    except Exception:
+        pass
+    return None, None, mime
 
 
 def main():
