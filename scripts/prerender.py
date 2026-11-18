@@ -128,7 +128,8 @@ def render_video_card(v, v_idx):
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
                    f'<span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>')
     if v.get('thumb'):
-        thumb_el = f'<img src="{esc(v["thumb"])}" alt="Music video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
+        srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1024w" sizes="(max-width: 600px) 92vw, 400px"' if v.get('thumb2x') else '')
+        thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Music video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
     return (f'<div class="vid-card-wrap">'

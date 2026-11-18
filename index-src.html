@@ -2384,7 +2384,7 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '" alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
+? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
 : '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/

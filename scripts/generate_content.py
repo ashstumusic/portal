@@ -235,6 +235,9 @@ def gen_videos():
             'youtube': youtube,
             'captions': cap.replace(os.sep, '/') if os.path.isfile(cap) else None,
             'thumb': find_thumb(base),
+            # A sharper copy of the thumbnail for high-resolution screens, if one has been made
+            # (Videos/Thumbnails/<name>-1024.webp); listed only when the file exists.
+            **({'thumb2x': f'Videos/Thumbnails/{base}-1024.webp'} if os.path.isfile(os.path.join('Videos', 'Thumbnails', base + '-1024.webp')) else {}),
             '_sort': git_first_added_epoch(path),
         })
     # Optional Videos/order.txt: one video title per line, top first.

@@ -4,14 +4,16 @@
     "file": "Videos/Brain Dead Corollary.mp4",
     "youtube": "https://youtu.be/SU1zjY0_skg",
     "captions": "Videos/Captions/Brain Dead Corollary.vtt",
-    "thumb": "Videos/Thumbnails/Brain Dead Corollary.webp"
+    "thumb": "Videos/Thumbnails/Brain Dead Corollary.webp",
+    "thumb2x": "Videos/Thumbnails/Brain Dead Corollary-1024.webp"
   },
   {
     "title": "Theory of Hope",
     "file": "Videos/Theory of Hope.mp4",
     "youtube": "https://youtu.be/twQA1tZK9GI",
     "captions": "Videos/Captions/Theory of Hope.vtt",
-    "thumb": "Videos/Thumbnails/Theory of Hope.webp"
+    "thumb": "Videos/Thumbnails/Theory of Hope.webp",
+    "thumb2x": "Videos/Thumbnails/Theory of Hope-1024.webp"
   },
   {
     "title": "VCR",
@@ -25,14 +27,16 @@
     "file": "Videos/Why Have Eyes.mp4",
     "youtube": "https://youtu.be/YB-GkZ3C-6U",
     "captions": "Videos/Captions/Why Have Eyes.vtt",
-    "thumb": "Videos/Thumbnails/Why Have Eyes.webp"
+    "thumb": "Videos/Thumbnails/Why Have Eyes.webp",
+    "thumb2x": "Videos/Thumbnails/Why Have Eyes-1024.webp"
   },
   {
     "title": "The Cloud for the Desert",
     "file": "Videos/The Cloud for the Desert.mp4",
     "youtube": "https://youtu.be/hyWst3-CvFo",
     "captions": "Videos/Captions/The Cloud for the Desert.vtt",
-    "thumb": "Videos/Thumbnails/The Cloud for the Desert.webp"
+    "thumb": "Videos/Thumbnails/The Cloud for the Desert.webp",
+    "thumb2x": "Videos/Thumbnails/The Cloud for the Desert-1024.webp"
   },
   {
     "title": "The Helpful Raven",
