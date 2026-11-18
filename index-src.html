@@ -1037,6 +1037,15 @@ updatePlayUI();
 function npPrev() {
 if (!pState.playlist.length) return;
 if (npAudio.currentTime > 3) { npAudio.currentTime = 0; return; }
+// First song of a release: go back to the last song of the release before it - the mirror of Next carrying on into
+// the following release (it used to jump to the last song of the SAME release, so Next then Previous did not return).
+if (!pState.shuffle && pState.plIdx === 0) {
+  var first = pState.playlist[0], from = first ? first.releaseIdx : pState.releaseIdx;
+  for (var k = 1; k < RELEASE_LIST.length; k++) {
+    var pi = (from - k + RELEASE_LIST.length) % RELEASE_LIST.length, pr = RELEASE_LIST[pi];
+    if (pr && pr.tracks && pr.tracks.length) { playTrack(pi, pr.tracks.length - 1); return; }
+  }
+}
 // With shuffle on, Previous goes back to the song that was actually heard before this one, not the one before it on the album.
 var prevIdx = (pState.shuffle && _npBagFor === pState.playlist && _npHist.length) ? _npHist.pop() : (pState.plIdx - 1 + pState.playlist.length) % pState.playlist.length;
 pState.plIdx = prevIdx;
