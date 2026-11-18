@@ -2223,14 +2223,10 @@ html { overscroll-behavior-y: none; }
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent; touch-action: manipulation; cursor: pointer;
 }
-:root.psy #hero-brand .hero-name { transition: scale .18s cubic-bezier(.2, .9, .3, 1.2); }
-:root.psy #hero-brand:active .hero-name { scale: .975; transition-duration: .06s; }
-@media (prefers-reduced-motion: reduce) { :root.psy #hero-brand:active .hero-name { scale: none; } }
-/* The About card's "Ash Stu" (a link back to the top) presses the same way, and is not selectable text either. */
+/* (It used to give a small press - shrink and spring back - when clicked or touched, here and in About. Removed at
+   the owner's request: the name does not move when pressed.) */
+/* The About card's "Ash Stu" is not selectable text either. */
 :root.psy .bio-name, :root.psy .bio-name .bio-name-link { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; cursor: default; }
-:root.psy .bio-name { transition: scale .18s cubic-bezier(.2, .9, .3, 1.2); transform-origin: 50% 50%; }
-:root.psy .bio-name:active { scale: .975; transition-duration: .06s; }
-@media (prefers-reduced-motion: reduce) { :root.psy .bio-name:active { scale: none; } }
 
 /* Featured release: its name, a little larger. */
 :root.psy #party .featured-title:not(#\#):not(#\#) { font-size: 34px !important; line-height: 1.12 !important; }
