@@ -3544,6 +3544,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 10px !important; }
 }
 
+/* Hidden means hidden. The button rules set `display` with !important, which beat the `hidden` attribute: the
+   full-screen player's Lyrics button stayed on screen for a song that has no lyrics (pressing it lit it up and showed
+   nothing), and the cover image would have stayed for a release without a cover. No button style may outrank `hidden`. */
+:root [hidden]:not([hidden="until-found"]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be

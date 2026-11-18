@@ -15,6 +15,8 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - A control does from the keyboard exactly what its icon shows.
 - State is never shown by colour alone: use text ("On"/"Off"), an outline, or an ARIA state as well.
 - Nothing essential depends on motion, hover or a pointer.
+- The `hidden` attribute always wins: no style may display an element that is marked hidden (a site-wide rule in
+  `shared/system.css` enforces it).
 
 ## Components
 
