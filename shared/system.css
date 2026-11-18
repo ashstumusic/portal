@@ -3572,6 +3572,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 10px !important; }
 }
 
+/* Reduced transparency: the three big glass panels too. The buttons and the menu already went solid with this setting;
+   the toolbar, the player bar and the full-screen player (and the small "Now playing" chip) stayed see-through and
+   blurred. Same colours, fully opaque, no blur. */
+@media (prefers-reduced-transparency: reduce) {
+  :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-color: rgb(16, 18, 24) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  :root.psy :is(#player-bar, #fs-player):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-color: rgb(20, 22, 28) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  :root.psy .party-eq:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-color: rgb(8, 12, 14) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+}
+
 /* Forced colours: the video viewer's backdrop is solid. (It is 92% opaque normally; in this mode the page's own words
    showed through it behind the video's title.) Its moving static is switched off there as well. */
 @media (forced-colors: active) {
