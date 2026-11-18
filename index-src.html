@@ -390,8 +390,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
-        <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/Profile-4-720.webp" srcset="Images/Profile-4-720.webp 720w, Images/Profile-4-1000.webp 1000w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/></span>
-        <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/Profile-6-720.webp" srcset="Images/Profile-6-720.webp 720w, Images/Profile-6-1000.webp 1000w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu at the piano" width="360" height="402"/></span>
+        <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/Profile-4-720.webp" srcset="Images/Profile-4-720.webp 720w, Images/Profile-4-800.webp 800w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/></span>
+        <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/Profile-6-720.webp" srcset="Images/Profile-6-720.webp 720w, Images/Profile-6-800.webp 800w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu at the piano" width="360" height="402"/></span>
       </div>
     </div>
   </div>
@@ -738,6 +738,12 @@ function npSetPlaying(p) {
 _npIcon.innerHTML = p ? PAUSE : PLAY;
 _npPlayBtn.setAttribute('aria-label', p ? 'Pause' : 'Play');
 if (typeof updatePlayUI === 'function') updatePlayUI();
+}
+// Covers are 504px files; a sharper 800px copy (rel.art2x, listed by scripts/generate_content.py only when the file
+// exists) is offered to screens that need it, so covers are not blurry on phones and high-resolution laptops.
+function artSrcset(rel, sizes) {
+if (!rel || !rel.art || !rel.art2x) return '';
+return ' srcset="' + escHtml(encodeURI(rel.art)) + ' 504w, ' + escHtml(encodeURI(rel.art2x)) + ' 800w" sizes="' + sizes + '"';
 }
 function npGetArt() {
 if (pState.releaseIdx >= 0 && RELEASE_LIST[pState.releaseIdx]) return RELEASE_LIST[pState.releaseIdx].art;
@@ -1292,6 +1298,8 @@ if (art) {
 var encoded = encodeURI(art);
 fsArt.style.opacity = '0';
 fsArt.onload = function() { fsArt.style.opacity = '1'; };
+var _r2 = pState.releaseIdx >= 0 && RELEASE_LIST[pState.releaseIdx];
+if (_r2 && _r2.art2x) { fsArt.srcset = encoded + ' 504w, ' + encodeURI(_r2.art2x) + ' 800w'; fsArt.sizes = '(max-width: 600px) 86vw, 420px'; } else { fsArt.removeAttribute('srcset'); fsArt.removeAttribute('sizes'); }
 fsArt.src = encoded;
 // A real description for people who cannot see it (it used to say only "Now playing", whatever the cover was).
 var _rel = pState.releaseIdx >= 0 && RELEASE_LIST[pState.releaseIdx]; fsArt.alt = _rel && _rel.name ? 'Album cover: ' + _rel.name : '';
@@ -2363,7 +2371,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ' - ' + escHtml(rel.type) + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
 '<div class="rel-art-wrap">' +
-'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '" class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>' +
+'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>' +
 '<div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">' + escHtml(rel.type) + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div></div>' +
 '</div>' +
 '<div class="rel-btns">' + btns + '</div>' +

@@ -181,6 +181,9 @@ def gen_releases():
             'name': name,
             'type': rtype,
             'art': art,
+            # A sharper copy of the cover for high-resolution screens, if one has been made
+            # (Images/Releases/<name>-800.webp). Listed only when the file exists, so the page never asks for a missing one.
+            **({'art2x': f'Images/Releases/{name}-800.webp'} if os.path.isfile(os.path.join('Images', 'Releases', name + '-800.webp')) else {}),
             'apple': links.get('apple'),
             # links.txt "soon: yes": show the "Distributing soon" tag even
             # though some streaming links exist (more services coming).

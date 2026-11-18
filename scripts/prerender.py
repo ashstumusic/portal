@@ -109,6 +109,7 @@ def render_release_card(rel, r_idx):
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-art-wrap">'
             f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
+            + (f'srcset="{esc(rel["art"].replace(" ", "%20"))} 504w, {esc(rel["art2x"].replace(" ", "%20"))} 800w" sizes="(max-width: 600px) 92vw, 400px" ' if rel.get("art2x") else '') +
             f'class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>'
             f'<div class="rel-overlay"><div class="rel-overlay-inner">'
             f'<p class="rel-cat">{esc(rel["type"])}</p>'

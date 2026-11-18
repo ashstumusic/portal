@@ -3,6 +3,7 @@
     "name": "My Anima",
     "type": "Album",
     "art": "Images/Releases/My Anima.webp",
+    "art2x": "Images/Releases/My Anima-800.webp",
     "apple": null,
     "spotify": null,
     "tracks": [
@@ -71,6 +72,7 @@
     "name": "Ash Stu, Vol. II",
     "type": "Album",
     "art": "Images/Releases/Ash Stu, Vol. II.webp",
+    "art2x": "Images/Releases/Ash Stu, Vol. II-800.webp",
     "apple": "https://music.apple.com/us/album/only-a-baby-vol-2/6779983161",
     "spotify": "https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P",
     "tracks": [
@@ -130,6 +132,7 @@
     "name": "Ash Stu, Vol. I",
     "type": "Album",
     "art": "Images/Releases/Ash Stu, Vol. I.webp",
+    "art2x": "Images/Releases/Ash Stu, Vol. I-800.webp",
     "apple": null,
     "soon": true,
     "spotify": null,
