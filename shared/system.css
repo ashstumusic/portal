@@ -3572,6 +3572,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 10px !important; }
 }
 
+/* A song title too long for its row, with motion off (reduced motion or Effects off): it cannot scroll, so it wraps
+   onto a second line (class set by initMarquees in index-src.html). The row grows to hold it. */
+:root.psy .rel-track-title.title-wrap:not(#\#):not(#\#):not(#\#):not(#\#) { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: anywhere; }
+:root.psy .rel-track:has(.title-wrap):not(#\#):not(#\#):not(#\#):not(#\#) { height: auto !important; min-height: 46px; padding-block: 6px !important; align-items: center; }
+
 /* Reduced transparency: the three big glass panels too. The buttons and the menu already went solid with this setting;
    the toolbar, the player bar and the full-screen player (and the small "Now playing" chip) stayed see-through and
    blurred. Same colours, fully opaque, no blur. */

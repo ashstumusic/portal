@@ -121,6 +121,9 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - **Reduced motion / Effects off:** all looping animation stops, including when the setting changes mid-visit.
   New animations need a rule under `prefers-reduced-motion: reduce` and under `.psy-calm`, strong enough to win.
   Animations driven from script (`shared/kinetic.js`, "stepped") are cancelled there when the styles drop them.
+- **A song title too long for its row** scrolls sideways when motion is allowed. With motion off it must not be cut
+  off: in the tracklist it wraps onto a second line; in the mini player it is plain text ending in "…" (the full
+  title is in the button's name and in the full-screen player).
 - **Forced colours (Windows Contrast Themes):** icons take the system text colour (`forced-color-adjust: auto` on
   `svg`); icons drawn as filled shapes or masks need `forced-color-adjust: none` with `ButtonText`; sliders get an
   outline and a `Highlight` fill; anything marked by colour gets an outline.

@@ -764,6 +764,9 @@ el.textContent = t;
 function check() {
 if (_npMarqueeTokens.get(el) !== token) return;
 if (el.scrollWidth > el.clientWidth + 2) {
+// Motion off (reduced motion, or Effects off): no scrolling copy. The title stays as plain text ending in "…"
+// (it used to show the doubled scrolling text, standing still and cut off: "Relapse Sonnet • Rel").
+if (typeof _titlesStill === 'function' && _titlesStill()) return;
 el.classList.add('marquee');
 el.style.setProperty('--marquee-duration', Math.max(6, t.length * 0.35) + 's');
 var sp = document.createElement('span'); sp.textContent = t + '   •   ' + t; el.textContent = ''; el.appendChild(sp);
@@ -2092,6 +2095,14 @@ container.innerHTML = '';
 container.appendChild(frag);
 });
 }
+function _titlesStill() { return (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.classList.contains('psy-calm'); }
+// (if Effects is switched on or off, or the motion setting changes, mid-visit: measure the titles again)
+(function() {
+  var last = _titlesStill(), t = 0;
+  var again = function() { clearTimeout(t); t = setTimeout(function() { var now = _titlesStill(); if (now !== last) { last = now; initMarquees(); } }, 250); };
+  new MutationObserver(again).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  var mq = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)'); if (mq && mq.addEventListener) mq.addEventListener('change', again);
+})();
 // A track title too long for its row scrolls sideways. Safe to call again at
 // any time: every title is measured afresh at its current width, so one that
 // fits again (wider card, wider window) goes back to plain text.
@@ -2105,11 +2116,16 @@ el.dataset.full = text;
 var was = el.classList.contains('marquee');
 // measured on the plain text, with the scrolling copy taken out
 if (was) { el.classList.remove('marquee'); el.textContent = text; }
+el.classList.remove('title-wrap');
 seen.push({ el: el, text: text, was: was });
 });
 seen.forEach(function(o) { o.over = o.el.scrollWidth > o.el.clientWidth + 1; });
+// With motion off (reduced motion, or Effects off) the title cannot scroll, and it used to be simply cut off at the
+// edge of its row ("There Used To Be a Bright"). There it wraps onto a second line instead, so all of it can be read.
+var still = _titlesStill();
 seen.forEach(function(o) {
 if (!o.over) return;
+if (still) { o.el.classList.add('title-wrap'); return; }
 o.el.classList.add('marquee');
 o.el.style.setProperty('--marquee-duration', Math.max(4, o.text.length * 0.3) + 's');
 var sp = document.createElement('span');
