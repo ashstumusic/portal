@@ -912,9 +912,14 @@ npAudio.addEventListener('playing', preloadNextTrack);
 // Visitors who asked their browser to save data get neither.
 function _dataSaver() { var c = navigator.connection; return !!(c && c.saveData); }
 var _warmCuedTimer = 0;
+// On mobile data, or on a slow connection, the warm-up fetches only the song's first few kilobytes (its length and
+// format), not the song. It used to fetch about 3 MB of the first song for every visitor within fifteen seconds of
+// opening the page, pressed Play or not - five times the weight of the page itself, paid for on someone's data plan.
+// Wi-Fi and wired connections keep the full head start; so does a song the visitor touches or rests the pointer on.
+function _meteredOrSlow() { var c = navigator.connection; return !!(c && (c.type === 'cellular' || /(^|-)[23]g$/.test(c.effectiveType || ''))); }
 function warmCued() {
  if (_dataSaver() || !npAudio.getAttribute('src') || !npAudio.paused || npAudio.readyState > 0) return;
- npAudio.preload = 'auto';
+ npAudio.preload = _meteredOrSlow() ? 'metadata' : 'auto';
  if (npAudio.networkState !== 2) { try { npAudio.load(); } catch (e) {} }   // 2 = already downloading
 }
 function scheduleWarmCued() {
