@@ -3040,11 +3040,14 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    (The colour state has its own values, further down, matched to the colour portrait.) */
 .bio-card-media img[src*="Profile-4"] { --tone-b: .96; --tone-c: 1.2; }
 .bio-card-media img[src*="Profile-6"] { --tone-b: 1.1; --tone-c: 1; }
-/* The colour state (hover, tap) has its own values, so the two shots sit with the colour portrait beside them: that
-   portrait is soft and matte, while the guitar shot in colour was punchy and saturated and the piano shot was dark.
-   (--tone-bc brightness, --tone-cc contrast, --tone-sc saturation; the black-and-white values above are untouched.) */
-.bio-card-media img[src*="Profile-4"] { --tone-bc: 1.02; --tone-cc: 1.0; --tone-sc: .66; }
-.bio-card-media img[src*="Profile-6"] { --tone-bc: 1.32; --tone-cc: .94; --tone-sc: .7; }   /* (.7: rematched to the cooler, softer portrait that replaced the first one) */
+/* The colour state (hover, tap). The owner's standard for colour is the guitar shot as photographed: natural skin,
+   hair and light. So in colour both shots are shown as photographed, with no added contrast, no saturation change
+   and no tinting of the files, and only the same slight dimming the colour portrait beside them gets in the dark
+   theme (the piano shot, a dark photo, is not dimmed). The portrait itself is graded to the same standard: neutral
+   whites, natural contrast, no grain. (--tone-bc brightness, --tone-cc contrast, --tone-sc saturation; the
+   black-and-white values above are untouched.) */
+.bio-card-media img[src*="Profile-4"] { --tone-bc: .88; --tone-cc: 1.06; --tone-sc: 1; }
+.bio-card-media img[src*="Profile-6"] { --tone-bc: 1; --tone-cc: 1.06; --tone-sc: 1; }
 .epk-photos img[src*="studio-session"] { --tone-b: 1.22; }
 .epk-photos img[src*="portrait"] { --tone-b: .71; }
 .epk-photos img[src*="epk-ash-stu-piano"] { --tone-b: .9; }
