@@ -3441,6 +3441,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: max(64px, calc(var(--vh100) - 49px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 244px)) !important; max-height: max(64px, calc(var(--vh100) - 49px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 244px)) !important; aspect-ratio: 1 / 1 !important; }
 }
 
+/* The same on upright tablets (768 x 954 and 810 x 1010 are iPads in Safari): the photo is the full width there and
+   takes over half the screen, and the release under it came out up to 100px taller than what was left, so the
+   Spotify button was cut off and the wave was out of view. The cover gives way by the missing height here too
+   (screen, minus the 56px toolbar, minus the photo, minus the 348px the badge, title, buttons and padding need).
+   Taller tablets are unaffected: the limit there is larger than the cover already is. */
+@media (min-width: 768px) and (max-aspect-ratio: 11/10) {
+  :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { max-width: max(80px, calc(var(--vh100) - 56px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 348px)) !important; max-height: max(80px, calc(var(--vh100) - 56px - clamp(100vw / 1.625, var(--vh100) * .36, 100vw / 1.375) - 348px)) !important; aspect-ratio: 1 / 1 !important; }
+}
+
 /* Full-screen player on laptops and tablets: the cover gives way on shorter screens so the lyrics are in view.
    At a fixed 340px the cover pushed the lyrics entirely below the bottom of a common laptop window (1366 x 650),
    with the volume row cut in half; you had to scroll to learn the lyrics were there at all. The cover is now sized
