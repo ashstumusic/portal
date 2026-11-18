@@ -3337,7 +3337,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root .vol-slider:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-appearance: auto !important; appearance: auto !important; accent-color: Highlight; background: none !important; }
   :root .fs-lyric.is-current button:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 2px solid Highlight !important; outline-offset: -2px; }
   /* (two icons are not drawn as SVG but as filled shapes, which this mode paints in the background colour: the menu button's three bars and the mini player's close cross) */
-  :root .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root #player-bar .np-close::before { forced-color-adjust: none; background-color: ButtonText !important; }
+  :root .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root #player-bar .np-close::before, :root .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { forced-color-adjust: none; background-color: ButtonText !important; }   /* (the video viewer's Close was missed: its × was the same colour as its button, so the button looked empty) */
   :root .party-eq i:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { forced-color-adjust: none; background: CanvasText !important; }
 }
 
@@ -3570,6 +3570,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (pointer: coarse) and (min-width: 768px) and (max-width: 799px) {
   :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#) { padding: 5px !important; margin: -5px !important; }
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 10px !important; }
+}
+
+/* Forced colours: the video viewer's backdrop is solid. (It is 92% opaque normally; in this mode the page's own words
+   showed through it behind the video's title.) Its moving static is switched off there as well. */
+@media (forced-colors: active) {
+  :root.psy .vid-lightbox:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: Canvas !important; }
+  :root.psy .vid-lightbox:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { display: none !important; }
+  /* (the arrows over the picture kept their dark see-through fill, so on a light theme a black arrow sat on a dark box) */
+  :root.psy .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: ButtonFace !important; color: ButtonText !important; border: 1px solid ButtonText !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  :root.psy .lb-arrow:disabled:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: GrayText !important; border-color: GrayText !important; }   /* first or last video: the arrow that cannot be used reads as unavailable */
 }
 
 /* Hidden means hidden. The button rules set `display` with !important, which beat the `hidden` attribute: the
