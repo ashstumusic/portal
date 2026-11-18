@@ -573,7 +573,9 @@ closeNav();
 if (document.getElementById('vid-lightbox').classList.contains('open')) closeLightbox();
 if (wasOpen) _navToggle.focus();
 }
-if (document.getElementById('vid-lightbox').classList.contains('open')) {
+// Not while the video itself has focus: there the arrows belong to its own controls (skip back/forward, volume),
+// and changing video under someone trying to skip ten seconds loses their place.
+if (document.getElementById('vid-lightbox').classList.contains('open') && !(e.target && e.target.closest && e.target.closest('video, input, [role="slider"]'))) {
 if (e.key === 'ArrowLeft') lbNav(-1);
 if (e.key === 'ArrowRight') lbNav(1);
 }

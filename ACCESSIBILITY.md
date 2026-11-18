@@ -76,6 +76,8 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 
 ### Video viewer (dialog)
 - `role="dialog" aria-modal="true"`; focus is kept inside; Escape closes and returns focus to the video's button.
+- Left and Right arrows change video, except while the video itself has focus: there they belong to its own
+  controls (skip back and forward).
 
 ### Loading and failure
 - Song still arriving: the play buttons show a turning ring (still, with reduced motion) and carry `aria-busy`.
