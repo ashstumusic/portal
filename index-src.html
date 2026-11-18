@@ -1440,9 +1440,12 @@ fsLyrToggle.addEventListener('click', function() {
  fitFsArt();
  fsLyricsKick();
 });
-var _fsOpener = null, _fsInerted = [], _fsLate = 0;
+var _fsOpener = null, _fsInerted = [], _fsLate = 0, _fsWatcher = null;
 function fsOpen() {
  if (_fsOpen) return;   // two gestures can both fire; a second open would lose the inert list
+ // Android's back gesture closes the player (as it already closes the video viewer) instead of leaving the site
+ // and stopping the music. Browsers without CloseWatcher keep the Escape handler below.
+ if ('CloseWatcher' in window) { try { _fsWatcher = new CloseWatcher(); _fsWatcher.onclose = function() { _fsWatcher = null; fsClose(); }; } catch (e) { _fsWatcher = null; } }
  _fsOpener = document.activeElement;
  fsSync();
  fs.classList.add('open');
@@ -1475,6 +1478,7 @@ function fsOpen() {
 }
 function fsClose() {
  if (!_fsOpen) return;
+ if (_fsWatcher) { var _w = _fsWatcher; _fsWatcher = null; try { _w.destroy(); } catch (e) {} }
  clearTimeout(_fsLate);
  fs.classList.remove('open');
  fs.setAttribute('aria-hidden', 'true');
