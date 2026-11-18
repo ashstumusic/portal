@@ -65,7 +65,7 @@
     "featured": false,
     "zip": {
       "url": "https://github.com/ashstumusic/portal/releases/download/downloads/My-Anima-Ash-Stu.zip",
-      "bytes": 33561473
+      "bytes": 34557136
     }
   },
   {
@@ -125,7 +125,7 @@
     "featured": true,
     "zip": {
       "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-II.zip",
-      "bytes": 71102612
+      "bytes": 71748701
     }
   },
   {
@@ -221,7 +221,7 @@
     "featured": false,
     "zip": {
       "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-I.zip",
-      "bytes": 93599489
+      "bytes": 97468599
     }
   }
 ]
