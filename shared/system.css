@@ -3405,8 +3405,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* First screen on a large phone held sideways (wide but very short, e.g. 844 x 390). The side-by-side layout was
    sized for laptop heights: the release column came out taller than the screen, so the streaming buttons and the
    wave were below the fold, and the cover was stretched into a tall strip. Here the column tightens (smaller gaps,
-   a square cover that shrinks with the height) so the cover, title, both buttons and the wave are on screen. */
-@media (min-aspect-ratio: 11/10) and (min-width: 768px) and (max-height: 500px) {
+   a square cover that shrinks with the height) so the cover, title, both buttons and the wave are on screen.
+   (From 560px wide, where the side-by-side layout itself starts: it used to begin at 768px, which left smaller and
+   older phones held sideways - 667 x 375, 640 x 360, 740 x 360 - with the wave cut off below the screen.) */
+@media (min-aspect-ratio: 11/10) and (min-width: 560px) and (max-height: 500px) {
   :root.psy .hero-split > .hero-split-right:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 6px !important; padding-top: 12px !important; padding-bottom: calc(var(--wz) + 12px) !important; justify-content: center !important; }
   :root.psy #party .featured-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; max-width: max(48px, calc(var(--vh100) - var(--hp) - var(--wz) - 236px)) !important; min-width: 0 !important; height: auto !important; min-height: 0 !important; max-height: none !important; aspect-ratio: 1 / 1 !important; flex: none !important; margin-block: 0 !important; }
 }
