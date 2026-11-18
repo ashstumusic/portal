@@ -116,6 +116,14 @@ sizes and must stay at zero issues. It only catches about half of real problems:
   from sight only (`.sr-only`), never from assistive technology.
 - Printed, a lyric page is the song alone: title, credit, words, short address.
 
+### Album pages
+- `/albums/<album>/` is the whole site opened at one album: its heading is the page's only `<h1>`, the skip link is
+  "Skip to the album", and its plain track list (each song a link to its lyrics page) stays in the HTML for screen
+  readers when the real tracklist opens (`.sr-only`, never removed).
+- On arrival the album is ringed for about four seconds. The ring is an outline, so it is never the only cue (the
+  page has also scrolled to the album and opened it); it pulses only when motion is allowed and uses the system
+  highlight colour in forced colours.
+
 ## System preferences
 
 - **Reduced motion / Effects off:** all looping animation stops, including when the setting changes mid-visit.

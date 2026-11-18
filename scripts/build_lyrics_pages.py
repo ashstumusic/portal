@@ -90,7 +90,7 @@ def previous_meta(path):
             head = f.read(4000)
     except OSError:
         return None, None
-    h = re.search(r'<meta name="lyrics-hash" content="([0-9a-f]+)"', head)
+    h = re.search(r'<meta name="(?:lyrics|album)-hash" content="([0-9a-f]+)"', head)
     d = re.search(r'<meta property="article:modified_time" content="(\d{4}-\d{2}-\d{2})"', head)
     return (h.group(1) if h else None), (d.group(1) if d else None)
 
@@ -210,7 +210,8 @@ def iso_duration(rel_path):
         return ''
 
 
-def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title, article=''):
+def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title, article='',
+               deep_meta='deep-song', og_type='music.song', skip=('#song', 'Skip to the song')):
     """A song's page is the whole site with that song opened: the built
     homepage (index.html) with this song's title, description, canonical
     address, Open Graph / Twitter tags and JSON-LD, <base href="/"> so every
@@ -235,7 +236,7 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'<link rel="canonical" href="[^"]*"\s*/?>', f'<link rel="canonical" href="{url}"/>', h)
     h = sub(r'<meta property="og:title" content="[^"]*"\s*/?>', f'<meta property="og:title" content="{a}"/>', h)
     h = sub(r'<meta property="og:description" content="[^"]*"\s*/?>', f'<meta property="og:description" content="{d}"/>', h)
-    h = sub(r'<meta property="og:type" content="[^"]*"\s*/?>', '<meta property="og:type" content="music.song"/>', h)
+    h = sub(r'<meta property="og:type" content="[^"]*"\s*/?>', f'<meta property="og:type" content="{og_type}"/>', h)
     h = sub(r'<meta property="og:url" content="[^"]*"\s*/?>', f'<meta property="og:url" content="{url}"/>', h)
     page_art = art
     art = share_art(art)   # link previews get the JPEG copy; the page itself and its structured data keep the WebP
@@ -254,7 +255,7 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'<meta name="twitter:title" content="[^"]*"\s*/?>', f'<meta name="twitter:title" content="{a}"/>', h)
     h = sub(r'<meta name="twitter:description" content="[^"]*"\s*/?>', f'<meta name="twitter:description" content="{d}"/>', h)
     head_add = ('<base href="/"/>\n'
-                f'<meta name="deep-song" content="{esc(deep_key)}"/>\n' + extra +
+                f'<meta name="{deep_meta}" content="{esc(deep_key)}"/>\n' + extra +
                 '<script type="application/ld+json">' + json.dumps(jsonld, ensure_ascii=False).replace('</', '<\\/') + '</script>\n'
                 # with <base href="/">, "#music" would point at the homepage:
                 # keep in-page links scrolling on this page
@@ -269,9 +270,10 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'(<meta charset="[^"]*"\s*/?>)', None, h) if False else re.sub(r'(<meta charset="[^"]*"\s*/?>)', lambda m: m.group(1) + '\n' + head_add, h, count=1)
     # On a song's page the skip link goes to the song itself (the page is the whole site; the song is what was asked for).
     if article:
-        h = h.replace('<a href="#main" class="skip">Skip to content</a>', '<a href="#song" class="skip">Skip to the song</a>', 1)
+        h = h.replace('<a href="#main" class="skip">Skip to content</a>', f'<a href="{skip[0]}" class="skip">{skip[1]}</a>', 1)
     # the song's lyrics already open in the static HTML
-    h = h.replace(f'{esc(song_title)}<details class="rel-lyrics-static">', f'{esc(song_title)}<details class="rel-lyrics-static" open>', 1)
+    if song_title:
+        h = h.replace(f'{esc(song_title)}<details class="rel-lyrics-static">', f'{esc(song_title)}<details class="rel-lyrics-static" open>', 1)
     if article:
         # This page is about one song. Its words sit in an <article> of their
         # own under the page's only <h1>; the homepage's copy of every other
@@ -419,7 +421,8 @@ def main():
         art = SITE + art_path   # absolute for Open Graph / JSON-LD
         text = '\n\n'.join('\n'.join(v) for v in s['verses'])
         # 'layout 2' is part of the hash: bump it when the page template changes, so <lastmod> tells crawlers to come back
-        digest = hashlib.sha256(('layout 2' + s['title'] + rel['name'] + text).encode()).hexdigest()[:16]
+        digest = hashlib.sha256(('layout 3' + s['title'] + rel['name'] + text).encode()).hexdigest()[:16]
+        album_url = f"{SITE}/albums/{slugify(rel['name'])}/"   # the album's own page (made further down)
         path = os.path.join(OUT, s['slug'], 'index.html')
         old_hash, old_date = previous_meta(path)
         modified = old_date if (old_hash == digest and old_date) else TODAY
@@ -496,7 +499,7 @@ def main():
             *([] if unrel else [{'@type': 'MusicRecording', '@id': url + '#recording', 'name': s['title'], 'url': url,
              'byArtist': {'@id': f'{SITE}/#artist'}, 'inLanguage': 'en', 'genre': GENRE,
              **({'datePublished': s['date']} if s['date'] else {}),
-             'inAlbum': {'@type': 'MusicAlbum', 'name': rel['name'], 'url': f'{SITE}/#music', 'image': art,
+             'inAlbum': {'@type': 'MusicAlbum', '@id': album_url + '#album', 'name': rel['name'], 'url': album_url, 'image': art,
                          'albumReleaseType': 'SingleRelease' if kind == 'Single' else 'AlbumRelease', 'byArtist': {'@id': f'{SITE}/#artist'}},
              'position': s['position'], 'recordingOf': {'@id': comp_id}, 'isAccessibleForFree': True,
              **({'duration': dur} if dur else {}),
@@ -530,7 +533,7 @@ def main():
         article = (f'<article class="song-page" id="song" aria-labelledby="song-h" lang="en">\n'
                    f'<header class="song-page-head">\n<p class="song-page-kicker">Lyrics</p>\n<h1 id="song-h">{esc(s["title"])}</h1>\n'
                    f'<p class="song-page-by">{"Traditional, arranged by" if trad else "Written and performed by"} <a href="/">{ARTIST}</a>'
-                   f' · track {s["position"]} of {s["total"]} on <cite>{esc(rel["name"])}</cite>{year_note}{" · not released yet" if unrel else ""}</p>\n{watch}</header>\n'
+                   f' · track {s["position"]} of {s["total"]} on <cite><a href="/albums/{slugify(rel["name"])}/">{esc(rel["name"])}</a></cite>{year_note}{" · not released yet" if unrel else ""}</p>\n{watch}</header>\n'
                    f'<div class="song-page-lyrics" id="song-lyrics">\n<h2 class="sr-only">{esc(s["title"])}: full lyrics</h2>\n{verses_html}\n</div>\n'
                    f'<p class="song-page-foot">Lyrics © {ARTIST} ({ARTIST_FULL}).</p>\n'
                    # each song links to its neighbours, so a crawler (and a reader) can walk the whole set from any page
@@ -540,6 +543,118 @@ def main():
         with open(path, 'w', encoding='utf-8') as f:
             f.write(html or page(title, description, url, 'music.song', art, alt, body, jsonld, extra))
         written.append((url, modified))
+
+
+    # ── Album pages ──────────────────────────────────────────────────────────────────────────────────────────────
+    # /albums/<album>/ is to an album what /lyrics/<song>/ is to a song: what a search for the album lands on. It is
+    # the whole site with <meta name="deep-album"> naming the release; the page script (openDeepAlbum in
+    # index-src.html) goes to that album's card, opens its tracklist, puts its first song in the player ready for Play
+    # and rings the card for a few seconds. The album's facts and track list are also in the page's own HTML, under
+    # the page's only <h1>, with each song linking to its lyrics page.
+    ALB = os.path.join(ROOT, 'albums')
+    os.makedirs(ALB, exist_ok=True)
+    albums_written, album_slugs = [], {}
+    for rel in releases:
+        if not (rel.get('tracks') or rel.get('upcoming')):
+            continue
+        aslug = slugify(rel['name'])
+        album_slugs[rel['name']] = aslug
+    for rel in releases:
+        aslug = album_slugs.get(rel['name'])
+        if not aslug:
+            continue
+        url = f'{SITE}/albums/{aslug}/'
+        kind = rel.get('type') or 'Album'
+        rdate = release_date(rel['name'])
+        year = (rdate or '')[:4]
+        art_path = '/' + rel['art'].replace(' ', '%20') if rel.get('art') else '/Images/social-card.png'
+        art = SITE + art_path
+        alt = ALTS.get(rel.get('art') or '', f"{kind} cover: {rel['name']}")
+        rows = [(t.get('num', i + 1), t['title'], t, False) for i, t in enumerate(rel.get('tracks', []))]
+        rows += [(u['num'], u['title'], u, True) for u in rel.get('upcoming', [])]
+        rows.sort(key=lambda r: r[0])
+        song_of = {x['title']: x for x in songs if x['release'] is rel}
+        n_out, n_all = len(rel.get('tracks', [])), len(rows)
+        waiting = n_all - n_out
+        names = [r[1] for r in rows]
+        description = (f"{rel['name']}, {'an' if kind[:1].lower() in 'aeiou' else 'a'} {kind.lower()} by {ARTIST}"
+                       f"{' (' + year + ')' if year else ''}: {n_all} track{'s' if n_all != 1 else ''}"
+                       f"{', ' + str(n_out) + ' out now' if waiting and n_out else ''}. Listen, read the lyrics and download. Tracks: " + ', '.join(names))
+        if len(description) > 160:
+            description = description[:159].rsplit(' ', 1)[0].rstrip(' ,.;:') + '…'
+        title = f"{rel['name']} | {kind} by {ARTIST}"
+        digest = hashlib.sha256(('album layout 1' + rel['name'] + kind + (rdate or '') + '|'.join(f'{n}{t}{u}' for n, t, _, u in rows)
+                                 + (rel.get('apple') or '') + (rel.get('spotify') or '')).encode()).hexdigest()[:16]
+        path = os.path.join(ALB, aslug, 'index.html')
+        old_hash, old_date = previous_meta(path)
+        modified = old_date if (old_hash == digest and old_date) else TODAY
+        items, ld_tracks = [], []
+        for num, ttl, t, unrel in rows:
+            sg = song_of.get(ttl)
+            label = f'<a href="/lyrics/{sg["slug"]}/">{esc(ttl)}</a>' if sg else esc(ttl)
+            items.append(f'<li value="{num}">{label}{" (not released yet)" if unrel else ""}</li>')
+            if not unrel:
+                dur = iso_duration(t['file'])
+                ld_tracks.append({'@type': 'ListItem', 'position': num, 'item': {
+                    '@type': 'MusicRecording', 'name': ttl, 'position': num, 'byArtist': {'@id': f'{SITE}/#artist'},
+                    **({'url': f"{SITE}/lyrics/{sg['slug']}/", '@id': f"{SITE}/lyrics/{sg['slug']}/#recording"} if sg else {}),
+                    **({'duration': dur} if dur else {})}})
+        listen = []
+        if rel.get('apple'): listen.append(f'<a href="{esc(rel["apple"])}" rel="noopener">Apple Music</a>')
+        if rel.get('spotify'): listen.append(f'<a href="{esc(rel["spotify"])}" rel="noopener">Spotify</a>')
+        listen_line = (' · Listen on ' + ' and '.join(listen)) if listen else ''
+        status = ''
+        if waiting and n_out: status = f' · {n_out} of {n_all} tracks out now'
+        elif waiting: status = ' · not released yet'
+        others = [o for o in releases if o is not rel and album_slugs.get(o['name'])]
+        more = ('<nav class="song-page-nav" aria-label="More albums">'
+                + ''.join(f'<a href="/albums/{album_slugs[o["name"]]}/">{esc(o["name"])}</a>' for o in others) + '</nav>\n') if others else ''
+        article = (f'<article class="song-page album-page" id="album" aria-labelledby="album-h" lang="en">\n'
+                   f'<header class="song-page-head">\n<p class="song-page-kicker">{esc(kind)}</p>\n<h1 id="album-h">{esc(rel["name"])}</h1>\n'
+                   f'<p class="song-page-by">By <a href="/">{ARTIST}</a> · {n_all} track{"s" if n_all != 1 else ""}'
+                   f'{" · " + year if year else ""}{status}{listen_line}</p>\n</header>\n'
+                   f'<div class="song-page-lyrics album-page-tracks" id="album-tracks">\n<h2 class="sr-only">{esc(rel["name"])}: track list</h2>\n'
+                   f'<ol>\n' + '\n'.join(items) + '\n</ol>\n</div>\n'
+                   + more + '</article>')
+        album_id = url + '#album'
+        jsonld = {'@context': 'https://schema.org', '@graph': [
+            ARTIST_NODE,
+            {'@type': 'MusicAlbum', '@id': album_id, 'name': rel['name'], 'url': url, 'image': art, 'inLanguage': 'en', 'genre': GENRE,
+             'byArtist': {'@id': f'{SITE}/#artist'}, 'albumProductionType': 'SelfReleasedAlbum',
+             'albumReleaseType': {'Single': 'SingleRelease', 'EP': 'EPRelease'}.get(kind, 'AlbumRelease'),
+             **({'datePublished': rdate} if rdate else {}),
+             'numTracks': n_all,
+             **({'sameAs': [u for u in (rel.get('apple'), rel.get('spotify')) if u]} if (rel.get('apple') or rel.get('spotify')) else {}),
+             **({'track': {'@type': 'ItemList', 'numberOfItems': len(ld_tracks), 'itemListElement': ld_tracks}} if ld_tracks else {}),
+             'dateModified': modified},
+            {'@type': 'WebPage', '@id': url, 'url': url, 'name': title, 'inLanguage': 'en', 'dateModified': modified,
+             'mainEntity': {'@id': album_id}, 'primaryImageOfPage': art,
+             'breadcrumb': {'@type': 'BreadcrumbList', 'itemListElement': [
+                 {'@type': 'ListItem', 'position': 1, 'name': ARTIST, 'item': f'{SITE}/'},
+                 {'@type': 'ListItem', 'position': 2, 'name': rel['name'], 'item': url}]}},
+        ]}
+        extra = (f'<meta name="album-hash" content="{digest}">\n'
+                 f'<meta property="article:modified_time" content="{modified}">\n'
+                 f'<meta property="music:musician" content="{SITE}/">\n')
+        html = clone_page(title, description, url, art, alt, jsonld,
+                          extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META),
+                          rel['name'], None, article, deep_meta='deep-album', og_type='music.album', skip=('#album', 'Skip to the album'))
+        if not html:
+            continue   # index.html is not built yet: nothing to clone (the next build makes the page)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        albums_written.append((url, modified, rel['name']))
+    # Remove pages for albums that no longer exist (only folders this script made).
+    live_albums = {u.rstrip('/').rsplit('/', 1)[-1] for u, _, _ in albums_written}
+    for d in os.listdir(ALB):
+        pth = os.path.join(ALB, d, 'index.html')
+        if d not in live_albums and os.path.isfile(pth) and 'name="album-hash"' in open(pth, encoding='utf-8').read(4000):
+            os.remove(pth)
+            try:
+                os.rmdir(os.path.join(ALB, d))
+            except OSError:
+                pass
 
     # Index of every song, grouped by release.
     groups = []
@@ -593,6 +708,12 @@ def main():
         sm = re.sub(r'  <!-- LYRICS:START.*?<!-- LYRICS:END -->', lambda m: block, sm, flags=re.S)
     else:
         sm = sm.replace('</urlset>', block + '\n</urlset>')
+    a_entries = [f'  <url>\n    <loc>{u}</loc>\n    <lastmod>{m}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>' for u, m, _ in albums_written]
+    a_block = '  <!-- ALBUMS:START (generated by scripts/build_lyrics_pages.py) -->\n' + '\n'.join(a_entries) + '\n  <!-- ALBUMS:END -->'
+    if '<!-- ALBUMS:START' in sm:
+        sm = re.sub(r'  <!-- ALBUMS:START.*?<!-- ALBUMS:END -->', lambda m: a_block, sm, flags=re.S)
+    else:
+        sm = sm.replace('  <!-- LYRICS:START', a_block + '\n  <!-- LYRICS:START', 1) if '<!-- LYRICS:START' in sm else sm.replace('</urlset>', a_block + '\n</urlset>')
     with open(sm_path, 'w', encoding='utf-8') as f:
         f.write(sm)
 
@@ -643,11 +764,13 @@ def main():
         if rs:
             lines += ['', f'### {rel["name"]}', '']
             lines += [f'- [{s["title"]}]({SITE}/lyrics/{s["slug"]}/): one-word lookup "{s["word"]}" ({SITE}/{s["word"]}/)' + (' (not released yet)' if s.get('unreleased') else '') for s in rs]
+    if albums_written:
+        lines += ['', '## Albums', ''] + [f'- [{n}]({u}): track list, with each song linking to its lyrics' for u, _, n in albums_written]
     lines += ['', '## Site', '', f'- [Home]({SITE}/): music, videos, press kit and contact', f'- [Sitemap]({SITE}/sitemap.xml)', '']
     with open(os.path.join(ROOT, 'llms.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
-    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); sitemap, robots.txt and llms.txt updated')
+    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; sitemap, robots.txt and llms.txt updated')
 
 
 if __name__ == '__main__':

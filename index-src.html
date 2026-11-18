@@ -2027,6 +2027,38 @@ var land = function() { var top = wrap.getBoundingClientRect().top + scrollY - 8
 setTimeout(land, 450); setTimeout(land, 1100);
 }
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepSong, 300); });
+/* Album pages (/albums/<album>/, what a search for the album lands on) are this page with <meta name="deep-album">
+   naming the release: the page goes to that album, opens its tracklist, puts its first song in the player ready for
+   Play (cued, not started, as on a song page) and rings the album for a few seconds so the eye finds it.
+   The album's own track list in the page's HTML is tucked out of sight once the real tracklist is open (kept for
+   screen readers and crawlers, as a song page keeps its words). */
+var _albumDone = false, _albumAt = 0, _albumRing = 0;
+function openDeepAlbum() {
+if (_albumDone) return;
+var m = document.querySelector('meta[name="deep-album"]');
+if (!m || !m.content) return;
+var rIdx = -1;
+RELEASE_LIST.forEach(function(rel, ri) { if (rel.name === m.content) rIdx = ri; });
+if (rIdx < 0) return;
+var card = document.querySelector('.rel-card[data-release="' + rIdx + '"]');
+if (!card) return;
+var first = !_albumAt;
+if (first) _albumAt = performance.now();
+_albumDone = true;
+if (!card.classList.contains('tracks-open')) setTracklist(rIdx, false);
+var plain = document.getElementById('album-tracks');
+if (plain) plain.classList.add('sr-only', 'is-tucked');
+var rel = RELEASE_LIST[rIdx];
+if (rel.tracks && rel.tracks.length && (pState.releaseIdx !== rIdx || !npBar.classList.contains('show'))) playTrack(rIdx, 0, true);
+card.classList.add('album-arrived');
+clearTimeout(_albumRing);
+_albumRing = setTimeout(function() { var c = document.querySelector('.rel-card.album-arrived'); if (c) c.classList.remove('album-arrived'); }, 4200);
+var moved = false;
+if (first) ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function(ev) { addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
+var land = function() { if (moved) return; var c = document.querySelector('.rel-card[data-release="' + rIdx + '"]'); if (!c) return; var top = c.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' }); };
+setTimeout(land, 450); setTimeout(land, 1100);
+}
+(function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepAlbum, 300); });
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
@@ -2483,6 +2515,8 @@ wireVideos();
 // a refresh re-render shortly after load would close the song again
 if (_deepDone && performance.now() - _deepAt < 6000) _deepDone = false;
 openDeepSong();
+if (_albumDone && performance.now() - _albumAt < 6000) _albumDone = false;   // (the same for an album page)
+openDeepAlbum();
 if (!isRefresh) npRestore();
 watchCardSizes();
 queueMarquees();

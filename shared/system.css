@@ -3568,6 +3568,18 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 10px !important; }
 }
 
+/* Album pages (/albums/<album>/). The album's own header reuses the song page's (.song-page); its plain track list
+   is a simple numbered list. On arrival the album's card is ringed in gold for a few seconds so the eye finds it:
+   the ring pulses twice with motion allowed, and is a steady ring with motion off. */
+:root.psy .album-page-tracks ol { display: inline-block; margin: 0; padding: 0 0 0 1.6em; text-align: left; font-size: 18px; line-height: 1.7; }
+:root.psy .album-page-tracks li { margin: 0; }
+:root.psy .rel-card.album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549) !important; outline-offset: 5px !important; }
+@keyframes album-arrive { 0%, 100% { outline-color: rgb(247 197 73 / 1); } 50% { outline-color: rgb(247 197 73 / .25); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root.psy:not(.psy-calm) .rel-card.album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { animation: album-arrive 1.4s ease-in-out 2; }
+}
+@media (forced-colors: active) { :root.psy .rel-card.album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline-color: Highlight !important; } }
+
 /* A song title too long for its row, with motion off (reduced motion or Effects off): it cannot scroll, so it wraps
    onto a second line (class set by initMarquees in index-src.html). The row grows to hold it. */
 :root.psy .rel-track-title.title-wrap:not(#\#):not(#\#):not(#\#):not(#\#) { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: anywhere; }

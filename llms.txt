@@ -50,6 +50,12 @@ Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashst
 - [Don't Wish Your Life Away](https://ashstu.art/lyrics/dont-wish-your-life-away/): one-word lookup "wish" (https://ashstu.art/wish/)
 - [Anybody Still Awake?](https://ashstu.art/lyrics/anybody-still-awake/): one-word lookup "awake" (https://ashstu.art/awake/)
 
+## Albums
+
+- [My Anima](https://ashstu.art/albums/my-anima/): track list, with each song linking to its lyrics
+- [Ash Stu, Vol. II](https://ashstu.art/albums/ash-stu-vol-ii/): track list, with each song linking to its lyrics
+- [Ash Stu, Vol. I](https://ashstu.art/albums/ash-stu-vol-i/): track list, with each song linking to its lyrics
+
 ## Site
 
 - [Home](https://ashstu.art/): music, videos, press kit and contact
