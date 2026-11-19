@@ -452,6 +452,16 @@
   // menu is drawn again for the new layout. It used to keep the phone version's folded Settings header inside the
   // wide box, with the Close button on top of it and no settings to be seen.
   { const mqMenu = matchMedia('(max-width: 767px)'), redo = () => { if (dlg.open && dlg.dataset.mode === 'menu') { setsOpen = false; renderMenu(); } }; mqMenu.addEventListener ? mqMenu.addEventListener('change', redo) : mqMenu.addListener(redo); }
+  // Pictures for the search suggestion tags (each tag shows its picture and its word)
+  const TAG_PIC = {
+    Song: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+    Lyric: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    Album: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',
+    Video: '<rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/>',
+    Section: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    Setting: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>',
+    Streaming: '<path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2.5" y="14" width="4" height="6" rx="1.5"/><rect x="17.5" y="14" width="4" height="6" rx="1.5"/>',
+  };
   function renderMenu(keep) {
     const links = $$('.nav-links a').filter((a) => a.getAttribute('href'));
     const plats = $$('.nav-platforms a');
@@ -536,7 +546,7 @@
       hits.forEach((it, i) => {
         const li = doc.createElement('li'); li.className = 'k-si-opt'; li.id = id + '-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === act));
         const t = doc.createElement('span'); t.className = 'k-si-t'; t.textContent = it.title; const u = doc.createElement('span'); u.className = 'k-si-sub'; u.textContent = it.sub || '';
-        const g = doc.createElement('span'); g.className = 'k-si-tag'; g.dataset.tag = it.tag; g.textContent = it.tag;
+        const g = doc.createElement('span'); g.className = 'k-si-tag'; g.dataset.tag = it.tag; g.innerHTML = (TAG_PIC[it.tag] ? '<svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' + TAG_PIC[it.tag] + '</svg>' : '') + '<span>' + escHtml(it.tag) + '</span>';   // (a picture beside the word, for visitors who don't read)
         li.dataset.tag = it.tag; if (it.line) li.dataset.line = "1"; li.append(g, t, u); li.addEventListener('pointermove', () => mark(i)); li.addEventListener('click', () => pick(i)); frag.append(li);
       });
       if (!hits.length) { const e = doc.createElement('li'); e.className = 'k-si-empty'; e.setAttribute('role', 'presentation'); e.textContent = 'No matches. Try a song title or a few words of a lyric.'; frag.append(e); }
