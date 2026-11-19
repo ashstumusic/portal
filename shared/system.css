@@ -3689,19 +3689,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 10px !important; }
 }
 
-/* Flourishes above and below the Woody Guthrie quote: a plain, classic scroll ornament after the owner's reference
-   (an old Western café sign): one even line, every curl growing from the main line and finished with a round dot, two
-   spirals meeting like a heart at the centre. Nothing pictorial (the owner asked: simple, standard, no logos). The
-   bottom one is the same scroll turned over, with a small teardrop hanging from its centre. Decorative only
-   (aria-hidden); smaller than the quote, at 75% opacity, in the quote's own colour. */
-:root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(380px, 72%); margin: 64px auto 14px; color: inherit; opacity: .75; line-height: 0; }
-/* (the space the quote used to keep above itself now sits above the flourish, so the pair hugs the quote evenly) */
-:root.psy .disc-flourish + .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-top: 0 !important; padding-top: 4px !important; }
-@media (max-width: 767px) { :root.psy .disc-flourish:not(#\#):not(#\#) { margin-top: 40px; } }
-:root.psy .disc-flourish:not(#\#):not(#\#) svg { display: block; width: 100%; height: auto; overflow: visible; }
-:root.psy .disc-flourish--below:not(#\#):not(#\#) { margin: 14px auto 0; }   /* (its own design, not a flipped copy of the top one) */
-@media (forced-colors: active) { :root.psy .disc-flourish:not(#\#):not(#\#) { color: CanvasText; opacity: 1; } }
-@media print { :root.psy .disc-flourish:not(#\#):not(#\#) { color: #000; } }
+
 
 /* About: a wavy paint stroke under the name, sitting halfway between the name and "A figment of my own imagination."
    (the owner's request). Decorative only. The two margins are set so the gap from the bottom of the name's letters to
@@ -3844,6 +3832,18 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* Video viewer arrows: solid dark glass, so they stay readable over bright footage (a sky made "Previous" vanish) */
 :root.psy #vid-lightbox .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(10 12 16 / .78) !important; color: #fff !important; }
 :root.psy #vid-lightbox .lb-arrow:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold) !important; color: #111 !important; }
+
+/* The Woody Guthrie quote stands out on its own: its opening and closing marks are drawn large, in gold, as the
+   top-left and bottom-right corners of a box around the words (the owner's design), and the words are indented on
+   both sides to make room for them. The marks are decoration (alt text ""), so they are not read aloud twice; the
+   quotation itself is a <blockquote>. The sizing script measures the room inside the indents. */
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: .9em 2.3em .2em !important; }
+@media (max-width: 767px) { :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 1.1em 1.9em .2em !important; } }
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; margin: 0; }
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { position: absolute; font: 400 4.4em/1 'Quote', Georgia, serif; color: var(--gold, #F7C549); pointer-events: none; }
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { content: "\201C" / ""; left: -.56em; top: -.3em; }
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: "\201D" / ""; right: -.56em; bottom: -.66em; }
+@media (forced-colors: active) { :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { color: CanvasText; } }
 
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
