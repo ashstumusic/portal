@@ -3672,6 +3672,14 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    nothing), and the cover image would have stayed for a release without a cover. No button style may outrank `hidden`. */
 :root [hidden]:not([hidden="until-found"]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
 
+/* Touch tablets: the streaming logos' 44px touch areas reach past their circles (negative margins), which left the
+   first logo 2px from the Videos button. The group now starts clear of it. (With a mouse at 768px the logos' smaller
+   click areas meet each other by a few invisible pixels; widening them pushed the section buttons into the name, so
+   that is left as it is.) */
+@media (min-width: 768px) and (max-width: 1179px) and (pointer: coarse) {
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 10px !important; }
+}
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .fs-title, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
