@@ -3008,10 +3008,21 @@ html { overscroll-behavior-y: none; }
 :root .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex !important; align-items: center; gap: 6px; }
 .nav-links a .nav-ico, .k-menu-link .nav-ico { flex: none; display: block; position: relative; z-index: 1; }
 .k-menu-link { gap: 8px; }
-/* The toolbar's section buttons show the icon alone (the owner's request): the name is still there for screen readers
-   (visually hidden) and as the hover tooltip. Without the words they fit at every width, tablets included. */
-:root .nav .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0; padding-inline: 13px !important; justify-content: center; }
-.nav-links a .nav-ico { width: 19px; height: 19px; }
+/* ── The toolbar, cleaned up (a design review: clean, sharp, professional) ──
+   1. The section buttons say what they are, in words: a briefcase did not say "Press Kit". (Icons alone were tried;
+      the icons stay beside the words in the phone menu, which is a labelled list.)
+   2. One shape for every button in the bar: the same 12px corners on the house, the section buttons, search, settings
+      and the phone menu button (the house, search and settings were 16px, which reads as round at this size).
+   3. The streaming logos rest in quiet grey and take their own colours on hover or focus, so the bar's only colour
+      at rest is the name: three full-colour logos pulled the eye from the music. */
+:root .nav .nav-links a .nav-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+:root .nav .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0 !important; }
+:root.psy .nav :is(.nav-home, .k-settings-btn, .k-search-btn, .nav-toggle, .k-si-input):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 12px !important; }
+:root.psy .nav .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { border-radius: 12px !important; }
+:root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: grayscale(1) brightness(1.12); opacity: .82; transition: filter .2s ease, opacity .2s ease; }
+:root.psy .nav .nav-platform:is(:hover, :focus-visible) .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .nav .nav-platform.flash .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transition: none; } }
+@media (forced-colors: active) { :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; opacity: 1; } }
 .k-menu-link .nav-ico { width: 18px; height: 18px; }
 @media (forced-colors: active) { .nav-links a .nav-ico, .k-menu-link .nav-ico { forced-color-adjust: auto; } }
 
