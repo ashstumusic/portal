@@ -3680,13 +3680,14 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 
 /* Western scroll flourishes above and below the Woody Guthrie quote (the owner's request, from a reference sheet of
    ornamental dividers; drawn for this site). Decorative only (aria-hidden). The one below is the same drawing
-   flipped, so the pair frames the quote. Line colour follows the quote's text. */
-:root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(400px, 72%); margin: 64px auto 16px; color: inherit; opacity: .78; line-height: 0; }
+   a different ornament (a diamond with curling arms), so the pair frames the quote without repeating itself.
+   Smaller than the quote's width and at 75% opacity, so they decorate rather than compete. Line colour follows the quote's text. */
+:root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(290px, 56%); margin: 64px auto 14px; color: inherit; opacity: .75; line-height: 0; }
 /* (the space the quote used to keep above itself now sits above the flourish, so the pair hugs the quote evenly) */
 :root.psy .disc-flourish + .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-top: 0 !important; padding-top: 4px !important; }
 @media (max-width: 767px) { :root.psy .disc-flourish:not(#\#):not(#\#) { margin-top: 40px; } }
 :root.psy .disc-flourish:not(#\#):not(#\#) svg { display: block; width: 100%; height: auto; overflow: visible; }
-:root.psy .disc-flourish--below:not(#\#):not(#\#) { margin: 16px auto 0; transform: scaleY(-1); }
+:root.psy .disc-flourish--below:not(#\#):not(#\#) { margin: 14px auto 0; }   /* (its own design, not a flipped copy of the top one) */
 @media (forced-colors: active) { :root.psy .disc-flourish:not(#\#):not(#\#) { color: CanvasText; opacity: 1; } }
 @media print { :root.psy .disc-flourish:not(#\#):not(#\#) { color: #000; } }
 
