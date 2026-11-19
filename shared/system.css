@@ -3839,6 +3839,9 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--spotify:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Spotify.svg") !important; }
 :root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--youtube:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Youtube.svg") !important; }
 
+/* Body text never leaves one word alone on its last line ("message / directly."); browsers without it wrap as before */
+:root.psy :is(p, .contact-intro, .epk-text, .bio-desc, figcaption):not(.disc-quote *):not(#\#) { text-wrap: pretty; }
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
