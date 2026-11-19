@@ -871,6 +871,42 @@
     new MutationObserver(() => { if (!mt) mt = setTimeout(() => { mt = 0; mark(); }, 500); }).observe(doc.body, { childList: true, subtree: true });
   }
 
+  // PATTERN (a word on every button): every button shows a picture AND a word (the owner's rule: assume a visitor may not
+  // understand pictures, and may not read; so always both). Buttons that were a picture alone get a short word, taken
+  // from the button's own spoken name ("Play My Anima" -> "Play", "Show lyrics for VCR" -> "Lyrics") and kept in step
+  // whenever that name changes (Play -> Pause, Mute -> Unmute). The word is aria-hidden: the spoken name already says it.
+  // A button that already has its word in the markup (class="btn-word" with text) is left as it is.
+  {
+    const PICTURE_ONLY = '.nav .nav-platform, .k-menu-plat, .k-settings-btn, .rel-play-overlay, .featured-play-overlay, .rel-dl, .rel-lyrics-toggle, .vid-card, .lb-arrow, .lb-dot, .lb-close, #np-play, .np-ctrl, .np-close, .fs-ctrl, .fs-play';
+    const RULES = [
+      [/^listen on (.+?)(?:: | \(|$)/i, (m) => m[1]], [/^watch on (.+?)(?:: | \(|$)/i, (m) => m[1]],
+      [/^(?:show|hide) lyrics/i, 'Lyrics'], [/^lyrics/i, 'Lyrics'], [/^download/i, 'Download'],
+      [/^pause/i, 'Pause'], [/^play/i, 'Play'], [/^previous/i, 'Previous'], [/^next/i, 'Next'], [/^close/i, 'Close'],
+      [/^go to video (\d+)/i, (m) => m[1]], [/^unmute/i, 'Unmute'], [/^mute/i, 'Mute'], [/^shuffle/i, 'Shuffle'],
+      [/^repeat/i, 'Repeat'], [/^settings/i, 'Settings'], [/^search/i, 'Search'],
+    ];
+    const wordFor = (b) => {
+      const name = (b.getAttribute('aria-label') || b.getAttribute('title') || '').trim();
+      for (const [re, w] of RULES) { const m = name.match(re); if (m) return typeof w === 'function' ? w(m) : w; }
+      return name.split(/\s+/)[0] || '';
+    };
+    const fit = (b) => {
+      // (a play button whose picture is a round "play" bubble gets its word inside that bubble)
+      const host = b.querySelector('[class*="play-circle"]') || b;
+      let sp = host.querySelector(':scope > .btn-word');
+      if (sp && sp.dataset.auto !== '1') return;   // (a word written in the markup)
+      if (!sp) { sp = doc.createElement('span'); sp.className = 'btn-word'; sp.dataset.auto = '1'; sp.setAttribute('aria-hidden', 'true'); host.append(sp); }
+      const w = wordFor(b); if (sp.textContent !== w) sp.textContent = w;
+    };
+    const all = () => $$(PICTURE_ONLY).forEach(fit);
+    all();
+    let t = 0;
+    new MutationObserver((recs) => {
+      for (const r of recs) if (r.type === 'attributes' && r.target.matches && r.target.matches(PICTURE_ONLY)) fit(r.target);
+      if (recs.some((r) => r.type === 'childList' && r.addedNodes.length) && !t) t = setTimeout(() => { t = 0; all(); }, 120);
+    }).observe(doc.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-label'] });
+  }
+
   window.kinetic = { announce, swapLabel, openPalette, settings: settingsList };
   }
 })();

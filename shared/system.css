@@ -3709,23 +3709,24 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    in the viewer and weaker than the buttons beside it). A long title wraps onto a second line, evenly, rather than being cut off. */
 :root.psy #vid-lightbox .lb-title:not(#\#):not(#\#) { font: 700 clamp(16px, 1.6vw, 22px)/1.2 ReleaseTitle, Headline, Georgia, serif; letter-spacing: normal; color: #fff; min-width: 0; white-space: normal; text-wrap: balance; overflow: visible; }
 
-/* Phones: the toolbar's Home and Menu buttons and every Close button carry a word beside their icon (the owner's request):
-   "Home", "Menu", "Close". Tablets and desktops keep the icons alone. The words are aria-hidden: each button's spoken
-   name already contains them ("Home, Ash Stu, back to top", "Open menu", "Close", "Close player"). */
-.btn-word { display: none; }
-@media (max-width: 767px) {
+/* Every button shows a picture AND a word (the owner's rule: assume a visitor may not understand pictures, and may not
+   read; so always both, on every screen). Words added here: "Home", "Menu", "Close"; the rest are added by the
+   script in shared/kinetic.js ("a word on every button"). The words are aria-hidden: each button's spoken name already
+   contains them ("Home, Ash Stu, back to top", "Open menu", "Close", "Close player"). */
+
+/* (all widths) */
   :root.psy .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline; font: 600 15px/1 var(--font-ui, 'UI', system-ui, sans-serif) !important; letter-spacing: -.01em; white-space: nowrap; color: inherit; }
   /* Home */
   :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; display: inline-flex !important; align-items: center; gap: 6px; padding: 0 13px 0 10px !important; }
   :root.js.psy .nav .nav-logo .nav-home .nav-home-txt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline; font: 600 15px/1 var(--font-ui, 'UI', system-ui, sans-serif); letter-spacing: -.01em; white-space: nowrap; }
   :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 99px !important; }   /* (the bubble is 91px: the name sits 8px clear of it) */
   /* Menu: the three bars sit at the left, the word after them */
-  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 0 !important; display: inline-flex !important; align-items: center; padding: 0 13px 0 36px !important; }
-  :root.psy .nav .nav-toggle .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: 20px !important; }
+  @media (max-width: 767px) { :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 0 !important; display: inline-flex !important; align-items: center; padding: 0 13px 0 36px !important; } }
+  @media (max-width: 767px) { :root.psy .nav .nav-toggle .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: 20px !important; } }
   /* Close (menu, video viewer, full-screen player) */
   :root.psy :is(.k-palette .k-palette-close, #vid-lightbox .lb-close, .fs-player .fs-collapse):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 44px !important; padding: 0 14px 0 12px !important; display: inline-flex !important; align-items: center; justify-content: center; gap: 6px; }
   :root.psy #vid-lightbox .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { flex: none; }
-}
+/* (end of the all-widths block) */
 /* the smallest phones (320px): a little less padding, so Home, the name and Menu all fit across the bar */
 @media (max-width: 359px) {
   :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 10px 0 8px !important; gap: 5px; }
@@ -3741,6 +3742,55 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 38fr) minmax(0, 62fr) !important; column-gap: clamp(28px, 4vw, 56px) !important; }
   :root.psy .bio-card > .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: -1 !important; grid-column: 1 !important; border-left: 0 !important; }
   :root.psy .bio-card > .bio-card-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 2 !important; }
+}
+
+/* ── A word on every button: the layouts ──
+   Two shapes. Small, packed controls (the players' buttons, the streaming logos, Settings, the video viewer's arrows)
+   put the word UNDER the picture, in small type, so a row of them still fits. Everything else puts the word BESIDE the
+   picture in the same bubble. */
+:root.psy .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-block; font: 600 13px/1 var(--font-ui, 'UI', system-ui, sans-serif) !important; letter-spacing: -.005em; white-space: nowrap; color: inherit; pointer-events: none; }
+/* word under the picture */
+:root.psy :is(.nav .nav-platform, .k-settings-btn, .k-menu-plat, #np-play, .np-ctrl, .np-close, .fs-ctrl, .fs-play, .lb-arrow):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 44px !important; height: auto !important; min-height: 44px !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 3px !important; padding: 4px 6px 3px !important; }
+:root.psy :is(.nav .nav-platform, .k-settings-btn, .k-menu-plat, #np-play, .np-ctrl, .np-close, .fs-ctrl, .fs-play, .lb-arrow) > .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 10.5px !important; font-weight: 700 !important; letter-spacing: .01em; }
+:root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 22px !important; height: 22px !important; }
+:root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { display: none !important; }   /* (the logos no longer open into a badge: they always carry their name) */
+:root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 2px !important; }
+:root.psy .nav :is(.nav-platform, .k-settings-btn):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 40px !important; padding: 2px 4px 1px !important; margin: 0 !important; }
+:root.psy .k-menu-plat .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 26px !important; height: 26px !important; }
+/* word beside the picture, in the same bubble */
+:root.psy :is(.rel-dl, .rel-lyrics-toggle, [class*="play-circle"]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 40px !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 6px !important; padding: 0 12px 0 10px !important; }
+:root.psy .rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 0 0 auto !important; overflow: visible !important; }
+@media (min-width: 768px) {
+  :root.psy .nav .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex !important; }
+  /* The toolbar on tablets and desktops: every button is a picture with its word under it, like an app's tab bar, so
+     all of them fit in one row at every width. The section buttons get their pictures back (a suitcase, an envelope,
+     a note, a camera), and the house says "Home". */
+  :root.psy .nav .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-direction: column !important; gap: 3px !important; padding: 4px 9px 3px !important; min-height: 44px !important; height: auto !important; justify-content: center !important; }
+  :root.psy .nav .nav-links a .nav-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: block !important; width: 18px !important; height: 18px !important; }
+  :root.psy .nav .nav-links a > span:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 10.5px !important; font-weight: 700 !important; line-height: 1 !important; letter-spacing: .01em; }
+  :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-direction: column !important; gap: 3px !important; padding: 4px 8px 3px !important; height: auto !important; min-height: 44px !important; }
+  :root.js.psy .nav .nav-logo .nav-home svg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 18px !important; height: 18px !important; }
+  :root.js.psy .nav .nav-logo .nav-home .nav-home-txt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 10.5px !important; font-weight: 700 !important; letter-spacing: .01em; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 62px !important; }
+}
+/* tablets: with a word on every toolbar button there is no room for the name as well; the house ("Home") stands for it */
+@media (min-width: 768px) and (max-width: 1179px) {
+  :root.js.psy .nav .nav-logo .hero-brand:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 0 !important; width: auto !important; }
+}   /* (it was a grid; the word needs a column) */
+:root.psy .np-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { flex: none; }
+/* the video viewer's position dots become numbered buttons */
+:root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 28px !important; height: 28px !important; min-width: 28px !important; border-radius: 50% !important; display: inline-grid !important; place-items: center !important; padding: 0 !important; background: rgb(255 255 255 / .1) !important; color: #fff !important; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .25) !important; }
+:root.psy .lb-dot[aria-current]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .lb-dot.active:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #fff !important; color: #111 !important; }
+:root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { display: none !important; }
+:root.psy .lb-dot > .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 12px !important; font-weight: 700 !important; }
+@media (forced-colors: active) { :root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border: 1px solid ButtonText; } }
+
+/* About on phones: all the photos first (the two small ones, then the portrait), and the words last, never between
+   the photos (the owner's request). */
+@media (max-width: 767px) {
+  :root.psy .bio-card > .bio-card-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: 3 !important; }
+  :root.psy .bio-card .bio-media-main:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: 2 !important; }
 }
 
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
