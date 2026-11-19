@@ -2848,7 +2848,7 @@ html { overscroll-behavior-y: none; }
 :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 48px !important; }
 :root.js.psy .nav .nav-logo[data-home="plain"]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.js.psy .nav .nav-logo:not([data-home]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: none !important; cursor: default; }
 :root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--btn-d-bg); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22); }   /* exactly the settings button's glass: same fill and edge, no drop shadow, no extra blur (the bar behind it is already frosted) */
-/* The house bubble is the house alone on every screen, like every other toolbar button (menu, search, settings,
+/* (Superseded on phones by the "Home / Menu / Close words" block further down.) The house bubble is the house alone on every screen, like every other toolbar button (menu, search, settings,
    the section buttons): the toolbar is icons throughout. (The word "Home" was tried on phones and taken out again:
    the menu button beside it has no word, and there is no room to give every button one.) Inside the phone menu the
    buttons are a labelled list, and keep their words. */
@@ -3707,6 +3707,31 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* Video viewer: the title is a real heading in the video cards' own title face (it was small body text, the only words
    in the viewer and weaker than the buttons beside it). A long title wraps onto a second line, evenly, rather than being cut off. */
 :root.psy #vid-lightbox .lb-title:not(#\#):not(#\#) { font: 700 clamp(16px, 1.6vw, 22px)/1.2 ReleaseTitle, Headline, Georgia, serif; letter-spacing: normal; color: #fff; min-width: 0; white-space: normal; text-wrap: balance; overflow: visible; }
+
+/* Phones: the toolbar's Home and Menu buttons and every Close button carry a word beside their icon (the owner's request):
+   "Home", "Menu", "Close". Tablets and desktops keep the icons alone. The words are aria-hidden: each button's spoken
+   name already contains them ("Home, Ash Stu, back to top", "Open menu", "Close", "Close player"). */
+.btn-word { display: none; }
+@media (max-width: 767px) {
+  :root.psy .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline; font: 600 15px/1 var(--font-ui, 'UI', system-ui, sans-serif) !important; letter-spacing: -.01em; white-space: nowrap; color: inherit; }
+  /* Home */
+  :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; display: inline-flex !important; align-items: center; gap: 6px; padding: 0 13px 0 10px !important; }
+  :root.js.psy .nav .nav-logo .nav-home .nav-home-txt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline; font: 600 15px/1 var(--font-ui, 'UI', system-ui, sans-serif); letter-spacing: -.01em; white-space: nowrap; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 99px !important; }   /* (the bubble is 91px: the name sits 8px clear of it) */
+  /* Menu: the three bars sit at the left, the word after them */
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 0 !important; display: inline-flex !important; align-items: center; padding: 0 13px 0 36px !important; }
+  :root.psy .nav .nav-toggle .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: 20px !important; }
+  /* Close (menu, video viewer, full-screen player) */
+  :root.psy :is(.k-palette .k-palette-close, #vid-lightbox .lb-close, .fs-player .fs-collapse):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; min-width: 44px !important; padding: 0 14px 0 12px !important; display: inline-flex !important; align-items: center; justify-content: center; gap: 6px; }
+  :root.psy #vid-lightbox .lb-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { flex: none; }
+}
+/* the smallest phones (320px): a little less padding, so Home, the name and Menu all fit across the bar */
+@media (max-width: 359px) {
+  :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 10px 0 8px !important; gap: 5px; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 91px !important; }
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 10px 0 32px !important; }
+  :root.psy .nav .nav-toggle .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: 17px !important; }
+}
 
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */

@@ -208,7 +208,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Home, Ash Stu, back to top">
     <!-- Always here, left of the name: in the home section a plain little house (no bubble, not pressable); everywhere else a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
-    <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg></span>
+    <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg><span class="nav-home-txt">Home</span></span>
     <div class="hero-brand">
       <span class="hero-name" style="font-size:2.2rem;padding-top:0;line-height:1">Ash Stu</span>
     </div>
@@ -240,6 +240,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="nav-toggle-bar"></span>
     <span class="nav-toggle-bar"></span>
     <span class="nav-toggle-bar"></span>
+    <span class="btn-word" aria-hidden="true">Menu</span>
   </button>
 </nav>
 <script>/* The toolbar's logos take their place beside the name before the first paint (the layout script further down then measures and confirms it), so they do not jump across the bar after loading. */
@@ -453,7 +454,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <div class="fs-content">
     <span class="fs-grabber" aria-hidden="true"></span>
     <button type="button" class="fs-collapse" id="fs-collapse" aria-label="Close player" title="Close (Esc, or swipe down)">
-      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="btn-word" aria-hidden="true">Close</span>
     </button>
     <div class="fs-art-wrap" id="fs-art-wrap">
       <div class="fs-art-placeholder" id="fs-art-placeholder">
@@ -523,7 +524,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
         <a class="vid-yt" id="lb-yt" href="#" target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube">
 <span class="pt pt--youtube" aria-hidden="true"></span>YouTube
         </a>
-        <button type="button" class="lb-close" id="lb-close" aria-label="Close" title="Close">✕</button>
+        <button type="button" class="lb-close" id="lb-close" aria-label="Close" title="Close"><span class="btn-word" aria-hidden="true">Close</span></button>
       </div>
     </div>
     <div class="lb-video-wrap">
