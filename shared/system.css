@@ -3689,11 +3689,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 10px !important; }
 }
 
-/* Western flourishes above and below the Woody Guthrie quote (the owner's request): cartoon, hand-drawn cowboy
-   ornaments in keeping with the site's chalk drawings - a wobbly rope with its twists drawn in, running out to a loose
-   lasso loop each side of a sheriff's star (top), and rope ending in small curls each side of a horseshoe (bottom).
-   Drawn by a small script with a hand's wobble. Decorative only (aria-hidden); smaller than the quote, at 75% opacity,
-   in the quote's own colour. */
+/* Flourishes above and below the Woody Guthrie quote: a plain, classic scroll ornament after the owner's reference
+   (an old Western café sign): one even line, every curl growing from the main line and finished with a round dot, two
+   spirals meeting like a heart at the centre. Nothing pictorial (the owner asked: simple, standard, no logos). The
+   bottom one is the same scroll turned over, with a small teardrop hanging from its centre. Decorative only
+   (aria-hidden); smaller than the quote, at 75% opacity, in the quote's own colour. */
 :root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(380px, 72%); margin: 64px auto 14px; color: inherit; opacity: .75; line-height: 0; }
 /* (the space the quote used to keep above itself now sits above the flourish, so the pair hugs the quote evenly) */
 :root.psy .disc-flourish + .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-top: 0 !important; padding-top: 4px !important; }
