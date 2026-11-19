@@ -2982,6 +2982,18 @@ html { overscroll-behavior-y: none; }
   .k-menu .k-menu-links:has(.k-menu-home) { grid-template-columns: repeat(5, 1fr); }   /* (with Home: all five in the one row) */
   .k-menu .k-menu-link.k-menu-home:not(#\#) { grid-column: auto; }
 }
+/* Each section button carries an icon before its name (the owner's request): a briefcase for the press kit, an
+   envelope for Contact, a note for Music, a play button for Videos. Same stroke drawing as the toolbar's house; it
+   takes the button's text colour, so it follows every state (selected, hover, focus) with the words. */
+:root .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex !important; align-items: center; gap: 6px; }
+.nav-links a .nav-ico, .k-menu-link .nav-ico { flex: none; display: block; position: relative; z-index: 1; }
+.k-menu-link { gap: 8px; }
+/* Tablet widths (768-1179px): the toolbar has no room for them (with the icons it broke onto two rows or overlapped,
+   even with tighter spacing), so there the buttons stay words only. The phone menu and wider screens show them. */
+@media (min-width: 768px) and (max-width: 1179px) { .nav-links a .nav-ico { display: none !important; } :root .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0; } }
+.k-menu-link .nav-ico { width: 18px; height: 18px; }
+@media (forced-colors: active) { .nav-links a .nav-ico, .k-menu-link .nav-ico { forced-color-adjust: auto; } }
+
 /* Home: first in the phone menu, across the full width above the four sections, with the toolbar's house beside the word */
 .k-menu-link.k-menu-home { grid-column: 1 / -1; gap: 8px; }
 .k-menu-link.k-menu-home svg { flex: none; }
