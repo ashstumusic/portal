@@ -211,7 +211,7 @@ def iso_duration(rel_path):
 
 
 def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_title, article='',
-               deep_meta='deep-song', og_type='music.song', skip=('#song', 'Skip to the song')):
+               deep_meta='deep-song', og_type='music.song', skip=('#song', 'Skip to the song'), early=None):
     """A song's page is the whole site with that song opened: the built
     homepage (index.html) with this song's title, description, canonical
     address, Open Graph / Twitter tags and JSON-LD, <base href="/"> so every
@@ -297,6 +297,15 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
         h, n2 = re.subn(r'(<section[^>]*\bid="music"[^>]*>)', lambda m: m.group(1) + '\n' + article, h, count=1)
         if not (n1 and n2):
             return None
+    if early:
+        # Go to the target as soon as the page has read that far, before the first screen is even drawn. (Waiting for
+        # the page to finish loading showed the top of the site for about two seconds on a slow phone, then jumped.)
+        # Everything above the target is already read and its pictures carry their sizes, so the place is right; the
+        # page script lands once more after the fonts arrive. A visitor who has scrolled meanwhile is left alone.
+        jump = ('<script>(function(){var t=document.getElementById(' + json.dumps(early) + ');if(!t||scrollY>2)return;'
+                'try{history.scrollRestoration="manual"}catch(e){}var d=document.documentElement,b=d.style.scrollBehavior;'
+                'd.style.scrollBehavior="auto";t.scrollIntoView({block:"start"});d.style.scrollBehavior=b;})()</script>')
+        h = re.sub(r'(<section[^>]*\bid="' + re.escape(early) + r'"[^>]*>)', lambda m: m.group(1) + jump, h, count=1)
     return h
 
 
@@ -688,7 +697,7 @@ def main():
                  f'<meta property="music:musician" content="{SITE}/">\n')
         html = clone_page(title, description, url, art, alt, jsonld,
                           extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META),
-                          rel['name'], None, article, deep_meta='deep-album', og_type='music.album', skip=('#album', 'Skip to the album'))
+                          rel['name'], None, article, deep_meta='deep-album', og_type='music.album', early='music', skip=('#album', 'Skip to the album'))
         if not html:
             continue   # index.html is not built yet: nothing to clone (the next build makes the page)
         os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -794,7 +803,7 @@ def main():
                  f'<meta property="og:video:type" content="video/mp4">\n')
         html = clone_page(title, description, url, thumb, f'Still from the video “{v["title"]}” by {ARTIST}', jsonld,
                           extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META),
-                          v['title'], None, article, deep_meta='deep-video', og_type='video.other', skip=('#video', 'Skip to the video'))
+                          v['title'], None, article, deep_meta='deep-video', og_type='video.other', early='videos', skip=('#video', 'Skip to the video'))
         if not html:
             continue
         # a wide picture: the large card suits it (song and album pages use the small card for their square covers)
@@ -877,7 +886,7 @@ def main():
                  f'<meta property="article:modified_time" content="{modified}">\n')
         html = clone_page(title, description, url, card, f'{ARTIST} ({ARTIST_FULL}) - Outsider singer-songwriter from Guthrie, Oklahoma', jsonld,
                           extra + ('' if 'name="robots"' in (HOME_HTML or open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()) else ROBOTS_META),
-                          sec_id, None, article, deep_meta='deep-section', og_type='website', skip=('#' + sec_id, f'Skip to {name}'))
+                          sec_id, None, article, deep_meta='deep-section', og_type='website', early=sec_id, skip=('#' + sec_id, f'Skip to {name}'))
         if not html:
             continue
         html = html.replace('<meta name="twitter:card" content="summary"/>', '<meta name="twitter:card" content="summary_large_image"/>', 1)
