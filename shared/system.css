@@ -2981,8 +2981,11 @@ html { overscroll-behavior-y: none; }
 @media (min-width: 560px) and (max-width: 767px) and (max-height: 480px) {
   .k-menu .k-menu-links { grid-template-columns: repeat(4, 1fr); }
   .k-menu .k-menu-link:last-child:nth-child(odd) { grid-column: auto; }
-  .k-menu .k-menu-links:has(.k-menu-home) { grid-template-columns: repeat(5, 1fr); }   /* (with Home: all five in the one row) */
-  .k-menu .k-menu-link.k-menu-home:not(#\#) { grid-column: auto; }
+  /* Home and "Listen on" share one row here (Home on its own row pushed Settings off a sideways phone's screen) */
+  .k-menu:has(> .k-menu-home):not(#\#) { grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  .k-menu:has(> .k-menu-home) > *:not(#\#) { grid-column: 1 / -1; }
+  .k-menu:has(> .k-menu-home) > .k-menu-home:not(#\#):not(#\#):not(#\#) { grid-column: 1; margin: 0; }
+  .k-menu:has(> .k-menu-home) > .k-menu-listen:not(#\#):not(#\#) { grid-column: 2; margin: 0; }
 }
 /* The settings panel (tablets and wider): Close sits in the panel's top corner, and nothing kept room for it, so its
    44px touch height reached into the first setting and that row's highlight overlapped it (seen on an iPad). The
@@ -3704,6 +3707,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
+
+/* Phone menu: Home stands on its own row above "Listen on" (the owner's order), full width like it was at the top of the
+   sections grid; the four sections sit two by two under "Listen on". */
+.k-menu .k-menu-link.k-menu-home:not(.k-menu-links *):not(#\#):not(#\#) { display: flex; width: 100%; justify-content: center; margin: 0 0 6px; }
+
+/* Video cards: each card is a column and its title area fills it, so the YouTube buttons in a row line up along the
+   bottom even when one title wraps onto two lines. */
+:root.psy .vid-card-wrap:not(#\#):not(#\#) { display: flex; flex-direction: column; }
+:root.psy .vid-card-wrap .vid-info:not(#\#):not(#\#) { flex: 1 1 auto; }
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the

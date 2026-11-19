@@ -457,11 +457,13 @@
     const plats = $$('.nav-platforms a');
     const sets = typeof settingsList === 'function' ? settingsList() : [];
     let h = '<p class="k-menu-title">Menu</p>';
-    // "Listen on" is the first section, directly under the Search / Close row (the owner's order)
-    if (plats.length) h += '<div class="k-menu-listen"><span class="k-menu-label" id="k-menu-listen">Listen on</span><div class="k-menu-plats" role="group" aria-labelledby="k-menu-listen">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}" title="${escHtml(a.getAttribute('title') || '')}">${a.innerHTML}</a>`).join('') + '</div></div>';
-    // Home first (the owner's request): the same as the toolbar's house, back to the top of the page; full width, with the house
+    // Home first, full width with the house (the owner's request): the same as the toolbar's house, back to the top of the page.
+    // It stands on its own above "Listen on" (the owner's order: Home, Listen on, the sections, then Search); the menu still
+    // opens with focus on it, as the first button.
     const homeBtn = $('.nav .nav-logo') ? `<button type="button" class="k-menu-link k-menu-home" data-home="1"${$('.nav .nav-logo')?.getAttribute('data-home') === 'button' ? '' : ' aria-current="true"'}><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg><span>Home</span></button>` : '';
-    if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + homeBtn + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${a.querySelector('svg.nav-ico') ? a.querySelector('svg.nav-ico').outerHTML : ''}<span>${escHtml(a.textContent.trim())}</span></button>`).join('') + '</nav>';
+    h += homeBtn;
+    if (plats.length) h += '<div class="k-menu-listen"><span class="k-menu-label" id="k-menu-listen">Listen on</span><div class="k-menu-plats" role="group" aria-labelledby="k-menu-listen">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}" title="${escHtml(a.getAttribute('title') || '')}">${a.innerHTML}</a>`).join('') + '</div></div>';
+    if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${a.querySelector('svg.nav-ico') ? a.querySelector('svg.nav-ico').outerHTML : ''}<span>${escHtml(a.textContent.trim())}</span></button>`).join('') + '</nav>';
     // (the owner's order: Listen on, the sections, then Search; the top row is the menu's name with Close)
     // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
     h += '<div class="k-si k-si--flow"></div>';
