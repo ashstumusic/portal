@@ -3832,6 +3832,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .k-menu-plat:is(:hover, :focus-visible) .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; outline: 0 !important; box-shadow: none !important; }
 :root.psy .k-menu-plat:focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid #fff !important; outline-offset: 2px !important; box-shadow: none !important; }
 
+/* On the gold hover/focus of the toolbar's and menu's streaming buttons, each logo stays itself, in its own colours
+   (the dark-on-gold redrawings were for the old round buttons; now the whole button is gold and the word names it). */
+:root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--apple:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Apple_Music.svg") !important; }
+:root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--spotify:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Spotify.svg") !important; }
+:root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--youtube:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Youtube.svg") !important; }
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
