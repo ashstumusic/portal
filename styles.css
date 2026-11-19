@@ -157,7 +157,7 @@ a, button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-c
 .rel-card { contain: layout style; }
 /* Permanently animating (bob) / transform-transitioned fixed chrome gets a
    compositor layer up front - all small, cheap-to-hold surfaces. */
-.hero-scroll { will-change: transform; }
+
 #player-bar { will-change: transform; }
 /* Removed the img[loading=lazy] fadeIn animation: its animation-fill-mode
    "both" could leave below-the-fold images stranded at opacity 0 on older
@@ -232,7 +232,7 @@ html {
   opacity: 0; min-width: 44px; min-height: 44px; padding: 4px 8px 4px 0;
 }
 .nav-logo .hero-brand { gap: .4rem; align-items: center; }
-.nav-logo .hero-icon { width: 28px; border-radius: 6px; filter: none; }
+
 .nav-logo .hero-name { font-size: 1.805rem; padding-top: 0; line-height: 1; position: relative; top: 0.13em; }
 .nav-links {
   display: flex; gap: 1.5rem;
@@ -410,13 +410,7 @@ html {
   gap: 1.25rem;
   transition: opacity .3s var(--ease);
 }
-.hero-icon {
-  width: 90px;
-  width: clamp(90px,15vw,165px); height: auto;
-  border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
-  align-self: center;
-}
+
 
 .hero-split {
   display: grid;
@@ -472,8 +466,8 @@ html {
   position: relative;
   background: url('Images/embedded/hero-ash-stu-guitar.webp') 8% 18% / cover no-repeat;
 }
-.hero-photo-track.warhol .hero-split-photo { display: none; }
-.hero-photo-track.warhol .hero-photo-frame { background: none; }
+
+
 .warhol-half {
   width: 50%; height: 100%;
   flex-shrink: 0;
@@ -566,43 +560,22 @@ html {
 /* Scroll cue - fixed to the viewport so it rides along every section; JS
    retargets it to the next section and hides it on the last one. Glass disc
    keeps the gold chevron readable on any background it passes over. */
-.hero-scroll {
-  position: fixed; bottom: .9rem; left: 50%;
-  transform: translateX(-50%);
-  z-index: 240;
-  width: 40px; height: 40px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  /* gold disc + ink chevron, same as every play disc on the site */
-  color: var(--ink); opacity: .5;
-  background: var(--gold);
-  border: 1px solid rgba(247,197,73,.5);
-  border: 1px solid rgb(from var(--gold) r g b / .5);
-  box-shadow: 0 2px 12px rgba(247,197,73,.4), 0 1px 4px rgba(0,0,0,.15);
-  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4), 0 1px 4px rgba(0,0,0,.15);
-  transition: opacity .3s var(--ease), background .3s var(--ease);
-  animation: heroScrollBob 2.4s var(--ease) infinite;
-}
-.hero-scroll:hover { opacity: 1; background: var(--gold-hover); }
-.hero-scroll.hidden { opacity: 0; pointer-events: none; }
+
+
+
 /* While passing over featured content (only art/photo can happen now - the
    button zone is permanently reserved): stay present as a quiet ghost,
    never fully gone; hovering it brings it back to full strength. */
-.hero-scroll.soft {
-  opacity: .3;
-  animation: none;
-  transform: translateX(-50%) scale(.85);
-}
-.hero-scroll.soft:hover { opacity: 1; }
+
+
 /* keep clear of the player bar when it's docked */
-body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
-@media (max-width: 767px) {
-  body.player-active .hero-scroll { bottom: calc(.9rem + 78px); }
-}
+
+
 @keyframes heroScrollBob {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50%      { transform: translateX(-50%) translateY(6px); }
 }
-@media (prefers-reduced-motion: reduce) { .hero-scroll { animation: none; } }
+
 /* Panel's bottom clearance only reserves room for the cue at rest, not its
    docked-player-lifted position - the JS dodge system (.soft class) handles
    that overlap instead, so stacked layouts aren't stuck with a dead gap. */
@@ -633,19 +606,8 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 .pt--apple { background-image: url('Icons/Apple_Music.svg'); }
 .pt--spotify { background-image: url('Icons/Spotify.svg'); }
 .pt--youtube { background-image: url('Icons/Youtube.svg'); }
-.btn-fill {
-  background: var(--ink);
-  color: var(--paper); border: 1px solid var(--ink);
-  box-shadow: 0 2px 8px rgba(8,76,97,.15);
-  box-shadow: 0 2px 8px rgb(from var(--ink) r g b / .15);
-}
-.btn-fill:hover {
-  background: var(--ink-hover);
-  border-color: var(--ink-hover);
-  box-shadow: 0 4px 16px rgba(8,76,97,.25);
-  box-shadow: 0 4px 16px rgb(from var(--ink) r g b / .25);
-  transform: translateY(-2px) scale(1.01);
-}
+
+
 .btn-epk {
   font-size: .65rem; letter-spacing: .26em;
   height: 50px; padding: 0 2.4rem;
@@ -798,14 +760,14 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
 /* Static label pill (e.g. "Distributing Soon") - same shape as the streaming
    buttons but inert: pointer-events off so no hover state can fire.
    Gold fill so it reads as an announcement, not a dead button. */
-.f-btn.f-btn--label, .rel-btn.rel-btn--label {
+.rel-btn.rel-btn--label {
   pointer-events: none; cursor: default;
   background: var(--gold); border-color: var(--gold);
   color: var(--ink); font-weight: 700; letter-spacing: .16em;
   box-shadow: 0 2px 12px rgba(247,197,73,.35);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .35);
 }
-.f-btn.f-btn--label::before, .rel-btn.rel-btn--label::before { display: none; }
+.rel-btn.rel-btn--label::before { display: none; }
 /* Card-row "Distributing Soon" reads as the card's one announcement, not
    a button among buttons: bigger type, and the row's padding pulls in so
    the gold pill runs nearly edge-to-edge. */
@@ -1235,40 +1197,25 @@ body.player-active .hero-scroll { bottom: calc(.9rem + 70px); }
   box-shadow: 0 4px 20px rgb(from var(--gold) r g b / .45);
   transform: translateY(-1px);
 }
-.form { display: flex; flex-direction: column; gap: 1.25rem; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-.form-group { display: flex; flex-direction: column; gap: .4rem; }
-.form-label { font-size: .52rem; letter-spacing: .24em; text-transform: uppercase; color: rgba(8,76,97,.65); color: rgb(from var(--ink) r g b / .65); font-weight: 600; transition: color .25s var(--ease); }
-.form-group:focus-within .form-label { color: var(--ink); }
-.form-input, .form-textarea {
-  background: rgba(240,245,246,.55); border: 1px solid rgba(8,76,97,.08);
-  background: rgb(from var(--paper) r g b / .55); border: 1px solid rgb(from var(--ink) r g b / .08);
-  color: var(--ink); font-family: var(--sans); font-size: .88rem;
-  padding: .8rem 1rem; width: 100%; outline: none;
-  min-height: 48px; resize: vertical;
-  border-radius: 12px;
-  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease), opacity .3s var(--ease), box-shadow .3s var(--ease), transform .2s var(--ease);
-}
-.form-input:focus, .form-textarea:focus {
-  border-color: rgba(8,76,97,.35);
-  border-color: rgb(from var(--ink) r g b / .35);
-  background: rgba(255,255,255,.8);
-  box-shadow: 0 0 0 4px rgba(8,76,97,.06), 0 2px 12px rgba(8,76,97,.06);
-  box-shadow: 0 0 0 4px rgb(from var(--ink) r g b / .06), 0 2px 12px rgb(from var(--ink) r g b / .06);
-  transform: translateY(-1px);
-}
-.form-input::placeholder, .form-textarea::placeholder { color: rgba(8,76,97,.4); color: rgb(from var(--ink) r g b / .4); }
-.form-hint { font-weight: 400; color: rgba(8,76,97,.65); color: rgb(from var(--ink) r g b / .65); }
-.form-note { font-size: .7rem; color: rgba(8,76,97,.55); color: rgb(from var(--ink) r g b / .55); font-weight: 400; font-style: italic; margin-top: -.25rem; }
-.form-error { font-size: .5rem; letter-spacing: .06em; color: var(--rust); display: none; }
-.form-group.err .form-input, .form-group.err .form-textarea { border-color: var(--rust); }
-.form-group.err .form-error { display: block; }
+
+
+
+
+
+
+
+
+
+
+
+
+
 #form-ok { font-size: .72rem; color: var(--sage); display: none; margin-top: .25rem; font-weight: 500; animation: fadeSlideIn .4s var(--ease); }
 #form-err { font-size: .72rem; color: var(--rust); display: none; margin-top: .25rem; font-weight: 500; animation: fadeSlideIn .4s var(--ease); }
 @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-.form-subscribe { display: flex; align-items: center; gap: .6rem; margin-top: .25rem; }
-.form-subscribe input[type="checkbox"] { accent-color: var(--ink); width: 16px; height: 16px; cursor: pointer; }
-.form-subscribe label { font-size: .7rem; color: rgba(8,76,97,.8); color: rgb(from var(--ink) r g b / .8); cursor: pointer; }
+
+
+
 
 /* ════════════════════════════════════════════
    BIO
@@ -1422,13 +1369,7 @@ footer {
   display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .9rem;
   border-top: 1px solid rgba(255,255,255,.06);
 }
-.footer-copy {
-  font-family: var(--sans);
-  font-size: .56rem; letter-spacing: .1em;
-  color: rgba(255,255,255,.65);
-  border-left: 1px solid rgba(255,255,255,.15);
-  padding-left: .9rem;
-}
+
 .footer-logo img {
   height: 32px; width: auto; opacity: .45;
   border-radius: 8px;
@@ -2077,7 +2018,7 @@ body.player-active { padding-bottom: 68px; }
    ════════════════════════════════════════════ */
 @media (max-width: 767px) {
   .nav { height: 48px; min-height: 48px; padding: 0 1rem; }
-  .nav-logo .hero-icon { width: 24px; }
+  
   .nav-logo .hero-name { font-size: 1.038rem; top: 0.17em; }
   .nav-links, .nav-platforms { display: none; }
   .nav-toggle { display: block; }
@@ -2105,8 +2046,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-left::after { background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 40%); }
   .hero-split-overlay { padding-bottom: 1.5rem; }
   /* clamped against --band too, so it still shrinks when the band is squeezed */
-  .hero-icon { width: 40px;
- width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
+  
   .hero-brand { gap: .5rem; }
   .hero-name { font-size: 1.8rem;
  font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); margin-bottom: 0; -webkit-text-stroke: none; }
@@ -2123,12 +2063,12 @@ body.player-active { padding-bottom: 68px; }
   .section-h { font-size: 1.6rem; margin-bottom: 1.75rem; }
   .contact-inner { max-width: 100%; }
   .contact-intro { font-size: .82rem; max-width: 100%; }
-  .form-row { grid-template-columns: 1fr; gap: 1rem; }
-  .form-input, .form-textarea { font-size: .88rem; padding: .85rem 1rem; min-height: 52px; border-radius: 10px; }
-  .form-label { font-size: .5rem; }
+  
+  
+  
   .btn { width: 100%; justify-content: center; height: 52px; font-size: .58rem; border-radius: 10px; }
-  .form-subscribe label { font-size: .72rem; }
-  .form-subscribe input[type="checkbox"] { width: 20px; height: 20px; }
+  
+  
 
   /* Stack the card: portrait on top, text panel below it. */
   .bio-body { padding: 1.5rem 1.25rem 2.5rem; }
@@ -2196,7 +2136,7 @@ body.player-active { padding-bottom: 68px; }
 @media (min-width: 601px) and (max-width: 767px) {
   .releases-grid { --cols: 2; --gap: 1rem; }
   .video-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-  .form-row { grid-template-columns: 1fr 1fr; }
+  
 }
 
 /* ════════════════════════════════════════════
@@ -2218,7 +2158,7 @@ body.player-active { padding-bottom: 68px; }
   .section-h { font-size: 2rem; }
   .section-h::after { left: -.9rem; }
   .nav { height: 44px; min-height: 44px; }
-  .nav-logo .hero-icon { width: 22px; }
+  
   .nav-logo .hero-name { font-size: .83rem; top: 0.17em; }
   .nav-drawer { top: 44px; }
 }
@@ -2228,7 +2168,7 @@ body.player-active { padding-bottom: 68px; }
    ════════════════════════════════════════════ */
 @media (max-width: 360px) {
   .hero-name { font-size: 2.7rem; }
-  .hero-icon { width: 56px; }
+  
   .section-h::after { left: -.7rem; }
   .hero-split-right { padding: .75rem .75rem 80px; gap: .4rem; }
   .featured-badge { font-size: .4rem; padding: .2rem .5rem; }
@@ -2281,8 +2221,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-right { padding: 1rem 1.25rem 132px; gap: .5rem; }
   .hero-name { font-size: 2.2rem;
  font-size: clamp(2.2rem,10cqi,3.4rem); }
-  .hero-icon { width: 44px;
- width: clamp(44px,10cqi,68px); }
+  
   .featured-badge { font-size: .42rem; }
   .featured-btns { flex-direction: row; flex-wrap: wrap; }
   .f-btn { width: auto; height: 36px; font-size: .48rem; }
@@ -2304,7 +2243,7 @@ body.player-active { padding-bottom: 68px; }
 
   .epk-body { padding: 1.5rem 1.25rem; }
 
-  .form-row { grid-template-columns: 1fr 1fr; }
+  
   .btn { width: auto; height: 44px; }
 
   #np-play { width: 36px; height: 36px; }
@@ -2355,8 +2294,7 @@ body.player-active { padding-bottom: 68px; }
     min-height: unset; max-height: none; overflow: hidden;
   }
   .hero-split-right { padding-bottom: 80px; }
-  .hero-icon { width: 40px;
- width: clamp(40px, min(20cqi, calc(var(--band) * .5)), 130px); }
+  
   .hero-name { font-size: 1.8rem;
  font-size: clamp(1.8rem, min(17cqi, calc(var(--band) * .4)), 6rem); }
   .releases-grid { --cols: 2; }
@@ -2418,12 +2356,7 @@ body.player-active { padding-bottom: 68px; }
    GILLIAM FLOWERS - jittery stop-motion dance
    ════════════════════════════════════════════ */
 .contact-section, .releases-section, .videos-section, .bio-section { position: relative; }
-.gilliam-flower {
-  position: absolute;
-  pointer-events: none;
-  z-index: 10;
-  will-change: transform;
-}
+
 @keyframes gj1 {
   0%   { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
   12%  { transform: translate(-3px,2px) rotate(calc(var(--r,0deg) - 4deg)) scale(1.04); }
@@ -2482,20 +2415,16 @@ body.player-active { padding-bottom: 68px; }
   80%  { transform: translate(-3px,-1px) rotate(calc(var(--r,0deg) - 6deg)) scale(.98); }
   100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
 }
-.gj1 { animation: gj1 var(--d,6s)   steps(4) infinite; }
-.gj2 { animation: gj2 var(--d,7s)   steps(5) infinite; }
-.gj3 { animation: gj3 var(--d,5.5s) steps(4) infinite; }
-.gj4 { animation: gj4 var(--d,8s)   steps(6) infinite; }
-.gj5 { animation: gj5 var(--d,6.5s) steps(3) infinite; }
-.gj6 { animation: gj6 var(--d,9s)   steps(8) infinite; }
-@media (min-width: 768px) {
-  .gilliam-flower.mob-only { display: none; }
-}
-@media (max-width: 767px) {
-  .gilliam-flower.desk-only { display: none; }
-}
+
+
+
+
+
+
+
+
 @media (prefers-reduced-motion: reduce) {
-  .gilliam-flower { animation: none !important; }
+  
   .fs-player.open .fs-art-wrap,
   .fs-player.open .fs-info,
   .fs-player.open .fs-progress,
@@ -2767,8 +2696,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
  font-size: min(6.5cqi, 1.5rem); }
   .featured-btns { flex-direction: row; flex-wrap: nowrap; gap: .5rem; width: auto; margin-top: 0; }
   .f-btn { height: 38px; flex: 0 1 auto; }
-  .hero-icon { width: 40px;
- width: clamp(40px, min(18cqi, calc(var(--band) * .5)), 110px); }
+  
   .hero-name { font-size: 1.8rem;
  font-size: clamp(1.8rem, min(16cqi, calc(var(--band) * .4)), 5rem); }
 }
@@ -2853,15 +2781,15 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   @supports (padding: env(safe-area-inset-bottom)) {
     #player-bar { bottom: max(8px, env(safe-area-inset-bottom)); }
     body.player-active { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
-    body.player-active .hero-scroll { bottom: calc(.9rem + 70px + env(safe-area-inset-bottom)); }
+    
     .fab-music { bottom: calc(1rem + env(safe-area-inset-bottom)); }
-    .hero-scroll { bottom: calc(.9rem + env(safe-area-inset-bottom)); }
+    
   }
 }
 @media (max-width: 600px) {
   @supports (padding: env(safe-area-inset-bottom)) {
     body.player-active { padding-bottom: calc(190px + env(safe-area-inset-bottom)); }
-    body.player-active .hero-scroll { bottom: calc(.9rem + 182px + env(safe-area-inset-bottom)); }
+    
   }
 }
 
@@ -3000,7 +2928,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 }
 
 /* Footer: one quiet line beside the mark. */
-.footer-copy { font-size: .72rem; letter-spacing: .06em; }
+
 
 /* Phones: on the hero the header logo is hidden, which left the tool
    divider standing alone; show it only once the logo is. */
@@ -3012,7 +2940,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    the floating play button in the bottom-right corner. */
 @media (max-width: 640px) {
   footer { flex-direction: column; gap: .5rem; padding-block: 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px)); }
-  .footer-copy { border-left: 0; padding-left: 0; }
+  
 }
 /* Hero (desktop): the latest-release cover was capped at ~226px in a 410px
    panel; slimmer side padding and a 90% cap give it ~300px. */
@@ -3106,50 +3034,26 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   transform-style: preserve-3d;
 }
 .featured-art-hero .featured-art { position: relative; z-index: 1; }
-.party-glare {
-  position: absolute; inset: 0; z-index: 2; border-radius: var(--radius); pointer-events: none;
-  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / .32), transparent 55%);
-  mix-blend-mode: soft-light; opacity: 0; transition: opacity .35s var(--ease);
-}
-.featured-art-hero.party-hot .party-glare { opacity: 1; }
+
+
 
 /* The record behind the sleeve: peeks out on hover, slides out and spins
    while this album is playing. Grooves are repeating rings; the label is
    the cover art. */
-.party-vinyl {
-  position: absolute; z-index: 0; top: 4%; left: 4%; width: 92%; height: 92%;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, transparent 0 31%, rgb(255 255 255 / .05) 31.5% 32%, transparent 32.5%),
-    repeating-radial-gradient(circle, #121417 0 2px, #1b1e22 2px 3px),
-    #111;
-  box-shadow: 0 10px 30px rgb(0 0 0 / .45), inset 0 0 0 2px rgb(255 255 255 / .04);
-  transform: translateX(0) rotate(0deg);
-  transition: transform .7s cubic-bezier(.34,1.56,.64,1);
-}
-.party-vinyl::before {   /* light catching the grooves */
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background: conic-gradient(from 30deg, transparent 0 12%, rgb(255 255 255 / .13) 16%, transparent 22% 62%, rgb(255 255 255 / .09) 66%, transparent 72%);
-}
-.party-vinyl-label {
-  position: absolute; inset: 33%; border-radius: 50%;
-  background-size: cover; background-position: center;
-  box-shadow: 0 0 0 3px #0c0d0f;
-  animation: partySpin 2.2s linear infinite; animation-play-state: paused;
-}
-.party-vinyl-label::after {   /* spindle hole */
-  content: ""; position: absolute; inset: 44%; border-radius: 50%; background: #0c0d0f;
-}
+
+
+
+
 @keyframes partySpin { to { transform: rotate(1turn); } }
-.featured-art-hero:hover .party-vinyl { transform: translateX(16%); }
+
 #party.is-playing .featured-art-hero { translate: -9% 0; transition: translate .7s cubic-bezier(.34,1.56,.64,1); }
 .featured-art-hero { transition: translate .7s cubic-bezier(.34,1.56,.64,1); }
-#party.is-playing .party-vinyl { transform: translateX(30%); }
-#party.is-playing .party-vinyl-label { animation-play-state: running; }
+
+
 @media (max-width: 767px) {   /* less room either side on phones */
-  .featured-art-hero:hover .party-vinyl { transform: translateX(10%); }
+  
   #party.is-playing .featured-art-hero { translate: -6% 0; }
-  #party.is-playing .party-vinyl { transform: translateX(18%); }
+  
 }
 
 
@@ -3175,8 +3079,8 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    still slides out to show what's playing, without spinning). */
 #party.party-off *, #party.party-off *::before, #party.party-off *::after { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
-  .party-aurora, .featured-badge::after, .party-dot, .party-vinyl-label, .party-eq i { animation: none !important; }
-  .party-vinyl, .featured-art-hero { transition: none !important; }
+  .party-aurora,.featured-badge::after,.party-dot,.party-eq i { animation: none !important; }
+  .featured-art-hero { transition: none !important; }
 }
 /* Player bar album line: solid ink (the 85% tint fell to 4.33:1 when the
    hero's glow showed through the bar's 97% fill) and 10px like the other
@@ -3184,7 +3088,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 #np-album { color: var(--player-ink); font-size: .62rem; }
 /* "Distributing Soon" pills: gold in both themes, so the text stays the
    dark teal in both (var(--ink) turns light in dark mode: 1.34:1). */
-.f-btn.f-btn--label, .rel-btn.rel-btn--label { color: #084C61; }
+.rel-btn.rel-btn--label { color: #084C61; }
 
 /* ── Release cards: the party kit (see the decorate() script) ──────────
    Same pieces as the hero panel, fitted inside the card: the sleeve slides
@@ -3194,12 +3098,12 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 }
 .rel-card:hover { --k-lift: -4px; transform: translateY(var(--k-lift, 0px)) perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
 .rel-art-wrap .rel-art { z-index: 1; }
-.rel-art-wrap .rel-vinyl { top: 7%; left: auto; right: 3%; width: 86%; height: 86%; z-index: 0; transform: none; transition: none; }
+
 .rel-card:hover .rel-art { transform: translateX(-11%); }
 .rel-card.now-playing .rel-art { transform: translateX(-30%); }
-.rel-card.now-playing .rel-vinyl .party-vinyl-label { animation-play-state: running; }
-.rel-art-wrap .party-glare { border-radius: 0; z-index: 2; }
-.rel-card.party-hot .party-glare { opacity: 1; }
+
+
+
 .rel-art-wrap .rel-eq { left: .7rem; right: auto; top: .7rem; bottom: auto; z-index: 4; }
 .rel-card.now-playing .rel-eq { opacity: 1; translate: 0 0; }
 .rel-card.now-playing .rel-eq i { animation-play-state: running; }
@@ -3229,7 +3133,7 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 /* Small caps-style labels: this face clogs when tiny and widely tracked. */
 .f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .74rem; letter-spacing: .04em; }
 .vid-yt { font-size: .7rem; letter-spacing: .04em; }
-.featured-badge, .btn-epk, .rel-cat, .featured-kicker, .disc-quote cite, .footer-copy, .party-eq { letter-spacing: .06em; }
+.featured-badge,.btn-epk,.rel-cat,.featured-kicker,.disc-quote cite,.party-eq { letter-spacing: .06em; }
 .featured-badge { font-size: .72rem; }
 .btn-epk { font-size: .82rem; }
 .nav-links a { letter-spacing: .08em; }
@@ -3503,8 +3407,8 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 }
 /* "Next section" arrow: fully visible when focused, and out of the tab
    order (not just transparent) while it's faded away. */
-.hero-scroll:focus-visible { opacity: 1; }
-.hero-scroll.hidden { visibility: hidden; transition: opacity .3s var(--ease), visibility 0s linear .3s; }
+
+
 
 /* Volume sliders: the unfilled part of the bar gets a visible tint of the
    player's ink (it was a half-transparent white that vanished on the light

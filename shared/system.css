@@ -121,7 +121,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .nav-links { gap: var(--s4); }
 .epk-body, #party.hero-split-right { gap: var(--s3); }
 .nav-links a, .nav-toggle, .nav-drawer a, .lb-close { border-radius: var(--r-md); }
-.rel-btn.rel-btn--label, .f-btn.f-btn--label { font-size: 12px; }
+.rel-btn.rel-btn--label { font-size: 12px; }
 .nav-logo .hero-brand { gap: var(--s1); }
 
 /* ── Solid cards; stars behind everything ─────────────────────────── */
@@ -175,12 +175,12 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 
 /* The floating music button and scroll-down cue: the toolbar's teal with
    yellow accents (icon and rim), instead of solid yellow. */
-:root.psy .fab-music, :root.psy .hero-scroll {
+:root.psy .fab-music {
   background: rgb(8 76 97); color: var(--gold);
   border: 1.5px solid rgb(247 197 73 / .85);
   box-shadow: 0 4px 16px rgb(0 0 0 / .35), 0 0 0 1px rgb(8 76 97 / .4);
 }
-:root.psy .fab-music:hover, :root.psy .hero-scroll:hover { background: rgb(14 98 124); border-color: var(--gold); }
+:root.psy .fab-music:hover { background: rgb(14 98 124); border-color: var(--gold); }
 
 /* Lyrics under a track line up with its title: the panel's left padding is
    the row's own inset (12px padding + 22.4px number column + 8px gap), and
@@ -248,7 +248,7 @@ html { overscroll-behavior-y: none; }
 }
 
 /* The scroll-down button over a card or button: dimmed, still there. */
-.hero-scroll.soft { opacity: .55; }
+
 
 /* The page ends right after the About card: a small breathing gap (plus
    the docked player's own height, which body padding adds), nothing more. */
@@ -298,16 +298,15 @@ html { overscroll-behavior-y: none; }
 
 /* The floating music button and scroll-down button match the other
    buttons: yellow with black icons. */
-:root.psy .fab-music, :root.psy .hero-scroll {
+:root.psy .fab-music {
   background: var(--gold); color: #111;
   border: 1px solid rgb(0 0 0 / .2);
   box-shadow: 0 4px 16px rgb(0 0 0 / .35);
 }
-:root.psy .fab-music:hover, :root.psy .hero-scroll:hover { background: #FFD465; border-color: rgb(0 0 0 / .3); }
+:root.psy .fab-music:hover { background: #FFD465; border-color: rgb(0 0 0 / .3); }
 /* On second thought: white, turning yellow when pointed at or focused. */
-:root.psy .fab-music, :root.psy .hero-scroll { background: #fff; color: #111; }
-:root.psy .fab-music:hover, :root.psy .hero-scroll:hover,
-:root.psy .fab-music:focus-visible, :root.psy .hero-scroll:focus-visible { background: var(--gold); color: #111; }
+:root.psy .fab-music { background: #fff; color: #111; }
+:root.psy .fab-music:hover,:root.psy .fab-music:focus-visible { background: var(--gold); color: #111; }
 
 /* Toolbar links styled like the search button when idle (2px light rim,
    faint fill, light label), yellow with a black label when highlighted. */
@@ -793,18 +792,18 @@ html { overscroll-behavior-y: none; }
   background: currentColor;
   transition: transform 520ms var(--spring, ease);
 }
-.logo-mark-link { display: inline-flex; line-height: 0; color: inherit; border-radius: 50%; text-decoration: none; }
-.logo-mark-link:hover .logo-mark, .nav-logo:hover .logo-mark { transform: rotate(-14deg) scale(1.06); }
-.logo-mark-link:active .logo-mark, .nav-logo:active .logo-mark { transform: rotate(-14deg) scale(.92); transition-duration: .12s; }
-.logo-mark-link:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
+
+.nav-logo:hover .logo-mark { transform: rotate(-14deg) scale(1.06); }
+.nav-logo:active .logo-mark { transform: rotate(-14deg) scale(.92); transition-duration: .12s; }
+
 #hero-brand .logo-mark { font-size: 104px; background: linear-gradient(135deg, #F7C549 0%, #FF8AC8 38%, #FFA36B 66%, #8FE6FF 100%); }
 /* the mask would clip a filter on the star itself, so the shadow sits on its link */
-#hero-brand .logo-mark-link { filter: drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); }
+
 #hero-brand.hero-brand { gap: 14px !important; }
 .nav-logo .logo-mark { font-size: 30px; background: #111; }
 .nav-logo .hero-brand { gap: 8px !important; }
-.nav-logo.name-hidden { pointer-events: none; }
-.nav-logo.name-hidden .logo-mark { pointer-events: auto; }
+
+
 @media (max-width: 1199px) { #hero-brand .logo-mark { font-size: 78px; } }
 @media (max-width: 767px) { #hero-brand .logo-mark { font-size: 52px; } #hero-brand.hero-brand { gap: 10px !important; } .nav-logo .logo-mark { font-size: 22px; } }
 @media (prefers-reduced-motion: reduce) { .logo-mark { transition: none; } }
@@ -855,9 +854,7 @@ html { overscroll-behavior-y: none; }
 :root.psy .nav .nav-platform:hover { box-shadow: 0 0 0 2px var(--gold); }
 :root.psy .nav-logo { border-radius: 10px; }
 /* one focus ring for every toolbar control */
-:root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible,
-:root.psy .logo-mark-link:focus-visible,
-:root.psy .nav-drawer :is(a, button):focus-visible { outline: none !important; box-shadow: var(--focus-ring) !important; }
+:root.psy .nav :is(.k-tool, .nav-toggle, .nav-platform, .nav-logo):focus-visible,:root.psy .nav-drawer :is(a, button):focus-visible { outline: none !important; box-shadow: var(--focus-ring) !important; }
 /* search dialog: readable secondary text, a real Close button */
 .k-palette-group { opacity: .9; }
 .k-opt-sub, .k-palette-foot, .k-empty { opacity: .9; }
@@ -938,8 +935,8 @@ html { overscroll-behavior-y: none; }
   border: 2px solid var(--btn-rim); border-radius: 12px;
   transition: var(--btn-fade);
 }
-:root.psy .rel-tl-toggle .rel-tl-count { text-transform: none; letter-spacing: 0; font-weight: 500; opacity: .85; }
-:root.psy .rel-tl-toggle .rel-tl-count::before { content: "·"; margin-right: 8px; }
+
+
 :root.psy .rel-tl-toggle .rel-tl-chev { margin-left: auto; flex: none; transition: transform .35s var(--spring, ease); }
 :root.psy .rel-card.tracks-open .rel-tl-toggle .rel-tl-chev { transform: rotate(180deg); }
 :root.psy .rel-tl-toggle:is(:hover, :focus-visible), :root.psy .rel-card.tracks-open .rel-tl-toggle:hover { background: var(--gold); border-color: var(--gold); color: #111; }
@@ -1094,8 +1091,8 @@ html { overscroll-behavior-y: none; }
 .psy-calm :is(.confetti-canvas, .fireworks-canvas, #confetti-canvas, #fireworks-canvas) { display: none !important; }
 
 /* The press-kit button visibly presses when the toolbar link triggers it. */
-:root.psy .btn-epk.auto-press { background: var(--gold) !important; color: #111 !important; outline: var(--hl-outline) !important; outline-offset: 2px !important; transform: scale(.96) !important; transition: transform .12s, background-color .12s !important; }
-:root.psy .btn-epk.auto-press svg { color: #111 !important; }
+
+
 
 /* Featured panel: the multicolour lights brighter still. */
 :root.psy #party .party-aurora {
@@ -1290,7 +1287,7 @@ html { overscroll-behavior-y: none; }
 @media (prefers-reduced-motion: reduce) { :root.cat-mode #hero-brand, :root.cat-mode .nav-logo .hero-brand { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .warhol-cell::after { transition: none; } }
 .warhol-cell img { image-rendering: auto; }
-:root.psy .rel-track-wrap .rel-lyric-line.lyr-wrap-line { white-space: normal; overflow-wrap: anywhere; padding-left: 1.1em; text-indent: -1.1em; }
+
 /* a line given its own size keeps the song's line spacing */
 :root.psy .rel-track-wrap .rel-lyric-line[style*="font-size"] { line-height: calc(var(--lyr-lh, 1.6) * 1em); }
 
@@ -1321,7 +1318,7 @@ html { overscroll-behavior-y: none; }
    instead of replacing it. */
 :root.psy .rel-track-wrap .rel-lyric-line { padding-left: calc(1.1em + .4rem) !important; text-indent: -1.1em; }
 /* measuring each line's natural width */
-:root.psy .rel-lyrics-inner.lyr-measure .rel-lyric-line { white-space: nowrap !important; }
+
 /* a card widening for its lyrics does it smoothly */
 .releases-grid > .rel-card { transition: flex-basis .35s var(--ease-ui, ease), max-width .35s var(--ease-ui, ease); }
 @media (prefers-reduced-motion: reduce) { .releases-grid > .rel-card { transition: none; } }
@@ -1962,8 +1959,8 @@ html { overscroll-behavior-y: none; }
    page scrolls, and with a half-transparent disc the text underneath showed
    straight through the chevron. A denser, lightly frosted disc keeps the
    arrow readable and the text behind it from tangling with it. */
-:root.psy .hero-scroll:not(#\#) { background: rgb(8 12 18 / .84) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-:root.psy .hero-scroll:not(#\#):is(:hover, :focus-visible) { background: rgb(8 12 18 / .92) !important; }
+
+
 
 /* ── Home section: its bottom edge is cut as a wave ───────────────────
    A mask in two pieces: a solid block for everything above the last few
