@@ -670,7 +670,7 @@ nav._gone = (1 - Math.min(1, Math.max(0, (heroOut - .3) / .35)) * (1 - Math.min(
    - "button" everywhere else: the house in its glass bubble, pressable (back to the top).
    Checked on every scroll. */
 if (navHome) { var homeState = navIn <= .02 ? 'plain' : 'button';
- if (homeState !== navHome._st) { navHome._st = homeState; var lk = navHome.parentNode; lk.setAttribute('data-home', homeState); lk.classList.toggle('home-on', homeState === 'button');
+ if (homeState !== navHome._st) { navHome._st = homeState; var lk = navHome.parentNode; lk.setAttribute('data-home', homeState); lk.classList.toggle('home-on', homeState === 'button'); if (homeState === 'plain') lk.setAttribute('aria-current', 'location'); else lk.removeAttribute('aria-current');   /* (the house is the selected item in the home section) */
   if (homeState === 'plain') { lk.setAttribute('tabindex', '-1'); lk.setAttribute('aria-hidden', 'true'); } else { lk.removeAttribute('tabindex'); lk.removeAttribute('aria-hidden'); } } }
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
