@@ -2851,6 +2851,15 @@ html { overscroll-behavior-y: none; }
 :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 48px !important; }
 :root.js.psy .nav .nav-logo[data-home="plain"]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.js.psy .nav .nav-logo:not([data-home]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: none !important; cursor: default; }
 :root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--btn-d-bg); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22); }   /* exactly the settings button's glass: same fill and edge, no drop shadow, no extra blur (the bar behind it is already frosted) */
+/* Phones: the house bubble says "Home" beside the house (the owner's request); the name moves along to make room.
+   Wider screens keep the house on its own. */
+.nav-home-txt { display: none; }
+@media (max-width: 767px) {
+  :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto; display: inline-flex; align-items: center; gap: 6px; padding: 0 13px 0 10px; }
+  :root.js.psy .nav .nav-logo .nav-home .nav-home-txt { display: inline; font: 600 15px/1 var(--font-ui, 'UI', system-ui, sans-serif); letter-spacing: -.01em; white-space: nowrap; }
+  :root.js.psy .nav .nav-logo .nav-home svg { width: 20px; height: 20px; }
+  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 99px !important; }   /* (the bubble is 91px: 8px clear of it, the same gap as beside the house alone) */
+}
 /* In the home section the house is the selected button (the owner's request), drawn exactly like the toolbar's
    selected section button: black with a white ring. It is still not pressable there, since you are already home. */
 :root.js.psy .nav .nav-logo:is([data-home="plain"], :not([data-home])) .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #000; color: #fff; box-shadow: inset 0 0 0 2px #fff; }
