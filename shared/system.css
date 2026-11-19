@@ -3823,6 +3823,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 
 :root.psy #player-bar .np-close:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: #111 !important; }   /* (the ✕ stays dark on the gold, like its word) */
 
+/* The phone menu's streaming logos: like the toolbar's, the whole button lights up as one rounded square on hover and
+   focus (no gold circle over the logo, no oval ring), and the word is never underlined. */
+:root.psy .k-menu-plat:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-radius: 12px !important; text-decoration: none !important; }
+:root.psy .k-menu-plat > .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { text-decoration: none !important; }
+:root.psy .k-menu-plat:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold) !important; color: #111 !important; }
+:root.psy .k-menu-plat:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { display: none !important; }
+:root.psy .k-menu-plat:is(:hover, :focus-visible) .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; outline: 0 !important; box-shadow: none !important; }
+:root.psy .k-menu-plat:focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid #fff !important; outline-offset: 2px !important; box-shadow: none !important; }
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
