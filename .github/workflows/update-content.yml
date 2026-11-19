@@ -41,6 +41,10 @@ jobs:
         with:
           python-version: "3.x"
 
+      # (Pillow reads each cover's average colour, shown while the cover loads)
+      - name: Install Pillow
+        run: python3 -m pip install --quiet pillow==10.4.0
+
       - name: Generate releases.json / videos.json
         run: python3 scripts/generate_content.py
 

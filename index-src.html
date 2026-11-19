@@ -2471,7 +2471,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
 '<div class="rel-art-wrap">' +
-'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>' +
+'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
 '<div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">' + escHtml(rel.type) + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div></div>' +
 '</div>' +
 '<div class="rel-btns">' + btns + '</div>' +

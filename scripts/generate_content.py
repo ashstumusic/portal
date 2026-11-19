@@ -93,6 +93,17 @@ def parse_links_txt(path):
     return links
 
 
+def cover_tint(path):
+    """Average colour of a cover, as #rrggbb (None if Pillow is not installed or the file can't be read)."""
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            r, g, b = im.convert('RGB').resize((1, 1), Image.LANCZOS).getpixel((0, 0))
+        return '#%02x%02x%02x' % (r, g, b)
+    except Exception:
+        return None
+
+
 def find_art(name):
     for ext in ART_EXTS:
         p = os.path.join('Images', 'Releases', name + ext)
@@ -184,6 +195,9 @@ def gen_releases():
             # A sharper copy of the cover for high-resolution screens, if one has been made
             # (Images/Releases/<name>-800.webp). Listed only when the file exists, so the page never asks for a missing one.
             **({'art2x': f'Images/Releases/{name}-800.webp'} if os.path.isfile(os.path.join('Images', 'Releases', name + '-800.webp')) else {}),
+            # The cover's average colour, shown in its square while the picture is still loading (a slow connection
+            # otherwise shows a black box). Needs Pillow; without it the field is simply left out.
+            **({'tint': cover_tint(art)} if cover_tint(art) else {}),
             'apple': links.get('apple'),
             # links.txt "soon: yes": show the "Distributing soon" tag even
             # though some streaming links exist (more services coming).
