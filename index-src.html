@@ -288,7 +288,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <p class="featured-title">Ash Stu, Vol. II</p>
     <div class="featured-btns">
     <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: Ash Stu, Vol. II"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>
-    <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify: Ash Stu, Vol. II"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>
+    <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Spotify: Ash Stu, Vol. II"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Spotify</span></span></a>
     </div>
   </div>
 </section>
@@ -2516,7 +2516,7 @@ var btnsEl = document.querySelector('.featured-btns');
 if (btnsEl) {
 var h = '';
 if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: ' + escHtml(rel.name) + '"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>';
-if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Stream now on Spotify: ' + escHtml(rel.name) + '"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Stream now on</span><span class="fb-lg">Spotify</span></span></a>';
+if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Spotify: ' + escHtml(rel.name) + '"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Spotify</span></span></a>';
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming
@@ -3235,7 +3235,7 @@ Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items
 return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
 setInterval(turn,5200);})();</script>
 <script>/* The toolbar's three streaming logos: one of them is always open as its full badge in the site's dark glass, like every other button
-   ("Listen on Apple Music", "Stream now on Spotify", "Watch on YouTube"), and every five seconds they trade places:
+   ("Listen on Apple Music", "Listen on Spotify", "Watch on YouTube"), and every five seconds they trade places:
    all three move one place round, the open one closes and the one arriving at the right-hand end opens.
    Room for the widest badge is set aside once, so nothing else on the toolbar moves when they switch. If the section
    buttons (normally centred) would be in the way, they sit beside the logos instead; if the toolbar has no room even
@@ -3244,7 +3244,7 @@ setInterval(turn,5200);})();</script>
    while the search or a menu is open, and in a hidden tab; none of this on phones or with reduced motion or
    effects off. */
 (function(){var as=[].slice.call(document.querySelectorAll('.nav .nav-platforms a.nav-platform'));if(as.length<2)return;
-var nav=document.querySelector('.nav'),box=as[0].parentNode,TXT={apple:'Listen on Apple Music',spotify:'Stream now on Spotify',youtube:'Watch on YouTube'};
+var nav=document.querySelector('.nav'),box=as[0].parentNode,TXT={apple:'Listen on Apple Music',spotify:'Listen on Spotify',youtube:'Watch on YouTube'};
 as.forEach(function(a,k){var m=/pt--(\w+)/.exec((a.querySelector('.pt')||{}).className||'');a.dataset.flash=TXT[m&&m[1]]||a.getAttribute('aria-label')||'';a.dataset.brand=m?m[1]:'';a.style.order=k;});
 var ord=as.map(function(_,k){return k;}),can=false,rT=0,BADGE=false;   /* BADGE off: the toolbar logos stay round (the full "Listen on..." wording lives on the featured release's buttons instead); they still trade places */
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
