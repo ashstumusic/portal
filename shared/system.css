@@ -2502,6 +2502,7 @@ html { overscroll-behavior-y: none; }
 .k-si-tag { display: inline-flex !important; align-items: center; justify-content: center; gap: 4px; width: 84px !important; }   /* (picture + word) */
 .k-si-tag svg { flex: none; }
 :root.psy .k-si--bar .k-si-list:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(18 21 28 / .97) !important; }   /* (nearly solid: the page behind must not show through the words of the results) */
+@media (prefers-reduced-transparency: reduce) { :root.psy .k-si .k-si-list:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(18 21 28) !important; backdrop-filter: none !important; } }
 .k-si-opt { justify-content: flex-start; } .k-si-t { flex: 1 1 auto; }
 .k-si--bar .k-si-list { width: max(100%, 520px); }
 /* a lyric line gets the room; the song it is from sits small after it */
