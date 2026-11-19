@@ -3524,6 +3524,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 .bw-shot { display: block; position: relative; overflow: hidden; border-radius: 16px; min-width: 0; }
 .bw-shot::after, :root.psy .epk-photos .epk-slot::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: url("../Images/grain.webp") 0 0 / 80px 80px; }
 .bw-shot::after { mix-blend-mode: overlay; opacity: .29; }   /* (was .42: toned down a bit at the owner's request) */
+/* The two About photos (guitar, piano) are shown exactly as photographed, at the owner's request: no black-and-white,
+   no brightness or contrast settings, no dark-theme dimming, no grain, and so no change on hover or tap. This one rule
+   overrides every filter in styles.css; the press-kit photos keep theirs. */
+:root .bio-card-media .bw-shot img:not(#\#):not(#\#):not(#\#):not(#\#), :root .bio-card-media .bw-shot img:not(#\#):not(#\#):not(#\#):not(#\#):is(:hover, .bio-revealed) { filter: none !important; transition: none !important; }
+:root .bio-card-media .bw-shot:not(#\#):not(#\#):not(#\#):not(#\#)::after { display: none !important; }
 :root.psy .epk-photos .epk-slot { position: relative; }
 /* The press-kit photos are dim and mostly black, where overlay grain would vanish: here the grain is sparse light
    specks added on top (screen), with the tile darkened first so it does not fog the blacks. */
