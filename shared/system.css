@@ -3692,6 +3692,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (forced-colors: active) { :root.psy .disc-flourish:not(#\#):not(#\#) { color: CanvasText; opacity: 1; } }
 @media print { :root.psy .disc-flourish:not(#\#):not(#\#) { color: #000; } }
 
+/* About: a wavy paint stroke under the name, sitting halfway between the name and "A figment of my own imagination."
+   (the owner's request). Decorative only. The two margins are set so the gap from the bottom of the name's letters to
+   the stroke equals the gap from the stroke to the tagline's letters (measured on the drawn letters, not their boxes). */
+:root.psy .bio-stroke:not(#\#):not(#\#) { display: block; width: 96%; height: 34px; margin: var(--bs-above, 2px) 0 var(--bs-below, 2px); line-height: 0; pointer-events: none; }
+:root.psy .bio-stroke:not(#\#):not(#\#) svg { display: block; width: 100%; height: 100%; }
+@media (min-width: 768px) { :root.psy .bio-stroke:not(#\#):not(#\#) { --bs-above: 1px; --bs-below: 3px; } }
+@media (max-width: 767px) { :root.psy .bio-stroke:not(#\#):not(#\#) { width: 88%; height: 24px; margin-inline: auto; } }
+@media (forced-colors: active) { :root.psy .bio-stroke:not(#\#):not(#\#) { forced-color-adjust: none; } }
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .fs-title, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
