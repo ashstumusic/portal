@@ -1716,6 +1716,10 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-wall .bio-tagline:not(#\#) { line-height: 1.12 !important; }
 :root.psy .bio-wall--top { row-gap: 0 !important; margin-bottom: 16px !important; }
 :root.psy .bio-wall--bottom { row-gap: 0 !important; margin-top: 16px !important; }
+/* No transitions on the wall rows: the script measures each row right after setting a test size, and the
+   reduced-motion reset (every transition 0.01ms, not none) made it read the old size, so the lettering
+   came out two to five times too big and ran off the card. */
+:root.psy .bio-wall *:not(#\#) { transition: none !important; }
 
 /* Hero photo shifted further left inside its crop. */
 :root.psy .hero-split-photo:not(#\#) { object-position: 36% 18% !important; }
@@ -3826,8 +3830,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--spotify:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Spotify.svg") !important; }
 :root.psy :is(.nav .nav-platform, .k-menu-plat):is(:hover, :focus-visible) .pt--youtube:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: url("../Icons/Youtube.svg") !important; }
 
-/* Body text never leaves one word alone on its last line ("message / directly."); browsers without it wrap as before */
-:root.psy :is(p, .contact-intro, .epk-text, .bio-desc, figcaption):not(.disc-quote *):not(#\#) { text-wrap: pretty; }
+/* Body text never leaves one word alone on its last line ("message / directly."); browsers without it wrap as before.
+   The longhand on purpose: the "text-wrap" shorthand also turns wrapping back on, which broke the About
+   lettering (one line each, sized by script to the panel) into huge wrapped words running off the edge. */
+:root.psy :is(p, .contact-intro, .epk-text, .bio-desc, figcaption):not(.disc-quote *):not(#\#) { text-wrap-style: pretty; }
 
 /* Video viewer arrows: solid dark glass, so they stay readable over bright footage (a sky made "Previous" vanish) */
 :root.psy #vid-lightbox .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(10 12 16 / .78) !important; color: #fff !important; }
