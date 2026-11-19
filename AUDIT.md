@@ -48,7 +48,7 @@ Fix (`server.js`): an allowlist. Only public folders and named root files
 are served; dotfiles are denied; everything else is a 404.
 ```js
 const PUBLIC_DIRS = ['Audio', 'Videos', 'Images', 'Icons', 'Fonts', 'Journal', 'redesign'];
-const PUBLIC_ROOT_FILE = /^\/(?:index|resume|google[\w-]+)\.html$|^\/(?:main\.[0-9a-f]+\.js|styles(?:\.[0-9a-f]+\.min)?\.css)$|.../;
+const PUBLIC_ROOT_FILE = /^\/(?:index|google[\w-]+)\.html$|^\/(?:main\.[0-9a-f]+\.js|styles(?:\.[0-9a-f]+\.min)?\.css)$|.../;
 for (const dir of PUBLIC_DIRS) app.use(`/${dir}`, blockPrivate, express.static(path.join(__dirname, dir), { dotfiles: 'deny' }));
 app.use((req, res, next) => (PUBLIC_ROOT_FILE.test(req.path) ? rootStatic(req, res, next) : next()));
 ```
