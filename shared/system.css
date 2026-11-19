@@ -3734,6 +3734,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-toggle .nav-toggle-bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: 17px !important; }
 }
 
+/* About, tablets and desktops: the photos on the left and the words on the right (the owner's request), and the photo
+   group smaller as a whole (it took about half the width; now 38%), so the name and words lead. Phones keep their stacked
+   order. */
+@media (min-width: 768px) {
+  :root.psy .bio-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 38fr) minmax(0, 62fr) !important; column-gap: clamp(28px, 4vw, 56px) !important; }
+  :root.psy .bio-card > .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { order: -1 !important; grid-column: 1 !important; border-left: 0 !important; }
+  :root.psy .bio-card > .bio-card-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 2 !important; }
+}
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
