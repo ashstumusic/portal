@@ -388,7 +388,7 @@
              aria-label="Search songs, videos, sections and actions" placeholder="Search songs, videos, sections…" autocomplete="off" spellcheck="false">
       <div class="k-menu" id="k-menu"></div>
       <ul class="k-palette-list" id="k-palette-list" role="listbox" aria-label="Results"></ul>
-      <button type="button" class="k-palette-close">Close</button>
+      <button type="button" class="k-palette-close" aria-label="Close" title="Close"><svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <p class="k-palette-foot" aria-hidden="true"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></p>
     </div>`;
   doc.body.append(dlg);

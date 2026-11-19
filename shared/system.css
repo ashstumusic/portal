@@ -2851,15 +2851,7 @@ html { overscroll-behavior-y: none; }
 :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 48px !important; }
 :root.js.psy .nav .nav-logo[data-home="plain"]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.js.psy .nav .nav-logo:not([data-home]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: none !important; cursor: default; }
 :root.js.psy .nav .nav-logo[data-home="button"] .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--btn-d-bg); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22); }   /* exactly the settings button's glass: same fill and edge, no drop shadow, no extra blur (the bar behind it is already frosted) */
-/* Phones: the house bubble says "Home" beside the house (the owner's request); the name moves along to make room.
-   Wider screens keep the house on its own. */
-.nav-home-txt { display: none; }
-@media (max-width: 767px) {
-  :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto; display: inline-flex; align-items: center; gap: 6px; padding: 0 13px 0 10px; }
-  :root.js.psy .nav .nav-logo .nav-home .nav-home-txt { display: inline; font: 600 15px/1 var(--font-ui, 'UI', system-ui, sans-serif); letter-spacing: -.01em; white-space: nowrap; }
-  :root.js.psy .nav .nav-logo .nav-home svg { width: 20px; height: 20px; }
-  :root.js.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-left: 99px !important; }   /* (the bubble is 91px: 8px clear of it, the same gap as beside the house alone) */
-}
+.nav-home-txt { display: none; }   /* (the word "Home" was shown here for a while; the owner settled on the house alone) */
 /* In the home section the house is the selected button (the owner's request), drawn exactly like the toolbar's
    selected section button: black with a white ring. It is still not pressable there, since you are already home. */
 :root.js.psy .nav .nav-logo:is([data-home="plain"], :not([data-home])) .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #000; color: #fff; box-shadow: inset 0 0 0 2px #fff; }
@@ -2996,15 +2988,22 @@ html { overscroll-behavior-y: none; }
    settings start a little lower, clear of Close. */
 @media (min-width: 768px) { .k-palette[data-mode="menu"] .k-menu-settings:not(#\#):not(#\#) { margin-top: 12px; } }
 
+/* The menu and settings panel's Close is an X (the owner's request); its name stays "Close" for screen readers. A
+   square button, the same size as the toolbar's icon buttons (44px on touch screens). */
+:root.psy .k-palette .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; min-width: 40px !important; padding: 0 !important; display: inline-grid !important; place-items: center; }
+@media (pointer: coarse) { :root.psy .k-palette .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 44px !important; min-width: 44px !important; } }
+.k-palette-close svg { display: block; }
+
 /* Each section button carries an icon before its name (the owner's request): a briefcase for the press kit, an
    envelope for Contact, a note for Music, a play button for Videos. Same stroke drawing as the toolbar's house; it
    takes the button's text colour, so it follows every state (selected, hover, focus) with the words. */
 :root .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex !important; align-items: center; gap: 6px; }
 .nav-links a .nav-ico, .k-menu-link .nav-ico { flex: none; display: block; position: relative; z-index: 1; }
 .k-menu-link { gap: 8px; }
-/* Tablet widths (768-1179px): the toolbar has no room for them (with the icons it broke onto two rows or overlapped,
-   even with tighter spacing), so there the buttons stay words only. The phone menu and wider screens show them. */
-@media (min-width: 768px) and (max-width: 1179px) { .nav-links a .nav-ico { display: none !important; } :root .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0; } }
+/* The toolbar's section buttons show the icon alone (the owner's request): the name is still there for screen readers
+   (visually hidden) and as the hover tooltip. Without the words they fit at every width, tablets included. */
+:root .nav .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { gap: 0; padding-inline: 13px !important; justify-content: center; }
+.nav-links a .nav-ico { width: 19px; height: 19px; }
 .k-menu-link .nav-ico { width: 18px; height: 18px; }
 @media (forced-colors: active) { .nav-links a .nav-ico, .k-menu-link .nav-ico { forced-color-adjust: auto; } }
 
