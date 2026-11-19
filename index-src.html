@@ -2484,7 +2484,7 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
+? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
 : '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/
@@ -2509,6 +2509,7 @@ var img = document.querySelector('.featured-art-hero .featured-art');
 if (img) {
   if (rel.art2x) { img.srcset = encodeURI(rel.art) + ' 504w, ' + encodeURI(rel.art2x) + ' 800w'; img.sizes = '(max-width: 767px) 50vw, 400px'; } else { img.removeAttribute('srcset'); img.removeAttribute('sizes'); }
   img.src = rel.art; img.alt = rel.name;
+  if (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint)) img.style.backgroundColor = rel.tint;   // (its colour while it loads)
 }
 var play = document.getElementById('featured-play');
 if (play) { play.setAttribute('aria-label', 'Play ' + rel.name); play.setAttribute('title', 'Play ' + rel.name); }

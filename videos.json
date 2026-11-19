@@ -5,7 +5,8 @@
     "youtube": "https://youtu.be/SU1zjY0_skg",
     "captions": "Videos/Captions/Brain Dead Corollary.vtt",
     "thumb": "Videos/Thumbnails/Brain Dead Corollary.webp",
-    "thumb2x": "Videos/Thumbnails/Brain Dead Corollary-1024.webp"
+    "thumb2x": "Videos/Thumbnails/Brain Dead Corollary-1024.webp",
+    "tint": "#39282b"
   },
   {
     "title": "Theory of Hope",
@@ -13,14 +14,16 @@
     "youtube": "https://youtu.be/twQA1tZK9GI",
     "captions": "Videos/Captions/Theory of Hope.vtt",
     "thumb": "Videos/Thumbnails/Theory of Hope.webp",
-    "thumb2x": "Videos/Thumbnails/Theory of Hope-1024.webp"
+    "thumb2x": "Videos/Thumbnails/Theory of Hope-1024.webp",
+    "tint": "#2e2626"
   },
   {
     "title": "VCR",
     "file": "Videos/VCR.mp4",
     "youtube": "https://youtu.be/QfRGP06VvE8",
     "captions": "Videos/Captions/VCR.vtt",
-    "thumb": "Videos/Thumbnails/VCR.webp"
+    "thumb": "Videos/Thumbnails/VCR.webp",
+    "tint": "#736a59"
   },
   {
     "title": "Why Have Eyes",
@@ -28,7 +31,8 @@
     "youtube": "https://youtu.be/YB-GkZ3C-6U",
     "captions": "Videos/Captions/Why Have Eyes.vtt",
     "thumb": "Videos/Thumbnails/Why Have Eyes.webp",
-    "thumb2x": "Videos/Thumbnails/Why Have Eyes-1024.webp"
+    "thumb2x": "Videos/Thumbnails/Why Have Eyes-1024.webp",
+    "tint": "#837b73"
   },
   {
     "title": "The Cloud for the Desert",
@@ -36,13 +40,15 @@
     "youtube": "https://youtu.be/hyWst3-CvFo",
     "captions": "Videos/Captions/The Cloud for the Desert.vtt",
     "thumb": "Videos/Thumbnails/The Cloud for the Desert.webp",
-    "thumb2x": "Videos/Thumbnails/The Cloud for the Desert-1024.webp"
+    "thumb2x": "Videos/Thumbnails/The Cloud for the Desert-1024.webp",
+    "tint": "#80816d"
   },
   {
     "title": "The Helpful Raven",
     "file": "Videos/The Helpful Raven.mp4",
     "youtube": "https://youtu.be/hhjA5XBQCOU",
     "captions": "Videos/Captions/The Helpful Raven.vtt",
-    "thumb": "Videos/Thumbnails/The Helpful Raven.webp"
+    "thumb": "Videos/Thumbnails/The Helpful Raven.webp",
+    "tint": "#9ca6ab"
   }
 ]

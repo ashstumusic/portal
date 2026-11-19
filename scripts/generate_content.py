@@ -252,6 +252,8 @@ def gen_videos():
             # A sharper copy of the thumbnail for high-resolution screens, if one has been made
             # (Videos/Thumbnails/<name>-1024.webp); listed only when the file exists.
             **({'thumb2x': f'Videos/Thumbnails/{base}-1024.webp'} if os.path.isfile(os.path.join('Videos', 'Thumbnails', base + '-1024.webp')) else {}),
+            # (the thumbnail's average colour, shown while it loads, like the album covers)
+            **({'tint': cover_tint(find_thumb(base))} if find_thumb(base) and cover_tint(find_thumb(base)) else {}),
             '_sort': git_first_added_epoch(path),
         })
     # Optional Videos/order.txt: one video title per line, top first.
