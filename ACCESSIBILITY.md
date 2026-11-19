@@ -147,9 +147,6 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 
 ## Sizes and contrast
 
-- Exception chosen by the owner: on phones every toolbar button (Home, the four sections, the three streaming links,
-  Search, Settings) sits in one row with no menu, so they share the width at about 28-39px each, under the 44px rule.
-  Each still has a full spoken name and its icon; there is no larger alternative on phones.
 - Touch targets are 44px on touch screens (sliders are the exception: 24px minimum, because a taller hit strip
   would overlap the buttons beside them).
 - Text contrast is at least 4.5:1, measured on the real background. For glass panels, measure against a white
