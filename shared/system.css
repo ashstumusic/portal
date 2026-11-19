@@ -3711,6 +3711,8 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* Phone menu: Home stands on its own row above "Listen on" (the owner's order), full width like it was at the top of the
    sections grid; the four sections sit two by two under "Listen on". */
 .k-menu .k-menu-link.k-menu-home:not(.k-menu-links *):not(#\#):not(#\#) { display: flex; width: 100%; justify-content: center; margin: 0 0 6px; }
+/* (tablets and wider: this panel is the settings, and the toolbar has its own house; Home stays a phone-menu button) */
+@media (min-width: 768px) { .k-menu .k-menu-link.k-menu-home:not(#\#):not(#\#):not(#\#) { display: none; } }
 
 /* Video cards: each card is a column and its title area fills it, so the YouTube buttons in a row line up along the
    bottom even when one title wraps onto two lines. */
