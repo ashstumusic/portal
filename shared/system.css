@@ -3689,13 +3689,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 10px !important; }
 }
 
-/* Western scroll flourishes above and below the Woody Guthrie quote (the owner's request, from a reference sheet of
-   ornamental dividers; drawn for this site). Decorative only (aria-hidden). The one below is the same drawing
-   its counterpart (dipping where the top one arches, round a teardrop where the top has a diamond).
-   Kept simple, after the owner's second reference (a café sign's scrollwork): one tapered calligraphic stroke a
-   side, ending in a single curl.
-   Smaller than the quote's width and at 75% opacity, so they decorate rather than compete. Line colour follows the quote's text. */
-:root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(290px, 56%); margin: 64px auto 14px; color: inherit; opacity: .75; line-height: 0; }
+/* Western flourishes above and below the Woody Guthrie quote (the owner's request): cartoon, hand-drawn cowboy
+   ornaments in keeping with the site's chalk drawings - a wobbly rope with its twists drawn in, running out to a loose
+   lasso loop each side of a sheriff's star (top), and rope ending in small curls each side of a horseshoe (bottom).
+   Drawn by a small script with a hand's wobble. Decorative only (aria-hidden); smaller than the quote, at 75% opacity,
+   in the quote's own colour. */
+:root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(380px, 72%); margin: 64px auto 14px; color: inherit; opacity: .75; line-height: 0; }
 /* (the space the quote used to keep above itself now sits above the flourish, so the pair hugs the quote evenly) */
 :root.psy .disc-flourish + .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-top: 0 !important; padding-top: 4px !important; }
 @media (max-width: 767px) { :root.psy .disc-flourish:not(#\#):not(#\#) { margin-top: 40px; } }
@@ -3841,6 +3840,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 
 /* Body text never leaves one word alone on its last line ("message / directly."); browsers without it wrap as before */
 :root.psy :is(p, .contact-intro, .epk-text, .bio-desc, figcaption):not(.disc-quote *):not(#\#) { text-wrap: pretty; }
+
+/* Video viewer arrows: solid dark glass, so they stay readable over bright footage (a sky made "Previous" vanish) */
+:root.psy #vid-lightbox .lb-arrow:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(10 12 16 / .78) !important; color: #fff !important; }
+:root.psy #vid-lightbox .lb-arrow:is(:hover, :focus-visible):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold) !important; color: #111 !important; }
 
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
