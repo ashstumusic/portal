@@ -206,7 +206,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <a href="#main" class="skip">Skip to content</a>
 <header>
 <nav class="nav" aria-label="Main navigation">
-  <a href="#" class="nav-logo" aria-label="Home - Ash Stu, back to top">
+  <a href="#" class="nav-logo" aria-label="Home, Ash Stu, back to top">
     <!-- Always here, left of the name: in the home section a plain little house (no bubble, not pressable); everywhere else a Home button. It is part of this same link, so there is still one control here, named "Ash Stu, back to top". -->
     <span class="nav-home" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg></span>
     <div class="hero-brand">
@@ -314,7 +314,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <h2 class="section-h" id="contact-h">Contact</h2>
   <div class="section-inner">
     <div class="contact-inner">
-      <p class="contact-intro">For shows, press, or anything - message directly.</p>
+      <p class="contact-intro">For shows, press, or anything – message directly.</p>
       <a href="mailto:ashstumusic@gmail.com" class="contact-email-link" aria-label="Email Ash Stu: ashstumusic@gmail.com">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         ashstumusic@gmail.com
@@ -2465,7 +2465,7 @@ btns += '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" 
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
-return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ' - ' + escHtml(rel.type) + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
+return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>' +
 '<div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">' + escHtml(rel.type) + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div></div>' +
