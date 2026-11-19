@@ -3680,6 +3680,18 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-left: 10px !important; }
 }
 
+/* Western scroll flourishes above and below the Woody Guthrie quote (the owner's request, from a reference sheet of
+   ornamental dividers; drawn for this site). Decorative only (aria-hidden). The one below is the same drawing
+   flipped, so the pair frames the quote. Line colour follows the quote's text. */
+:root.psy .disc-flourish:not(#\#):not(#\#) { display: block; width: min(400px, 72%); margin: 64px auto 16px; color: inherit; opacity: .78; line-height: 0; }
+/* (the space the quote used to keep above itself now sits above the flourish, so the pair hugs the quote evenly) */
+:root.psy .disc-flourish + .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin-top: 0 !important; padding-top: 4px !important; }
+@media (max-width: 767px) { :root.psy .disc-flourish:not(#\#):not(#\#) { margin-top: 40px; } }
+:root.psy .disc-flourish:not(#\#):not(#\#) svg { display: block; width: 100%; height: auto; overflow: visible; }
+:root.psy .disc-flourish--below:not(#\#):not(#\#) { margin: 16px auto 0; transform: scaleY(-1); }
+@media (forced-colors: active) { :root.psy .disc-flourish:not(#\#):not(#\#) { color: CanvasText; opacity: 1; } }
+@media print { :root.psy .disc-flourish:not(#\#):not(#\#) { color: #000; } }
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .fs-title, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
