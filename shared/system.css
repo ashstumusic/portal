@@ -2876,6 +2876,7 @@ html { overscroll-behavior-y: none; }
   .k-menu { max-height: calc(100vh - 3rem); max-height: calc(100dvh - 3rem); gap: 8px; }
   .k-menu-links { grid-template-columns: 1fr 1fr; }
   .k-menu-link:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .k-menu-links:has(.k-menu-home) .k-menu-link:last-child:nth-child(odd):not(.k-menu-home) { grid-column: auto; }   /* (Home takes the full first row; the four sections sit two by two under it) */
   /* the streaming logos are the same three round logos as the desktop toolbar: icon only, side by side, same gold hover */
   .k-menu-plats { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 0; }
   .k-menu-plat { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
@@ -2974,7 +2975,12 @@ html { overscroll-behavior-y: none; }
 @media (min-width: 560px) and (max-width: 767px) and (max-height: 480px) {
   .k-menu .k-menu-links { grid-template-columns: repeat(4, 1fr); }
   .k-menu .k-menu-link:last-child:nth-child(odd) { grid-column: auto; }
+  .k-menu .k-menu-links:has(.k-menu-home) { grid-template-columns: repeat(5, 1fr); }   /* (with Home: all five in the one row) */
+  .k-menu .k-menu-link.k-menu-home:not(#\#) { grid-column: auto; }
 }
+/* Home: first in the phone menu, across the full width above the four sections, with the toolbar's house beside the word */
+.k-menu-link.k-menu-home { grid-column: 1 / -1; gap: 8px; }
+.k-menu-link.k-menu-home svg { flex: none; }
 
 /* ── Home photo: the required area is never cut ──────────────────────────────────────────────────────────────
    The owner marked a rectangle on the photo (Downloads/Guitar.png, red outline) that must show in full on every

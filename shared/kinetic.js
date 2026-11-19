@@ -459,7 +459,9 @@
     let h = '<p class="k-menu-title">Menu</p>';
     // "Listen on" is the first section, directly under the Search / Close row (the owner's order)
     if (plats.length) h += '<div class="k-menu-listen"><span class="k-menu-label" id="k-menu-listen">Listen on</span><div class="k-menu-plats" role="group" aria-labelledby="k-menu-listen">' + plats.map((a) => `<a class="k-menu-plat" href="${escHtml(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escHtml(a.getAttribute('aria-label') || '')}" title="${escHtml(a.getAttribute('title') || '')}">${a.innerHTML}</a>`).join('') + '</div></div>';
-    if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
+    // Home first (the owner's request): the same as the toolbar's house, back to the top of the page; full width, with the house
+    const homeBtn = $('.nav .nav-logo') ? '<button type="button" class="k-menu-link k-menu-home" data-home="1"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.8 9.6V19a1 1 0 0 0 1 1h3.4v-5.2h3.6V20h3.4a1 1 0 0 0 1-1V9.6"/></svg><span>Home</span></button>' : '';
+    if (links.length) h += '<nav class="k-menu-links" aria-label="Sections">' + homeBtn + links.map((a, i) => `<button type="button" class="k-menu-link" data-link="${i}"${a.hasAttribute('aria-current') ? ' aria-current="true"' : ''}>${escHtml(a.textContent.trim())}</button>`).join('') + '</nav>';
     // (the owner's order: Listen on, the sections, then Search; the top row is the menu's name with Close)
     // phones: Search lives here too - a real field; typing in it swaps the rest of the menu for suggestions
     h += '<div class="k-si k-si--flow"></div>';
@@ -492,7 +494,8 @@
     const l = e.target.closest('.k-menu-link'), r = e.target.closest('.settings-row'), f = e.target.closest('.settings-fold');
     if (e.target.closest('.k-si')) return;
     if (f) { setsOpen = !setsOpen; f.setAttribute('aria-expanded', String(setsOpen)); const g = $('#k-menu-settings-group', menuBox); if (g) g.hidden = !setsOpen; return; }
-    if (l) { const a = $$('.nav-links a').filter((x) => x.getAttribute('href'))[+l.dataset.link]; closePalette(false); a?.click(); }
+    if (l && l.dataset.home) { const home = $('.nav .nav-logo'); closePalette(false); home?.click(); home?.focus({ preventScroll: true }); }   // (focus goes to the toolbar's home link, never to nothing)
+    else if (l) { const a = $$('.nav-links a').filter((x) => x.getAttribute('href'))[+l.dataset.link]; closePalette(false); a?.click(); }
     else if (r) { const i = +r.dataset.set, it = settingsList()[i]; if (it) { try { it.run(); } catch {} setTimeout(() => { if (dlg.open && dlg.dataset.mode === 'menu') renderMenu(i); }, 60); } }
     else if (e.target.closest('.k-menu-plat')) closePalette(false);
   });
