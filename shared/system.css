@@ -2988,6 +2988,10 @@ html { overscroll-behavior-y: none; }
    settings start a little lower, clear of Close. */
 @media (min-width: 768px) { .k-palette[data-mode="menu"] .k-menu-settings:not(#\#):not(#\#) { margin-top: 12px; } }
 
+/* The full-screen player's Close is its down chevron alone (the owner's request); its name stays "Close player" for
+   screen readers, and the tooltip says how else to close it. A square button like the player's other controls. */
+:root.psy .fs-player .fs-collapse:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 44px !important; min-width: 44px !important; padding: 0 !important; justify-content: center !important; display: inline-grid !important; place-items: center; }
+
 /* The menu and settings panel's Close is an X (the owner's request); its name stays "Close" for screen readers. A
    square button, the same size as the toolbar's icon buttons (44px on touch screens). */
 :root.psy .k-palette .k-palette-close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; min-width: 40px !important; padding: 0 !important; display: inline-grid !important; place-items: center; }
