@@ -2550,6 +2550,7 @@ html { overscroll-behavior-y: none; }
 .settings-title { display: flex; align-items: center; gap: 8px; min-height: 30px; }
 .settings-title .k-gear { width: 16px; height: 16px; flex: none; }
 @media (max-width: 767px) { .k-menu .settings-title { margin-top: 10px; padding-top: 12px; border-top: 1px solid rgb(255 255 255 / .12); } }
+@media (max-width: 767px) { .k-menu .settings-title:first-child:not(#\#):not(#\#) { margin-top: 0; padding-top: 0; border-top: 0; min-height: 40px; display: flex; align-items: center; } }   /* (settings alone in the panel: nothing above it to divide from; level with Close) */
 
 /* ── Contact and About: no back wall ──────────────────────────────────
    The dark panel behind each is gone; the words and photos sit straight on
@@ -2986,7 +2987,7 @@ html { overscroll-behavior-y: none; }
 /* The settings panel (tablets and wider): Close sits in the panel's top corner, and nothing kept room for it, so its
    44px touch height reached into the first setting and that row's highlight overlapped it (seen on an iPad). The
    settings start a little lower, clear of Close. */
-@media (min-width: 768px) { .k-palette[data-mode="menu"] .k-menu-settings:not(#\#):not(#\#) { margin-top: 12px; } }
+.k-palette[data-mode="menu"] .k-menu-settings:not(#\#):not(#\#) { margin-top: 12px; }   /* (all sizes: phones show the settings alone now, with Close above them too) */
 
 /* The full-screen player's Close is its down chevron alone (the owner's request); its name stays "Close player" for
    screen readers, and the tooltip says how else to close it. A square button like the player's other controls. */
@@ -3659,6 +3660,40 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    full-screen player's Lyrics button stayed on screen for a song that has no lyrics (pressing it lit it up and showed
    nothing), and the cover image would have stayed for a release without a cover. No button style may outrank `hidden`. */
 :root [hidden]:not([hidden="until-found"]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+
+
+/* ── Phones: every button on the toolbar, no menu (the owner's choice) ──
+   Home, the four sections, the three streaming links, Search and Settings sit in one row and share the width equally:
+   about 35px each on a 390px phone, 28px on the smallest (320px). That is below the 44px touch size used elsewhere; the
+   owner chose all ten in one row over larger buttons in two rows. The menu button and the name beside Home are gone;
+   Search opens the search panel and Settings the settings panel, as on wider screens. */
+@media (max-width: 767px) {
+  :root.psy .nav:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { --b: clamp(26px, calc((100vw - 16px - 27px) / 10), 40px); display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 3px !important; padding: 4px 8px !important; min-height: 49px !important; box-sizing: border-box !important; }   /* (49px tall as before, whatever the buttons' size: the first screen is laid out under a 49px toolbar) */
+  :root.psy .nav .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy .nav .nav-rail:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: contents !important; }   /* (the strip holding the section and streaming buttons; phones used to hide it) */
+  :root.psy .nav .nav-logo:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: none !important; width: var(--b) !important; min-width: 0 !important; height: var(--b) !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; }
+  :root.psy .nav .nav-logo .hero-brand:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.js.psy .nav .nav-logo .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: var(--b) !important; height: var(--b) !important; margin-top: calc(var(--b) / -2) !important; padding: 0 !important; display: grid !important; }
+  :root.js.psy .nav .nav-logo .nav-home svg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: calc(var(--b) * .5) !important; height: calc(var(--b) * .5) !important; }
+  :root.psy .nav .nav-links:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex: none !important; gap: 3px !important; margin: 0 !important; padding: 0 !important; position: static !important; }
+  :root.psy .nav .nav-links a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: var(--b) !important; height: var(--b) !important; min-height: 0 !important; min-width: 0 !important; padding: 0 !important; }
+  :root.psy .nav .nav-links a .nav-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: calc(var(--b) * .48) !important; height: calc(var(--b) * .48) !important; }
+  :root.psy .nav .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex: none !important; gap: 3px !important; margin: 0 !important; padding: 0 !important; width: auto !important; min-width: 0 !important; translate: none !important; }
+  :root.psy .nav .nav-platform:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: var(--b) !important; height: var(--b) !important; padding: 0 !important; margin: 0 !important; display: grid !important; place-items: center !important; }
+  :root.psy .nav .nav-platform .pt:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: calc(var(--b) * .78) !important; height: calc(var(--b) * .78) !important; }
+  :root.psy .nav .k-tools:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex: none !important; gap: 3px !important; margin: 0 !important; padding: 0 !important; }
+  :root.psy .nav .k-search-btn .k-search-label:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  /* the current section: the sliding marker is drawn for the wide toolbar; here the button itself shows it, black with a
+     white ring, as everywhere else */
+  :root.psy .nav .nav-links .nav-glider:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy .nav .nav-links a[aria-current]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover, :focus-visible) { color: #fff !important; }
+  :root.psy .nav .nav-links a[aria-current]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(:hover, :focus-visible)::after { background: #000 !important; box-shadow: inset 0 0 0 2px #fff !important; }
+  :root.psy .nav .k-si--bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+  :root.psy .nav :is(.k-search-btn, .k-settings-btn):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: grid !important; place-items: center !important; width: var(--b) !important; height: var(--b) !important; min-width: 0 !important; min-height: 0 !important; padding: 0 !important; }
+  :root.psy .nav :is(.k-search-btn, .k-settings-btn) svg:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: calc(var(--b) * .5) !important; height: calc(var(--b) * .5) !important; }
+  /* (the wider tap areas added round some of these buttons would overlap their neighbours at this spacing) */
+  :root.psy .nav :is(.nav-logo, .nav-home, .k-tool):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { inset: 0 !important; }
+}
 
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
