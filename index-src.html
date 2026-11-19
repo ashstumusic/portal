@@ -185,7 +185,7 @@
 <link rel="manifest" href="site.webmanifest"/>
 
 
-<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search")})(document.documentElement)</script>
+<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};h.src="/Images/pencil-hatch.webp"})(document.documentElement)</script>
 <link rel="stylesheet" href="styles.css?v=76">
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
 <link rel="preload" as="image" href="Images/embedded/featured-only-a-baby-vol-2.webp" fetchpriority="high">
@@ -1998,7 +1998,7 @@ var _deepDone = false, _deepAt = 0;
 })();
 // The name is drawn through a pencil-shading image used as a mask. If that one image fails to load, the browser
 // masks the name to nothing and the first screen has no name at all: show it unshaded instead.
-(function() { var im = new Image(); im.crossOrigin = 'anonymous'; im.onerror = function() { document.documentElement.classList.add('no-hatch'); }; im.src = 'Images/pencil-hatch.webp'; })();
+/* (the name's pencil shading: the page starts with .no-hatch - the name in plain colour - and the first script drops it once the shading image has arrived, so on a slow connection the name is never invisible while the image loads; if it never arrives, the name simply stays plain) */
 function openDeepSong() {
 if (_deepDone) return;
 var m = document.querySelector('meta[name="deep-song"]');
