@@ -3672,6 +3672,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    nothing), and the cover image would have stayed for a release without a cover. No button style may outrank `hidden`. */
 :root [hidden]:not([hidden="until-found"]):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
 
+/* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
+   second line. Browsers without text-wrap: balance simply wrap as before. */
+:root.psy :is(.vid-title, .rel-name, .fs-title, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
+
 /* ── RULES FOR EVERY NEW BUTTON (standing instruction from the site's owner) ──
    Anything pressable that is added to this site from now on is built from the
    Button system below, not styled on its own. Before anything else it must be
