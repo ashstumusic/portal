@@ -3601,6 +3601,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* The album's heading block (name, facts, track list, links to the other albums) is not shown: the owner did not want
    it above the Music section. It is kept for search engines and screen readers, hidden from sight only. */
 :root.psy .album-page:not(#\#):not(#\#):not(#\#):not(#\#) { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; clip-path: inset(50%) !important; white-space: nowrap !important; }
+/* ...but printed, it is the page: an album, video or section page prints its own block (the album's name and track
+   list, the video's words, the section's summary) the way a song page prints its lyrics. Hidden like this on paper
+   too, the print rules for these pages (which keep only this block) gave a single blank sheet. */
+@media print { :root.psy .album-page:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: static !important; width: auto !important; height: auto !important; margin: 0 auto !important; padding: 0 !important; overflow: visible !important; clip-path: none !important; white-space: normal !important; } }
 :root.psy .album-page-tracks ol { display: inline-block; margin: 0; padding: 0 0 0 1.6em; text-align: left; font-size: 18px; line-height: 1.7; }
 :root.psy .album-page-tracks li { margin: 0; }
 :root.psy :is(.rel-card, .vid-card).album-arrived:not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549) !important; outline-offset: 5px !important; }
