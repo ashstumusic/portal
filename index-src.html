@@ -592,6 +592,9 @@ const heroBrand = document.getElementById('hero-brand');
 const heroSection = document.querySelector('.hero-split-left');
 let offsets = [], ticking = false, heroH = 400, aboutTop = 0, _picked = '';
 ids.forEach(id => { if (links[id]) links[id].addEventListener('click', () => { _picked = id; }); });
+// Arriving at a section (a section page such as /contact/, or an address ending #contact) counts as picking it, so
+// its link is the lit one: Press Kit and Contact are short, and by position alone the next section was lit instead.
+(function() { var dm = document.querySelector('meta[name="deep-section"]'), start = (dm && dm.content) || location.hash.slice(1); if (ids.indexOf(start) >= 0) _picked = start; })();
 ['wheel', 'touchmove', 'keydown'].forEach(ev => window.addEventListener(ev, () => { _picked = ''; }, { passive: true }));
 function cacheOffsets() {
 offsets = ids.map(id => ({ id, top: (document.getElementById(id) || {}).offsetTop || 0 }));
