@@ -2991,6 +2991,11 @@ html { overscroll-behavior-y: none; }
   .k-menu .k-menu-links:has(.k-menu-home) { grid-template-columns: repeat(5, 1fr); }   /* (with Home: all five in the one row) */
   .k-menu .k-menu-link.k-menu-home:not(#\#) { grid-column: auto; }
 }
+/* The settings panel (tablets and wider): Close sits in the panel's top corner, and nothing kept room for it, so its
+   44px touch height reached into the first setting and that row's highlight overlapped it (seen on an iPad). The
+   settings start a little lower, clear of Close. */
+@media (min-width: 768px) { .k-palette[data-mode="menu"] .k-menu-settings:not(#\#):not(#\#) { margin-top: 12px; } }
+
 /* Each section button carries an icon before its name (the owner's request): a briefcase for the press kit, an
    envelope for Contact, a note for Music, a play button for Videos. Same stroke drawing as the toolbar's house; it
    takes the button's text colour, so it follows every state (selected, hover, focus) with the words. */
