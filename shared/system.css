@@ -3704,6 +3704,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (max-width: 767px) { :root.psy .bio-stroke:not(#\#):not(#\#) { width: 88%; height: 34px; margin-inline: auto; } }
 @media (forced-colors: active) { :root.psy .bio-stroke:not(#\#):not(#\#) { forced-color-adjust: none; } }
 
+/* Video viewer: the title is a real heading in the video cards' own title face (it was small body text, the only words
+   in the viewer and weaker than the buttons beside it). A long title wraps onto a second line, evenly, rather than being cut off. */
+:root.psy #vid-lightbox .lb-title:not(#\#):not(#\#) { font: 700 clamp(16px, 1.6vw, 22px)/1.2 ReleaseTitle, Headline, Georgia, serif; letter-spacing: normal; color: #fff; min-width: 0; white-space: normal; text-wrap: balance; overflow: visible; }
+
 /* Titles that wrap onto two lines break evenly ("The Cloud / for the Desert"), never leaving one word alone on the
    second line. Browsers without text-wrap: balance simply wrap as before. */
 :root.psy :is(.vid-title, .rel-name, .section-h):not(#\#):not(#\#) { text-wrap: balance; }
