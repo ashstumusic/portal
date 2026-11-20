@@ -4305,10 +4305,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .vid-card-wrap .vid-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { column-gap: 16px; }
 
 /* Section headings ("Music", "Videos", "About"...): the offset shadow is
-   the site's gold (the colour of every hover, focus ring and "ALBUM" label),
-   which sits better on the space-black page than the old dark red. */
-:root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); }
-@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } }
+   a deep plum, from the page's purple-pink haze. It must be darker than the
+   white letters: their sketch strokes have gaps, and a light shadow (gold was
+   tried) shows through them and blurs the letters. */
+:root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: drop-shadow(3px 3px 0 rgb(140 40 110)); }
+@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(140 40 110)); } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(140 40 110)); } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(140 40 110)); } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(140 40 110)); } }
 @media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; } }
 
 /* The quote's words carry a faint tint of the name's flowing gradient: mostly
