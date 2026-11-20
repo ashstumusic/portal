@@ -4177,3 +4177,9 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy #np-play:not(#\#):not(#\#):not(#\#):not(#\#),
 :root.psy .fs-play:not(#\#):not(#\#):not(#\#):not(#\#) { border: 2px solid ButtonText !important; }
 }
+
+/* "Distributing Soon" carries a small clock as well as the words (someone who can't read still sees "not out yet").
+   It takes the tag's own ink, so it is black on the white tag and follows the badge's colour on the hero. */
+:root.psy .soon-ico:not(#\#) { flex: none; width: 1.15em; height: 1.15em; color: inherit; stroke: currentColor; vertical-align: -.2em; }
+:root.psy .rel-btn--label:not(#\#) .soon-ico { color: #000; }
+@media (forced-colors: active) { :root.psy .soon-ico:not(#\#) { stroke: CanvasText; } }

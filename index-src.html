@@ -2455,12 +2455,14 @@ return '<button type="button" class="rel-tl-toggle" aria-expanded="false" aria-c
 '<span class="rel-tl-label">' + n + (n === 1 ? ' track' : ' tracks') + '</span>' +
 '<svg class="rel-tl-chev" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>';
 }
+var SOON_ICON = '<svg class="soon-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 function renderReleaseCard(rel, rIdx) {
 var kindWord = rel.type === 'Single' ? 'Single cover: ' : rel.type === 'EP' ? 'EP cover: ' : 'Album cover: ';
 var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
-if (!btns || rel.soon) btns += '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>';
+// A clock beside the words (a picture and a word, like every button-shaped thing on the site).
+if (!btns || rel.soon) btns += '<span class="rel-btn rel-btn--label">' + SOON_ICON + '<span class="rel-label-text">Distributing Soon</span></span>';
 // Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
 if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
 btns += '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
@@ -2527,7 +2529,7 @@ btnsEl.innerHTML = h;
 var badgeEl = document.getElementById('featured-badge');
 if (badgeEl) {
 var hasLinks = !!(rel.apple || rel.spotify);
-badgeEl.innerHTML = hasLinks ? '<span class="party-dot" aria-hidden="true"></span> Latest Release' : 'Distributing Soon';
+badgeEl.innerHTML = hasLinks ? '<span class="party-dot" aria-hidden="true"></span> Latest Release' : SOON_ICON + ' Distributing Soon';
 // .soon flips the badge gold (announcement voice) vs red (release pop)
 badgeEl.classList.toggle('soon', !hasLinks);
 var partyEl = document.getElementById('party');
