@@ -2572,7 +2572,7 @@ html { overscroll-behavior-y: none; }
    (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py), sized in ems so they scale with the name. The
    names in the toolbar and on the home section are clean gradient lettering, with no pencil (owner's request). */
 :root.psy #about .bio-name {
-  -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
+  -webkit-mask-image: url('Images/pencil-hatch.webp'); mask-image: url('Images/pencil-hatch.webp');
   -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
 }
 @media (forced-colors: active) { :root.psy #about .bio-name { -webkit-mask-image: none !important; mask-image: none !important; } }
@@ -2595,7 +2595,7 @@ html { overscroll-behavior-y: none; }
    shading and its flipbook jitter, so the three read as one drawing. The line's own shape is already a mask, so the
    pencil strokes are a second mask layer over it (the two intersect); its boil moves only the pencil layer. */
 :root.psy #about .bio-tagline {
-  -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
+  -webkit-mask-image: url('Images/pencil-hatch.webp'); mask-image: url('Images/pencil-hatch.webp');
   -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
 }
 @media (forced-colors: active) { :root.psy #about .bio-tagline { -webkit-mask-image: none !important; mask-image: none !important; } }
@@ -2614,18 +2614,18 @@ html { overscroll-behavior-y: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ""; position: absolute; pointer-events: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before {
   inset: 0; background: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) 0 50% / 200% 100% repeat-x;
-  -webkit-mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat, url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
-  mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat, url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
+  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
+  mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
 }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after {
   top: 0; height: 100%; aspect-ratio: 2; left: 50%; transform: translate(-50%, 0);
-  background: url(../Images/rubber-duck.svg) 0 0 / 100% 400% no-repeat;
-  -webkit-mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat; mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat;
+  background: url('Images/rubber-duck.svg') 0 0 / 100% 400% no-repeat;
+  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat; mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat;
 }
-:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
+:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
 :root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
 @media (forced-colors: active) {
-  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat; mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat; }
+  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat; mask: url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat; }
   :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
 }
 @keyframes pencil-boil-line {

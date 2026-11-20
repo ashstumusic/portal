@@ -15,7 +15,8 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 
-CELL, FRAMES, SS = 128, 3, 4            # cell px, boil frames, supersampling
+CELL, FRAMES, SS = 256, 3, 4            # cell px, boil frames, supersampling (drawn at 1024px, kept at 256px so the
+                                         # largest stars stay sharp on 3x screens; was 128px, which went soft)
 N = CELL * SS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'chalk-stars.webp')
 
@@ -104,9 +105,11 @@ def draw(strokes, rng):
     for s in strokes:
         pts = resample(s, .02)
         # hand wobble: a smooth random walk across the line
-        walk = np.cumsum(rng.normal(0, .006, (len(pts), 2)), 0); walk -= np.linspace(0, 1, len(pts))[:, None] * walk[-1]
-        walk = ndi.gaussian_filter1d(walk, 3, axis=0) + rng.normal(0, .004, (1, 2))
-        width = SS * rng.uniform(3.0, 3.8)
+        # (gentle: each redraw keeps the star's shape - fat and thin arms and corners stay put - and only the line
+        # itself trembles, so the boil shimmers instead of the star jumping between different shapes)
+        walk = np.cumsum(rng.normal(0, .0022, (len(pts), 2)), 0); walk -= np.linspace(0, 1, len(pts))[:, None] * walk[-1]
+        walk = ndi.gaussian_filter1d(walk, 6, axis=0) + ndi.gaussian_filter1d(rng.normal(0, .004, (len(pts), 2)), 1.5, axis=0) + rng.normal(0, .003, (1, 2))
+        width = (N / 128) * rng.uniform(3.0, 3.8)   # (line width relative to the drawing, not the output size)
         for i, ((x, y), (wx, wy)) in enumerate(zip(pts, walk)):
             x, y = x + wx + g_dx, y + wy + g_dy
             x, y = x * math.cos(g_rot) - y * math.sin(g_rot), x * math.sin(g_rot) + y * math.cos(g_rot)
@@ -119,12 +122,16 @@ def draw(strokes, rng):
             if rng.random() < .35:   # chalk dust shed along the stroke
                 dx, dy = rng.normal(0, r * 1.6, 2)
                 if 0 <= int(py + dy) < N and 0 <= int(px + dx) < N: dust[int(py + dy), int(px + dx)] = rng.uniform(.3, .7)
-    # the board's grain breaks the line up
-    grain = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), 1.2)
+    # the board's grain breaks the line up: the middle of the line is laid down solid, and the chalk skips more and
+    # more toward its edges (where it only grazes the board), with faint streaks along the board
+    k = N / 512   # (grain sizes are set for a 512px drawing and scale with it)
+    grain = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), 1.4 * k)
     grain = (grain - grain.mean()) / grain.std()
-    streak = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), (0.6, 5)); streak = (streak - streak.mean()) / streak.std()
-    a = stroke * np.clip(0.75 + 0.45 * grain + 0.25 * streak, 0, 1)
-    a = np.maximum(a, ndi.gaussian_filter(dust, 1.2) * 2.2)
+    streak = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), (0.6 * k, 5 * k)); streak = (streak - streak.mean()) / streak.std()
+    core = ndi.gaussian_filter((stroke > 0).astype(np.float32), 2.2 * k)   # 1 deep inside the line, falling to ~.5 at its edge
+    edge = np.clip((1 - core) * 2, 0, 1)
+    a = stroke * np.clip(1.02 + (0.14 + 0.55 * edge) * grain + 0.12 * streak - 0.35 * edge, 0, 1)
+    a = np.maximum(a, ndi.gaussian_filter(dust, 1.2 * k) * 2.2)
     img = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).resize((CELL, CELL), Image.LANCZOS)
     return np.asarray(img)
 
@@ -135,5 +142,5 @@ for d, strokes in enumerate(DESIGNS):
         cell = sheet[d * CELL:(d + 1) * CELL, f * CELL:(f + 1) * CELL]
         cell[..., 0], cell[..., 1], cell[..., 2] = 246, 243, 234   # warm chalk white
         cell[..., 3] = a
-Image.fromarray(sheet, 'RGBA').save(OUT, 'WEBP', quality=88, alpha_quality=90, method=6)
+Image.fromarray(sheet, 'RGBA').save(OUT, 'WEBP', quality=92, alpha_quality=95, method=6)
 print('wrote', OUT, os.path.getsize(OUT), 'bytes', sheet.shape[1], 'x', sheet.shape[0])

@@ -7,7 +7,7 @@ where it presses. Drawn in chalk the same way as the homepage's chalk stars
 and a little dust is shed along it. Row 1 is the opening mark, row 2 the
 closing mark, each drawn three times ("boil" frames) so the marks shiver like a
 flipbook when the frames cycle. White, used by the stylesheet as a stencil over
-the name's flowing gradient. 192px cells (the sheet layout the stylesheet expects).
+the name's flowing gradient. 384px cells (the stylesheet sizes the sheet in percentages, so any cell size works).
 
 Needs numpy, scipy and pillow; fixed seeds, so rerunning reproduces the sheet.
 """
@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 
-CELL, FRAMES, SS = 192, 3, 4
+CELL, FRAMES, SS = 384, 3, 3   # drawn at 1152px, kept at 384px: sharp at the quote's largest size on 3x screens
 N = CELL * SS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'chalk-quotes.webp')
 
@@ -44,8 +44,9 @@ def draw(strokes, rng):
     yy, xx = np.mgrid[0:N, 0:N]
     for pts, kind in strokes:
         # hand wobble: a small smooth drift across the line
-        walk = ndi.gaussian_filter1d(np.cumsum(rng.normal(0, .007, (len(pts), 2)), 0), 4, axis=0)
-        width = SS * 5.8 * rng.uniform(.9, 1.1)
+        # (gentle, so each redraw keeps the mark's shape and only the line trembles)
+        walk = ndi.gaussian_filter1d(np.cumsum(rng.normal(0, .0035, (len(pts), 2)), 0), 5, axis=0) + ndi.gaussian_filter1d(rng.normal(0, .003, (len(pts), 2)), 1.5, axis=0)
+        width = (N / 192) * 5.8 * rng.uniform(.9, 1.1)   # (relative to the drawing, not the output size)
         for i, ((x, y), (wx, wy)) in enumerate(zip(pts, walk)):
             x, y = x + wx + g_dx, y + wy + g_dy
             x, y = x * math.cos(g_rot) - y * math.sin(g_rot), x * math.sin(g_rot) + y * math.cos(g_rot)
@@ -59,11 +60,15 @@ def draw(strokes, rng):
             if rng.random() < .5:   # chalk dust shed along the stroke
                 dx, dy = rng.normal(0, r * 1.3, 2)
                 if 0 <= int(py + dy) < N and 0 <= int(px + dx) < N: dust[int(py + dy), int(px + dx)] = rng.uniform(.3, .7)
-    # the board's grain and streaks break the line up (as on the stars)
-    grain = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), 1.2); grain = (grain - grain.mean()) / grain.std()
-    streak = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), (0.6, 5)); streak = (streak - streak.mean()) / streak.std()
-    a = ink * np.clip(0.75 + 0.45 * grain + 0.25 * streak, 0, 1)
-    a = np.maximum(a, ndi.gaussian_filter(dust, 1.2) * 2.2)
+    # the board's grain and streaks break the line up, as on the stars: solid down the middle of the line, skipping
+    # more toward its edges, with faint streaks
+    k = N / 768   # (grain sizes are set for a 768px drawing and scale with it)
+    grain = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), 1.4 * k); grain = (grain - grain.mean()) / grain.std()
+    streak = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), (0.6 * k, 5 * k)); streak = (streak - streak.mean()) / streak.std()
+    core = ndi.gaussian_filter((ink > 0).astype(np.float32), 2.6 * k)
+    edge = np.clip((1 - core) * 2, 0, 1)
+    a = ink * np.clip(1.02 + (0.14 + 0.55 * edge) * grain + 0.12 * streak - 0.35 * edge, 0, 1)
+    a = np.maximum(a, ndi.gaussian_filter(dust, 1.2 * k) * 2.2)
     img = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).resize((CELL, CELL), Image.LANCZOS)
     return np.asarray(img)
 
@@ -74,5 +79,5 @@ for d, strokes in enumerate(DESIGNS):
         cell = sheet[d * CELL:(d + 1) * CELL, f * CELL:(f + 1) * CELL]
         cell[..., 0], cell[..., 1], cell[..., 2] = 246, 243, 234
         cell[..., 3] = a
-Image.fromarray(sheet, 'RGBA').save(OUT, 'WEBP', quality=88, alpha_quality=90, method=6)
+Image.fromarray(sheet, 'RGBA').save(OUT, 'WEBP', quality=92, alpha_quality=95, method=6)
 print('wrote', OUT, os.path.getsize(OUT), 'bytes', sheet.shape[1], 'x', sheet.shape[0])
