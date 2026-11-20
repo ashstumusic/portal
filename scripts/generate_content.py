@@ -47,6 +47,14 @@ def track_number(filename_no_ext):
     return int(m.group(1)) if m else None
 
 
+def _release_year(links):
+    for key in ('year', 'date'):
+        v = (links.get(key) or '').strip()
+        if len(v) >= 4 and v[:4].isdigit():
+            return int(v[:4])
+    return None
+
+
 def parse_upcoming_txt(path):
     """upcoming.txt: songs on the release that aren't out yet, one per
     line as "N. Title" (N = its place on the tracklist). They're listed
@@ -198,6 +206,9 @@ def gen_releases():
             # The cover's average colour, shown in its square while the picture is still loading (a slow connection
             # otherwise shows a black box). Needs Pillow; without it the field is simply left out.
             **({'tint': cover_tint(art)} if cover_tint(art) else {}),
+            # The year shown beside the release type ("Album · 2026"): links.txt "year: YYYY" if given, else the
+            # year of its "date:" line. Left out when neither is set (no guessing from file history).
+            **({'year': _release_year(links)} if _release_year(links) else {}),
             'apple': links.get('apple'),
             # links.txt "soon: yes": show the "Distributing soon" tag even
             # though some streaming links exist (more services coming).

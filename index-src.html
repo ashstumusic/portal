@@ -1923,8 +1923,11 @@ overlay.className = 'rel-play-overlay';
 // aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
 overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-wrap.appendChild(overlay);
+(card.querySelector('.rel-info') || wrap).appendChild(overlay);   // the disc sits beside the title, off the cover
 _discCache[rIdx] = overlay.querySelector('svg');
+// (the disc is no longer inside the cover, so a press of the disc button itself - keyboard, screen reader, or a click
+// on its edge - plays here; a click on the round disc plays through its own handler below and stops there)
+overlay.addEventListener('click', function(e) { e.stopPropagation(); closeAllTracklists(); toggleRelease(rIdx); });
 var circle = overlay.querySelector('.rel-play-circle');
 circle.addEventListener('click', function(e) { e.stopPropagation(); closeAllTracklists(); toggleRelease(rIdx); });
 wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
@@ -2475,9 +2478,9 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
+'<div class="rel-info"><p class="rel-cat">' + escHtml(rel.type) + (rel.year ? '<span class="rel-year"> · <time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
-'<div class="rel-overlay"><div class="rel-overlay-inner"><p class="rel-cat">' + escHtml(rel.type) + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div></div>' +
 '</div>' +
 '<div class="rel-btns">' + btns + '</div>' +
 (tracklist ? tlToggle(rel, rIdx) : '') +
