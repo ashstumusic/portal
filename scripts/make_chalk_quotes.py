@@ -1,10 +1,12 @@
-"""Draw the Woody Guthrie quote's chalk quotation marks: Images/chalk-quotes.webp.
+"""Draw the Woody Guthrie quote's quotation marks: Images/chalk-quotes.webp.
 
-Drawn the same way as the homepage's chalk stars (scripts/make_chalk_stars.py:
-the same chalk, wobble, grain and dust): row 1 is the opening mark, row 2 the
-closing mark, each drawn three times ("boil" frames) so the line shimmers
-like stop motion when the frames cycle. White chalk, used by the stylesheet
-as a stencil over the name's flowing gradient. 192px cells.
+Simple and hand-drawn, the way a person jots quotation marks with a pen: each
+mark is two quick strokes, a little uneven (the second never quite matches
+the first), tapering where the pen lifts and fuller where it presses. Solid
+line, no chalk grain. Row 1 is the opening mark, row 2 the closing mark, each
+drawn three times ("boil" frames) so the marks shiver like a flipbook when
+the frames cycle. White, used by the stylesheet as a stencil over the name's
+flowing gradient. 192px cells (the sheet layout the stylesheet expects).
 
 Needs numpy, scipy and pillow; fixed seeds, so rerunning reproduces the sheet.
 """
@@ -17,65 +19,52 @@ CELL, FRAMES, SS = 192, 3, 4
 N = CELL * SS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'chalk-quotes.webp')
 
-# One comma of a closing mark (unit coordinates, y down), kept simple: a small
-# round head scrubbed solid (tight turns close enough to fill it, so it reads as one dot of chalk,
-# not a spiral) and one short tail curving down to the left.
-def comma(cx, cy, s):
-    head = []
-    for k, r in enumerate((.14, .1, .06, .025)):
-        head += [(r * math.cos(t), r * math.sin(t)) for t in np.linspace(k * 2 * math.pi, (k + 1) * 2 * math.pi, 16)]
-    tail = [(.12 - .26 * u, .1 + .42 * u - .06 * u * u) for u in np.linspace(0, 1, 8)]
-    return [[(cx + x * s, cy + y * s) for x, y in st] for st in (head, tail)]
-def closing():
-    return comma(-.34, -.2, 1.6) + comma(.38, -.2, 1.6)
-def opening():   # the closing mark turned upside down
-    return [[(-x, -y) for x, y in st] for st in closing()]
-DESIGNS = [opening(), closing()]
+def bez(p0, p1, p2, n=40):
+    return [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
+             (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]) for t in np.linspace(0, 1, n)]
 
-# ── chalk ──
-def resample(pts, step):
-    out = []
-    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
-        L = math.hypot(x1 - x0, y1 - y0); n = max(1, int(L / step))
-        out += [(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n) for i in range(n)]
-    out.append(pts[-1]); return out
+# One tick of a mark (unit coordinates, y down). Opening: the pen starts light up
+# and to the right, curves down and lands with pressure. Closing: starts with
+# pressure at the top and flicks away down to the left, lifting as it goes.
+def tick_open(x, s, lean):
+    return (bez((x + .12 * s + lean, -.26 * s), (x - .14 * s, -.06 * s), (x - .02 * s, .2 * s)), 'grow')
+def tick_close(x, s, lean):
+    return (bez((x + .02 * s, -.2 * s), (x + .15 * s, .04 * s), (x - .12 * s + lean, .26 * s)), 'fade')
+DESIGNS = [
+    [tick_open(-.3, 1.5, 0), tick_open(.28, 1.38, .04)],
+    [tick_close(-.28, 1.4, .04), tick_close(.3, 1.5, 0)],
+]
+
 def draw(strokes, rng):
-    stroke = np.zeros((N, N), np.float32); dust = np.zeros((N, N), np.float32)
-    scale = N * .44; cx = cy = N / 2
+    ink = np.zeros((N, N), np.float32)
+    scale = N * .44; c = N / 2
     # the whole drawing sits a little differently each time it's redrawn
-    g_rot = rng.uniform(-.06, .06); g_dx, g_dy = rng.uniform(-.02, .02), rng.uniform(-.02, .02)
+    g_rot = rng.uniform(-.07, .07); g_dx, g_dy = rng.uniform(-.025, .025), rng.uniform(-.025, .025)
     yy, xx = np.mgrid[0:N, 0:N]
-    for s in strokes:
-        pts = resample(s, .02)
-        # hand wobble: a smooth random walk across the line
-        walk = np.cumsum(rng.normal(0, .006, (len(pts), 2)), 0); walk -= np.linspace(0, 1, len(pts))[:, None] * walk[-1]
-        walk = ndi.gaussian_filter1d(walk, 3, axis=0) + rng.normal(0, .004, (1, 2))
-        width = SS * rng.uniform(3.0, 3.8)
+    for pts, kind in strokes:
+        # hand wobble: a small smooth drift across the line
+        walk = ndi.gaussian_filter1d(np.cumsum(rng.normal(0, .007, (len(pts), 2)), 0), 4, axis=0)
+        k = rng.uniform(.9, 1.1)
+        width = SS * 9 * k
         for i, ((x, y), (wx, wy)) in enumerate(zip(pts, walk)):
             x, y = x + wx + g_dx, y + wy + g_dy
             x, y = x * math.cos(g_rot) - y * math.sin(g_rot), x * math.sin(g_rot) + y * math.cos(g_rot)
-            px, py = cx + x * scale, cy + y * scale
-            t = i / max(1, len(pts) - 1)
-            r = width * (0.75 + 0.35 * math.sin(math.pi * t) + rng.uniform(-.08, .08))   # pressure: lighter at the ends
+            px, py = c + x * scale, c + y * scale
+            t = i / (len(pts) - 1)
+            p = (.25 + .75 * t ** .8) if kind == 'grow' else (1 - .78 * t ** 1.2)   # pen pressure
+            r = width * p
             x0, x1, y0, y1 = int(px - r - 2), int(px + r + 3), int(py - r - 2), int(py + r + 3)
-            sub = (xx[y0:y1, x0:x1] - px) ** 2 + (yy[y0:y1, x0:x1] - py) ** 2 <= r * r
-            stroke[y0:y1, x0:x1] = np.maximum(stroke[y0:y1, x0:x1], sub * rng.uniform(.75, 1))
-            if rng.random() < .35:   # chalk dust shed along the stroke
-                dx, dy = rng.normal(0, r * 1.6, 2)
-                if 0 <= int(py + dy) < N and 0 <= int(px + dx) < N: dust[int(py + dy), int(px + dx)] = rng.uniform(.3, .7)
-    # the board's grain breaks the line up
-    grain = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), 1.2)
-    grain = (grain - grain.mean()) / grain.std()
-    streak = ndi.gaussian_filter(rng.random((N, N)).astype(np.float32), (0.6, 5)); streak = (streak - streak.mean()) / streak.std()
-    a = stroke * np.clip(0.75 + 0.45 * grain + 0.25 * streak, 0, 1)
-    a = np.maximum(a, ndi.gaussian_filter(dust, 1.2) * 2.2)
-    img = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).resize((CELL, CELL), Image.LANCZOS)
+            sub = ((xx[y0:y1, x0:x1] - px) ** 2 + (yy[y0:y1, x0:x1] - py) ** 2 <= r * r).astype(np.float32)
+            ink[y0:y1, x0:x1] = np.maximum(ink[y0:y1, x0:x1], sub)
+    # a slightly soft, slightly uneven edge, like ink on paper
+    ink = ndi.gaussian_filter(ink, SS * .6)
+    img = Image.fromarray((np.clip(ink, 0, 1) * 255).astype(np.uint8)).resize((CELL, CELL), Image.LANCZOS)
     return np.asarray(img)
 
 sheet = np.zeros((len(DESIGNS) * CELL, FRAMES * CELL, 4), np.uint8)
 for d, strokes in enumerate(DESIGNS):
     for f in range(FRAMES):
-        a = draw(strokes, np.random.default_rng(5000 + d * 10 + f))
+        a = draw(strokes, np.random.default_rng(7000 + d * 10 + f))
         cell = sheet[d * CELL:(d + 1) * CELL, f * CELL:(f + 1) * CELL]
         cell[..., 0], cell[..., 1], cell[..., 2] = 246, 243, 234
         cell[..., 3] = a
