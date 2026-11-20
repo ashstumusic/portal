@@ -2566,30 +2566,41 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#) { border: 0 !important; }
 :root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 !important; overflow: visible !important; }
 
-/* ── The name, in coloured pencil ─────────────────────────────────────
-   "Ash Stu" (hero, toolbar, About) keeps its flowing gradient but is shaded
-   the way a sketch is: a great many fine, short pencil strokes laid over
-   one another, with the paper's grain showing through. The strokes are a mask over the
-   lettering (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py),
-   sized in ems so they scale with the name. */
-:root.psy :is(.hero-name, .bio-name) {
+/* ── The name, in coloured pencil (About only) ─────────────────────────
+   "Ash Stu" in About keeps its flowing gradient but is shaded the way a sketch is: a great many fine, short pencil
+   strokes laid over one another, with the paper's grain showing through. The strokes are a mask over the lettering
+   (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py), sized in ems so they scale with the name. The
+   names in the toolbar and on the home section are clean gradient lettering, with no pencil (owner's request). */
+:root.psy #about .bio-name {
   -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
   -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
 }
-@media (forced-colors: active) { :root.psy :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; } }
+@media (forced-colors: active) { :root.psy #about .bio-name { -webkit-mask-image: none !important; mask-image: none !important; } }
 /* The shading image did not load (set from script): an unshaded name beats an invisible one. */
-:root.psy.no-hatch :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; }
+:root.psy.no-hatch #about .bio-name { -webkit-mask-image: none !important; mask-image: none !important; }
 /* Stop motion: the name is "redrawn" six times a second. The colours no longer glide - they move on one step per
    drawing (54 drawings to the 9-second cycle) - and each drawing has different pencil strokes (the shading sheet jumps
-   to a new place every step, four placements in turn), the way a hand-coloured animation boils from frame to frame. */
+   to a new place every step, four placements in turn), the way a hand-coloured animation boils from frame to frame.
+   About's name also jitters like the section headers' flipbook: on each of the same four drawings its outline
+   wobbles through one of the headers' filters (#hb1-#hb4) and the whole name sits a fraction of a pixel off and a
+   fraction of a degree askew. That part runs on the name's wrapper (.bio-wall--top), so it doesn't fight the
+   filter rules on the name itself. */
 @keyframes pencil-boil {
   0% { -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
   25% { -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
   50% { -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
   75% { -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
 }
+@keyframes name-jitter {
+  0% { filter: url(#hb1); translate: 0 0; rotate: 0deg; }
+  25% { filter: url(#hb2); translate: .6px -.4px; rotate: -.35deg; }
+  50% { filter: url(#hb3); translate: -.5px .5px; rotate: .3deg; }
+  75% { filter: url(#hb4); translate: .3px .6px; rotate: -.2deg; }
+}
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
+  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite !important; }
+  :root.psy:not(.psy-calm) #about .bio-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
+  :root.psy:not(.psy-calm) #about .bio-wall--top:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-jitter .6667s step-end infinite !important; }
   /* The line under the name in About flows through the same colours. It was the one thing on the page still gliding
      (repainted 60 times a second, for as long as About was on screen): it now moves on the same six drawings a second
      as the name beside it, which is also about 40% less work for a phone sitting on that section. */
@@ -4409,3 +4420,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    1.06, a dark-page treatment) while the two above it had theirs removed, so it looked heavier than its neighbours;
    About now sits on white, where no dimming is wanted. */
 :root .bio-card-media img.bio-media-main:not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
+
+/* More room between sections (owner's request): about twice the earlier tightened spacing, so each section reads as
+   its own block - desktop about 112px from one section's end to the next heading (was ~48px), phones about 72px
+   (was ~32px). About gets a little extra at its top, where the sky fades to white. */
+:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 40px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 56px !important; padding-bottom: 56px !important; }
+:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 72px !important; }
+@media (max-width: 767px) {
+  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 28px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 36px !important; padding-bottom: 36px !important; }
+  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 48px !important; }
+}
