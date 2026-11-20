@@ -216,8 +216,12 @@ var c=q.cloneNode(true); c.removeAttribute('id'); c.setAttribute('aria-hidden','
 c.style.cssText='position:absolute!important;visibility:hidden!important;left:-99999px!important;top:0!important;width:max-content!important;max-width:none!important;padding:0!important;margin:0!important;border:0!important;font-size:100px!important;white-space:nowrap!important;';
 q.parentNode.appendChild(c); var w=c.getBoundingClientRect().width; c.remove();
 if(!(w>0)) return;
-var fs=(Math.floor(room/w*100*100*.998)/100)+'px';
-if(fs!==last){ last=fs; q.style.setProperty('--q-fs',fs); }
+var n=Math.floor(room/w*100*100*.998)/100;
+/* The side padding is in em, so a new size nudges the room, which asked for a new size again: it flipped between
+two sizes 0.01px apart several times a second for ever, and every flip changed the page's height, which made the
+stars re-scatter and the photos below shake. A change under a tenth of a pixel is not worth making. */
+if(Math.abs(n-(parseFloat(last)||0))<.1) return;
+var fs=n+'px'; last=fs; q.style.setProperty('--q-fs',fs);
 }
 function ask(){ if(!queued){ queued=1; requestAnimationFrame(function(){ setTimeout(fit,0); }); } }
 ask();
