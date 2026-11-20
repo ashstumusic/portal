@@ -2600,22 +2600,143 @@ html { overscroll-behavior-y: none; }
 }
 @media (forced-colors: active) { :root.psy #about .bio-tagline { -webkit-mask-image: none !important; mask-image: none !important; } }
 :root.psy.no-hatch #about .bio-tagline { -webkit-mask-image: none !important; mask-image: none !important; }
-/* About's divider is a little hand-drawn sketch: a line of waves with a rubber duck bobbing in it (owner's request;
-   Images/duck-waves.svg, drawn by scripts/make_duck_waves.py). The sheet holds four drawings of it, each with a
-   different hand wobble and the duck bobbing and tipping a touch; they step through like a flipbook on the name's
-   beat. It is a stencil over the same flowing gradient as the name, scaled to the line's height with the duck in the
-   middle; the waves fade out at both ends. The name's pencil shading lies over it too (the layers intersect). */
-:root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
-  -webkit-mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat, url(../Images/duck-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
-  mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat, url(../Images/duck-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
+/* About's divider is a little hand-drawn sketch (owner's request): a line of waves with a rubber duck swimming a
+   figure 8 across it. Drawn by scripts/make_duck_waves.py. The line itself (.bio-stroke) carries only the flipbook
+   jitter; the water and the duck are its two layers:
+   - the water (::before, Images/pool-waves.svg): four drawings of a gentle hand-drawn wave line stepping like a
+     flipbook, a stencil over About's deep gradient with the name's pencil shading over it, fading out at both ends;
+   - the duck (::after, Images/rubber-duck.svg): four drawings of a side-on rubber duck, filled white so the water
+     line doesn't show through it. It swims the figure 8 in 96 stepped positions over 16 seconds (duck-eight, printed
+     by the same script): side on throughout, a little smaller and higher on the far side of the loop, bigger and
+     lower on the near side, and turning partway about its upright axis as it heads into and out of the depth,
+     coming round at each end. With Effects off or reduced motion it sits still in the middle. */
+:root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; background: none !important; -webkit-mask: none !important; mask: none !important; }
+:root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ""; position: absolute; pointer-events: none; }
+:root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before {
+  inset: 0; background: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) 0 50% / 200% 100% repeat-x;
+  -webkit-mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat, url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
+  mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat, url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
 }
-:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-mask: url(../Images/duck-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url(../Images/duck-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
-@media (forced-colors: active) { :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-mask: url(../Images/duck-waves.svg) 50% 0 / auto 400% no-repeat; mask: url(../Images/duck-waves.svg) 50% 0 / auto 400% no-repeat; } }
+:root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after {
+  top: 0; height: 100%; aspect-ratio: 2; left: 50%; transform: translate(-50%, 0);
+  background: url(../Images/rubber-duck.svg) 0 0 / 100% 400% no-repeat;
+  -webkit-mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat; mask: url(../Images/pencil-hatch.webp) .3em .1em / 3em 1.5em repeat;
+}
+:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
+:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
+@media (forced-colors: active) {
+  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat; mask: url(../Images/pool-waves.svg) 50% 0 / auto 400% no-repeat; }
+  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
+}
 @keyframes pencil-boil-line {
   0% { -webkit-mask-position: .3em .1em, 50% 0%, 0 0; mask-position: .3em .1em, 50% 0%, 0 0; }
   25% { -webkit-mask-position: 1.9em .85em, 50% 33.333%, 0 0; mask-position: 1.9em .85em, 50% 33.333%, 0 0; }
   50% { -webkit-mask-position: 1.05em 1.3em, 50% 66.667%, 0 0; mask-position: 1.05em 1.3em, 50% 66.667%, 0 0; }
   75% { -webkit-mask-position: 2.5em .45em, 50% 100%, 0 0; mask-position: 2.5em .45em, 50% 100%, 0 0; }
+}
+@keyframes duck-boil {
+  0% { background-position: 0 0%; -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
+  25% { background-position: 0 33.333%; -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
+  50% { background-position: 0 66.667%; -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
+  75% { background-position: 0 100%; -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
+}
+@keyframes duck-eight {
+  0% { left: 50.00%; transform: translate(-50%, -0.0px) scale(1.000) rotateY(17deg); }
+  1.042% { left: 52.62%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(17deg); }
+  2.083% { left: 55.22%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(17deg); }
+  3.125% { left: 57.80%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(16deg); }
+  4.167% { left: 60.35%; transform: translate(-50%, -1.7px) scale(0.930) rotateY(16deg); }
+  5.208% { left: 62.86%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(15deg); }
+  6.25% { left: 65.31%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(14deg); }
+  7.292% { left: 67.69%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(12deg); }
+  8.333% { left: 70.00%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(10deg); }
+  9.375% { left: 72.22%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(8deg); }
+  10.42% { left: 74.35%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(6deg); }
+  11.46% { left: 76.37%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(3deg); }
+  12.5% { left: 78.28%; transform: translate(-50%, -3.5px) scale(0.860) rotateY(0deg); }
+  13.54% { left: 80.07%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(-4deg); }
+  14.58% { left: 81.73%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(-8deg); }
+  15.62% { left: 83.26%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(-12deg); }
+  16.67% { left: 84.64%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(-17deg); }
+  17.71% { left: 85.87%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(-22deg); }
+  18.75% { left: 86.96%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(-28deg); }
+  19.79% { left: 87.88%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(-33deg); }
+  20.83% { left: 88.64%; transform: translate(-50%, -1.7px) scale(0.930) rotateY(-38deg); }
+  21.88% { left: 89.23%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(-44deg); }
+  22.92% { left: 89.66%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(-49deg); }
+  23.96% { left: 89.91%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(-54deg); }
+  25% { left: 90.00%; transform: translate(-50%, -0.0px) scale(1.000) rotateY(-122deg); }
+  26.04% { left: 89.91%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(-126deg); }
+  27.08% { left: 89.66%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(-131deg); }
+  28.12% { left: 89.23%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(-136deg); }
+  29.17% { left: 88.64%; transform: translate(-50%, 1.7px) scale(1.070) rotateY(-142deg); }
+  30.21% { left: 87.88%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(-147deg); }
+  31.25% { left: 86.96%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(-152deg); }
+  32.29% { left: 85.87%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(-158deg); }
+  33.33% { left: 84.64%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(-163deg); }
+  34.38% { left: 83.26%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(-168deg); }
+  35.42% { left: 81.73%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(-172deg); }
+  36.46% { left: 80.07%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(-176deg); }
+  37.5% { left: 78.28%; transform: translate(-50%, 3.5px) scale(1.140) rotateY(-180deg); }
+  38.54% { left: 76.37%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(177deg); }
+  39.58% { left: 74.35%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(174deg); }
+  40.62% { left: 72.22%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(172deg); }
+  41.67% { left: 70.00%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(170deg); }
+  42.71% { left: 67.69%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(168deg); }
+  43.75% { left: 65.31%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(166deg); }
+  44.79% { left: 62.86%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(165deg); }
+  45.83% { left: 60.35%; transform: translate(-50%, 1.8px) scale(1.070) rotateY(164deg); }
+  46.88% { left: 57.80%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(164deg); }
+  47.92% { left: 55.22%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(163deg); }
+  48.96% { left: 52.62%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(163deg); }
+  50% { left: 50.00%; transform: translate(-50%, 0.0px) scale(1.000) rotateY(163deg); }
+  51.04% { left: 47.38%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(163deg); }
+  52.08% { left: 44.78%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(163deg); }
+  53.12% { left: 42.20%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(164deg); }
+  54.17% { left: 39.65%; transform: translate(-50%, -1.8px) scale(0.930) rotateY(164deg); }
+  55.21% { left: 37.14%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(165deg); }
+  56.25% { left: 34.69%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(166deg); }
+  57.29% { left: 32.31%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(168deg); }
+  58.33% { left: 30.00%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(170deg); }
+  59.38% { left: 27.78%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(172deg); }
+  60.42% { left: 25.65%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(174deg); }
+  61.46% { left: 23.63%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(177deg); }
+  62.5% { left: 21.72%; transform: translate(-50%, -3.5px) scale(0.860) rotateY(180deg); }
+  63.54% { left: 19.93%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(-176deg); }
+  64.58% { left: 18.27%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(-172deg); }
+  65.62% { left: 16.74%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(-168deg); }
+  66.67% { left: 15.36%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(-163deg); }
+  67.71% { left: 14.13%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(-158deg); }
+  68.75% { left: 13.04%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(-152deg); }
+  69.79% { left: 12.12%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(-147deg); }
+  70.83% { left: 11.36%; transform: translate(-50%, -1.7px) scale(0.930) rotateY(-142deg); }
+  71.88% { left: 10.77%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(-136deg); }
+  72.92% { left: 10.34%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(-131deg); }
+  73.96% { left: 10.09%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(-126deg); }
+  75% { left: 10.00%; transform: translate(-50%, -0.0px) scale(1.000) rotateY(-122deg); }
+  76.04% { left: 10.09%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(-54deg); }
+  77.08% { left: 10.34%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(-49deg); }
+  78.12% { left: 10.77%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(-44deg); }
+  79.17% { left: 11.36%; transform: translate(-50%, 1.7px) scale(1.070) rotateY(-38deg); }
+  80.21% { left: 12.12%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(-33deg); }
+  81.25% { left: 13.04%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(-28deg); }
+  82.29% { left: 14.13%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(-22deg); }
+  83.33% { left: 15.36%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(-17deg); }
+  84.38% { left: 16.74%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(-12deg); }
+  85.42% { left: 18.27%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(-8deg); }
+  86.46% { left: 19.93%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(-4deg); }
+  87.5% { left: 21.72%; transform: translate(-50%, 3.5px) scale(1.140) rotateY(-0deg); }
+  88.54% { left: 23.63%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(3deg); }
+  89.58% { left: 25.65%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(6deg); }
+  90.62% { left: 27.78%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(8deg); }
+  91.67% { left: 30.00%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(10deg); }
+  92.71% { left: 32.31%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(12deg); }
+  93.75% { left: 34.69%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(14deg); }
+  94.79% { left: 37.14%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(15deg); }
+  95.83% { left: 39.65%; transform: translate(-50%, 1.8px) scale(1.070) rotateY(16deg); }
+  96.88% { left: 42.20%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(16deg); }
+  97.92% { left: 44.78%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(17deg); }
+  98.96% { left: 47.38%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(17deg); }
 }
 @keyframes name-jitter {
   0% { filter: url(#hb1); translate: 0 0; rotate: 0deg; }
@@ -2628,7 +2749,9 @@ html { overscroll-behavior-y: none; }
   :root.psy:not(.psy-calm) #about .bio-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
   :root.psy:not(.psy-calm) #about :is(.bio-wall--top, .bio-wall--bottom):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-jitter .6667s step-end infinite !important; }
   :root.psy:not(.psy-calm) #about .bio-wall .bio-tagline:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
-  :root.psy:not(.psy-calm) #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil-line .6667s step-end infinite, name-jitter .6667s step-end infinite !important; }
+  :root.psy:not(.psy-calm) #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-jitter .6667s step-end infinite !important; }
+  :root.psy:not(.psy-calm) #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { animation: name-flow 9s steps(54, end) infinite, pencil-boil-line .6667s step-end infinite; }
+  :root.psy:not(.psy-calm) #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { animation: duck-eight 16s step-end infinite, duck-boil .6667s step-end infinite; }
   /* The line under the name in About flows through the same colours. It was the one thing on the page still gliding
      (repainted 60 times a second, for as long as About was on screen): it now moves on the same six drawings a second
      as the name beside it, which is also about 40% less work for a phone sitting on that section. */
@@ -4303,16 +4426,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .song-page-nav a .spn-arrow:not(#\#) { flex: none; width: 16px; height: 16px; margin-inline: 0 6px; }
 :root.psy .song-page-nav a[rel="next"] .spn-arrow:not(#\#) { margin-inline: 6px 0; }
 
-/* The quote's marks are simple and hand-drawn, the way a person jots them with a pen: two quick, slightly uneven
-   strokes each, fuller where the pen presses and tapering where it lifts (Images/chalk-quotes.webp, from
+/* The quote's marks are simple and hand-drawn in chalk, like the stars (the same grain, streaks and dust): two
+   quick, slightly uneven strokes each, fuller where the hand presses and tapering where it lifts (Images/chalk-quotes.webp, from
    scripts/make_chalk_quotes.py: opening mark on the top row, closing below, three drawings of each). The drawing is
-   a stencil over the name's flowing gradient and flips between its three versions like a flipbook; both hold still
+   a stencil filled in the same orange as the quote's words and flips between its three versions like a flipbook; it holds still
    with Effects off or reduced motion. No shadow: kept plain. Decorative: nothing is read out. They are real (empty)
    elements rather than ::before/::after so the stars see them and keep clear. */
 :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: none; }
 :root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
   position: absolute; display: block; pointer-events: none; font-size: 1em; width: 1.9em; height: 1.9em;
-  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) 0 50% / 200% 100% repeat-x;
+  background: #FFA36B;
   -webkit-mask: url('Images/chalk-quotes.webp') 0 0 / 300% 200% no-repeat; mask: url('Images/chalk-quotes.webp') 0 0 / 300% 200% no-repeat;
 }
 :root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: -2.05em; top: -.75em; }
@@ -4320,8 +4443,8 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @keyframes quote-boil-open { 0% { -webkit-mask-position: 0 0; mask-position: 0 0; } 33.3% { -webkit-mask-position: 50% 0; mask-position: 50% 0; } 66.6% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } }
 @keyframes quote-boil-close { 0% { -webkit-mask-position: 0 100%; mask-position: 0 100%; } 33.3% { -webkit-mask-position: 50% 100%; mask-position: 50% 100%; } 66.6% { -webkit-mask-position: 100% 100%; mask-position: 100% 100%; } }
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, quote-boil-open .375s step-end infinite; }
-  :root.psy:not(.psy-calm) .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, quote-boil-close .375s step-end infinite; }
+  :root.psy:not(.psy-calm) .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: quote-boil-open .375s step-end infinite; }
+  :root.psy:not(.psy-calm) .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: quote-boil-close .375s step-end infinite; }
 }
 @media (forced-colors: active) {
   :root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: CanvasText; forced-color-adjust: none; }
@@ -4346,20 +4469,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: 0 0; rotate: 0deg; } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: .6px -.4px; rotate: -.35deg; } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: -.5px .5px; rotate: .3deg; } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: .3px .6px; rotate: -.2deg; } }
 @media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; } }
 
-/* The quote's words carry a faint tint of the name's flowing gradient: mostly
-   white (a 70% white layer over the gradient, both painted only inside the
-   letters), so the colours drift softly through the words without costing
-   their contrast. Still with Effects off or reduced motion; plain in forced colours. */
-:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
-  background-image: linear-gradient(rgb(255 255 255 / .7), rgb(255 255 255 / .7)), linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%);
-  background-size: 100% 100%, 200% 100%; background-repeat: no-repeat, repeat-x; background-position: 0 0, 0 50%;
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none;
-}
-@keyframes quote-tint-flow { from { background-position: 0 0, 0% 50%; } to { background-position: 0 0, 200% 50%; } }
-@media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: quote-tint-flow 9s steps(54, end) infinite; }
-}
-@media (forced-colors: active) { :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: none; -webkit-text-fill-color: CanvasText; } }
+/* The quote's words are plain orange (owner's request; the orange of the name's gradient), with no tint or
+   overlay over them. Plain in forced colours. */
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #FFA36B; -webkit-text-fill-color: #FFA36B; background: none; text-shadow: none; }
+@media (forced-colors: active) { :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: CanvasText; -webkit-text-fill-color: CanvasText; } }
 
 /* Home + name hover: every piece changes together. The gold box fades in on the same 0.18s curve as the Home
    button's glass fades out and its house turns black, and the name fades to black at that same pace (its fill
@@ -4432,7 +4545,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy #about .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #17131c !important; -webkit-text-fill-color: #17131c !important; }
 :root.psy #about .section-h .section-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #17131c; }
 :root.psy #about .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #232027 !important; }
-:root.psy #about :is(.bio-name, .bio-tagline, .bio-stroke):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+:root.psy #about :is(.bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
   background-image: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) !important;
 }
 :root.psy #about :is(.bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
@@ -4447,14 +4560,19 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    About now sits on white, where no dimming is wanted. */
 :root .bio-card-media img.bio-media-main:not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
 
-/* More room between sections (owner's request): about twice the earlier tightened spacing, so each section reads as
-   its own block - desktop about 112px from one section's end to the next heading (was ~48px), phones about 72px
-   (was ~32px). About gets a little extra at its top, where the sky fades to white. */
-:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 40px !important; }
-:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 56px !important; padding-bottom: 56px !important; }
-:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 72px !important; }
+/* More room between sections (owner's request): widened twice since the page was tightened, so each section reads as its own
+   block - desktop about 176px from one section's end to the next heading (was ~48px, then ~112px), phones about
+   112px (was ~32px, then ~72px). About gets a little extra at its top, where the sky fades to white. */
+:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 64px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 88px !important; padding-bottom: 88px !important; }
+:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 104px !important; }
 @media (max-width: 767px) {
-  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 28px !important; }
-  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 36px !important; padding-bottom: 36px !important; }
-  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 48px !important; }
+  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 44px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 56px !important; padding-bottom: 56px !important; }
+  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 72px !important; }
 }
+
+/* The Woody Guthrie quote's words are set in the category labels' face (National Park, as in "ALBUM"; owner's
+   request), at the labels' bold weight, in italics (the face has none of its own, so the browser slants it). The quote still sizes itself so its longest line fills the width
+   (the script beside it refits once this face has loaded). The name under it keeps its own face. */
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-style: italic !important; font-weight: 700 !important; font-synthesis: style; }
