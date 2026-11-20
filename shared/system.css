@@ -4601,3 +4601,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { color: CanvasText !important; -webkit-text-fill-color: CanvasText !important; }
   :root.psy .disc-quote :is(.dq-mark--open, .dq-mark--close):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: CanvasText; }
 }
+
+/* Releases are listed one under another on every screen, never side by side (owner's request): a single centred
+   column of cards, each up to 26rem wide (the width the lyrics need). A card with its lyrics open still takes the
+   full width. */
+:root.psy .releases-grid:not(#\#):not(#\#):not(#\#) { flex-direction: column !important; flex-wrap: nowrap !important; align-items: center !important; }
+:root.psy .releases-grid > *:not(#\#):not(#\#):not(#\#) { flex: none !important; width: min(100%, 26rem) !important; max-width: min(100%, 26rem) !important; }
+:root.psy .releases-grid > .rel-card.lyrics-open:not(#\#):not(#\#):not(#\#) { width: 100% !important; max-width: 100% !important; }
