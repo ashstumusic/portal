@@ -4200,8 +4200,8 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 }
 :root.js.psy .nav .nav-logo.home-on:not(.name-off):is(:hover, :focus-visible) .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: transparent !important; box-shadow: none !important; color: #111 !important; outline: none !important; }
 :root.js.psy .nav .nav-logo.home-on:not(.name-off):is(:hover, :focus-visible) .hero-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
-  color: #000 !important; -webkit-text-fill-color: #000 !important; background: none !important; filter: none !important; text-shadow: none !important;
-  -webkit-text-stroke: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; animation: none !important;
+  filter: none !important; text-shadow: none !important;
+  -webkit-text-stroke: 0 !important; -webkit-mask-image: none !important; mask-image: none !important;
 }
 /* keyboard focus: the white ring goes round the whole gold box, not just the Home part */
 :root.js.psy .nav .nav-logo.home-on:not(.name-off):focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid #fff !important; outline-offset: 2px !important; }
@@ -4325,3 +4325,21 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy:not(.psy-calm) .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: quote-tint-flow 9s steps(54, end) infinite; }
 }
 @media (forced-colors: active) { :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: none; -webkit-text-fill-color: CanvasText; } }
+
+/* Home + name hover: every piece changes together. The gold box fades in on the same 0.18s curve as the Home
+   button's glass fades out and its house turns black, and the name fades to black at that same pace (its fill
+   colour fades over the gradient, which stays underneath, instead of jumping). Before, the box appeared at once,
+   the button took its own time and the name switched instantly, so the two halves seemed to join at different speeds. */
+:root.js.psy .nav .nav-logo.home-on:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transition: background-color .18s var(--ease-ui), box-shadow .18s var(--ease-ui) !important; }
+:root.js.psy .nav .nav-logo.home-on .nav-home:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transition: opacity .2s var(--ease-ui), background-color .18s var(--ease-ui), color .18s var(--ease-ui), box-shadow .18s var(--ease-ui), scale .12s var(--ease-ui) !important; }
+:root.js.psy .nav .nav-logo.home-on .hero-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transition: filter .18s var(--ease-ui) !important; }
+/* (a fill colour can't fade in Chrome, so the black is a copy of the name laid exactly over it, fading in by opacity) */
+:root.js.psy .nav .nav-logo.home-on .hero-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after {
+  content: "Ash Stu" / ""; position: absolute; inset: 0; padding: inherit; box-sizing: border-box; white-space: nowrap; pointer-events: none;
+  background: none; -webkit-text-fill-color: #000; color: #000; opacity: 0; transition: opacity .18s var(--ease-ui);
+}
+:root.js.psy .nav .nav-logo.home-on:not(.name-off):is(:hover, :focus-visible) .hero-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { opacity: 1; }
+@media (forced-colors: active) { :root.js.psy .nav .nav-logo.home-on .hero-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: none; } }
+@media (prefers-reduced-motion: reduce) {
+  :root.js.psy .nav .nav-logo.home-on:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.js.psy .nav .nav-logo.home-on :is(.nav-home, .hero-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.js.psy .nav .nav-logo.home-on .hero-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { transition: none !important; }
+}
