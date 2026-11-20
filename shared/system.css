@@ -4266,3 +4266,29 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .rel-track.rel-track--upcoming:hover:not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(240 245 246 / .035) !important; outline: none !important; box-shadow: none !important; cursor: default; }
 :root.psy .song-page-nav a .spn-arrow:not(#\#) { flex: none; width: 16px; height: 16px; margin-inline: 0 6px; }
 :root.psy .song-page-nav a[rel="next"] .spn-arrow:not(#\#) { margin-inline: 6px 0; }
+
+/* The quote's marks are chalk drawings, made the same way as the stars
+   (Images/chalk-quotes.webp, from scripts/make_chalk_quotes.py: opening mark
+   on the top row, closing below, three drawings of each). The chalk is a
+   stencil over the name's flowing gradient, and the drawing boils between
+   its three versions like the stars; both hold still with Effects off or
+   reduced motion. Decorative: nothing is read out. They are real (empty)
+   elements rather than ::before/::after so the stars see them and keep clear. */
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: none; }
+:root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  position: absolute; display: block; pointer-events: none; font-size: 1em; width: 1.9em; height: 1.9em;
+  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) 0 50% / 200% 100% repeat-x;
+  -webkit-mask: url('Images/chalk-quotes.webp') 0 0 / 300% 200% no-repeat; mask: url('Images/chalk-quotes.webp') 0 0 / 300% 200% no-repeat;
+  filter: drop-shadow(2px 2px 0 rgb(223 43 44 / .45));
+}
+:root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { left: -2.05em; top: -.75em; }
+:root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { right: -2.05em; bottom: -1.05em; -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+@keyframes quote-boil-open { 0% { -webkit-mask-position: 0 0; mask-position: 0 0; } 33.3% { -webkit-mask-position: 50% 0; mask-position: 50% 0; } 66.6% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } }
+@keyframes quote-boil-close { 0% { -webkit-mask-position: 0 100%; mask-position: 0 100%; } 33.3% { -webkit-mask-position: 50% 100%; mask-position: 50% 100%; } 66.6% { -webkit-mask-position: 100% 100%; mask-position: 100% 100%; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root.psy:not(.psy-calm) .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, quote-boil-open .375s step-end infinite; }
+  :root.psy:not(.psy-calm) .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, quote-boil-close .375s step-end infinite; }
+}
+@media (forced-colors: active) {
+  :root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: CanvasText; forced-color-adjust: none; }
+}
