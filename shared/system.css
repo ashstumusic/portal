@@ -4560,16 +4560,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    About now sits on white, where no dimming is wanted. */
 :root .bio-card-media img.bio-media-main:not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
 
-/* More room between sections (owner's request): widened three times since the page was tightened, so each section reads as its own
-   block - desktop about 240px from one section's end to the next heading (was ~48px, then ~112px, ~176px),
-   phones about 152px (was ~32px, then ~72px, ~112px). About gets a little extra at its top, where the sky fades to white. */
-:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 88px !important; }
-:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 120px !important; padding-bottom: 120px !important; }
-:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 136px !important; }
+/* More room between sections (owner's request): widened four times since the page was tightened, so each section reads as its own
+   block - desktop about 320px from one section's end to the next heading (was ~48px, then ~112px, ~176px,
+   ~240px), phones about 200px (was ~32px, then ~72px, ~112px, ~152px). About gets a little extra at its top, where the sky fades to white. */
+:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 120px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 160px !important; padding-bottom: 160px !important; }
+:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 176px !important; }
 @media (max-width: 767px) {
-  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 60px !important; }
-  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 76px !important; padding-bottom: 76px !important; }
-  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 96px !important; }
+  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 80px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 100px !important; padding-bottom: 100px !important; }
+  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 120px !important; }
 }
 
 /* The Woody Guthrie quote's words are set in the category labels' face (National Park, as in "ALBUM"; owner's
