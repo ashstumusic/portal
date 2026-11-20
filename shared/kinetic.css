@@ -204,7 +204,7 @@ html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--k-text) 
 
 /* ── MEDIA ───────────────────────────────────────────────────────────── */
 /* Lock video frames to 16:9 before metadata loads (contain, not cover:
-   cover would crop the music videos). */
+   cover would crop the videos). */
 video { aspect-ratio: 16 / 9; object-fit: contain; }
 /* Dim bright photos a touch in dark mode (logos/icons excluded). Photos
    with their own filter (the homepage's black-and-white press-kit and

@@ -2605,12 +2605,15 @@ html { overscroll-behavior-y: none; }
    jitter; the water and the duck are its two layers:
    - the water (::before, Images/pool-waves.svg): four drawings of a gentle hand-drawn wave line stepping like a
      flipbook, a stencil over About's deep gradient with the name's pencil shading over it, fading out at both ends;
-   - the duck (::after, Images/rubber-duck.svg): four drawings of a side-on rubber duck, filled white so the water
+   - the duck (::after, Images/rubber-duck.svg): a hand-drawn rubber duck, filled white so the water
      line doesn't show through it. It swims the figure 8 in 96 stepped positions over 16 seconds (duck-eight, printed
-     by the same script): side on throughout, a little smaller and higher on the far side of the loop, bigger and
-     lower on the near side, and turning partway about its upright axis as it heads into and out of the depth,
-     coming round at each end. With Effects off or reduced motion it sits still in the middle. */
+     by the same script): a little smaller and higher on the far side of the loop, bigger and lower on the near side,
+     and it turns like a hand-drawn flipbook - the sheet has the duck drawn in five poses (side on, three-quarter
+     towards you, front, three-quarter away, back; four boil drawings of each), and it steps through the pose for its
+     heading, coming round to face you at each end of the pool. Heading left is the same drawings mirrored, swapped
+     in only at the front view where it can't be seen. With Effects off or reduced motion it sits still in the middle. */
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; background: none !important; -webkit-mask: none !important; mask: none !important; }
+:root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: clamp(46px, 5vw, 64px) !important; }   /* (tall enough that the duck reads; it was squeezed to 28px) */
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ""; position: absolute; pointer-events: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before {
   inset: 0; background: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) 0 50% / 200% 100% repeat-x;
@@ -2619,7 +2622,7 @@ html { overscroll-behavior-y: none; }
 }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after {
   top: 0; height: 100%; aspect-ratio: 2; left: 50%; transform: translate(-50%, 0);
-  background: url('Images/rubber-duck.svg') 0 0 / 100% 400% no-repeat;
+  background: url('Images/rubber-duck.svg') 0 0 / 400% 500% no-repeat;
   -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat; mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat;
 }
 :root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/pool-waves.svg') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
@@ -2635,108 +2638,108 @@ html { overscroll-behavior-y: none; }
   75% { -webkit-mask-position: 2.5em .45em, 50% 100%, 0 0; mask-position: 2.5em .45em, 50% 100%, 0 0; }
 }
 @keyframes duck-boil {
-  0% { background-position: 0 0%; -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
-  25% { background-position: 0 33.333%; -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
-  50% { background-position: 0 66.667%; -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
-  75% { background-position: 0 100%; -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
+  0% { background-position-x: 0%; -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
+  25% { background-position-x: 33.333%; -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
+  50% { background-position-x: 66.667%; -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
+  75% { background-position-x: 100%; -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
 }
 @keyframes duck-eight {
-  0% { left: 50.00%; transform: translate(-50%, -0.0px) scale(1.000) rotateY(17deg); }
-  1.042% { left: 52.62%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(17deg); }
-  2.083% { left: 55.22%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(17deg); }
-  3.125% { left: 57.80%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(16deg); }
-  4.167% { left: 60.35%; transform: translate(-50%, -1.7px) scale(0.930) rotateY(16deg); }
-  5.208% { left: 62.86%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(15deg); }
-  6.25% { left: 65.31%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(14deg); }
-  7.292% { left: 67.69%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(12deg); }
-  8.333% { left: 70.00%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(10deg); }
-  9.375% { left: 72.22%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(8deg); }
-  10.42% { left: 74.35%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(6deg); }
-  11.46% { left: 76.37%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(3deg); }
-  12.5% { left: 78.28%; transform: translate(-50%, -3.5px) scale(0.860) rotateY(0deg); }
-  13.54% { left: 80.07%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(-4deg); }
-  14.58% { left: 81.73%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(-8deg); }
-  15.62% { left: 83.26%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(-12deg); }
-  16.67% { left: 84.64%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(-17deg); }
-  17.71% { left: 85.87%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(-22deg); }
-  18.75% { left: 86.96%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(-28deg); }
-  19.79% { left: 87.88%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(-33deg); }
-  20.83% { left: 88.64%; transform: translate(-50%, -1.7px) scale(0.930) rotateY(-38deg); }
-  21.88% { left: 89.23%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(-44deg); }
-  22.92% { left: 89.66%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(-49deg); }
-  23.96% { left: 89.91%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(-54deg); }
-  25% { left: 90.00%; transform: translate(-50%, -0.0px) scale(1.000) rotateY(-122deg); }
-  26.04% { left: 89.91%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(-126deg); }
-  27.08% { left: 89.66%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(-131deg); }
-  28.12% { left: 89.23%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(-136deg); }
-  29.17% { left: 88.64%; transform: translate(-50%, 1.7px) scale(1.070) rotateY(-142deg); }
-  30.21% { left: 87.88%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(-147deg); }
-  31.25% { left: 86.96%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(-152deg); }
-  32.29% { left: 85.87%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(-158deg); }
-  33.33% { left: 84.64%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(-163deg); }
-  34.38% { left: 83.26%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(-168deg); }
-  35.42% { left: 81.73%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(-172deg); }
-  36.46% { left: 80.07%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(-176deg); }
-  37.5% { left: 78.28%; transform: translate(-50%, 3.5px) scale(1.140) rotateY(-180deg); }
-  38.54% { left: 76.37%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(177deg); }
-  39.58% { left: 74.35%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(174deg); }
-  40.62% { left: 72.22%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(172deg); }
-  41.67% { left: 70.00%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(170deg); }
-  42.71% { left: 67.69%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(168deg); }
-  43.75% { left: 65.31%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(166deg); }
-  44.79% { left: 62.86%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(165deg); }
-  45.83% { left: 60.35%; transform: translate(-50%, 1.8px) scale(1.070) rotateY(164deg); }
-  46.88% { left: 57.80%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(164deg); }
-  47.92% { left: 55.22%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(163deg); }
-  48.96% { left: 52.62%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(163deg); }
-  50% { left: 50.00%; transform: translate(-50%, 0.0px) scale(1.000) rotateY(163deg); }
-  51.04% { left: 47.38%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(163deg); }
-  52.08% { left: 44.78%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(163deg); }
-  53.12% { left: 42.20%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(164deg); }
-  54.17% { left: 39.65%; transform: translate(-50%, -1.8px) scale(0.930) rotateY(164deg); }
-  55.21% { left: 37.14%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(165deg); }
-  56.25% { left: 34.69%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(166deg); }
-  57.29% { left: 32.31%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(168deg); }
-  58.33% { left: 30.00%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(170deg); }
-  59.38% { left: 27.78%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(172deg); }
-  60.42% { left: 25.65%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(174deg); }
-  61.46% { left: 23.63%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(177deg); }
-  62.5% { left: 21.72%; transform: translate(-50%, -3.5px) scale(0.860) rotateY(180deg); }
-  63.54% { left: 19.93%; transform: translate(-50%, -3.5px) scale(0.861) rotateY(-176deg); }
-  64.58% { left: 18.27%; transform: translate(-50%, -3.4px) scale(0.865) rotateY(-172deg); }
-  65.62% { left: 16.74%; transform: translate(-50%, -3.2px) scale(0.871) rotateY(-168deg); }
-  66.67% { left: 15.36%; transform: translate(-50%, -3.0px) scale(0.879) rotateY(-163deg); }
-  67.71% { left: 14.13%; transform: translate(-50%, -2.8px) scale(0.889) rotateY(-158deg); }
-  68.75% { left: 13.04%; transform: translate(-50%, -2.5px) scale(0.901) rotateY(-152deg); }
-  69.79% { left: 12.12%; transform: translate(-50%, -2.1px) scale(0.915) rotateY(-147deg); }
-  70.83% { left: 11.36%; transform: translate(-50%, -1.7px) scale(0.930) rotateY(-142deg); }
-  71.88% { left: 10.77%; transform: translate(-50%, -1.3px) scale(0.946) rotateY(-136deg); }
-  72.92% { left: 10.34%; transform: translate(-50%, -0.9px) scale(0.964) rotateY(-131deg); }
-  73.96% { left: 10.09%; transform: translate(-50%, -0.5px) scale(0.982) rotateY(-126deg); }
-  75% { left: 10.00%; transform: translate(-50%, -0.0px) scale(1.000) rotateY(-122deg); }
-  76.04% { left: 10.09%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(-54deg); }
-  77.08% { left: 10.34%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(-49deg); }
-  78.12% { left: 10.77%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(-44deg); }
-  79.17% { left: 11.36%; transform: translate(-50%, 1.7px) scale(1.070) rotateY(-38deg); }
-  80.21% { left: 12.12%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(-33deg); }
-  81.25% { left: 13.04%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(-28deg); }
-  82.29% { left: 14.13%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(-22deg); }
-  83.33% { left: 15.36%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(-17deg); }
-  84.38% { left: 16.74%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(-12deg); }
-  85.42% { left: 18.27%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(-8deg); }
-  86.46% { left: 19.93%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(-4deg); }
-  87.5% { left: 21.72%; transform: translate(-50%, 3.5px) scale(1.140) rotateY(-0deg); }
-  88.54% { left: 23.63%; transform: translate(-50%, 3.5px) scale(1.139) rotateY(3deg); }
-  89.58% { left: 25.65%; transform: translate(-50%, 3.4px) scale(1.135) rotateY(6deg); }
-  90.62% { left: 27.78%; transform: translate(-50%, 3.2px) scale(1.129) rotateY(8deg); }
-  91.67% { left: 30.00%; transform: translate(-50%, 3.0px) scale(1.121) rotateY(10deg); }
-  92.71% { left: 32.31%; transform: translate(-50%, 2.8px) scale(1.111) rotateY(12deg); }
-  93.75% { left: 34.69%; transform: translate(-50%, 2.5px) scale(1.099) rotateY(14deg); }
-  94.79% { left: 37.14%; transform: translate(-50%, 2.1px) scale(1.085) rotateY(15deg); }
-  95.83% { left: 39.65%; transform: translate(-50%, 1.8px) scale(1.070) rotateY(16deg); }
-  96.88% { left: 42.20%; transform: translate(-50%, 1.3px) scale(1.054) rotateY(16deg); }
-  97.92% { left: 44.78%; transform: translate(-50%, 0.9px) scale(1.036) rotateY(17deg); }
-  98.96% { left: 47.38%; transform: translate(-50%, 0.5px) scale(1.018) rotateY(17deg); }
+  0% { left: 50.00%; transform: translate(-50%, -0.0px) scale(1.000, 1.000); background-position-y: 75%; }
+  1.042% { left: 52.62%; transform: translate(-50%, -0.5px) scale(0.982, 0.982); background-position-y: 75%; }
+  2.083% { left: 55.22%; transform: translate(-50%, -0.9px) scale(0.964, 0.964); background-position-y: 75%; }
+  3.125% { left: 57.80%; transform: translate(-50%, -1.3px) scale(0.946, 0.946); background-position-y: 75%; }
+  4.167% { left: 60.35%; transform: translate(-50%, -1.7px) scale(0.930, 0.930); background-position-y: 75%; }
+  5.208% { left: 62.86%; transform: translate(-50%, -2.1px) scale(0.915, 0.915); background-position-y: 75%; }
+  6.25% { left: 65.31%; transform: translate(-50%, -2.5px) scale(0.901, 0.901); background-position-y: 75%; }
+  7.292% { left: 67.69%; transform: translate(-50%, -2.8px) scale(0.889, 0.889); background-position-y: 0%; }
+  8.333% { left: 70.00%; transform: translate(-50%, -3.0px) scale(0.879, 0.879); background-position-y: 0%; }
+  9.375% { left: 72.22%; transform: translate(-50%, -3.2px) scale(0.871, 0.871); background-position-y: 0%; }
+  10.42% { left: 74.35%; transform: translate(-50%, -3.4px) scale(0.865, 0.865); background-position-y: 0%; }
+  11.46% { left: 76.37%; transform: translate(-50%, -3.5px) scale(0.861, 0.861); background-position-y: 0%; }
+  12.5% { left: 78.28%; transform: translate(-50%, -3.5px) scale(0.860, 0.860); background-position-y: 0%; }
+  13.54% { left: 80.07%; transform: translate(-50%, -3.5px) scale(0.861, 0.861); background-position-y: 0%; }
+  14.58% { left: 81.73%; transform: translate(-50%, -3.4px) scale(0.865, 0.865); background-position-y: 0%; }
+  15.62% { left: 83.26%; transform: translate(-50%, -3.2px) scale(0.871, 0.871); background-position-y: 0%; }
+  16.67% { left: 84.64%; transform: translate(-50%, -3.0px) scale(0.879, 0.879); background-position-y: 25%; }
+  17.71% { left: 85.87%; transform: translate(-50%, -2.8px) scale(0.889, 0.889); background-position-y: 25%; }
+  18.75% { left: 86.96%; transform: translate(-50%, -2.5px) scale(0.901, 0.901); background-position-y: 25%; }
+  19.79% { left: 87.88%; transform: translate(-50%, -2.1px) scale(0.915, 0.915); background-position-y: 25%; }
+  20.83% { left: 88.64%; transform: translate(-50%, -1.7px) scale(0.930, 0.930); background-position-y: 25%; }
+  21.88% { left: 89.23%; transform: translate(-50%, -1.3px) scale(0.946, 0.946); background-position-y: 25%; }
+  22.92% { left: 89.66%; transform: translate(-50%, -0.9px) scale(0.964, 0.964); background-position-y: 25%; }
+  23.96% { left: 89.91%; transform: translate(-50%, -0.5px) scale(0.982, 0.982); background-position-y: 50%; }
+  25% { left: 90.00%; transform: translate(-50%, -0.0px) scale(1.000, 1.000); background-position-y: 50%; }
+  26.04% { left: 89.91%; transform: translate(-50%, 0.5px) scale(-1.018, 1.018); background-position-y: 50%; }
+  27.08% { left: 89.66%; transform: translate(-50%, 0.9px) scale(-1.036, 1.036); background-position-y: 25%; }
+  28.12% { left: 89.23%; transform: translate(-50%, 1.3px) scale(-1.054, 1.054); background-position-y: 25%; }
+  29.17% { left: 88.64%; transform: translate(-50%, 1.7px) scale(-1.070, 1.070); background-position-y: 25%; }
+  30.21% { left: 87.88%; transform: translate(-50%, 2.1px) scale(-1.085, 1.085); background-position-y: 25%; }
+  31.25% { left: 86.96%; transform: translate(-50%, 2.5px) scale(-1.099, 1.099); background-position-y: 25%; }
+  32.29% { left: 85.87%; transform: translate(-50%, 2.8px) scale(-1.111, 1.111); background-position-y: 25%; }
+  33.33% { left: 84.64%; transform: translate(-50%, 3.0px) scale(-1.121, 1.121); background-position-y: 25%; }
+  34.38% { left: 83.26%; transform: translate(-50%, 3.2px) scale(-1.129, 1.129); background-position-y: 0%; }
+  35.42% { left: 81.73%; transform: translate(-50%, 3.4px) scale(-1.135, 1.135); background-position-y: 0%; }
+  36.46% { left: 80.07%; transform: translate(-50%, 3.5px) scale(-1.139, 1.139); background-position-y: 0%; }
+  37.5% { left: 78.28%; transform: translate(-50%, 3.5px) scale(-1.140, 1.140); background-position-y: 0%; }
+  38.54% { left: 76.37%; transform: translate(-50%, 3.5px) scale(-1.139, 1.139); background-position-y: 0%; }
+  39.58% { left: 74.35%; transform: translate(-50%, 3.4px) scale(-1.135, 1.135); background-position-y: 0%; }
+  40.62% { left: 72.22%; transform: translate(-50%, 3.2px) scale(-1.129, 1.129); background-position-y: 0%; }
+  41.67% { left: 70.00%; transform: translate(-50%, 3.0px) scale(-1.121, 1.121); background-position-y: 0%; }
+  42.71% { left: 67.69%; transform: translate(-50%, 2.8px) scale(-1.111, 1.111); background-position-y: 0%; }
+  43.75% { left: 65.31%; transform: translate(-50%, 2.5px) scale(-1.099, 1.099); background-position-y: 75%; }
+  44.79% { left: 62.86%; transform: translate(-50%, 2.1px) scale(-1.085, 1.085); background-position-y: 75%; }
+  45.83% { left: 60.35%; transform: translate(-50%, 1.8px) scale(-1.070, 1.070); background-position-y: 75%; }
+  46.88% { left: 57.80%; transform: translate(-50%, 1.3px) scale(-1.054, 1.054); background-position-y: 75%; }
+  47.92% { left: 55.22%; transform: translate(-50%, 0.9px) scale(-1.036, 1.036); background-position-y: 75%; }
+  48.96% { left: 52.62%; transform: translate(-50%, 0.5px) scale(-1.018, 1.018); background-position-y: 75%; }
+  50% { left: 50.00%; transform: translate(-50%, 0.0px) scale(-1.000, 1.000); background-position-y: 75%; }
+  51.04% { left: 47.38%; transform: translate(-50%, -0.5px) scale(-0.982, 0.982); background-position-y: 75%; }
+  52.08% { left: 44.78%; transform: translate(-50%, -0.9px) scale(-0.964, 0.964); background-position-y: 75%; }
+  53.12% { left: 42.20%; transform: translate(-50%, -1.3px) scale(-0.946, 0.946); background-position-y: 75%; }
+  54.17% { left: 39.65%; transform: translate(-50%, -1.8px) scale(-0.930, 0.930); background-position-y: 75%; }
+  55.21% { left: 37.14%; transform: translate(-50%, -2.1px) scale(-0.915, 0.915); background-position-y: 75%; }
+  56.25% { left: 34.69%; transform: translate(-50%, -2.5px) scale(-0.901, 0.901); background-position-y: 75%; }
+  57.29% { left: 32.31%; transform: translate(-50%, -2.8px) scale(-0.889, 0.889); background-position-y: 0%; }
+  58.33% { left: 30.00%; transform: translate(-50%, -3.0px) scale(-0.879, 0.879); background-position-y: 0%; }
+  59.38% { left: 27.78%; transform: translate(-50%, -3.2px) scale(-0.871, 0.871); background-position-y: 0%; }
+  60.42% { left: 25.65%; transform: translate(-50%, -3.4px) scale(-0.865, 0.865); background-position-y: 0%; }
+  61.46% { left: 23.63%; transform: translate(-50%, -3.5px) scale(-0.861, 0.861); background-position-y: 0%; }
+  62.5% { left: 21.72%; transform: translate(-50%, -3.5px) scale(-0.860, 0.860); background-position-y: 0%; }
+  63.54% { left: 19.93%; transform: translate(-50%, -3.5px) scale(-0.861, 0.861); background-position-y: 0%; }
+  64.58% { left: 18.27%; transform: translate(-50%, -3.4px) scale(-0.865, 0.865); background-position-y: 0%; }
+  65.62% { left: 16.74%; transform: translate(-50%, -3.2px) scale(-0.871, 0.871); background-position-y: 0%; }
+  66.67% { left: 15.36%; transform: translate(-50%, -3.0px) scale(-0.879, 0.879); background-position-y: 25%; }
+  67.71% { left: 14.13%; transform: translate(-50%, -2.8px) scale(-0.889, 0.889); background-position-y: 25%; }
+  68.75% { left: 13.04%; transform: translate(-50%, -2.5px) scale(-0.901, 0.901); background-position-y: 25%; }
+  69.79% { left: 12.12%; transform: translate(-50%, -2.1px) scale(-0.915, 0.915); background-position-y: 25%; }
+  70.83% { left: 11.36%; transform: translate(-50%, -1.7px) scale(-0.930, 0.930); background-position-y: 25%; }
+  71.88% { left: 10.77%; transform: translate(-50%, -1.3px) scale(-0.946, 0.946); background-position-y: 25%; }
+  72.92% { left: 10.34%; transform: translate(-50%, -0.9px) scale(-0.964, 0.964); background-position-y: 25%; }
+  73.96% { left: 10.09%; transform: translate(-50%, -0.5px) scale(-0.982, 0.982); background-position-y: 50%; }
+  75% { left: 10.00%; transform: translate(-50%, -0.0px) scale(-1.000, 1.000); background-position-y: 50%; }
+  76.04% { left: 10.09%; transform: translate(-50%, 0.5px) scale(1.018, 1.018); background-position-y: 50%; }
+  77.08% { left: 10.34%; transform: translate(-50%, 0.9px) scale(1.036, 1.036); background-position-y: 25%; }
+  78.12% { left: 10.77%; transform: translate(-50%, 1.3px) scale(1.054, 1.054); background-position-y: 25%; }
+  79.17% { left: 11.36%; transform: translate(-50%, 1.7px) scale(1.070, 1.070); background-position-y: 25%; }
+  80.21% { left: 12.12%; transform: translate(-50%, 2.1px) scale(1.085, 1.085); background-position-y: 25%; }
+  81.25% { left: 13.04%; transform: translate(-50%, 2.5px) scale(1.099, 1.099); background-position-y: 25%; }
+  82.29% { left: 14.13%; transform: translate(-50%, 2.8px) scale(1.111, 1.111); background-position-y: 25%; }
+  83.33% { left: 15.36%; transform: translate(-50%, 3.0px) scale(1.121, 1.121); background-position-y: 25%; }
+  84.38% { left: 16.74%; transform: translate(-50%, 3.2px) scale(1.129, 1.129); background-position-y: 0%; }
+  85.42% { left: 18.27%; transform: translate(-50%, 3.4px) scale(1.135, 1.135); background-position-y: 0%; }
+  86.46% { left: 19.93%; transform: translate(-50%, 3.5px) scale(1.139, 1.139); background-position-y: 0%; }
+  87.5% { left: 21.72%; transform: translate(-50%, 3.5px) scale(1.140, 1.140); background-position-y: 0%; }
+  88.54% { left: 23.63%; transform: translate(-50%, 3.5px) scale(1.139, 1.139); background-position-y: 0%; }
+  89.58% { left: 25.65%; transform: translate(-50%, 3.4px) scale(1.135, 1.135); background-position-y: 0%; }
+  90.62% { left: 27.78%; transform: translate(-50%, 3.2px) scale(1.129, 1.129); background-position-y: 0%; }
+  91.67% { left: 30.00%; transform: translate(-50%, 3.0px) scale(1.121, 1.121); background-position-y: 0%; }
+  92.71% { left: 32.31%; transform: translate(-50%, 2.8px) scale(1.111, 1.111); background-position-y: 0%; }
+  93.75% { left: 34.69%; transform: translate(-50%, 2.5px) scale(1.099, 1.099); background-position-y: 75%; }
+  94.79% { left: 37.14%; transform: translate(-50%, 2.1px) scale(1.085, 1.085); background-position-y: 75%; }
+  95.83% { left: 39.65%; transform: translate(-50%, 1.8px) scale(1.070, 1.070); background-position-y: 75%; }
+  96.88% { left: 42.20%; transform: translate(-50%, 1.3px) scale(1.054, 1.054); background-position-y: 75%; }
+  97.92% { left: 44.78%; transform: translate(-50%, 0.9px) scale(1.036, 1.036); background-position-y: 75%; }
+  98.96% { left: 47.38%; transform: translate(-50%, 0.5px) scale(1.018, 1.018); background-position-y: 75%; }
 }
 @keyframes name-jitter {
   0% { filter: url(#hb1); translate: 0 0; rotate: 0deg; }
@@ -4560,16 +4563,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    About now sits on white, where no dimming is wanted. */
 :root .bio-card-media img.bio-media-main:not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
 
-/* More room between sections (owner's request): widened four times since the page was tightened, so each section reads as its own
-   block - desktop about 320px from one section's end to the next heading (was ~48px, then ~112px, ~176px,
-   ~240px), phones about 200px (was ~32px, then ~72px, ~112px, ~152px). About gets a little extra at its top, where the sky fades to white. */
-:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 120px !important; }
-:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 160px !important; padding-bottom: 160px !important; }
-:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 176px !important; }
+/* More room between sections (owner's request): widened five times since the page was tightened, so each section reads as its own
+   block - desktop about 400px from one section's end to the next heading (was ~48px, then ~112px, ~176px,
+   ~240px, ~320px), phones about 250px (was ~32px, then ~72px, ~112px, ~152px, ~200px). About gets a little extra at its top, where the sky fades to white. */
+:root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 150px !important; }
+:root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 200px !important; padding-bottom: 200px !important; }
+:root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 220px !important; }
 @media (max-width: 767px) {
-  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 80px !important; }
-  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 100px !important; padding-bottom: 100px !important; }
-  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 120px !important; }
+  :root.psy .epk-section:not(#\#):not(#\#):not(#\#):not(#\#) { padding-block: 100px !important; }
+  :root.psy :is(.contact-section, .releases-section, .videos-section):not(#\#):not(#\#) { padding-top: 125px !important; padding-bottom: 125px !important; }
+  :root.psy .bio-section-header:not(#\#):not(#\#) { padding-top: 150px !important; }
 }
 
 /* The Woody Guthrie quote's words are set in the category labels' face (National Park, as in "ALBUM"; owner's
@@ -4609,46 +4612,60 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .releases-grid > *:not(#\#):not(#\#):not(#\#) { flex: none !important; width: min(100%, 26rem) !important; max-width: min(100%, 26rem) !important; }
 :root.psy .releases-grid > .rel-card.lyrics-open:not(#\#):not(#\#):not(#\#) { width: 100% !important; max-width: 100% !important; }
 
-/* ── Release cards: the cover off to the right, nothing on it (owner's request) ──
-   Each card is two columns: on the left the release's type and year ("ALBUM · 2026"), its name and the play disc,
-   then its streaming buttons and the Tracks bar; on the right the cover, clear of any text or buttons, in the
-   card's top-right corner. The track list (and lyrics) runs the full width underneath. Clicking the cover still opens
-   the track list (or plays a single). Phones: the buttons and Tracks bar go full width under the title and cover, so
-   the left column only has to hold the title. Cards are wider now they are one to a row (up to 38rem). */
-:root.psy .releases-grid > *:not(#\#):not(#\#):not(#\#):not(#\#) { width: min(100%, 38rem) !important; max-width: min(100%, 38rem) !important; }
-:root.psy .releases-grid > .rel-card.lyrics-open:not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; max-width: 100% !important; }
-:root.psy .rel-card:not(#\#):not(#\#):not(#\#) {
-  display: grid !important; grid-template-columns: minmax(0, 1fr) min(44%, 16rem); grid-template-rows: auto auto auto auto; align-items: start; column-gap: 0;
+/* ── Release cards (owner's request: the cover off to the right with nothing over it, the year shown) ──
+   Desktop and tablet (700px up): a wide card (up to 56rem, so all four buttons fit on one row). On the left, the type and year ("ALBUM · 2026") and the name at the
+   top, and one row of actions at the bottom - Play, then Apple Music / Spotify (or "Distributing Soon"), then
+   Download - level with the bottom of the cover, which fills the card's right side, clear of any text or buttons.
+   The Tracks bar runs the full width underneath. Phones: the name beside a smaller cover, then the row of actions
+   and the Tracks bar full width. Play and Download are lettered like the streaming buttons (15px, 600). Clicking the
+   cover still opens the track list (or plays a single). */
+:root.psy .releases-grid > *:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: min(100%, 56rem) !important; max-width: min(100%, 56rem) !important; }
+:root.psy .releases-grid > .rel-card.lyrics-open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; max-width: 100% !important; }
+:root.psy .rel-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  display: grid !important; grid-template-columns: minmax(0, 1fr) clamp(13rem, 38%, 20rem); grid-template-rows: minmax(0, 1fr) auto auto; align-items: start; column-gap: 0; overflow: hidden;
 }
-:root.psy .rel-card > .rel-info:not(#\#) { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; padding: 18px 18px 4px; }
-:root.psy .rel-card > .rel-art-wrap:not(#\#):not(#\#) { grid-column: 2; grid-row: 1 / 4; align-self: start; border-radius: 0 var(--radius) 0 var(--r-md) !important; }
-:root.psy .rel-card > .rel-btns:not(#\#):not(#\#) { grid-column: 1; grid-row: 2; padding-inline: 18px !important; }
-:root.psy .rel-card > .rel-tl-toggle:not(#\#):not(#\#) { grid-column: 1; grid-row: 3; }
-:root.psy .rel-card > :not(.rel-info, .rel-art-wrap, .rel-btns, .rel-tl-toggle):not(#\#):not(#\#) { grid-column: 1 / -1; }
-:root.psy .rel-card .rel-info .rel-cat:not(#\#):not(#\#):not(#\#) { margin: 0 !important; text-shadow: none; }
-:root.psy .rel-card .rel-info .rel-name:not(#\#):not(#\#):not(#\#) { margin: 0 !important; text-shadow: none; }
+:root.psy .rel-card > .rel-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 1; align-self: start; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; padding: 26px 24px 12px; }
+:root.psy .rel-card > .rel-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 2; grid-row: 1 / 3; align-self: start; margin: 0; border-radius: 0 0 0 var(--r-md) !important; }
+:root.psy .rel-card > .rel-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 2; align-self: end; display: flex; flex-wrap: wrap !important; justify-content: flex-start !important; gap: 8px !important; min-height: 0 !important; padding: 0 24px 24px !important; margin: 0 !important; }
+:root.psy .rel-card > .rel-tl-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; grid-row: 3; }
+:root.psy .rel-card > :not(.rel-info, .rel-art-wrap, .rel-btns, .rel-tl-toggle):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; }
+:root.psy .rel-card .rel-info .rel-cat:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 !important; text-shadow: none; }
+:root.psy .rel-card .rel-info .rel-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 !important; text-shadow: none; font-size: clamp(26px, 3.4vw, 36px) !important; line-height: 1.1 !important; }
 :root.psy .rel-card .rel-year { white-space: nowrap; }
-/* The play disc, now beside the title: just the disc, at its usual size. */
-:root.psy .rel-card .rel-info > .rel-play-overlay:not(#\#):not(#\#):not(#\#) { position: relative !important; inset: auto !important; display: inline-flex !important; background: none !important; pointer-events: auto; z-index: auto; margin-top: 6px; border-radius: 50%; }
-@media (max-width: 599px) {
-  :root.psy .rel-card:not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 1fr) min(46%, 12rem); }
-  :root.psy .rel-card > .rel-info:not(#\#) { padding: 14px 12px 12px; }
-  :root.psy .rel-card > .rel-art-wrap:not(#\#):not(#\#) { grid-row: 1; }
-  :root.psy .rel-card > :is(.rel-btns, .rel-tl-toggle):not(#\#):not(#\#) { grid-column: 1 / -1; }
-  :root.psy .rel-card > .rel-btns:not(#\#):not(#\#) { padding-inline: 12px !important; }
-  :root.psy .rel-card .rel-info .rel-name:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 22px !important; }
+:root.psy .rel-card .rel-btns > .rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: none !important; }   /* (an older rule stretched Download across the leftover space) */
+/* Play: the first button in the row, the same size and lettering as the rest. */
+:root.psy .rel-card .rel-btns > .rel-play-overlay:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative !important; inset: auto !important; display: inline-flex !important; width: auto !important; height: auto !important; background: none !important; pointer-events: auto; z-index: auto; flex: none; border-radius: 16px; }
+:root.psy .rel-card .rel-btns > .rel-play-overlay .rel-play-circle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto !important; height: 40px !important; padding: 0 16px 0 13px !important; gap: 7px; border-radius: 16px !important; transform: none; }
+:root.psy .rel-card :is(.rel-play-circle, .rel-dl) .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 15px !important; letter-spacing: -.01em !important; }
+:root.psy .rel-card .rel-btns > *:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: none !important; }
+:root.psy .rel-card .rel-btns > .rel-btn--label:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: none !important; height: 40px !important; min-height: 40px !important; }
+@media (max-width: 699px) {
+  :root.psy .rel-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 1fr) min(46%, 13rem); grid-template-rows: auto auto auto; }
+  :root.psy .rel-card > .rel-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { align-self: center; padding: 16px 14px; }
+  :root.psy .rel-card > .rel-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-row: 1; }
+  :root.psy .rel-card > .rel-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; padding: 14px !important; }
 }
-/* Lyrics open on a wide screen: the card's own two-column layout (left: title, cover, buttons, Tracks bar; right:
-   track list and lyrics), with the title now on top of that left column. */
+/* Phones and tablets (under 960px), where the four buttons no longer fit one row: an even two-column grid of
+   full-size buttons instead of a ragged wrapping row; "Distributing Soon" takes a row of its own. */
+@media (max-width: 959px) {
+  :root.psy .rel-card > .rel-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: grid !important; grid-template-columns: 1fr 1fr; }
+  :root.psy .rel-card .rel-btns > *:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; min-width: 0 !important; justify-content: center !important; }
+  :root.psy .rel-card .rel-btns > .rel-play-overlay .rel-play-circle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; justify-content: center; }
+  :root.psy .rel-card .rel-btns > .rel-btn--label:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; order: 5; }   /* ("Distributing Soon" is wider than half a row: its own row, under Play and Download) */
+  :root.psy .rel-card .rel-btns > a.rel-btn:not(.rel-dl, .rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 15px !important; letter-spacing: -.01em !important; padding-inline: 10px !important; gap: 7px !important; }
+  :root.psy .rel-card .rel-info .rel-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: clamp(20px, 5.6vw, 26px) !important; }
+}
+/* Lyrics open on a wide screen: the card's own two columns (left: name, cover, buttons, Tracks bar; right: the
+   track list and lyrics). */
 @media (min-width: 900px) {
-  :root.psy .rel-card.lyrics-open:not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, min(26rem, 34%)) minmax(0, 1fr); grid-template-rows: auto auto auto auto 1fr; }
-  :root.psy .rel-card.lyrics-open > .rel-info:not(#\#):not(#\#) { grid-column: 1; grid-row: 1; }
-  :root.psy .rel-card.lyrics-open > .rel-art-wrap:not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 2; border-radius: var(--r-md) !important; margin-inline: 18px; width: auto; }
-  :root.psy .rel-card.lyrics-open > .rel-btns:not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 3; }
-  :root.psy .rel-card.lyrics-open > .rel-tl-toggle:not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 4; }
-  :root.psy .rel-card.lyrics-open > .rel-tracklist:not(#\#):not(#\#):not(#\#) { grid-column: 2; grid-row: 1 / -1; }
+  :root.psy .rel-card.lyrics-open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, min(26rem, 34%)) minmax(0, 1fr); grid-template-rows: auto auto auto auto 1fr; }
+  :root.psy .rel-card.lyrics-open > .rel-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 1; }
+  :root.psy .rel-card.lyrics-open > .rel-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 2; border-radius: var(--r-md) !important; margin-inline: 24px; width: auto; }
+  :root.psy .rel-card.lyrics-open > .rel-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 3; padding-top: 16px !important; }
+  :root.psy .rel-card.lyrics-open > .rel-tl-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 4; }
+  :root.psy .rel-card.lyrics-open > .rel-tracklist:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 2; grid-row: 1 / -1; }
 }
-@media (max-width: 899px) { :root.psy .rel-card.lyrics-open > .rel-art-wrap:not(#\#):not(#\#):not(#\#) { width: auto; align-self: start; } }
+@media (max-width: 899px) { :root.psy .rel-card.lyrics-open > .rel-art-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: auto; } }
 
 /* Section headings ("Music", "Videos", "About"...) are set in the toolbar buttons' face, Bricolage Grotesque ('UI';
    owner's request), bold, in place of the sketched Cabin Sketch. The icon before each word keeps its hand-drawn
@@ -4669,3 +4686,33 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   }
   :root.psy:not(.psy-calm) .section-h .section-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: ico-boil .6667s step-end infinite; }
 }
+
+/* ── Video cards, laid out like the release cards (owner's request: every release treated the same, nothing over a
+   picture) ── One video to a row, the same width as a release. On the left the type and year ("VIDEO · 2026")
+   and the title at the top, and a row of buttons at the bottom - Play, then YouTube - level with the bottom of the
+   thumbnail, which fills the card's right side with no play disc or text on it (clicking it still plays the video).
+   Phones: the title beside a smaller thumbnail, the buttons full width under them. Play and YouTube are the same
+   size and lettering as the release buttons. */
+:root.psy .video-grid:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex !important; flex-direction: column !important; align-items: center !important; gap: var(--gap, 24px) !important; }
+:root.psy .video-grid > .vid-card-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: min(100%, 56rem) !important; max-width: min(100%, 56rem) !important; }
+:root.psy .vid-card-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: grid !important; grid-template-columns: minmax(0, 1fr) clamp(13rem, 44%, 25rem); grid-template-rows: minmax(0, 1fr) auto; align-items: start; overflow: hidden; }
+:root.psy .vid-card-wrap > .vid-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 1; align-self: start; display: flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; min-width: 0; padding: 26px 24px 12px !important; border: 0 !important; background: none !important; }
+:root.psy .vid-card-wrap > .vid-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 2; grid-row: 1 / 3; align-self: start; width: 100%; border-radius: 0 0 0 var(--r-md) !important; overflow: hidden; }
+:root.psy .vid-card-wrap > .vid-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1; grid-row: 2; align-self: end; display: flex; flex-wrap: wrap; gap: 8px; padding: 0 24px 24px; }
+:root.psy .vid-card-wrap .vid-info .vid-cat:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 !important; text-shadow: none; }
+:root.psy .vid-card-wrap .vid-info .vid-title:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 !important; text-shadow: none; font-size: clamp(26px, 3.4vw, 36px) !important; line-height: 1.1 !important; }
+:root.psy .vid-card-wrap .vid-btns > *:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: none !important; height: 40px !important; min-height: 40px !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; gap: 7px !important; padding: 0 16px 0 13px !important; font-size: 15px !important; }
+:root.psy .vid-card-wrap .vid-btns .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 15px !important; letter-spacing: -.01em !important; }
+:root.psy .vid-card-wrap .vid-play svg { flex: none; }
+@media (max-width: 699px) {
+  :root.psy .vid-card-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-template-columns: minmax(0, 1fr) min(50%, 14rem); grid-template-rows: auto auto; }
+  :root.psy .vid-card-wrap > .vid-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { align-self: center; padding: 16px 14px !important; }
+  :root.psy .vid-card-wrap > .vid-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-row: 1; }
+  :root.psy .vid-card-wrap > .vid-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; padding: 14px; }
+  :root.psy .vid-card-wrap .vid-btns > *:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 100% !important; justify-content: center !important; }
+  :root.psy .vid-card-wrap .vid-info .vid-title:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: clamp(20px, 5.6vw, 26px) !important; }
+}
+/* (the thumbnail fills the card's full height on its side, cropping a little if the words beside it run taller) */
+:root.psy .vid-card-wrap > .vid-card:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { align-self: stretch; height: 100%; display: block; }
+:root.psy .vid-card-wrap > .vid-card > .vid-thumb:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: 100%; min-height: 100%; padding-top: 0 !important; aspect-ratio: 16 / 9; position: relative; }
+:root.psy .vid-card-wrap > .vid-card > .vid-thumb :is(img, video):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }

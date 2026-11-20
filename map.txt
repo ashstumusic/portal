@@ -7,7 +7,7 @@
 * `admin.html`
 * `ash-stu-press-kit.zip`
 * `releases.json` (generated from `Audio/`)
-* `videos.json` (generated from `Videos/`)
+* `videos.json` (generated from `Video Files/`)
 * `lyrics.json`
 * `data.json`
 * `CONTENT.md`
@@ -54,7 +54,7 @@
   * `09. The Wandering Jerk.mp3`
   * `links.txt`
 
-**`Videos`**
+**`Video Files`**
 
 * `VCR.mp4` / `.txt`
 * `The Helpful Raven.mp4` / `.txt`

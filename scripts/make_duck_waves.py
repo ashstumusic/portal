@@ -4,15 +4,16 @@ Writes three things:
   Images/pool-waves.svg   the water: a hand-drawn line of gentle waves, drawn four times with a different hand
                           wobble each time (1200 x 60 units per frame, stacked top to bottom). A white stencil:
                           the stylesheet lays it over the name's gradient.
-  Images/rubber-duck.svg  the duck, side on and facing right, with a ripple mark either side: four drawings
-                          (120 x 60 units each, stacked), each wobbled and bobbing a touch differently. Drawn in
-                          About's deep gradient, filled white so the water line doesn't show through its body.
+  Images/rubber-duck.svg  the duck in five poses (rows: side on, three-quarter towards you, front, three-quarter
+                          away, back), each drawn four times (columns) with a different hand wobble and bob, with a
+                          ripple mark either side. 120 x 60 units per cell. Drawn in About's deep gradient, filled
+                          white so the water line doesn't show through its body.
   the @keyframes duck-eight block, printed: paste it into shared/system.css ("About's divider"). The duck swims a
                           figure 8 across the width of the line, 96 positions over 16 seconds (six a second, the
                           page's flipbook beat). Seen from the side, the loop's depth shows as the duck getting a
                           little smaller and higher on the far side and bigger and lower on the near side, and it
-                          turns (a partial turn about its upright axis) as its heading swings into and out of the
-                          depth, coming round at each end of the pool.
+                          turns like a hand-drawn flipbook: it steps through the drawn poses for its heading (not a
+                          flat picture spinning), mirrored when heading left.
 
 Plain Python, fixed seed, so rerunning reproduces everything.
 """
@@ -51,46 +52,91 @@ open(os.path.join(IMG, 'pool-waves.svg'), 'w').write(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H * FRAMES}" width="{W}" height="{H * FRAMES}">'
     f'<g fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">{"".join(groups)}</g></svg>\n')
 
-# ── the duck ── (duck space: waterline y=0, facing right; only what's above the water is drawn)
+# ── the duck ── (duck space: waterline y=0; only what's above the water is drawn)
+# Five poses, drawn like a Disney flipbook turn rather than a flat card spinning: side on (facing right),
+# three-quarter towards you, straight at you, three-quarter away, and straight away (its tail to you). Facing left is
+# the same drawings mirrored; the mirror is swapped in only at the front or back pose, where it can't be seen.
 CW, CH, CX, CY, S = 120, 60, 60, 44, 1.25
-def duck_lines():
-    return [
-        qbez((-25, -13), (-22, -3), (-15, 0)),                  # tail down to the water
-        qbez((-25, -13), (-14, -5), (-3, -9)),                  # back
-        arc(6, -20, 8.5, 1.9, 1.9 + 2 * math.pi * 1.05),        # head
-        qbez((12, -13), (22, -9), (17, 0)),                     # chest down to the water
-        qbez((-13, -6), (-6, -1), (2, -6)),                     # wing
-        qbez((14, -22), (21, -21), (23, -18)) + qbez((23, -18), (19, -15.5), (14, -16.5))[1:],   # beak
-    ]
-def duck_body():   # the white fill behind the lines
-    return qbez((-25, -13), (-14, -5), (-3, -9)) + arc(6, -20, 8.5, 2.2, 2.2 + 2 * math.pi * .78) + qbez((12, -13), (22, -9), (17, 0))[1:] + [(-15, 0)] + qbez((-15, 0), (-22, -3), (-25, -13))[1:]
-groups = []
-for f in range(FRAMES):
-    bob = (-.8, .4, -.4, .7)[f]; tip = math.radians((-3, 2.5, -1.5, 3)[f])
-    place = lambda pts: [(CX + S * (x * math.cos(tip) - y * math.sin(tip)), CY + bob + S * (x * math.sin(tip) + y * math.cos(tip))) for x, y in pts]
-    lines = [path(wobble(place(st), rng, .3)) for st in duck_lines()]
-    lines += [path(wobble(st, rng, .3)) for st in (qbez((CX - 48, CY + 9), (CX - 40, CY + 6), (CX - 32, CY + 9)),
-                                                   qbez((CX + 34, CY + 9), (CX + 42, CY + 6), (CX + 50, CY + 9)))]
-    ex, ey = place([(9, -22)])[0]
-    groups.append(f'<g transform="translate(0 {f * CH})"><path d="{path(place(duck_body()), True)}" fill="#fff" stroke="none"/>'
-                  f'<path d="{" ".join(lines)}" fill="none"/><circle cx="{ex:.1f}" cy="{ey:.1f}" r="1.9" fill="url(#g)" stroke="none"/></g>')
+def poly_close(*parts):
+    pts = []
+    for p in parts: pts += p
+    return pts
+def circle(cx, cy, r, a0=0.0, turns=1.05):
+    return arc(cx, cy, r, a0, a0 + 2 * math.pi * turns)
+def mirror(pts): return [(-x, y) for x, y in pts]
+POSES = []
+# side, facing right
+POSES.append(dict(
+    lines=[qbez((-25, -13), (-22, -3), (-15, 0)), qbez((-25, -13), (-14, -5), (-3, -9)), circle(6, -20, 8.5, 1.9),
+           qbez((12, -13), (22, -9), (17, 0)), qbez((-13, -6), (-6, -1), (2, -6)),
+           qbez((14, -22), (21, -21), (23, -18)) + qbez((23, -18), (19, -15.5), (14, -16.5))[1:]],
+    fills=[poly_close(qbez((-25, -13), (-14, -5), (-3, -9)), qbez((12, -13), (22, -9), (17, 0)), [(-15, 0)], qbez((-15, 0), (-22, -3), (-25, -13))), circle(6, -20, 8.5, 0, 1)],
+    eyes=[(9, -22)]))
+# three-quarter, turned towards you (still heading right)
+POSES.append(dict(
+    lines=[qbez((-20, -11), (-18, -3), (-12, 0)), qbez((-20, -11), (-12, -6), (-5, -9)), circle(3, -20, 8.5, 1.9),
+           qbez((9, -13), (17, -7), (12, 0)), qbez((-12, -5), (-6, -1), (-1, -5)),
+           qbez((4, -17.5), (11, -17.5), (12.5, -15.5)) + qbez((12.5, -15.5), (9, -13), (4, -14.5))[1:]],
+    fills=[poly_close(qbez((-20, -11), (-12, -6), (-5, -9)), qbez((9, -13), (17, -7), (12, 0)), [(-12, 0)], qbez((-12, 0), (-18, -3), (-20, -11))), circle(3, -20, 8.5, 0, 1)],
+    eyes=[(0, -22), (6.5, -22.5)]))
+# straight at you: a low round body under a round head, and the bill a small solid shape pointing at you
+POSES.append(dict(
+    lines=[qbez((-21, 0), (-23, -8), (-9, -10)), qbez((21, 0), (23, -8), (9, -10)), circle(0, -22, 9.5, 1.9)],
+    fills=[poly_close(qbez((-21, 0), (-23, -8), (-9, -10)), qbez((9, -10), (23, -8), (21, 0))), circle(0, -22, 9.5, 0, 1)],
+    solids=[poly_close(qbez((-5, -16), (0, -17.5), (5, -16)), qbez((5, -16), (10.5, -12.5), (8, -9.5)), qbez((8, -9.5), (0, -8), (-8, -9.5)), qbez((-8, -9.5), (-10.5, -12.5), (-5, -16)))],
+    eyes=[(-4, -23.5), (4, -23.5)]))
+# three-quarter, turned away (still heading right): its tail to you, the head going away
+POSES.append(dict(
+    lines=[qbez((-17, -12), (-14, -4), (-9, 0)), qbez((-17, -12), (-10, -8.5), (-3, -10)), circle(5, -21, 8.5, 1.9),
+           qbez((11, -12), (19, -6), (14, 0)), qbez((-6, -6), (0, -2), (6, -6)),
+           qbez((13, -22), (16.5, -21.5), (17, -19.5))],
+    fills=[poly_close(qbez((-17, -12), (-10, -8.5), (-3, -10)), qbez((11, -12), (19, -6), (14, 0)), [(-9, 0)], qbez((-9, 0), (-14, -4), (-17, -12))), circle(5, -21, 8.5, 0, 1)],
+    eyes=[]))
+# straight away (its back to you): the low round body under the head, and the little tail flicked up
+POSES.append(dict(
+    lines=[qbez((-21, 0), (-23, -9), (-8, -12)), qbez((21, 0), (23, -9), (8, -12)), circle(0, -21, 9, 1.9),
+           qbez((-3.5, -2), (0, -8), (3.5, -2))],
+    fills=[poly_close(qbez((-21, 0), (-23, -9), (-8, -12)), qbez((8, -12), (23, -9), (21, 0))), circle(0, -21, 9, 0, 1)],
+    eyes=[]))
+RIPPLES = (qbez((-48, 9), (-40, 6), (-32, 9)), qbez((34, 9), (42, 6), (50, 9)))
+cells = []
+for pi, pose in enumerate(POSES):
+    for f in range(FRAMES):
+        bob = (-.8, .4, -.4, .7)[f]; tip = math.radians((-3, 2.5, -1.5, 3)[f])
+        place = lambda pts: [(CX + S * (x * math.cos(tip) - y * math.sin(tip)), CY + bob + S * (x * math.sin(tip) + y * math.cos(tip))) for x, y in pts]
+        lines = [path(wobble(place(st), rng, .28)) for st in pose['lines']]
+        lines += [path(wobble([(CX + x, CY + y) for x, y in st], rng, .3)) for st in RIPPLES]
+        fills = ''.join(f'<path d="{path(place(fp), True)}" fill="#fff" stroke="none"/>' for fp in pose['fills'])
+        solids = ''.join(f'<path d="{path(wobble(place(sp), rng, .2), True)}" fill="#C2560E" stroke="none"/>' for sp in pose.get('solids', []))   # (the bill: one orange, as a rubber duck's is)
+        eyes = ''.join(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="1.8" fill="#2A1A24" stroke="none"/>' for ex, ey in place(pose['eyes']))
+        cells.append(f'<g transform="translate({f * CW} {pi * CH})">{fills}<path d="{" ".join(lines)}" fill="none"/>{solids}{eyes}</g>')
+NP = len(POSES)
 open(os.path.join(IMG, 'rubber-duck.svg'), 'w').write(
-    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CW} {CH * FRAMES}" width="{CW}" height="{CH * FRAMES}">'
-    '<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="25" y1="0" x2="95" y2="0">'
+    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CW * FRAMES} {CH * NP}" width="{CW * FRAMES}" height="{CH * NP}">'
+    '<defs><linearGradient id="g" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">'
     '<stop offset="0" stop-color="#B0145E"/><stop offset=".5" stop-color="#A8400A"/><stop offset="1" stop-color="#0B6A8C"/></linearGradient></defs>'
-    f'<g stroke="url(#g)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">{"".join(groups)}</g></svg>\n')
+    f'<g stroke="url(#g)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">{"".join(cells)}</g></svg>\n')
 
 # ── the figure 8 ──
-N, AX, DEPTH = 96, 40, .5   # positions; how far either side of the middle it swims (% of the line); loop depth vs width
-out, prev = ['@keyframes duck-eight {'], None
+# 96 stepped positions over 16 seconds. Each picks the pose for the duck's heading (side on when crossing the pool,
+# coming round through three-quarter and front or back views at the ends), mirrored when it's heading left; the
+# far side of the loop is a little smaller and higher, the near side bigger and lower. Rows of the sheet:
+# 0 side, 1 three-quarter towards, 2 front, 3 three-quarter away, 4 back.
+N, AX, DEPTH = 96, 40, .5
+out = ['@keyframes duck-eight {']
 for i in range(N):
     th = 2 * math.pi * i / N
     x = 50 + AX * math.sin(th)
     z = math.sin(2 * th) / 2                                    # + is the far side of the loop
-    heading = math.degrees(math.atan2(DEPTH * math.cos(2 * th), math.cos(th)))   # 0 = swimming right, 180 = left
-    side = 0 if abs(heading) < 90 else (180 if heading > 0 else -180)
-    yaw = side + (heading - side) * .65                         # mostly side on: only part of the turn shows
+    h = math.degrees(math.atan2(DEPTH * math.cos(2 * th), math.cos(th)))   # 0 = heading right, 180 = left, + = away
+    off = abs(h) if abs(h) <= 90 else 180 - abs(h)               # how far it has turned from side on
+    away = h > 0
+    if off < 20: row = 0
+    elif off < 78: row = 3 if away else 1
+    else: row = 4 if away else 2
+    left = abs(h) > 90 or (abs(h) == 90 and False)
     sc, dy = 1 - .28 * z, -7 * z
-    out.append(f'  {100 * i / N:.4g}% {{ left: {x:.2f}%; transform: translate(-50%, {dy:.1f}px) scale({sc:.3f}) rotateY({yaw:.0f}deg); }}')
+    sx = -sc if left else sc
+    out.append(f'  {100 * i / N:.4g}% {{ left: {x:.2f}%; transform: translate(-50%, {dy:.1f}px) scale({sx:.3f}, {sc:.3f}); background-position-y: {row * 25}%; }}')
 out.append('}')
 print('\n'.join(out))

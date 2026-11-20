@@ -56,19 +56,22 @@ Audio/My New Song/
 
 ## Videos
 
-Each video is just two files directly in `Videos/`:
+Each video is just two files directly in `Video Files/` (the folder is named that, not
+`Videos/`, because the site's video pages live at `/videos/`):
 
 ```
-Videos/My New Video.mp4
-Videos/My New Video.txt              (optional - YouTube link)
-Videos/Thumbnails/My New Video.webp  (optional - custom thumbnail)
+Video Files/My New Video.mp4
+Video Files/My New Video.txt              (optional - YouTube link)
+Video Files/Thumbnails/My New Video.webp  (optional - custom thumbnail)
 ```
 
 - **Title** is the filename, minus the extension, exactly as typed.
 - **YouTube link** (optional) goes in a `.txt` file with the *same name* as
-  the video, containing just the URL on one line. No `.txt` file = no
+  the video, containing the URL on one line. A `year: 2025` line in the same
+  file sets the year shown on the video's card (otherwise it's the year the
+  video was added to the site). No `.txt` file = no
   YouTube button on that video.
-- **Thumbnail** (optional) goes in `Videos/Thumbnails/`, named *exactly*
+- **Thumbnail** (optional) goes in `Video Files/Thumbnails/`, named *exactly*
   like the video (any of `.webp` / `.png` / `.jpg` / `.jpeg`). No thumbnail
   file = the player automatically grabs a frame from the video itself, so
   this is only needed if you want a specific, chosen image instead.

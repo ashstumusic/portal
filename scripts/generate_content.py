@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scan Audio/ and Videos/ and emit releases.json and videos.json at the
+"""Scan Audio/ and Video Files/ and emit releases.json and videos.json at the
 repo root. Run by the update-content GitHub Action whenever those folders
 change - see .github/workflows/update-content.yml.
 
@@ -122,7 +122,7 @@ def find_art(name):
 
 def find_thumb(name):
     for ext in ART_EXTS:
-        p = os.path.join('Videos', 'Thumbnails', name + ext)
+        p = os.path.join('Video Files', 'Thumbnails', name + ext)
         if os.path.isfile(p):
             return p.replace(os.sep, '/')
     return None
@@ -237,7 +237,7 @@ def gen_releases():
 
 
 def gen_videos():
-    video_dir = 'Videos'
+    video_dir = 'Video Files'
     if not os.path.isdir(video_dir):
         return []
     videos = []
@@ -249,25 +249,35 @@ def gen_videos():
         if ext.lower() not in VIDEO_EXTS:
             continue
         txt_path = os.path.join(video_dir, base + '.txt')
-        youtube = None
+        # The .txt beside a video: its YouTube link, and optionally a "year: YYYY" line (the year shown on its card).
+        youtube, vyear = None, None
         if os.path.isfile(txt_path):
             with open(txt_path, encoding='utf-8') as fh:
-                youtube = fh.read().strip() or None
+                for line in fh.read().splitlines():
+                    line = line.strip()
+                    if line.lower().startswith('year:') and line[5:].strip()[:4].isdigit():
+                        vyear = int(line[5:].strip()[:4])
+                    elif line and not youtube and ':' in line and line.split(':', 1)[0].lower() in ('http', 'https'):
+                        youtube = line
+        # Without a "year:" line, the year the video was added to the site.
+        if not vyear and git_first_added_epoch(path):
+            vyear = datetime.datetime.fromtimestamp(git_first_added_epoch(path)).year
         cap = os.path.join(video_dir, 'Captions', base + '.vtt')
         videos.append({
             'title': base,
             'file': path.replace(os.sep, '/'),
             'youtube': youtube,
+            **({'year': vyear} if vyear else {}),
             'captions': cap.replace(os.sep, '/') if os.path.isfile(cap) else None,
             'thumb': find_thumb(base),
             # A sharper copy of the thumbnail for high-resolution screens, if one has been made
-            # (Videos/Thumbnails/<name>-1024.webp); listed only when the file exists.
-            **({'thumb2x': f'Videos/Thumbnails/{base}-1024.webp'} if os.path.isfile(os.path.join('Videos', 'Thumbnails', base + '-1024.webp')) else {}),
+            # (Video Files/Thumbnails/<name>-1024.webp); listed only when the file exists.
+            **({'thumb2x': f'Video Files/Thumbnails/{base}-1024.webp'} if os.path.isfile(os.path.join('Video Files', 'Thumbnails', base + '-1024.webp')) else {}),
             # (the thumbnail's average colour, shown while it loads, like the album covers)
             **({'tint': cover_tint(find_thumb(base))} if find_thumb(base) and cover_tint(find_thumb(base)) else {}),
             '_sort': git_first_added_epoch(path),
         })
-    # Optional Videos/order.txt: one video title per line, top first.
+    # Optional Video Files/order.txt: one video title per line, top first.
     # Listed videos come first in that order; the rest follow, newest first.
     order_path = os.path.join(video_dir, 'order.txt')
     order = []

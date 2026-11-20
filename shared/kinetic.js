@@ -299,7 +299,7 @@
     }));
     return out;
   }
-  // Video transcripts: every line of every video's captions (Videos/Captions/*.vtt, the same files the video viewer
+  // Video transcripts: every line of every video's captions (Video Files/Captions/*.vtt, the same files the video viewer
   // shows as captions) can be searched like a lyric. Picking one opens that video at that line. One of the videos is
   // a song that is on no album, so its words could not be found any other way. The caption files are small text
   // files, fetched once, the first time the search field is used (never on page load); results appear as soon as

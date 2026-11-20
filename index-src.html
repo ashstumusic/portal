@@ -113,7 +113,7 @@
       "@type": "VideoObject",
       "@id": "https://ashstu.art/#video-vcr",
       "name": "VCR",
-      "description": "Official music video for \"VCR\" by Ash Stu.",
+      "description": "Video for \"VCR\" by Ash Stu.",
       "thumbnailUrl": "https://ashstu.art/Images/embedded/thumb-vcr.webp",
       "creator": { "@id": "https://ashstu.art/#artist" },
       "url": "https://youtu.be/QfRGP06VvE8",
@@ -124,7 +124,7 @@
       "@type": "VideoObject",
       "@id": "https://ashstu.art/#video-the-raven",
       "name": "The Helpful Raven",
-      "description": "Official music video for \"The Helpful Raven\" by Ash Stu.",
+      "description": "Video for \"The Helpful Raven\" by Ash Stu.",
       "thumbnailUrl": "https://ashstu.art/Images/embedded/thumb-the-raven.webp",
       "creator": { "@id": "https://ashstu.art/#artist" },
       "url": "https://youtu.be/hhjA5XBQCOU",
@@ -135,7 +135,7 @@
       "@type": "VideoObject",
       "@id": "https://ashstu.art/#video-the-cloud-for-the-desert",
       "name": "The Cloud for the Desert",
-      "description": "Official music video for \"The Cloud for the Desert\" by Ash Stu.",
+      "description": "Video for \"The Cloud for the Desert\" by Ash Stu.",
       "thumbnailUrl": "https://ashstu.art/Images/embedded/thumb-cloud-for-the-desert.webp",
       "creator": { "@id": "https://ashstu.art/#artist" },
       "url": "https://youtu.be/hyWst3-CvFo",
@@ -146,7 +146,7 @@
       "@type": "VideoObject",
       "@id": "https://ashstu.art/#video-why-have-eyes",
       "name": "Why Have Eyes",
-      "description": "Official music video for \"Why Have Eyes\" by Ash Stu.",
+      "description": "Video for \"Why Have Eyes\" by Ash Stu.",
       "thumbnailUrl": "https://ashstu.art/Images/embedded/thumb-why-have-eyes.webp",
       "creator": { "@id": "https://ashstu.art/#artist" },
       "url": "https://youtu.be/YB-GkZ3C-6U",
@@ -157,7 +157,7 @@
       "@type": "VideoObject",
       "@id": "https://ashstu.art/#video-brain-dead-corollary",
       "name": "Brain Dead Corollary",
-      "description": "Official music video for \"Brain Dead Corollary\" by Ash Stu.",
+      "description": "Video for \"Brain Dead Corollary\" by Ash Stu.",
       "thumbnailUrl": "https://ashstu.art/Images/embedded/thumb-brain-dead-corollary.webp",
       "creator": { "@id": "https://ashstu.art/#artist" },
       "url": "https://youtu.be/SU1zjY0_skg",
@@ -168,7 +168,7 @@
       "@type": "VideoObject",
       "@id": "https://ashstu.art/#video-theory-of-hope",
       "name": "Theory of Hope",
-      "description": "Official music video for \"Theory of Hope\" by Ash Stu.",
+      "description": "Video for \"Theory of Hope\" by Ash Stu.",
       "thumbnailUrl": "https://ashstu.art/Images/embedded/thumb-theory-of-hope.webp",
       "creator": { "@id": "https://ashstu.art/#artist" },
       "url": "https://youtu.be/twQA1tZK9GI",
@@ -372,7 +372,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <section class="section videos-section" id="videos" aria-labelledby="videos-h">
   <h2 class="section-h" id="videos-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg>Videos</h2>
   <div class="section-inner">
-    <div id="video-grid" class="video-grid" aria-label="Music videos by Ash Stu">
+    <div id="video-grid" class="video-grid" aria-label="Videos by Ash Stu">
     </div>
   </div>
 </section>
@@ -1923,7 +1923,7 @@ overlay.className = 'rel-play-overlay';
 // aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
 overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-(card.querySelector('.rel-info') || wrap).appendChild(overlay);   // the disc sits beside the title, off the cover
+var _rb = card.querySelector('.rel-btns'); if (_rb) _rb.insertBefore(overlay, _rb.firstChild); else wrap.appendChild(overlay);   // Play leads the card's row of buttons, off the cover
 _discCache[rIdx] = overlay.querySelector('svg');
 // (the disc is no longer inside the cover, so a press of the disc button itself - keyboard, screen reader, or a click
 // on its edge - plays here; a click on the round disc plays through its own handler below and stops there)
@@ -2072,7 +2072,7 @@ var land = function() { if (moved) return; var c = document.querySelector('.rel-
 setTimeout(land, 450); setTimeout(land, 1100);
 }
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepAlbum, 300); });
-/* Video pages (/watch/<video>/, what a search for the video lands on, and the link to share) are this page with
+/* Video pages (/videos/<video>/, what a search for the video lands on, and the link to share) are this page with
    <meta name="deep-video"> naming the video: the page goes to the Videos section, rings that video's card and opens
    it in the viewer, ready to play (browsers do not let sound start by itself, so it waits for Play). */
 var _videoDone = false;
@@ -2082,7 +2082,7 @@ var m = document.querySelector('meta[name="deep-video"]');
 if (!m || !m.content || !VIDEO_LIST.length) return;
 var v = VIDEO_LIST.filter(function(x) { return x.title === m.content; })[0];
 if (!v) return;
-var card = document.querySelectorAll('.vid-card')[VIDEO_LIST.indexOf(v)];
+var card = document.querySelectorAll('.vid-card-wrap')[VIDEO_LIST.indexOf(v)];
 _videoDone = true;
 if (card) {
   card.classList.add('album-arrived');
@@ -2093,7 +2093,7 @@ if (card) {
 if (!_lbOpen) openLightbox(v);
 }
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepVideo, 350); });
-/* Section pages (/press-kit/, /contact/, /music/, /music-videos/, /about/: an address of its own for each section,
+/* Section pages (/press-kit/, /contact/, /music/, /videos/, /about/: an address of its own for each section,
    to share and for search engines) are this page with <meta name="deep-section"> naming the section: the page goes
    there, as a "#music" link would. It lands once more after the page has settled (the quote above Videos grows by a
    line when its font arrives), unless the visitor has moved in the meantime. */
@@ -2430,6 +2430,7 @@ document.addEventListener('visibilitychange', function() { if (document.hidden) 
 function wireVideos() {
 const grid = document.getElementById('video-grid');
 if (!grid || !VIDEO_LIST.length) return;
+grid.querySelectorAll('.vid-play').forEach(btn => { const pv = VIDEO_LIST[parseInt(btn.dataset.videoIndex, 10)]; if (pv) btn.addEventListener('click', () => openLightbox(pv)); });   // (the Play button beside YouTube)
 grid.querySelectorAll('.vid-card').forEach(card => {
 const v = VIDEO_LIST[parseInt(card.dataset.videoIndex, 10)];
 if (!v) return;
@@ -2450,7 +2451,7 @@ wirePreview(card, v);
 }
 
 /* ── Dynamic content: releases/videos are fetched from JSON
-   (generated from Audio/, Videos/ by scripts/generate_content.py,
+   (generated from Audio/, Video Files/ by scripts/generate_content.py,
    auto-regenerated by the update-content GitHub Action) rather than
    hardcoded here, so adding/removing a project needs no code edit. ── */
 function tlToggle(rel, rIdx) {
@@ -2492,23 +2493,16 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Music video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
+? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
 : '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/
 // keyboard nav) - .vid-card wraps only the thumbnail (the "play"
 // target), .vid-info sits beside it as a plain sibling row.
 return '<div class="vid-card-wrap">' +
-'<button type="button" class="vid-card" aria-label="Play &quot;' + escHtml(v.title) + '&quot;" data-video-index="' + vIdx + '">' +
-'<span class="vid-thumb">' +
-thumbEl +
-'<span class="vid-play-overlay"><span class="vid-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></span></span>' +
-'</span>' +
-'</button>' +
-'<div class="vid-info">' +
-'<h3 class="vid-title">' + escHtml(v.title) + '</h3>' +
-ytBtn +
-'</div>' +
+'<div class="vid-info"><p class="rel-cat vid-cat">Video' + (v.year ? '<span class="rel-year"> · <time>' + escHtml(String(v.year)) + '</time></span>' : '') + '</p><h3 class="vid-title">' + escHtml(v.title) + '</h3></div>' +
+'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="' + vIdx + '"><span class="vid-thumb">' + thumbEl + '</span></button>' +
+'<div class="vid-btns"><button type="button" class="vid-yt vid-play" data-video-index="' + vIdx + '" aria-label="Play &quot;' + escHtml(v.title) + '&quot;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button>' + ytBtn + '</div>' +
 '</div>';
 }
 function renderFeatured(rel) {

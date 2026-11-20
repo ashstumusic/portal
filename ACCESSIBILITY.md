@@ -121,7 +121,7 @@ sizes and must stay at zero issues. It only catches about half of real problems:
   facts and a plain track list linking to each song's lyrics page) is hidden from sight at the owner's request but
   kept for screen readers and search engines; because it cannot be seen, its links are out of the Tab order. The
   skip link is "Skip to the album".
-- `/watch/<video>/` is the same idea for a video: the page opens that video in the viewer (focus goes into the
+- `/videos/<video>/` is the same idea for a video: the page opens that video in the viewer (focus goes into the
   viewer, as for any opening of it) and rings its card; closing the viewer returns focus to that card. Its heading
   block and the video's words are in the HTML, out of sight, with their links out of the Tab order.
 - Search also looks through the videos' transcripts (their caption files, fetched the first time search is used).

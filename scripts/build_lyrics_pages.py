@@ -585,7 +585,7 @@ def main():
         vid = videos.get(s['title'].strip().lower())
         # A plain link to YouTube that works with scripts off; with scripts on, index-src.html opens the site's own
         # video viewer instead (data-song-video).
-        watch = (f'<p class="song-page-watch"><a class="vid-yt" href="/watch/{slugify(vid["title"])}/" data-song-video="{esc(vid["title"])}">'
+        watch = (f'<p class="song-page-watch"><a class="vid-yt" href="/videos/{slugify(vid["title"])}/" data-song-video="{esc(vid["title"])}">'
                  f'<span class="pt pt--youtube" aria-hidden="true"></span>Watch the video</a></p>\n') if vid and vid.get('youtube') else ''
         article = (f'<article class="song-page" id="song" aria-labelledby="song-h" lang="en">\n'
                    f'<header class="song-page-head">\n<p class="song-page-kicker">Lyrics</p>\n<h1 id="song-h">{esc(s["title"])}</h1>\n'
@@ -718,13 +718,14 @@ def main():
                 pass
 
     # ── Video pages ──────────────────────────────────────────────────────────────────────────────────────────────
-    # /watch/<video>/ is a video's own page: what a search for the video lands on, and a link to share. It is the
+    # /videos/<video>/ is a video's own page: what a search for the video lands on, and a link to share. It is the
     # whole site with <meta name="deep-video"> naming the video; the page script (openDeepVideo in index-src.html)
     # goes to the Videos section, rings that video and opens it in the viewer, ready to play. The video's facts and
     # its words (from its caption file) are in the page's own HTML under the page's only <h1>, out of sight like an
-    # album page's heading block. (Not /videos/: the files themselves live in /Videos/, and two folders that differ
-    # only by a capital letter cannot both exist on a Mac or Windows copy of the site.)
-    WATCH = os.path.join(ROOT, 'watch')
+    # album page's heading block. (The video files themselves live in /Video Files/, so /videos/ is free for the pages:
+    # a folder named Videos/ beside it could not exist on a Mac or Windows copy of the site.) The old addresses -
+    # /watch/<video>/ and /music-videos/ - are kept as small pages that send visitors on to the new ones.
+    WATCH = os.path.join(ROOT, 'videos')
     os.makedirs(WATCH, exist_ok=True)
     try:
         with open(os.path.join(ROOT, 'videos.json'), encoding='utf-8') as f:
@@ -750,14 +751,14 @@ def main():
         vslugs[v['title']] = vs
     for v in video_list:
         vs = vslugs[v['title']]
-        url = f'{SITE}/watch/{vs}/'
+        url = f'{SITE}/videos/{vs}/'
         words = vtt_lines(v['captions']) if v.get('captions') else []
         thumb = share_thumb(v['thumb'], vs) if v.get('thumb') else SITE + '/Images/social-card.jpg'
         secs = video_seconds(v['file'])
         sg = song_by_title.get(v['title'].strip().lower())
         base = home_nodes.get(v['title'].strip().lower(), {})
         title = f"{v['title']} | Video by {ARTIST}"
-        description = f"Watch “{v['title']}”, a music video by {ARTIST} ({ARTIST_FULL})" + (f". Begins: “{words[0]}”" if words else '.')
+        description = f"Watch “{v['title']}”, a video by {ARTIST} ({ARTIST_FULL})" + (f". Begins: “{words[0]}”" if words else '.')
         if len(description) > 160:
             description = description[:159].rsplit(' ', 1)[0].rstrip(' ,.;:“') + '…'
         digest = hashlib.sha256(('video layout 1' + v['title'] + (v.get('youtube') or '') + v['file'] + '\n'.join(words)
@@ -767,14 +768,14 @@ def main():
         modified = old_date if (old_hash == digest and old_date) else TODAY
         others = [o for o in video_list if o is not v]
         more = ('<nav class="song-page-nav" aria-label="More videos">'
-                + ''.join(f'<a href="/watch/{vslugs[o["title"]]}/">{esc(o["title"])}</a>' for o in others) + '</nav>\n') if others else ''
+                + ''.join(f'<a href="/videos/{vslugs[o["title"]]}/">{esc(o["title"])}</a>' for o in others) + '</nav>\n') if others else ''
         links = []
         if sg: links.append(f'<a href="/lyrics/{sg["slug"]}/">Lyrics</a>')
         if v.get('youtube'): links.append(f'<a href="{esc(v["youtube"])}" rel="noopener">YouTube</a>')
         mins = f' · {secs // 60}:{secs % 60:02d}' if secs else ''
         article = (f'<article class="song-page album-page video-page" id="video" aria-labelledby="video-h" lang="en">\n'
                    f'<header class="song-page-head">\n<p class="song-page-kicker">Video</p>\n<h1 id="video-h">{esc(v["title"])}</h1>\n'
-                   f'<p class="song-page-by">Music video by <a href="/">{ARTIST}</a>{mins}'
+                   f'<p class="song-page-by">Video by <a href="/">{ARTIST}</a>{mins}'
                    f'{" · " + " · ".join(links) if links else ""}</p>\n</header>\n'
                    + (f'<div class="song-page-lyrics" id="video-words">\n<h2 class="sr-only">{esc(v["title"])}: words</h2>\n<p>'
                       + '<br>\n'.join(esc(w) for w in words) + '</p>\n</div>\n' if words else '')
@@ -782,7 +783,7 @@ def main():
         article = article.replace('<a href=', '<a tabindex="-1" href=')   # (out of sight, so out of the Tab order: see the album pages)
         vid_id = url + '#video'
         node = {'@type': 'VideoObject', '@id': vid_id, 'name': v['title'],
-                'description': base.get('description') or f'Official music video for "{v["title"]}" by {ARTIST}.',
+                'description': base.get('description') or f'Video for "{v["title"]}" by {ARTIST}.',
                 'thumbnailUrl': thumb, 'contentUrl': SITE + '/' + urllib.parse.quote(v['file']), 'url': url, 'inLanguage': 'en',
                 'creator': {'@id': f'{SITE}/#artist'}, 'isFamilyFriendly': True,
                 **({'uploadDate': base['uploadDate']} if base.get('uploadDate') else {}),
@@ -825,13 +826,12 @@ def main():
                 pass
 
     # ── Section pages ────────────────────────────────────────────────────────────────────────────────────────────
-    # /press-kit/, /contact/, /music/, /music-videos/ and /about/ are the site opened at one of its sections: an
+    # /press-kit/, /contact/, /music/, /videos/ and /about/ are the site opened at one of its sections: an
     # address of its own for each (a "#music" ending is not an address a search engine lists), to share and to index.
     # Each is the whole site with <meta name="deep-section"> naming the section's id; the page script
     # (openDeepSection in index-src.html) goes there. Its heading and a line about it are in the page's own HTML under
-    # the page's only <h1>, out of sight like an album page's. (The videos section is /music-videos/, not /videos/:
-    # the video files live in /Videos/, and two folders differing only by a capital cannot both exist on a Mac or
-    # Windows copy of the site.)
+    # the page's only <h1>, out of sight like an album page's. (The videos section is /videos/; the video files live in
+    # /Video Files/.)
     kit_mb = ''
     try:
         kit_mb = f' (ZIP file, {round(os.path.getsize(os.path.join(ROOT, "ash-stu-press-kit.zip")) / 1048576)} MB)'
@@ -851,9 +851,9 @@ def main():
         ('music', 'music', 'Music', 'CollectionPage',
          f'Music by {ARTIST}: the albums {_join(album_names)}. Listen on the site, read the lyrics and download each album.',
          [f'<a href="/albums/{album_slugs[n]}/">{esc(n)}</a>' for n in album_names if n in album_slugs]),
-        ('music-videos', 'videos', 'Videos', 'CollectionPage',
-         f'Music videos by {ARTIST}: {_join(video_names)}.',
-         [f'<a href="/watch/{vslugs[n]}/">{esc(n)}</a>' for n in video_names if n in vslugs]),
+        ('videos', 'videos', 'Videos', 'CollectionPage',
+         f'Videos by {ARTIST}: {_join(video_names)}.',
+         [f'<a href="/videos/{vslugs[n]}/">{esc(n)}</a>' for n in video_names if n in vslugs]),
         ('about', 'about', 'About', 'AboutPage',
          f'About {ARTIST}: outsider singer-songwriter from Guthrie, Oklahoma, formerly known as {ARTIST_FULL}.',
          []),
@@ -896,6 +896,25 @@ def main():
         with open(path, 'w', encoding='utf-8') as f:
             f.write(html)
         sections_written.append((url, modified, name))
+
+    # ── Old addresses ────────────────────────────────────────────────────────────────────────────────────────────
+    # Videos used to be at /watch/<video>/ and their section at /music-videos/. Links to those are out in the world,
+    # so each old address is a small page that sends the visitor straight on to the new one (and tells search engines
+    # where it went: canonical link, noindex).
+    def _redirect(folder, to):
+        to_url = SITE + to
+        html = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
+                f'<title>Moved: {esc(to_url)}</title>\n<meta name="robots" content="noindex">\n'
+                f'<link rel="canonical" href="{esc(to_url)}">\n<meta http-equiv="refresh" content="0; url={esc(to)}">\n'
+                f'<script>location.replace({json.dumps(to)} + location.search + location.hash)</script>\n'
+                f'</head><body><p>This page has moved to <a href="{esc(to)}">{esc(to_url)}</a>.</p></body></html>\n')
+        d = os.path.join(ROOT, folder)
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(html)
+    _redirect('music-videos', '/videos/')
+    for t, vs in vslugs.items():
+        _redirect(os.path.join('watch', vs), f'/videos/{vs}/')
 
     # Index of every song, grouped by release.
     groups = []
@@ -1027,7 +1046,7 @@ def main():
     with open(os.path.join(ROOT, 'llms.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
-    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; video pages: {len(videos_written)} -> watch/; section pages: {len(sections_written)}; sitemap, robots.txt and llms.txt updated')
+    print(f'Lyrics pages: {len(written)} songs -> lyrics/ (no public index page); album pages: {len(albums_written)} -> albums/; video pages: {len(videos_written)} -> videos/; section pages: {len(sections_written)}; sitemap, robots.txt and llms.txt updated')
 
 
 if __name__ == '__main__':

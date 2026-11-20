@@ -129,18 +129,20 @@ def render_video_card(v, v_idx):
                    f'<span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>')
     if v.get('thumb'):
         srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1024w" sizes="(max-width: 600px) 92vw, 400px"' if v.get('thumb2x') else '')
-        thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Music video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
+        thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
+    # Laid out like a release card: the type and year and the title on the left with a row of buttons (Play, then
+    # YouTube) under them, and the thumbnail on the right with nothing over it. The thumbnail still plays the video
+    # when clicked, but the Play button is the control for keyboards and screen readers (the thumbnail is skipped).
+    kicker = 'Video' + (f'<span class="rel-year"> · <time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
-            f'<button type="button" class="vid-card" '
-            f'aria-label="Play &quot;{esc(v["title"])}&quot;" data-video-index="{v_idx}">'
-            f'<span class="vid-thumb">{thumb_el}'
-            f'<span class="vid-play-overlay"><span class="vid-play-circle">'
-            f'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
-            f'<polygon points="5,3 19,12 5,21"/></svg></span></span></span>'
+            f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3></div>'
+            f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'
+            f'<span class="vid-thumb">{thumb_el}</span>'
             f'</button>'
-            f'<div class="vid-info"><h3 class="vid-title">{esc(v["title"])}</h3>{yt_btn}</div>'
+            f'<div class="vid-btns"><button type="button" class="vid-yt vid-play" data-video-index="{v_idx}" aria-label="Play &quot;{esc(v["title"])}&quot;">'
+            f'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button>{yt_btn}</div>'
             f'</div>')
 
 
