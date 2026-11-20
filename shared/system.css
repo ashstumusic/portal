@@ -4292,3 +4292,9 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (forced-colors: active) {
   :root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: CanvasText; forced-color-adjust: none; }
 }
+
+/* About: the description steps down to match the smaller name above it
+   (it was 22px beside a 180px name; the name is now at most 96px). */
+:root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 19px !important; line-height: 1.45 !important; }
+@media (max-width: 1023px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 18px !important; } }
+@media (max-width: 767px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: var(--body-lh) !important; } }
