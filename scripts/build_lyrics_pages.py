@@ -194,8 +194,10 @@ ARTIST_NODE = {'@type': ['MusicGroup', 'Person'], '@id': f'{SITE}/#artist', 'nam
 HOME_HTML = None
 def _neighbours(songs, s):
     i = songs.index(s); out = []
-    if i > 0: out.append(f'<a href="/lyrics/{songs[i-1]["slug"]}/" rel="prev">Previous: {esc(songs[i-1]["title"])} lyrics</a>')
-    if i < len(songs) - 1: out.append(f'<a href="/lyrics/{songs[i+1]["slug"]}/" rel="next">Next: {esc(songs[i+1]["title"])} lyrics</a>')
+    # (each link shows an arrow as well as its words: every control has a picture and a word)
+    arrow = lambda d: f'<svg class="spn-arrow" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{d}"/></svg>'
+    if i > 0: out.append(f'<a href="/lyrics/{songs[i-1]["slug"]}/" rel="prev">{arrow("M19 12H5M11 6l-6 6 6 6")}Previous: {esc(songs[i-1]["title"])} lyrics</a>')
+    if i < len(songs) - 1: out.append(f'<a href="/lyrics/{songs[i+1]["slug"]}/" rel="next">Next: {esc(songs[i+1]["title"])} lyrics{arrow("M5 12h14M13 6l6 6-6 6")}</a>')
     return '<nav class="song-page-nav" aria-label="More lyrics">' + ''.join(out) + '</nav>\n' if out else ''
 
 
@@ -270,7 +272,7 @@ def clone_page(title, description, url, art, alt, jsonld, extra, deep_key, song_
     h = sub(r'(<meta charset="[^"]*"\s*/?>)', None, h) if False else re.sub(r'(<meta charset="[^"]*"\s*/?>)', lambda m: m.group(1) + '\n' + head_add, h, count=1)
     # On a song's page the skip link goes to the song itself (the page is the whole site; the song is what was asked for).
     if article:
-        h = h.replace('<a href="#main" class="skip">Skip to content</a>', f'<a href="{skip[0]}" class="skip">{skip[1]}</a>', 1)
+        h = re.sub(r'<a href="#main" class="skip">(.*?)Skip to content</a>', lambda m: f'<a href="{skip[0]}" class="skip">{m.group(1)}{skip[1]}</a>', h, count=1)
     # the song's lyrics already open in the static HTML
     if song_title:
         h = h.replace(f'{esc(song_title)}<details class="rel-lyrics-static">', f'{esc(song_title)}<details class="rel-lyrics-static" open>', 1)

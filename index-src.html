@@ -203,7 +203,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="hb1" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="hb2" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="hb3" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="hb4" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="37" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
 <!-- Scripts off: hide the controls that need them (menu, search, settings, players) and say so in readable text. The section links, streaming links, YouTube links, lyric pages and Press Kit download all still work. -->
 <noscript><style>:root .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),:root .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),:root .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),:root .k-si--bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),.nav-drawer,.vid-lightbox,#player-bar,.fab-music{display:none!important}.video-grid::after,.releases-grid::after{content:'Turn on JavaScript to play the music and videos on this page. The links to Apple Music, Spotify and YouTube work without it.';color:rgb(242 244 246 / .86);font-size:.95rem;line-height:1.5;display:block;grid-column:1/-1;padding:2rem 1rem;text-align:center}</style></noscript>
-<a href="#main" class="skip">Skip to content</a>
+<a href="#main" class="skip"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Skip to content</a>
 <header>
 <nav class="nav" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="Home, Ash Stu, back to top">
@@ -535,7 +535,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       </div>
       <button type="button" class="lb-arrow lb-arrow-next" id="lb-next" aria-label="Next video" title="Next video"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
     </div>
-    <div class="lb-dots" id="lb-dots" aria-hidden="true"></div>
+    <div class="lb-dots" id="lb-dots" role="group" aria-label="Choose a video"></div>
   </div>
 </div>
 
@@ -2149,6 +2149,7 @@ row.dataset.track = tIdx;
 row.setAttribute('aria-label', 'Play ' + String(t.title).replace(/<[^>]*>/g, '') + ', track ' + r.num);
 row.innerHTML =
 '<span class="rel-track-num" aria-hidden="true">' + r.num + '</span>' +
+'<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
 '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
 '<span class="rel-track-title">' + escHtml(t.title) + '</span>' +
 '';
@@ -2646,12 +2647,12 @@ if (dotsEl) {
 if (!dotsEl.children.length) {
 VIDEO_LIST.forEach((_,i) => {
 const d = document.createElement('button');
-d.className = 'lb-dot'; d.setAttribute('aria-label', 'Go to video '+(i+1));
+d.type = 'button'; d.className = 'lb-dot'; d.setAttribute('aria-label', 'Video '+(i+1)+': '+VIDEO_LIST[i].title);
 d.onclick = () => { _lbIdx = i; _lbShow(i); };
 dotsEl.appendChild(d);
 });
 }
-Array.from(dotsEl.children).forEach((d,i) => d.classList.toggle('active', i===idx));
+Array.from(dotsEl.children).forEach((d,i) => { d.classList.toggle('active', i===idx); if (i===idx) d.setAttribute('aria-current','true'); else d.removeAttribute('aria-current'); });
 }
 document.getElementById('lb-prev').disabled = (idx === 0);
 document.getElementById('lb-next').disabled = (idx === VIDEO_LIST.length - 1);

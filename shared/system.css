@@ -4242,3 +4242,27 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .rel-card.tracks-open .rel-tl-toggle .rel-tl-word--show:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none; }
 :root.psy .rel-card.tracks-open .rel-tl-toggle .rel-tl-word--hide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline; }
 @media (forced-colors: active) { :root.psy .rel-tl-toggle .rel-tl-more:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border: 1px solid currentColor; background: none; } }
+
+/* Playable track rows show a play arrow at rest, not only on hover, so the
+   row has a picture as well as its title, and playable songs stand apart
+   from the greyed "not released yet" ones by shape, not only by colour.
+   The number stays put on hover (the arrow is already there). */
+:root.psy .rel-track .rel-track-play:not(#\#):not(#\#):not(#\#):not(#\#) { flex: none; width: 9px; height: 11px; margin: 0 2px 0 0; color: rgb(240 245 246 / .75); }
+:root.psy .rel-track:is(:hover, :focus-visible) .rel-track-play:not(#\#):not(#\#):not(#\#):not(#\#) { color: #111; }
+:root.psy .rel-track.active .rel-track-play:not(#\#):not(#\#):not(#\#):not(#\#) { display: none; }
+:root.psy .rel-track:is(:hover, :focus-visible) .rel-track-num:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 15px !important; display: block !important; align-self: auto !important; }
+:root.psy .rel-track:is(:hover, :focus-visible) .rel-track-num:not(#\#):not(#\#):not(#\#):not(#\#)::before { content: none !important; }
+@media (forced-colors: active) { :root.psy .rel-track .rel-track-play:not(#\#):not(#\#):not(#\#):not(#\#) { color: ButtonText; } }
+
+/* Video viewer number buttons: a labelled group (they were inside an
+   aria-hidden box while still taking keyboard focus), and 40px targets. */
+:root.psy .lb-dots:not(#\#):not(#\#):not(#\#):not(#\#) { gap: 6px !important; }
+:root.psy .lb-dot:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .lb-dot.active:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { width: 40px !important; height: 40px !important; min-width: 40px !important; }
+:root.psy .lb-dot > .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 14px !important; }
+:root.psy .lb-dot:is(:hover, :focus-visible):not(.active):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold) !important; color: #111 !important; }
+:root.psy .lb-dot:focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid #fff !important; outline-offset: 2px !important; }
+/* Unreleased songs can't be played, so pointing at one doesn't light it gold
+   like a button (it did, with faint grey words on the gold). */
+:root.psy .rel-track.rel-track--upcoming:hover:not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(240 245 246 / .035) !important; outline: none !important; box-shadow: none !important; cursor: default; }
+:root.psy .song-page-nav a .spn-arrow:not(#\#) { flex: none; width: 16px; height: 16px; margin-inline: 0 6px; }
+:root.psy .song-page-nav a[rel="next"] .spn-arrow:not(#\#) { margin-inline: 6px 0; }

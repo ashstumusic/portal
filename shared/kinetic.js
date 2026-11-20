@@ -892,7 +892,7 @@
       [/^listen on (.+?)(?:: | \(|$)/i, (m) => m[1]], [/^watch on (.+?)(?:: | \(|$)/i, (m) => m[1]],
       [/^(?:show|hide) lyrics/i, 'Lyrics'], [/^lyrics/i, 'Lyrics'], [/^download/i, 'Download'],
       [/^pause/i, 'Pause'], [/^play/i, 'Play'], [/^previous/i, 'Previous'], [/^next/i, 'Next'], [/^close/i, 'Close'],
-      [/^go to video (\d+)/i, (m) => m[1]], [/^unmute/i, 'Unmute'], [/^mute/i, 'Mute'], [/^shuffle/i, 'Shuffle'],
+      [/^(?:go to )?video (\d+)/i, (m) => m[1]], [/^unmute/i, 'Unmute'], [/^mute/i, 'Mute'], [/^shuffle/i, 'Shuffle'],
       [/^repeat/i, 'Repeat'], [/^settings/i, 'Settings'], [/^search/i, 'Search'],
     ];
     const wordFor = (b) => {
