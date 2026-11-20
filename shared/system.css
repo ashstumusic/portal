@@ -2566,16 +2566,30 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#) { border: 0 !important; }
 :root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 !important; overflow: visible !important; }
 
-/* ── The name, in spraypaint ─────────────────────────────────────────
-   "Ash Stu" (hero and About) keeps its flowing gradient but looks sprayed on a wall: soft, slightly ragged edges
-   and a fine speckle of overspray around the letters in the same colours (the SVG filter #spray at the top of the
-   page's body). The toolbar's small name stays clean: spray at that size only blurs it. (Was coloured pencil.) */
-:root.psy .hero-split .hero-name:not(#\#):not(#\#) { filter: url(#spray) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) !important; }
-:root.psy #about .bio-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: url(#spray) !important; }
-@media (forced-colors: active) { :root.psy .hero-split .hero-name:not(#\#):not(#\#), :root.psy #about .bio-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
-/* The colours move on one step per drawing (54 drawings to the 9-second cycle), like the rest of the boiling page. */
+/* ── The name, in coloured pencil ─────────────────────────────────────
+   "Ash Stu" (hero, toolbar, About) keeps its flowing gradient but is shaded
+   the way a sketch is: a great many fine, short pencil strokes laid over
+   one another, with the paper's grain showing through. The strokes are a mask over the
+   lettering (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py),
+   sized in ems so they scale with the name. */
+:root.psy :is(.hero-name, .bio-name) {
+  -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
+  -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
+}
+@media (forced-colors: active) { :root.psy :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; } }
+/* The shading image did not load (set from script): an unshaded name beats an invisible one. */
+:root.psy.no-hatch :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; }
+/* Stop motion: the name is "redrawn" six times a second. The colours no longer glide - they move on one step per
+   drawing (54 drawings to the 9-second cycle) - and each drawing has different pencil strokes (the shading sheet jumps
+   to a new place every step, four placements in turn), the way a hand-coloured animation boils from frame to frame. */
+@keyframes pencil-boil {
+  0% { -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
+  25% { -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
+  50% { -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
+  75% { -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
+}
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite !important; }
+  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
   /* The line under the name in About flows through the same colours. It was the one thing on the page still gliding
      (repainted 60 times a second, for as long as About was on screen): it now moves on the same six drawings a second
      as the name beside it, which is also about 40% less work for a phone sitting on that section. */
@@ -3404,12 +3418,14 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 
 /* Section headers boil like the name in the toolbar: the sketched strokes of "Music", "Videos"... are redrawn six
    times a second, each drawing wobbling the lines a little differently (four wobbles in turn, the four SVG filters
-   #hb1-#hb4 at the top of the page), the way a hand-drawn title shivers from frame to frame. Same beat as the
+   #hb1-#hb4 at the top of the page), the way a hand-drawn title shivers from frame to frame. The wobble is broad
+   and smooth (one layer of noise, softened by a hair of blur so the edges don't stair-step), and each drawing also
+   sits a fraction of a pixel off and a fraction of a degree askew, like flipbook pages that never quite line up. Same beat as the
    name's pencil-boil. It stops with Effects off and with reduced motion, rests while a header is off screen, and
    is one of the stepped animations kinetic.js moves on by its slow clock. Where the browser can do it, the header
    still slides up into place as it arrives (k-arrive), alongside. */
 /* (each step keeps the header's red offset, which is itself a filter: psyche.css, .section-h) */
-@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); } }
+@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); translate: 0 0; rotate: 0deg; } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); translate: .6px -.4px; rotate: -.35deg; } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); translate: -.5px .5px; rotate: .3deg; } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)); translate: .3px .6px; rotate: -.2deg; } }
 @media (prefers-reduced-motion: no-preference) {
   :root.psy:not(.psy-calm) .section-h:not(#\#):not(#\#):not(#\#):not(#\#) { animation: head-boil .6667s step-end infinite; }
   @supports (animation-timeline: view()) {
@@ -4290,7 +4306,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    white letters: their sketch strokes have gaps, and a light shadow (gold was
    tried) shows through them and blurs the letters. */
 :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: drop-shadow(3px 3px 0 rgb(140 40 110)); }
-@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(140 40 110)); } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(140 40 110)); } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(140 40 110)); } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(140 40 110)); } }
+@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: 0 0; rotate: 0deg; } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: .6px -.4px; rotate: -.35deg; } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: -.5px .5px; rotate: .3deg; } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: .3px .6px; rotate: -.2deg; } }
 @media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; } }
 
 /* The quote's words carry a faint tint of the name's flowing gradient: mostly

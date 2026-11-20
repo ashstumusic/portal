@@ -185,7 +185,7 @@
 <link rel="manifest" href="site.webmanifest"/>
 
 
-<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search")})(document.documentElement)</script>
+<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};h.src="/Images/pencil-hatch.webp"})(document.documentElement)</script>
 <link rel="stylesheet" href="styles.css?v=76">
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
 <link rel="preload" as="image" href="Images/embedded/featured-only-a-baby-vol-2.webp" fetchpriority="high">
@@ -198,21 +198,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <script data-goatcounter="https://ashstu.goatcounter.com/count" defer src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
-<svg class="spray-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><!-- The name in spraypaint (styles: shared/system.css, "The name, in spraypaint") -->
-<filter id="spray" x="-12%" y="-35%" width="124%" height="170%" color-interpolation-filters="sRGB">
-<feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="1" seed="4" result="grain"/>
-<feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  10 0 0 0 -4.6" result="dots"/>
-<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="mist"/>
-<feComposite in="mist" in2="dots" operator="in" result="speck"/>
-<feComponentTransfer in="speck" result="overspray"><feFuncA type="linear" slope="1.7"/></feComponentTransfer>
-<feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="2" seed="9" result="wobble"/>
-<feDisplacementMap in="SourceGraphic" in2="wobble" scale="3" xChannelSelector="R" yChannelSelector="G" result="rough"/>
-<feGaussianBlur in="rough" stdDeviation=".7" result="core"/>
-<feMerge><feMergeNode in="overspray"/><feMergeNode in="core"/></feMerge>
-</filter></svg>
 <!-- The section headers' pencil "boil": four slightly different wobbles of the same drawing, shown in turn (see head-boil in shared/system.css). Decorative; nothing here is content. -->
 <!-- The four header-jitter filters. Their drawing area reaches well above and below the header's own box: where a phone enlarges text (system font size) the letters stand taller than the box, and a tight area sliced their tops off. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="hb1" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="hb2" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="hb3" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="hb4" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".05 .07" numOctaves="2" seed="37" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="hb1" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter><filter id="hb2" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter><filter id="hb3" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter><filter id="hb4" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="37" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter></defs></svg>
 <!-- Scripts off: hide the controls that need them (menu, search, settings, players) and say so in readable text. The section links, streaming links, YouTube links, lyric pages and Press Kit download all still work. -->
 <noscript><style>:root .nav-toggle:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),:root .k-search-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),:root .k-settings-btn:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),:root .k-si--bar:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),.nav-drawer,.vid-lightbox,#player-bar,.fab-music{display:none!important}.video-grid::after,.releases-grid::after{content:'Turn on JavaScript to play the music and videos on this page. The links to Apple Music, Spotify and YouTube work without it.';color:rgb(242 244 246 / .86);font-size:.95rem;line-height:1.5;display:block;grid-column:1/-1;padding:2rem 1rem;text-align:center}</style></noscript>
 <a href="#main" class="skip"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Skip to content</a>
@@ -2010,6 +1998,9 @@ var _deepDone = false, _deepAt = 0;
   var go = function() { ((document.fonts && document.fonts.ready) || Promise.resolve()).then(function() { setTimeout(land, 1700); }); };
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 })();
+// The name is drawn through a pencil-shading image used as a mask. If that one image fails to load, the browser
+// masks the name to nothing and the first screen has no name at all: show it unshaded instead.
+/* (the name's pencil shading: the page starts with .no-hatch - the name in plain colour - and the first script drops it once the shading image has arrived, so on a slow connection the name is never invisible while the image loads; if it never arrives, the name simply stays plain) */
 function openDeepSong() {
 if (_deepDone) return;
 var m = document.querySelector('meta[name="deep-song"]');
