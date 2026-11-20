@@ -4576,3 +4576,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    request), upright, at the labels' bold weight. The quote still sizes itself so its longest line fills the width
    (the script beside it refits once this face has loaded). The name under it keeps its own face. */
 :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-style: normal !important; font-weight: 700 !important; font-synthesis: none; }
+
+/* The quote's chalk marks sit where quotation marks normally go (owner's request): inline, the opening one right
+   before the first word and the closing one right after the last, at the height of the letters' tops, instead of
+   out past the quote's corners. Each drawing sits in the middle of its square, so the squares tuck in a little at
+   the sides to keep the marks close to the words. (The quote's fitting script measures them with the lines.) */
+:root.psy .disc-quote :is(.dq-mark--open, .dq-mark--close):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  position: relative; display: inline-block; inset: auto; width: 1.15em; height: 1.15em; vertical-align: -.12em;
+}
+:root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 -.12em 0 -.3em; }
+:root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 -.3em 0 -.12em; }
