@@ -3604,18 +3604,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    order is black-and-white shots, the name and text, then the portrait (set in the phone block above). */
 :root.psy .bio-card-media > .bio-media-main:not(#\#) { order: 2; }
 
-/* ── TV static behind the video viewer (owner's request) ──
-   When a video is open in the viewer (not full screen), the dark area round it is an untuned television: the noise
-   tile used for the photo grain, laid faintly over the black and jumped to a new position several times a second.
-   It is one oversized layer moved by transform in steps, so nothing is repainted, and kinetic.js drives it on its
-   slow clock like the other stepped loops. With Effects off or reduced motion the static is a still frame. It is
-   decorative, sits under the title and buttons, and stays faint enough that their contrast is unchanged in practice
-   (white text on at most a dark grey: over 12:1). Hidden in forced colours. */
-.vid-lightbox::before { content: ""; position: fixed; inset: -160px; z-index: -1; pointer-events: none; background: url("../Images/grain.webp") 0 0 / 160px 160px; opacity: .17; mix-blend-mode: screen; }
-.vid-lightbox:not(.open)::before { display: none; }
-@keyframes tv-static { 0% { transform: translate(0, 0); } 12.5% { transform: translate(-71px, 43px); } 25% { transform: translate(37px, -118px); } 37.5% { transform: translate(-129px, -56px); } 50% { transform: translate(88px, 97px); } 62.5% { transform: translate(-23px, -149px); } 75% { transform: translate(141px, 19px); } 87.5% { transform: translate(-97px, 131px); } }
-@media (prefers-reduced-motion: no-preference) { :root:not(.psy-calm) .vid-lightbox.open::before { animation: tv-static .8s step-end infinite; } }
-@media (forced-colors: active) { .vid-lightbox::before { display: none; } }
+/* ── Video viewer background ──
+   The dark area round an open video is the music player's own glass (the same charcoal fill and blur as the
+   player bar), so the two read as one family. (A TV-static background was tried and dropped at the owner's
+   request.) Solid in reduced transparency; the system colour in forced colours. */
+:root .vid-lightbox:not(#\#):not(#\#):not(#\#) { background: rgb(20 22 28 / .82) !important; -webkit-backdrop-filter: blur(28px) saturate(1.4); backdrop-filter: blur(28px) saturate(1.4); }
+@media (prefers-reduced-transparency: reduce) { :root .vid-lightbox:not(#\#):not(#\#):not(#\#) { background: rgb(20 22 28) !important; -webkit-backdrop-filter: none; backdrop-filter: none; } }
+@media (forced-colors: active) { :root .vid-lightbox:not(#\#):not(#\#):not(#\#) { background: Canvas !important; } }
 
 /* ── Section headers are never cut off by their own section ──
    The Music and About sections used to clip everything outside their box (overflow: hidden), and the header sits only
