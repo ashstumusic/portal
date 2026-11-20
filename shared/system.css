@@ -4183,3 +4183,10 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .soon-ico:not(#\#) { flex: none; width: 1.15em; height: 1.15em; color: inherit; stroke: currentColor; vertical-align: -.2em; }
 :root.psy .rel-btn--label:not(#\#) .soon-ico { color: #000; }
 @media (forced-colors: active) { :root.psy .soon-ico:not(#\#) { stroke: CanvasText; } }
+
+/* Album card buttons never clip. Each one is at least as wide as its own picture and word; when the three don't fit
+   on one line (Apple Music + Spotify + Download need about 385px, and a card can be 350px), the row wraps and
+   Download takes the full width underneath, instead of "Apple Music" being cut to "Apple Musi" with half a logo. */
+:root.psy .rel-card .rel-btns:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-wrap: wrap !important; row-gap: 8px !important; height: auto !important; }
+:root.psy .rel-card .rel-btns > .rel-btn:not(.rel-btn--label):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-width: max-content !important; }
+:root.psy .rel-card .rel-btns > .rel-dl:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: 1 0 auto !important; width: auto !important; }   /* outranks the 18-deep rule that pins it to its content */
