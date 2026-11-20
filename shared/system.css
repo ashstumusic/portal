@@ -4298,3 +4298,8 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 19px !important; line-height: 1.45 !important; }
 @media (max-width: 1023px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 18px !important; } }
 @media (max-width: 767px) { :root.psy .bio-card-text .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#) { font-size: 17px !important; line-height: var(--body-lh) !important; } }
+
+/* Video cards: a title sitting beside its YouTube button keeps 16px clear of
+   it (it was 8px, so a long title like "The Cloud for the Desert" ran right
+   up to the button). Stacked layouts keep their 8px. */
+:root.psy .vid-card-wrap .vid-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { column-gap: 16px; }
