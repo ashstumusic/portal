@@ -4224,3 +4224,21 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .nav.scrolled.pf-left:has(.nav-logo.name-off) .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { display: none !important; }
 /* Tablet widths (768-1179px) never show the toolbar name, so there is nothing for the divider to separate there either. */
 @media (min-width: 768px) and (max-width: 1179px) { :root.psy .nav.scrolled.pf-left .nav-platforms:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { display: none !important; } }
+
+/* Tracks button: the arrow carries a word ("Show" / "Hide") so it never
+   reads as a picture-only button. The pill moves from the arrow to the
+   arrow + word together; the word follows the open state. */
+:root.psy .rel-tl-toggle .rel-tl-more:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  flex: none; display: inline-flex; align-items: center; gap: 4px;
+  height: 32px; padding: 0 12px 0 8px; border-radius: var(--btn-r-sm); corner-shape: squircle;
+  background: rgb(240 245 246 / .12); box-shadow: inset 0 0 0 1px rgb(240 245 246 / .22);
+  font: 600 14px/1 var(--font-ui); letter-spacing: 0; color: inherit;
+}
+:root.psy .rel-tl-toggle:is(:hover, :focus-visible) .rel-tl-more:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(0 0 0 / .12); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .3); }
+:root.psy .rel-tl-toggle .rel-tl-more .rel-tl-chev:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  width: 16px; height: 16px; padding: 0; margin: 0; background: none !important; box-shadow: none !important; border-radius: 0 !important; opacity: 1;
+}
+:root.psy .rel-tl-toggle .rel-tl-word--hide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#),
+:root.psy .rel-card.tracks-open .rel-tl-toggle .rel-tl-word--show:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none; }
+:root.psy .rel-card.tracks-open .rel-tl-toggle .rel-tl-word--hide:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline; }
+@media (forced-colors: active) { :root.psy .rel-tl-toggle .rel-tl-more:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border: 1px solid currentColor; background: none; } }
