@@ -4469,7 +4469,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: 0 0; rotate: 0deg; } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: .6px -.4px; rotate: -.35deg; } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: -.5px .5px; rotate: .3deg; } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(140 40 110)); translate: .3px .6px; rotate: -.2deg; } }
 @media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; } }
 
-/* The quote's words are plain orange (owner's request; the orange of the name's gradient), with no tint or
+/* The quote's words are plain orange, #FFA36B (owner's request; the orange of the name's gradient), with no tint or
    overlay over them. Plain in forced colours. */
 :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #FFA36B; -webkit-text-fill-color: #FFA36B; background: none; text-shadow: none; }
 @media (forced-colors: active) { :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: CanvasText; -webkit-text-fill-color: CanvasText; } }
@@ -4573,6 +4573,6 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 }
 
 /* The Woody Guthrie quote's words are set in the category labels' face (National Park, as in "ALBUM"; owner's
-   request), at the labels' bold weight, in italics (the face has none of its own, so the browser slants it). The quote still sizes itself so its longest line fills the width
+   request), upright, at the labels' bold weight. The quote still sizes itself so its longest line fills the width
    (the script beside it refits once this face has loaded). The name under it keeps its own face. */
-:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-style: italic !important; font-weight: 700 !important; font-synthesis: style; }
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font-family: 'Category', var(--font-ui) !important; font-style: normal !important; font-weight: 700 !important; font-synthesis: none; }
