@@ -3328,5 +3328,19 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
+<script>/* About in daylight (owner's request): as the About section comes up the screen, the page's space black fades to
+   white (it follows the scroll: 0 with About's top three-quarters of the way down the screen, white once it is
+   45% of the way down, or at the very bottom of the page), and the colour fog fades out with it. Halfway, the page
+   takes the class about-day, which darkens the stars and turns About's words to dark versions (styles: system.css)
+   so they read on the white. Scroll-linked, so it is the same with reduced motion; only inline styles on the body
+   and the fog are touched, at most once a frame. */
+(function(){var a=document.getElementById('about'),r=document.documentElement,b=document.body,f=document.querySelector('.psy-field');if(!a)return;
+var last=-1,q=0,D=[3,4,9];
+function upd(){q=0;var vh=innerHeight,t=a.getBoundingClientRect().top,end=innerHeight+scrollY>=r.scrollHeight-2;
+var m=end?1:Math.min(1,Math.max(0,(vh*.75-t)/(vh*.3)));m=Math.round(m*100)/100;if(m===last)return;last=m;
+if(m>0){b.style.backgroundColor='rgb('+D.map(function(c){return Math.round(c+(255-c)*m);}).join(' ')+')';}else b.style.backgroundColor='';
+if(f)f.style.opacity=m>0?String(.08*(1-m)):'';
+r.classList.toggle('about-day',m>=.5);}
+addEventListener('scroll',function(){if(!q){q=1;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd,{passive:true});upd();})();</script>
 </body>
 </html>
