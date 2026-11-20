@@ -2566,30 +2566,16 @@ html { overscroll-behavior-y: none; }
 :root.psy .bio-card-media:not(#\#):not(#\#):not(#\#):not(#\#) { border: 0 !important; }
 :root.psy .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#) { padding: 0 !important; overflow: visible !important; }
 
-/* ── The name, in coloured pencil ─────────────────────────────────────
-   "Ash Stu" (hero, toolbar, About) keeps its flowing gradient but is shaded
-   the way a sketch is: a great many fine, short pencil strokes laid over
-   one another, with the paper's grain showing through. The strokes are a mask over the
-   lettering (Images/pencil-hatch.webp, made by scripts/make_pencil_mask.py),
-   sized in ems so they scale with the name. */
-:root.psy :is(.hero-name, .bio-name) {
-  -webkit-mask-image: url(../Images/pencil-hatch.webp); mask-image: url(../Images/pencil-hatch.webp);
-  -webkit-mask-size: 3em 1.5em; mask-size: 3em 1.5em; -webkit-mask-repeat: repeat; mask-repeat: repeat; -webkit-mask-position: .3em .1em; mask-position: .3em .1em;
-}
-@media (forced-colors: active) { :root.psy :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; } }
-/* The shading image did not load (set from script): an unshaded name beats an invisible one. */
-:root.psy.no-hatch :is(.hero-name, .bio-name) { -webkit-mask-image: none !important; mask-image: none !important; }
-/* Stop motion: the name is "redrawn" six times a second. The colours no longer glide - they move on one step per
-   drawing (54 drawings to the 9-second cycle) - and each drawing has different pencil strokes (the shading sheet jumps
-   to a new place every step, four placements in turn), the way a hand-coloured animation boils from frame to frame. */
-@keyframes pencil-boil {
-  0% { -webkit-mask-position: .3em .1em; mask-position: .3em .1em; }
-  25% { -webkit-mask-position: 1.9em .85em; mask-position: 1.9em .85em; }
-  50% { -webkit-mask-position: 1.05em 1.3em; mask-position: 1.05em 1.3em; }
-  75% { -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
-}
+/* ── The name, in spraypaint ─────────────────────────────────────────
+   "Ash Stu" (hero and About) keeps its flowing gradient but looks sprayed on a wall: soft, slightly ragged edges
+   and a fine speckle of overspray around the letters in the same colours (the SVG filter #spray at the top of the
+   page's body). The toolbar's small name stays clean: spray at that size only blurs it. (Was coloured pencil.) */
+:root.psy .hero-split .hero-name:not(#\#):not(#\#) { filter: url(#spray) drop-shadow(3px 3px 0 rgb(223 43 44 / .55)) !important; }
+:root.psy #about .bio-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: url(#spray) !important; }
+@media (forced-colors: active) { :root.psy .hero-split .hero-name:not(#\#):not(#\#), :root.psy #about .bio-name:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; } }
+/* The colours move on one step per drawing (54 drawings to the 9-second cycle), like the rest of the boiling page. */
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil .6667s step-end infinite !important; }
+  :root.psy:not(.psy-calm) :is(.hero-name, .bio-name):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite !important; }
   /* The line under the name in About flows through the same colours. It was the one thing on the page still gliding
      (repainted 60 times a second, for as long as About was on screen): it now moves on the same six drawings a second
      as the name beside it, which is also about 40% less work for a phone sitting on that section. */
@@ -4380,22 +4366,24 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .section-h .section-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-block; width: .84em; height: .84em; margin: 0 .2em 0 0; vertical-align: -.1em; stroke-width: 2.5; stroke: currentColor; color: #fff; overflow: visible; }
 @media (forced-colors: active) { :root.psy .section-h .section-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: CanvasText; } }
 
-/* ── About in daylight ── (the page fades to white behind About: see the script at the end of index-src.html)
-   Once the page is past half way to white (about-day), the stars turn to deep versions of their colours and About's
-   words switch to dark ones so they keep their contrast on white: the heading in near-black ink (its plum shadow
-   stays), the description in charcoal, and the name, wavy line and tagline in a deep version of the name's
-   gradient (each colour at least 4.5:1 on white). Colour changes ease over 0.35s. */
-:root.psy .chalk-star { transition: opacity .45s linear, filter .35s var(--ease-ui); }
-:root.psy.about-day .chalk-star { filter: brightness(.42) saturate(1.6); }
-:root.psy #about :is(.section-h, .section-ico, .bio-desc):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transition: color .35s var(--ease-ui), -webkit-text-fill-color .35s var(--ease-ui); }
-:root.psy.about-day #about .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #17131c !important; -webkit-text-fill-color: #17131c !important; }
-:root.psy.about-day #about .section-h .section-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #17131c; }
-:root.psy.about-day #about .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #232027 !important; }
-:root.psy.about-day #about :is(.bio-name, .bio-tagline, .bio-stroke):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+/* ── About in daylight ── (owner's request) Only the About part of the page is white: the space black above it fades
+   to white over a soft band just above About, and About itself sits on white to the bottom of the page. The rest of
+   the sky stays black. The stars' layer is blended by difference, so a star keeps its own colour on the black and
+   turns to a deep version of the opposite colour over the white (and in between across the fade), wherever it is,
+   also while the sky turns. About's words are dark so they keep their contrast on white: the heading in near-black
+   ink (its plum shadow stays), the description in charcoal, and the name, wavy line and tagline in a deep version
+   of the name's gradient (each colour at least 4.5:1 on white). */
+:root.psy .cut-stars { mix-blend-mode: difference; }
+:root.psy #about:not(#\#):not(#\#) { background-color: #fff; }
+:root.psy #about::after { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: clamp(120px, 20vh, 240px); background: linear-gradient(to bottom, rgb(255 255 255 / 0), #fff); pointer-events: none; }
+:root.psy #about .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #17131c !important; -webkit-text-fill-color: #17131c !important; }
+:root.psy #about .section-h .section-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #17131c; }
+:root.psy #about .bio-desc:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #232027 !important; }
+:root.psy #about :is(.bio-name, .bio-tagline, .bio-stroke):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
   background-image: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) !important;
 }
-:root.psy.about-day #about :is(.bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
-@media (forced-colors: active) { :root.psy.about-day .chalk-star { filter: none; } }
+:root.psy #about :is(.bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
+@media (forced-colors: active) { :root.psy .cut-stars { mix-blend-mode: normal; } :root.psy #about::after { display: none; } }
 
 /* "Distributing Soon" letters match the buttons beside it (15px, 600, ordinary capitals) instead of small spaced
    capitals; it is still a tag, not a button: no hover, no press. */
