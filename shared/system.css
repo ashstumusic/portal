@@ -4304,25 +4304,24 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    up to the button). Stacked layouts keep their 8px. */
 :root.psy .vid-card-wrap .vid-info:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { column-gap: 16px; }
 
-/* Section headings ("Music", "Videos", "About"...): their offset shadow is
-   no longer flat red but the logo's flowing gradient. A filter shadow can
-   only be one colour, so the shadow is a second copy of the heading's words
-   (from data-shadow), 3px down and right, behind the white letters, painted
-   with the name's gradient and flowing with it. It sits inside the heading,
-   so the heading's hand-drawn boil wobbles it too. Screen readers skip it
-   (empty alternative text); forced colours drop it. */
-:root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; isolation: isolate; }
-:root.psy .section-h[data-shadow]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before {
-  content: attr(data-shadow) / ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  padding: inherit; box-sizing: border-box; white-space: inherit; translate: 3px 3px;
-  background: linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%) 0 50% / 200% 100% repeat-x;
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent !important; color: transparent !important;
+/* Section headings ("Music", "Videos", "About"...): the offset shadow is
+   the site's gold (the colour of every hover, focus ring and "ALBUM" label),
+   which sits better on the space-black page than the old dark red. */
+:root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); }
+@keyframes head-boil { 0% { filter: url(#hb1) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } 25% { filter: url(#hb2) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } 50% { filter: url(#hb3) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } 75% { filter: url(#hb4) drop-shadow(3px 3px 0 rgb(247 197 73 / .8)); } }
+@media (forced-colors: active) { :root.psy .section-h:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none; } }
+
+/* The quote's words carry a faint tint of the name's flowing gradient: mostly
+   white (a 70% white layer over the gradient, both painted only inside the
+   letters), so the colours drift softly through the words without costing
+   their contrast. Still with Effects off or reduced motion; plain in forced colours. */
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  background-image: linear-gradient(rgb(255 255 255 / .7), rgb(255 255 255 / .7)), linear-gradient(100deg, #F7C549 0%, #FF8AC8 25%, #FFA36B 50%, #8FE6FF 75%, #F7C549 100%);
+  background-size: 100% 100%, 200% 100%; background-repeat: no-repeat, repeat-x; background-position: 0 0, 0 50%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none;
 }
-@media (max-width: 767px) { :root.psy .section-h[data-shadow]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { translate: 2.5px 2.5px; } }
+@keyframes quote-tint-flow { from { background-position: 0 0, 0% 50%; } to { background-position: 0 0, 200% 50%; } }
 @media (prefers-reduced-motion: no-preference) {
-  :root.psy:not(.psy-calm) .section-h[data-shadow]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { animation: name-flow 9s steps(54, end) infinite; }
+  :root.psy:not(.psy-calm) .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: quote-tint-flow 9s steps(54, end) infinite; }
 }
-@media (forced-colors: active) { :root.psy .section-h[data-shadow]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { content: none; } }
-/* the boil keeps its four wobbles, without the old red offset */
-@keyframes head-boil { 0% { filter: url(#hb1); } 25% { filter: url(#hb2); } 50% { filter: url(#hb3); } 75% { filter: url(#hb4); } }
+@media (forced-colors: active) { :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: none; -webkit-text-fill-color: CanvasText; } }

@@ -17,18 +17,17 @@ CELL, FRAMES, SS = 192, 3, 4
 N = CELL * SS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'chalk-quotes.webp')
 
-# One comma of a closing mark (unit coordinates, y down): a round head
-# coloured in with a tight spiral, and a tail that curls down to the left.
+# One comma of a closing mark (unit coordinates, y down), kept simple: a small
+# round head scrubbed solid (tight turns close enough to fill it, so it reads as one dot of chalk,
+# not a spiral) and one short tail curving down to the left.
 def comma(cx, cy, s):
     head = []
-    for k in range(5):   # a spiral from the rim inward fills the head the way chalk is scrubbed in
-        r = .24 * (1 - k / 5.2)
-        head += [(r * math.cos(t), r * math.sin(t)) for t in np.linspace(k * 2 * math.pi, (k + 1) * 2 * math.pi, 18, endpoint=False)]
-    tail = [(.22 * math.cos(t), .22 * math.sin(t)) for t in np.linspace(-.5, 1.2, 8)]
-    tail += [(.18 - .30 * u, .2 + .55 * u - .12 * u * u) for u in np.linspace(.1, 1, 9)]
+    for k, r in enumerate((.14, .1, .06, .025)):
+        head += [(r * math.cos(t), r * math.sin(t)) for t in np.linspace(k * 2 * math.pi, (k + 1) * 2 * math.pi, 16)]
+    tail = [(.12 - .26 * u, .1 + .42 * u - .06 * u * u) for u in np.linspace(0, 1, 8)]
     return [[(cx + x * s, cy + y * s) for x, y in st] for st in (head, tail)]
 def closing():
-    return comma(-.38, -.28, 1.35) + comma(.42, -.28, 1.35)
+    return comma(-.34, -.2, 1.6) + comma(.38, -.2, 1.6)
 def opening():   # the closing mark turned upside down
     return [[(-x, -y) for x, y in st] for st in closing()]
 DESIGNS = [opening(), closing()]
