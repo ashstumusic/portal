@@ -4586,3 +4586,18 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 }
 :root.psy .disc-quote .dq-mark--open:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 -.12em 0 -.3em; }
 :root.psy .disc-quote .dq-mark--close:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0 -.3em 0 -.12em; }
+
+/* The Woody Guthrie quote sits in its own orange box (owner's request): a rounded panel filled with the quote's
+   orange (#FFA36B), with the words, the chalk quotation marks and Woody Guthrie's name all in near-black on it
+   (about 9:1). The soft dark fog that sat behind the quote to lift it off the stars is gone: the box does that now.
+   The sides keep their padding, so the quote still sizes itself to fill the box. */
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #FFA36B; border-radius: var(--r-lg); padding-top: 1.1em !important; padding-bottom: .9em !important; color: #111; }
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { display: none; }
+:root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: #111; -webkit-text-fill-color: #111; }
+:root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { color: #111 !important; -webkit-text-fill-color: #111 !important; background: none !important; text-shadow: none !important; filter: none !important; }
+:root.psy .disc-quote :is(.dq-mark--open, .dq-mark--close):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: #111; }
+@media (forced-colors: active) {
+  :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: Canvas; border: 1px solid CanvasText; }
+  :root.psy .disc-quote .dq-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .disc-quote:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) cite { color: CanvasText !important; -webkit-text-fill-color: CanvasText !important; }
+  :root.psy .disc-quote :is(.dq-mark--open, .dq-mark--close):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: CanvasText; }
+}
