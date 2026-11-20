@@ -4396,3 +4396,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 }
 :root.psy.about-day #about :is(.bio-name, .bio-tagline):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
 @media (forced-colors: active) { :root.psy.about-day .chalk-star { filter: none; } }
+
+/* "Distributing Soon" letters match the buttons beside it (15px, 600, ordinary capitals) instead of small spaced
+   capitals; it is still a tag, not a button: no hover, no press. */
+:root.psy .rel-btn--label:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root.psy .rel-btn--label .rel-label-text:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { text-transform: none !important; letter-spacing: 0 !important; font-size: 15px !important; font-weight: 600 !important; }
+
+/* About photos: all three in the same natural tone. The big portrait was still dimmed (brightness .88, contrast
+   1.06, a dark-page treatment) while the two above it had theirs removed, so it looked heavier than its neighbours;
+   About now sits on white, where no dimming is wanted. */
+:root .bio-card-media img.bio-media-main:not(#\#):not(#\#):not(#\#):not(#\#) { filter: none !important; }
