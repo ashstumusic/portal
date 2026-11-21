@@ -325,6 +325,10 @@ KIT_FACTS = {
     "email": (re.search(r'mailto:([^"?]+)', open(os.path.join(ROOT, "index-src.html"), encoding="utf-8").read()) or [None, ""])[1],
     "site": "https://ashstu.art",
 }
+# Photo credits (owner: "taken by Jacci Mace"): shown under each of these photos on the page and listed in the Fact Sheet.
+PHOTOGRAPHERS = {"Jacci Mace": "https://www.facebook.com/jaccimacephotography/", "Emma Evans": "https://www.facebook.com/profile.php?id=100018702414515"}
+_KIT_CREDIT = {"Ash Stu - Headshot-1.png": "Jacci Mace", "Ash Stu - Headshot-3.png": "Jacci Mace", "Ash Stu - Guitar in Alley (Wide).png": "Jacci Mace",
+               "Ash Stu - Headshot-2 (Wide).png": "Emma Evans"}
 _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=3",
               "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
               "Ash Stu - Headshot-2 (Wide).png": "epk-ash-stu-headshot-2-wide.webp"}
@@ -385,7 +389,9 @@ def _press_kit():
            *["  " + (t["title"] + " - " + r["name"] + ".mp3").ljust(_w) + (year_of(r) or "") + ((", " + length(t["file"])) if length(t["file"]) else "") for _, _, r, t in songs], "",
            "Ash Stu - Lyrics.txt", "  The words to the " + str(len(songs)) + " songs in the Songs folder.", "",
            "Ash Stu - Fact Sheet.txt", "  This file.", "",
-           "Photos folder (PNG):", *["  " + f for f in photos], ""]
+           "Photos folder (PNG), with photo credits:", *["  " + (f.ljust(max(map(len, photos)) + 3) + ("Photo: " + _KIT_CREDIT[f] if f in _KIT_CREDIT else "")).rstrip() for f in photos], ""]
+    for _who, _url in PHOTOGRAPHERS.items():
+        if any(_KIT_CREDIT.get(f) == _who for f in photos): fs += [_who + ", photographer: " + _url, ""]
     if latest:
         n_l = len(latest["tracks"])
         fs += ["Latest Release - " + latest["name"] + " folder: the whole album as released:",
@@ -404,7 +410,8 @@ def _press_kit():
         dims = None
         with open(os.path.join(KIT_DIR, f), "rb") as fh: hd = fh.read(24)
         if hd[:8] == b"\x89PNG\r\n\x1a\n": dims = [int.from_bytes(hd[16:20], "big"), int.from_bytes(hd[20:24], "big")]
-        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": ("Images/embedded/" + _KIT_THUMB[f]) if f in _KIT_THUMB else "", "dims": dims})
+        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": ("Images/embedded/" + _KIT_THUMB[f]) if f in _KIT_THUMB else "", "dims": dims,
+                      **({"credit": _KIT_CREDIT[f], "creditUrl": PHOTOGRAPHERS.get(_KIT_CREDIT[f], "")} if f in _KIT_CREDIT else {})})
     if latest:
         folder = KIT_TOP + "Latest Release - " + latest["name"] + "/"
         ri = rels.index(latest); total = len(latest["tracks"]) + len(latest.get("upcoming") or [])

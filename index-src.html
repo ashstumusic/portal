@@ -38,8 +38,8 @@
       "description": "Official press photo of Ash Stu, Outsider singer-songwriter from Guthrie, Oklahoma.",
       "caption": "Ash Stu, singer-songwriter from Guthrie, Oklahoma",
       "representativeOfPage": true,
-      "author": { "@id": "https://ashstu.art/#artist" },
-      "copyrightHolder": { "@id": "https://ashstu.art/#artist" }
+      "creator": { "@type": "Person", "name": "Jacci Mace", "sameAs": "https://www.facebook.com/jaccimacephotography/" },
+      "creditText": "Photo: Jacci Mace"
     },
     {
       "@type": ["MusicGroup", "Person"],
@@ -276,6 +276,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="935"/>
       <div class="hero-photo-frame" aria-hidden="true"></div>
     </div>
+    <a class="photo-credit hero-credit" href="https://www.facebook.com/jaccimacephotography/" target="_blank" rel="noopener noreferrer" aria-label="Photo by Jacci Mace (opens her photography page on Facebook)">Photo: Jacci Mace</a>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
         <h1 class="hero-name">Ash Stu<span class="sr-only"> - Outsider Singer-Songwriter</span></h1>
@@ -406,6 +407,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
+        <a class="photo-credit about-credit" href="https://www.facebook.com/jaccimacephotography/" target="_blank" rel="noopener noreferrer" aria-label="Photo by Jacci Mace (opens her photography page on Facebook)">Photo: Jacci Mace</a>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley" width="481" height="481"/></span>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu singing at the piano under a red light" width="481" height="481"/></span>
       </div>
@@ -2792,6 +2794,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
         '<img src="' + escHtml(encodeURI(f.thumb)) + '" alt="" width="481" height="481" loading="lazy" decoding="async"/></a>' +
       '<p class="epk-shot-name">' + escHtml(f.name) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
+      (f.credit ? '<p class="epk-shot-credit">Photo: ' + (f.creditUrl ? '<a href="' + escHtml(f.creditUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(f.credit) + '</a>' : escHtml(f.credit)) + '</p>' : '') +
       '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
   tlToggle({ name: 'the Press Kit', tracks: KIT.files.filter(function(f) { return f.type === 'song' || f.type === 'album'; }) }, 'kit') +   /* (owner's request: the list is just a tracklist) */
@@ -3551,20 +3554,20 @@ if(!('IntersectionObserver' in window)){on();return;}var o=new IntersectionObser
 (function(){var slots=[].slice.call(document.querySelectorAll('.bio-card-media .bw-shot img'));if(slots.length<2)return;
 var P='Images/embedded/';
 var pool=[
- {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley'},
+ {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley',by:'Jacci Mace'},
  {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu singing at the piano under a red light',g:'stage'},
- {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing at the keyboard',g:'stage'},
+ {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing at the keyboard',g:'stage',by:'Emma Evans'},
  {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano on stage',g:'stage'},
  {src:P+'epk-ash-stu-studio-session.webp',alt:'Ash Stu in a studio session'},
  {src:'Images/Profile-4-720.webp',alt:'Ash Stu as a kid with his first guitar'},
- {src:'Images/Profile-6-720.webp',alt:'Ash Stu at the piano'}
+ {src:'Images/Profile-6-720.webp',alt:'Ash Stu at the piano',by:'Jacci Mace'}
 ];
 var shown=[],deck=[];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
 /* (the three stage-show shots look alike side by side, so at most one of them is ever up at a time) */
 function twin(i){var g=pool[i].g;return !!g&&shown.some(function(j){return j!=null&&pool[j].g===g;});}
 function deal(){for(var t=0;t<2;t++){if(!deck.length)deck=shuffle(pool.map(function(_,i){return i;}));for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0&&!twin(deck[k]))return deck.splice(k,1)[0];deck=[];}return -1;}
-function put(w,i){shown[w]=i;var im=slots[w];im.removeAttribute('srcset');im.removeAttribute('sizes');im.src=pool[i].src;im.alt=pool[i].alt;}
+function put(w,i){shown[w]=i;var im=slots[w];im.removeAttribute('srcset');im.removeAttribute('sizes');im.src=pool[i].src;im.alt=pool[i].alt;if(pool[i].by)im.title='Photo: '+pool[i].by;else im.removeAttribute('title');}   /* (the photographer's credit, where known, on hover) */
 slots.forEach(function(_,w){put(w,deal());});
 // (the rest of the pool is fetched only once About is about to come into view - it is the last section, and many
 // visitors never reach it)

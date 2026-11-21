@@ -41,12 +41,16 @@ Ash Stu - Lyrics.txt
 Ash Stu - Fact Sheet.txt
   This file.
 
-Photos folder (PNG):
-  Ash Stu - Headshot-1.png
+Photos folder (PNG), with photo credits:
+  Ash Stu - Headshot-1.png               Photo: Jacci Mace
   Ash Stu - Headshot-2.png
-  Ash Stu - Headshot-3.png
-  Ash Stu - Guitar in Alley (Wide).png
-  Ash Stu - Headshot-2 (Wide).png
+  Ash Stu - Headshot-3.png               Photo: Jacci Mace
+  Ash Stu - Guitar in Alley (Wide).png   Photo: Jacci Mace
+  Ash Stu - Headshot-2 (Wide).png        Photo: Emma Evans
+
+Jacci Mace, photographer: https://www.facebook.com/jaccimacephotography/
+
+Emma Evans, photographer: https://www.facebook.com/profile.php?id=100018702414515
 
 Latest Release - Ash Stu, Vol. II folder: the whole album as released:
   9 songs (MP3, numbered in album order, each labelled with the album's cover)
