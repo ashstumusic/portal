@@ -1,6 +1,7 @@
 ﻿ASH STU - LYRICS
 
-The words to the 5 songs in this press kit, in the order of the Songs folder.
+The words to the 5 songs in the Songs folder of this press kit, in its order.
+(The latest release has its own lyrics.txt in its folder.)
 
 
 ========================================

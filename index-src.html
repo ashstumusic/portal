@@ -220,7 +220,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
        (its children sit in the toolbar as before); on phones it is one row you can slide sideways. -->
   <div class="nav-rail">
   <ul class="nav-links" role="list">
-    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Press &amp; Contact</span></a></li>
+    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Press Kit &amp; Contact</span></a></li>
     <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Music</span></a></li>
     <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
   </ul>
@@ -262,7 +262,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" aria-label="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" aria-label="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span></a>
   </div>
-  <a href="#epk">Press &amp; Contact</a>
+  <a href="#epk">Press Kit &amp; Contact</a>
   <a href="#music">Music</a>
   <a href="#videos">Videos</a>
   <button type="button" class="drawer-search k-search-btn" aria-label="Search songs, videos, sections and actions" aria-haspopup="dialog"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
@@ -302,7 +302,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h">
   <div class="epk-body">
-    <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>Press &amp; Contact</h2>
+    <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>Press Kit &amp; Contact</h2>
     <!-- (owner's request: "combine press kit and contact into one section". The contact line keeps id="contact", so /contact/ and #contact links still land here.) -->
   <div class="contact-inner" id="contact">
     <p class="contact-intro">For shows, press, or anything – message directly.</p>
@@ -312,7 +312,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     </a>
   </div>
     <p class="epk-text">Songs and photos <br/>for booking and press.</p>
-    <a href="ash-stu-press-kit.zip" download="Ash Stu - Press Kit.zip" class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit (ZIP file, __KIT_MB__ MB)" aria-label="Download Press Kit (ZIP file, __KIT_MB__ MB)">
+    <a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit (ZIP file, __KIT_MB__ MB)" aria-label="Download Press Kit (ZIP file, __KIT_MB__ MB)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span>Download <br/>Press Kit</span>
     </a>
@@ -594,7 +594,7 @@ if (e.key === 'ArrowRight') lbNav(1);
 }
 });
 (function() {
-const ids = ['epk','music','videos'];   /* (Contact is part of Press & Contact, id epk) */
+const ids = ['epk','music','videos'];   /* (Contact is part of Press Kit & Contact, id epk) */
 const links = {};
 ids.forEach(id => { links[id] = document.querySelector(`.nav-links a[href="#${id}"]`); });
 const nav = document.querySelector('.nav');
@@ -2162,8 +2162,8 @@ if (!_lbOpen) openLightbox(v);
    line when its font arrives), unless the visitor has moved in the meantime. */
 (function() {
   var m = document.querySelector('meta[name="deep-section"]');
-  var t = (m && m.content && document.getElementById(m.content)) || (location.hash === '#contact' ? document.getElementById('contact') : null);   /* (#contact: the contact line inside Press & Contact; land on the section's heading) */
-  if (t && t.closest('section')) t = t.closest('section');   /* (/contact/ names the contact line, inside Press & Contact: land on the section) */
+  var t = (m && m.content && document.getElementById(m.content)) || (location.hash === '#contact' ? document.getElementById('contact') : null);   /* (#contact: the contact line inside Press Kit & Contact; land on the section's heading) */
+  if (t && t.closest('section')) t = t.closest('section');   /* (/contact/ names the contact line, inside Press Kit & Contact: land on the section) */
   if (!t) return;
   var moved = false;
   ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function(ev) { addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
@@ -2628,28 +2628,95 @@ if (partyEl) partyEl.classList.toggle('is-soon', !hasLinks);
 // rows, Lyrics buttons), so it looks and behaves the same. Its data-release is -1 and the album code only counts the Music
 // section's cards, so it never takes an album's place. Its songs are the site's own recordings (matched by title), played
 // as their own list in the player; each song row carries its album's data-release/data-track so it lights up while playing.
+// THE PRESS KIT ZIP, MADE IN THE BROWSER (owner's request: "just compile it all live, dont pre zip it"). The files are
+// fetched from the site (kit-data, written by build-fast.py) and put into one ZIP right here, which is then saved as
+// "Ash Stu - Press Kit.zip". Songs get a fresh label at the front (ID3 2.3: title, artist, album, track, cover): the sound
+// is the site's file byte for byte. Files are stored, not compressed (MP3s and PNGs do not shrink).
+var _crcT = null;
+function kitCrc(u8, c) {
+  if (!_crcT) { _crcT = new Uint32Array(256); for (var n = 0; n < 256; n++) { var x = n; for (var k = 0; k < 8; k++) x = x & 1 ? 0xEDB88320 ^ (x >>> 1) : x >>> 1; _crcT[n] = x >>> 0; } }
+  c = (c || 0) ^ -1; for (var i = 0; i < u8.length; i++) c = _crcT[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0;
+}
+function kitId3(tag, cover) {
+  var parts = [], len = 0;
+  function frame(id, body) { var h = new Uint8Array(10); for (var i = 0; i < 4; i++) h[i] = id.charCodeAt(i); var n = body.length; h[4] = n >>> 24; h[5] = (n >>> 16) & 255; h[6] = (n >>> 8) & 255; h[7] = n & 255; parts.push(h, body); len += 10 + n; }
+  function text(id, v) { v = String(v); var b = new Uint8Array(3 + v.length * 2); b[0] = 1; b[1] = 0xFF; b[2] = 0xFE; for (var i = 0; i < v.length; i++) { var c = v.charCodeAt(i); b[3 + i * 2] = c & 255; b[4 + i * 2] = c >>> 8; } frame(id, b); }
+  text('TIT2', tag.title); text('TPE1', 'Ash Stu'); text('TPE2', 'Ash Stu'); text('TALB', tag.album); text('TRCK', tag.track);
+  if (tag.genre) text('TCON', tag.genre);
+  if (tag.year) text('TYER', tag.year);
+  if (cover) { var m = 'image/jpeg', b = new Uint8Array(1 + m.length + 1 + 2 + cover.length); var o = 0; b[o++] = 0; for (var i = 0; i < m.length; i++) b[o++] = m.charCodeAt(i); b[o++] = 0; b[o++] = 3; b[o++] = 0; b.set(cover, o); frame('APIC', b); }
+  var h = new Uint8Array(10); h[0] = 73; h[1] = 68; h[2] = 51; h[3] = 3; h[6] = (len >>> 21) & 127; h[7] = (len >>> 14) & 127; h[8] = (len >>> 7) & 127; h[9] = len & 127;
+  var out = new Uint8Array(10 + len); out.set(h, 0); var p = 10; parts.forEach(function(x) { out.set(x, p); p += x.length; }); return out;
+}
+function kitSound(u8) {   // the sound inside an MP3, without its old labels (ID3v2 at the front, ID3v1 at the end)
+  var s = 0, e = u8.length;
+  while (e - s >= 10 && u8[s] === 73 && u8[s + 1] === 68 && u8[s + 2] === 51) { var n = 10 + ((u8[s + 6] & 127) << 21 | (u8[s + 7] & 127) << 14 | (u8[s + 8] & 127) << 7 | (u8[s + 9] & 127)); if (u8[s + 5] & 16) n += 10; s += n; }
+  if (e - s >= 128 && u8[e - 128] === 84 && u8[e - 127] === 65 && u8[e - 126] === 71) e -= 128;
+  return u8.subarray(s, e);
+}
+var _kitBusy = false;
+function kitZip(status, btn) {
+  if (_kitBusy || !KIT) return; _kitBusy = true;
+  var files = KIT.files, total = KIT.bytes || 1, got = 0, covers = {}, out = new Array(files.length);
+  var say = function(t) { if (status) status.textContent = t; };
+  if (btn) btn.setAttribute('aria-busy', 'true');
+  say('Preparing the press kit: 0%');
+  var get = function(url) { return fetch(encodeURI(url)).then(function(r) { if (!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
+  var cover = function(url) { if (!url) return Promise.resolve(null); if (!covers[url]) covers[url] = get(url); return covers[url]; };
+  var i = 0;
+  function worker() {
+    if (i >= files.length) return Promise.resolve();
+    var k = i++, f = files[k];
+    return Promise.all([get(f.src), f.tag ? cover(f.tag.cover) : null]).then(function(r) {
+      var data = r[0];
+      if (f.tag) { var lab = kitId3(f.tag, r[1]), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); data = d; }
+      out[k] = data; got += f.bytes; say('Preparing the press kit: ' + Math.min(99, Math.round(got / total * 100)) + '%');
+      return worker();
+    });
+  }
+  Promise.all([worker(), worker(), worker()]).then(function() {
+    var enc = new TextEncoder(), parts = [], central = [], off = 0, now = new Date();
+    var dt = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF, dd = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
+    files.forEach(function(f, k) {
+      var name = enc.encode(f.path), data = out[k], crc = kitCrc(data);
+      var h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, dt, true); h.setUint16(12, dd, true);
+      h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
+      parts.push(h.buffer, name, data);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 0x031E, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, dt, true); c.setUint16(14, dd, true);
+      c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true);
+      c.setUint32(38, 0o100644 << 16 >>> 0, true); c.setUint32(42, off, true);
+      central.push(c.buffer, name);
+      off += 30 + name.length + data.length;
+    });
+    var cdSize = central.reduce(function(s, x) { return s + x.byteLength; }, 0);
+    var e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cdSize, true); e.setUint32(16, off, true);
+    var blob = new Blob(parts.concat(central, [e.buffer]), { type: 'application/zip' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'Ash Stu - Press Kit.zip'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
+    say('Saved: Ash Stu - Press Kit.zip (' + Math.round(blob.size / 1048576) + ' MB)');
+    if (window.kinetic && window.kinetic.announce) window.kinetic.announce('The press kit is downloading.');
+  }).catch(function() {
+    say('The press kit could not be prepared. Check the connection and press Download again.');
+  }).then(function() { _kitBusy = false; if (btn) btn.removeAttribute('aria-busy'); });
+}
 var KIT = null;
 function renderPressKit() {
 var slot = document.getElementById('epk-card');
 if (!slot) return;
 if (!KIT) KIT = readEmbedded('kit-data');
 if (!KIT || !KIT.files || !KIT.files.length) return;
-var songs = [], nPhotos = 0, nText = 0;
-KIT.files.forEach(function(f) {
-  f.track = null;
-  if (f.type === 'photo') nPhotos++;
-  if (f.type === 'text') nText++;
-  if (f.type !== 'song') return;
-  RELEASE_LIST.forEach(function(rel, r) { (rel.tracks || []).forEach(function(t, i) {
-    if (!f.track && String(t.title).toLowerCase() === String(f.title).toLowerCase()) f.track = { title: t.title, file: t.file, releaseIdx: r, trackIdx: i };
-  }); });
-  if (f.track) songs.push(f.track);
-});
-var nSongs = KIT.files.length - nPhotos - nText, n = KIT.files.length, mb = Math.round(KIT.bytes / 1048576);
+// (the kit's songs are the site's own recordings: f.ri / f.ti say which release and track; checked against the releases)
+var ok = function(f) { var r = RELEASE_LIST[f.ri], t = r && r.tracks && r.tracks[f.ti]; return !!(t && t.title === f.title); };
+var songs = KIT.files.filter(function(f) { return f.type === 'song' && ok(f); }).map(function(f) { var t = RELEASE_LIST[f.ri].tracks[f.ti]; return { title: t.title, file: t.file, releaseIdx: f.ri, trackIdx: f.ti }; });
+var nSongs = KIT.files.filter(function(f) { return f.type === 'song'; }).length, n = KIT.files.length, mb = Math.round(KIT.bytes / 1048576);
 var F = KIT.facts || {}, photos = KIT.files.filter(function(f) { return f.type === 'photo'; });
-var nLogo = photos.filter(function(f) { return /logo/i.test(f.name); }).length, nPics = photos.length - nLogo;
-var hasLyr = KIT.files.some(function(f) { return /lyrics/i.test(f.name) && f.type === 'text'; }), hasSheet = KIT.files.some(function(f) { return /fact sheet/i.test(f.name); });
-var dlName = 'Download Press Kit (ZIP file, ' + mb + ' MB)';
+var nPics = photos.length, nLogo = 0;
+var hasLyr = KIT.files.some(function(f) { return f.type === 'text' && /lyrics/i.test(f.name); }), hasSheet = KIT.files.some(function(f) { return /fact sheet/i.test(f.name); });
+var dlName = 'Download Press Kit (ZIP file, about ' + mb + ' MB)';
 // PRESS KIT, AS BOOKERS AND PRESS USE IT (owner's request: "consider the grand picture ... its effectiveness in the music
 // industry ... optimize till it's as it should be"). A booker or writer comes for four things, in this order: who this is
 // (one line), the files (one download), the photos (seen at a glance, each saved on its own), and who to write to. So the
@@ -2667,6 +2734,7 @@ if (hasLyr) inKit.push('their lyrics');
 if (hasSheet) inKit.push('a fact sheet');
 if (nPics) inKit.push(nPics + (nPics === 1 ? ' photo' : ' photos'));
 if (nLogo) inKit.push('the logo');
+if (KIT.latest) inKit.push('the latest release, ' + KIT.latest.name);
 var inKitText = inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0];
 var facts = '';
 if (latest) facts += '<div class="epk-fact"><dt>Latest release</dt><dd><a href="albums/' + slug(latest.name) + '/">' + escHtml(latest.name) + '</a>' + (latest.date ? ', ' + fullDate(latest.date) : '') + '</dd></div>';
@@ -2677,15 +2745,15 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main"><abbr title="Electronic Press Kit">EPK</abbr><span class="rel-sep"> · </span>Booking and press</span></p><h3 class="rel-name">Ash Stu</h3></div>' +
   '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<dl class="epk-facts">' + facts + '</dl></div>' +
   (lead && lead.thumb ? '<div class="rel-art-wrap"><img src="Images/embedded/' + escHtml(lead.thumb) + '" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>' : '') +
-  '<div class="rel-btns"><a href="ash-stu-press-kit.zip" download="Ash Stu - Press Kit.zip" class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
-  '</div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
+  '<div class="rel-btns"><a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" data-kit-zip class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
+  '<p class="epk-progress" role="status" aria-live="polite"></p></div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
   '<div class="epk-gallery" role="list" aria-label="Photos in the press kit">' + photos.map(function(f) {
     var meta = f.ext + (f.dims ? ' · ' + f.dims[0] + ' × ' + f.dims[1] : '') + ' · ' + (f.size || f.mb + ' MB');
     return '<div class="epk-shot" role="listitem">' +
-      '<a class="epk-shot-img" href="' + escHtml(encodeURI(f.href)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
+      '<a class="epk-shot-img" href="' + escHtml(encodeURI(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
         '<img src="Images/embedded/' + escHtml(f.thumb) + '" alt="" width="481" height="481" loading="lazy" decoding="async"/></a>' +
       '<p class="epk-shot-name">' + escHtml(f.name) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
-      '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(encodeURI(f.href)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
+      '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(encodeURI(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
   tlToggle({ name: 'the Press Kit', tracks: KIT.files }, 'kit').replace(/(\d+) tracks? on the Press Kit/, 'All $1 files in the Press Kit').replace(/>(\d+) tracks?</, '>All $1 files<') +
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
@@ -2722,20 +2790,30 @@ card.addEventListener('click', function(e) {
 var PIC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>';
 var DOC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 17h5"/></svg>';
 var DL = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>';
-var frag = document.createDocumentFragment(), si = 0;
+var frag = document.createDocumentFragment(), si = 0, grouped = false;
 KIT.files.forEach(function(f, k) {
   var wrap = document.createElement('div'); wrap.className = 'rel-track-wrap';
-  var size = f.ext + ', ' + f.mb + ' MB';
-  if (f.type === 'song' && f.track) {
-    var idx = si++, t = f.track, entry = LYRICS[t.file], has = !!(entry && entry.lines && entry.lines.length);
+  var href = encodeURI(f.src);
+  // (the latest release's files come under a line naming its folder, as they sit in the ZIP)
+  if (!grouped && /^(album|cover|albumtext)$/.test(f.type)) {
+    grouped = true;
+    var g = document.createElement('p'); g.className = 'epk-group';
+    g.textContent = f.path.split('/').slice(-2, -1)[0];
+    frag.appendChild(g);
+  }
+  var playable = (f.type === 'song' || f.type === 'album') && ok(f);
+  if (playable) {
+    var t = RELEASE_LIST[f.ri].tracks[f.ti], entry = LYRICS[t.file], has = !!(entry && entry.lines && entry.lines.length);
+    var idx = f.type === 'song' ? si++ : -1;
     var row = document.createElement('button'); row.type = 'button'; row.className = 'rel-track';
-    row.dataset.release = t.releaseIdx; row.dataset.track = t.trackIdx;
+    row.dataset.release = f.ri; row.dataset.track = f.ti;
     row.setAttribute('aria-label', 'Play ' + f.name + ', file ' + (k + 1));
     row.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' +
       '<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
       '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
       '<span class="rel-track-title">' + escHtml(f.name) + '</span>';   /* (the file's own name, as it is in the ZIP) */
-    row.addEventListener('click', function() { playKit(idx); });
+    // (a kit song plays the kit's songs in turn; a song of the latest release plays that release, as on its own card)
+    row.addEventListener('click', function() { if (idx >= 0) playKit(idx); else playTrack(f.ri, f.ti); });
     wrap.appendChild(row);
     if (has) {
       wrap.classList.add('has-lyrics');
@@ -2745,15 +2823,21 @@ KIT.files.forEach(function(f, k) {
       fillCardLyrics(lInner, entry, t.file); lDiv.appendChild(lInner); wrap.appendChild(lDiv);
     }
   } else {
-    var a = document.createElement('a'); a.className = 'rel-track epk-photo-row'; a.href = encodeURI(f.href); a.target = '_blank'; a.rel = 'noopener';
-    a.setAttribute('aria-label', 'Open ' + f.name + ' (' + (f.size || f.mb + ' MB') + '), file ' + (k + 1));
-    a.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' + (f.type === 'text' ? DOC : PIC) + '<span class="rel-track-title">' + escHtml(f.name) + '</span>';
-    var d = document.createElement('a'); d.className = 'rel-lyrics-toggle epk-file-dl'; d.href = encodeURI(f.href); d.setAttribute('download', f.name);
-    d.setAttribute('aria-label', 'Download ' + f.name + ' (' + (f.size || f.mb + ' MB') + ')'); d.title = 'Download ' + f.name + ' (' + (f.size || f.mb + ' MB') + ')';
+    var a = document.createElement('a'); a.className = 'rel-track epk-photo-row'; a.href = href; a.target = '_blank'; a.rel = 'noopener';
+    a.setAttribute('aria-label', 'Open ' + f.name + ' (' + f.size + '), file ' + (k + 1));
+    a.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' + (/text$/.test(f.type) ? DOC : PIC) + '<span class="rel-track-title">' + escHtml(f.name) + '</span>';
+    var d = document.createElement('a'); d.className = 'rel-lyrics-toggle epk-file-dl'; d.href = href; d.setAttribute('download', f.name);
+    d.setAttribute('aria-label', 'Download ' + f.name + ' (' + f.size + ')'); d.title = 'Download ' + f.name + ' (' + f.size + ')';
     d.innerHTML = DL;
     wrap.appendChild(a); wrap.appendChild(d);
   }
   frag.appendChild(wrap);
+});
+tl.appendChild(frag);
+// Download: the ZIP is made here, now, from the files on the site (kitZip)
+var prog = card.querySelector('.epk-progress');
+[card.querySelector('.epk-zip'), document.querySelector('#epk .btn-epk-dl')].forEach(function(b) {
+  if (b && !b._kit) { b._kit = true; b.setAttribute('data-kit-zip', ''); b.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); kitZip(prog, card.querySelector('.epk-zip')); }); }
 });
 tl.appendChild(frag);
 updatePlayUI();
@@ -3624,7 +3708,7 @@ setup();setTimeout(setup,1500);})();</script>
 var warm=false;function prep(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(!b||warm)return;warm=true;
 ['https://github.com','https://release-assets.githubusercontent.com'].forEach(function(h){var l=document.createElement('link');l.rel='preconnect';l.href=h;document.head.appendChild(l);});}
 ['pointerover','focusin','touchstart'].forEach(function(t){document.addEventListener(t,prep,{passive:true,capture:true});});
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(!b)return;e.stopPropagation();var rel=(window.RELEASE_LIST||[])[+b.dataset.rel];
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl:not([data-kit-zip])');if(!b)return;e.stopPropagation();   /* (not the press kit's Download: it makes its ZIP itself) */var rel=(window.RELEASE_LIST||[])[+b.dataset.rel];
 if(rel&&window.kinetic&&window.kinetic.announce)window.kinetic.announce(rel.name+' is downloading.');},true);
 })();</script>
 <script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the

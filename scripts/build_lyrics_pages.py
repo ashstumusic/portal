@@ -839,7 +839,7 @@ def main():
     # /Video Files/.)
     kit_mb = ''
     try:
-        kit_mb = f' (ZIP file, {round(os.path.getsize(os.path.join(ROOT, "ash-stu-press-kit.zip")) / 1048576)} MB)'
+        kit_mb = ''   # (the press kit ZIP is made in the visitor's browser now: there is no file to measure)
     except OSError:
         pass
     album_names = [r['name'] for r in releases if r.get('tracks') or r.get('upcoming')]
@@ -849,7 +849,7 @@ def main():
     SECTION_PAGES = [
         ('press-kit', 'epk', 'Electronic Press Kit (EPK)', 'WebPage',
          f'Electronic press kit (EPK) for {ARTIST}, outsider singer-songwriter from Guthrie, Oklahoma: songs, lyrics, fact sheet, photos, in one download{kit_mb}.',
-         [f'<a href="/ash-stu-press-kit.zip">Download the EPK (press kit){kit_mb}</a>']),
+         ['<a href="/Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt">The EPK fact sheet</a>']),
         ('contact', 'contact', 'Contact', 'ContactPage',
          f'Contact {ARTIST} ({ARTIST_FULL}) for shows, press or anything else: ashstumusic@gmail.com.',
          ['<a href="mailto:ashstumusic@gmail.com">ashstumusic@gmail.com</a>']),

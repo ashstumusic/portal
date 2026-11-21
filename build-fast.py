@@ -302,11 +302,22 @@ _loader = ('<script>(function(s){var d=document,done=0;function go(){if(done)ret
 html = html.replace("</body>", _loader + "\n</body>", 1)
 print(f"Wrote {p_out}: {len(_p)//1024}KB")
 
-# The Press Kit carries the words of its songs as one plain-text file, "Ash Stu - Lyrics.txt" (owner's request), written here
-# from lyrics.json in the order of its Songs folder. The ZIP is rewritten only when those words have changed.
-_kit = os.path.join(ROOT, "ash-stu-press-kit.zip")
-# The artist's facts for the press kit, as the site states them (About section, contact card). One place to change them:
-# the Fact Sheet in the ZIP and the Press Kit card on the page are both written from here.
+# ── PRESS KIT ─────────────────────────────────────────────────────────────────────────────────────────────────────
+# No ZIP is kept anywhere (owner's request: "just compile it all live, dont pre zip it. that takes up too much storage
+# on github"). The kit is a list of files already on the site, written here into the page (kit-data); pressing Download
+# makes the ZIP in the visitor's browser from them (kitZip in index-src.html). What is in it:
+#   Songs/        the kit's songs (KIT_SONGS), the site's own recordings, labelled "Ash Stu - Press Kit" with Headshot-1
+#                 as their cover (the label is written in the browser; the sound is the site's file, unchanged)
+#   the fact sheet and the lyrics (plain text, written here into Images/press-kit/)
+#   Photos/       the PNGs in Images/press-kit/
+#   Latest Release - <name>/   the release the site features (owner's request: "include my latest music release with
+#                 every download"): its songs labelled as on its own Download, its cover and its lyrics.txt
+KIT_DIR = os.path.join(ROOT, "Images", "press-kit")
+KIT_TOP = "Ash Stu - Press Kit/"
+KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", "Worship Song", "You Are What You Love"]
+KIT_SONG_COVER = "Images/embedded/kit-song-cover.jpg"   # (Headshot-1 as a JPEG: the picture music apps show for the kit's songs)
+# The artist's facts, as the site states them (About section, contact line). One place to change them: the Fact Sheet
+# and the press kit card are both written from here.
 KIT_FACTS = {
     "pitch": "Outsider singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.",
     "from": "Guthrie, Oklahoma",
@@ -314,117 +325,101 @@ KIT_FACTS = {
     "email": (re.search(r'mailto:([^"?]+)', open(os.path.join(ROOT, "index-src.html"), encoding="utf-8").read()) or [None, ""])[1],
     "site": "https://ashstu.art",
 }
-def _kit_texts():
-    """Two plain-text files in the kit, rewritten in the ZIP only when their words change:
-    "Ash Stu - Lyrics.txt" (the words to its songs, in Songs-folder order) and "Ash Stu - Fact Sheet.txt" (who, where
-    from, releases with their store links, contact, and what is in the kit)."""
-    import zipfile as _zf, json as _json
-    if not os.path.exists(_kit): return
-    _rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
-    _lyr = _json.load(open(os.path.join(ROOT, "lyrics.json"), encoding="utf-8"))
-    _z = _zf.ZipFile(_kit)
-    _all = [i.filename for i in _z.infolist() if not i.is_dir()]
-    _songs = sorted(f for f in _all if f.lower().endswith(".mp3"))
-    _photos = sorted((os.path.basename(f) for f in _all if f.lower().endswith((".png", ".jpg", ".jpeg"))), key=lambda n: (0 if "headshot" in n.lower() else 2 if "logo" in n.lower() else 1, n.lower()))   # (headshots first, the logo last: the order of the page)
-    _top = (_songs[0].split("/")[0] + "/") if _songs and "/" in _songs[0] else ""
-    def _date(r):
+_KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=3",
+              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp"}
+def _press_kit():
+    import json as _json
+    rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
+    lyr = _json.load(open(os.path.join(ROOT, "lyrics.json"), encoding="utf-8"))
+    def find(title):
+        for ri, r in enumerate(rels):
+            for ti, t in enumerate(r.get("tracks") or []):
+                if t["title"].lower() == title.lower(): return ri, ti, r, t
+        return None
+    def date_of(r):
         m = re.match(r"(\d{4})-(\d{2})-(\d{2})$", r.get("date") or "")
         if not m: return str(r.get("year") or "")
         return ["January","February","March","April","May","June","July","August","September","October","November","December"][int(m[2]) - 1] + f" {int(m[3])}, {m[1]}"
-    # lyrics
-    out = ["ASH STU - LYRICS", "", "The words to the " + str(len(_songs)) + " songs in this press kit, in the order of the Songs folder.", ""]
-    for f in _songs:
-        title = re.sub(r"^Ash Stu - ", "", os.path.splitext(os.path.basename(f))[0])
-        hit = next(((r, t) for r in _rels for t in (r.get("tracks") or []) if t["title"].lower() == title.lower()), None)
-        lines = [(x or "").strip() for _, x in ((_lyr.get(hit[1]["file"]) or {}).get("lines") or [])] if hit else []
-        lines = [l for l in lines if l]
-        out += ["", "=" * 40, title.upper(), ("From " + hit[0]["name"] + (" (" + str(hit[0]["year"]) + ")" if hit[0].get("year") else "")) if hit else "", "=" * 40, ""]
-        out += lines or ["(Instrumental)"]
-        out += [""]
-    out += ["", "-" * 40, "Ash Stu  -  " + KIT_FACTS["site"], ""]
-    texts = {"Ash Stu - Lyrics.txt": out}
-    # fact sheet
+    def year_of(r): return (r.get("date") or "")[:4] or str(r.get("year") or "")
+    def size(rel_path): return os.path.getsize(os.path.join(ROOT, rel_path))
+    def fmt(n): return f"{n / 1048576:.1f} MB" if n >= 104858 else f"{max(1, round(n / 1024))} KB"
+    files = []
+    songs = [x for x in (find(t) for t in KIT_SONGS) if x]
+    for k, (ri, ti, r, t) in enumerate(songs, 1):
+        files.append({"path": KIT_TOP + "Songs/Ash Stu - " + t["title"] + ".mp3", "src": t["file"], "type": "song", "title": t["title"],
+                      "ri": ri, "ti": ti, "tag": {"title": t["title"], "album": "Ash Stu - Press Kit", "track": f"{k}/{len(songs)}", "cover": KIT_SONG_COVER}})
+    photos = sorted((f for f in os.listdir(KIT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))),
+                    key=lambda n: (0 if "headshot" in n.lower() else 1, n.lower()))
+    latest = next((r for r in rels if r.get("featured") and r.get("tracks")), next((r for r in rels if r.get("tracks")), None))
+    # the two text files
+    lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order.",
+             "(The latest release has its own lyrics.txt in its folder.)", ""]
+    for ri, ti, r, t in songs:
+        words = [(x or "").strip() for _, x in ((lyr.get(t["file"]) or {}).get("lines") or [])]
+        words = [w for w in words if w]
+        lines += ["", "=" * 40, t["title"].upper(), "From " + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else ""), "=" * 40, ""]
+        lines += words or ["(Instrumental)"]
+        lines += [""]
+    lines += ["", "-" * 40, "Ash Stu  -  " + KIT_FACTS["site"], ""]
     F = KIT_FACTS
     fs = ["ASH STU - FACT SHEET", "", F["pitch"], "",
           "Artist:              Ash Stu", "Formerly known as:   " + F["aka"], "From:                " + F["from"], "",
           "Booking and press:   " + F["email"], "Website:             " + F["site"], "", "", "RELEASES", "-" * 40]
-    for r in _rels:
+    for r in rels:
         n_out, n_soon = len(r.get("tracks") or []), len(r.get("upcoming") or [])
-        line = r["name"] + "  -  " + (r.get("type") or "Album").lower() + ", " + (_date(r) or "date to come")
+        line = r["name"] + "  -  " + (r.get("type") or "Album").lower() + ", " + (date_of(r) or "date to come")
         line += f", {n_out} songs" if not n_soon else f", {n_out} of its {n_out + n_soon} songs released so far"
         fs += ["", line]
-        for k, label in (("apple", "Apple Music"), ("spotify", "Spotify"), ("ytmusic", "YouTube Music"), ("amazon", "Amazon Music"), ("deezer", "Deezer")):
-            if r.get(k): fs.append(f"  {label + ':':<16}{r[k]}")
+        for key, label in (("apple", "Apple Music"), ("spotify", "Spotify"), ("ytmusic", "YouTube Music"), ("amazon", "Amazon Music"), ("deezer", "Deezer")):
+            if r.get(key): fs.append(f"  {label + ':':<16}{r[key]}")
     fs += ["", "", "IN THIS PRESS KIT", "-" * 40, "",
-           "Songs (MP3):", *["  " + os.path.basename(f) for f in _songs], "",
+           "Songs (MP3):", *["  Ash Stu - " + t["title"] + ".mp3" for _, _, _, t in songs], "",
            "Lyrics:", "  Ash Stu - Lyrics.txt", "",
-           "Photos (PNG):", *["  " + f for f in _photos], "",
-           "Free to use for booking, press and promotion of Ash Stu.", ""]
-    texts["Ash Stu - Fact Sheet.txt"] = fs
-    want = {(_top + k): ("\r\n".join(v)).encode("utf-8-sig") for k, v in texts.items()}   # (the mark at the start tells every browser and editor it is UTF-8)
-    have = {}
-    for k in want:
-        try: have[k] = _z.read(k)
-        except KeyError: have[k] = None
-    if all(have[k] == want[k] for k in want): return
-    tmp = _kit + ".tmp"
-    with _zf.ZipFile(tmp, "w") as zo:
-        for i in _z.infolist():
-            if i.filename in want: continue
-            n = _zf.ZipInfo(i.filename, i.date_time); n.compress_type = i.compress_type; n.external_attr = i.external_attr
-            zo.writestr(n, _z.read(i.filename))
-        for k, data in want.items():
-            if have[k] == data:
-                old = _z.getinfo(k); n = _zf.ZipInfo(k, old.date_time)
-            else:
-                n = _zf.ZipInfo(k, time.localtime()[:6]); print("Press kit: wrote " + k)
-            n.compress_type = _zf.ZIP_DEFLATED; n.external_attr = 0o644 << 16
-            zo.writestr(n, data)
-    _z.close(); os.replace(tmp, _kit)
-_kit_texts()
-html = html.replace("__KIT_MB__", str(max(1, round(os.path.getsize(_kit) / 1048576))) if os.path.exists(_kit) else "")
-html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
-
-# ...and lists what is inside it, for the Press Kit card (renderPressKit in index-src.html): songs first, then photos.
-# The photos are also unpacked to Images/press-kit/ (only when missing or changed), so each can be opened or downloaded alone.
-import zipfile as _zf, json as _json
-_kitdata = {"bytes": 0, "files": []}
-_KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=3",
-              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp"}
-if os.path.exists(_kit):
-    _z = _zf.ZipFile(_kit)
-    _files = [i for i in _z.infolist() if not i.is_dir() and not os.path.basename(i.filename).startswith(".")]
-    _isSong = lambda i: i.filename.lower().endswith((".mp3", ".wav", ".m4a", ".flac"))
-    _kd = os.path.join(ROOT, "Images", "press-kit")
-    os.makedirs(_kd, exist_ok=True)
-    _keep = {os.path.basename(i.filename) for i in _files}
-    for _f in os.listdir(_kd):
-        if _f not in _keep: os.remove(os.path.join(_kd, _f))
-    _isText = lambda i: i.filename.lower().endswith(".txt")
-    # songs, then the text files, then the photos: headshots first (Headshot-1 leads), other photos, the logo last
-    _rank = lambda i: (0 if _isSong(i) else 1 if _isText(i) else 2 if "headshot" in i.filename.lower() else 4 if "logo" in i.filename.lower() else 3)
-    for i in sorted(_files, key=lambda i: (_rank(i), os.path.basename(i.filename).lower())):
-        _dims = None
-        if i.filename.lower().endswith(".png"):
-            with _z.open(i) as _fh: _hd = _fh.read(24)
-            if _hd[:8] == b"\x89PNG\r\n\x1a\n": _dims = [int.from_bytes(_hd[16:20], "big"), int.from_bytes(_hd[20:24], "big")]
-        _fn = os.path.basename(i.filename); _base, _ext = os.path.splitext(_fn)
-        _href = ""
-        if not _isSong(i):
-            _dst = os.path.join(_kd, _fn)
-            if not (os.path.exists(_dst) and os.path.getsize(_dst) == i.file_size and __import__("zlib").crc32(open(_dst, "rb").read()) == i.CRC):
-                with open(_dst, "wb") as _o: _o.write(_z.read(i))
-            _href = "Images/press-kit/" + _fn
-        # name: the file's own name, shown as it is on the page; title: the song's title ("Ash Stu - " and the type taken off),
-        # used to find its recording and lyrics; thumb: the site's small copy of a photo, for the file tiles.
-        _kitdata["files"].append({"name": _fn, "title": re.sub(r"^Ash Stu - ", "", _base), "type": "song" if _isSong(i) else "text" if _isText(i) else "photo",
-                                  "ext": _ext[1:].upper(), "mb": round(i.file_size / 1048576, 1), "href": _href,
-                                  "size": (f"{i.file_size / 1048576:.1f} MB" if i.file_size >= 104858 else f"{max(1, round(i.file_size / 1024))} KB"),
-                                  "thumb": _KIT_THUMB.get(_fn, ""), "dims": _dims})
-    _kitdata["bytes"] = os.path.getsize(_kit)
-    _kitdata["updated"] = "%04d-%02d-%02d" % max(i.date_time for i in _files)[:3]   # (the newest file in it: when the kit last changed)
-    _kitdata["facts"] = KIT_FACTS
-html = html.replace("__KIT_JSON__", _json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))
+           "Photos (PNG):", *["  " + f for f in photos], ""]
+    if latest:
+        fs += ["Latest release, " + latest["name"] + " (MP3, with its cover and lyrics):", *["  " + os.path.basename(t["file"]) for t in latest["tracks"]], ""]
+    fs += ["Free to use for booking, press and promotion of Ash Stu.", ""]
+    texts = {"Ash Stu - Fact Sheet.txt": fs, "Ash Stu - Lyrics.txt": lines}
+    for name, body in texts.items():
+        data = "\r\n".join(body).encode("utf-8-sig")   # (the mark at the start tells every browser and editor it is UTF-8)
+        dst = os.path.join(KIT_DIR, name)
+        if not (os.path.exists(dst) and open(dst, "rb").read() == data):
+            open(dst, "wb").write(data); print("Press kit: wrote " + name)
+        files.append({"path": KIT_TOP + name, "src": "Images/press-kit/" + name, "type": "text"})
+    for f in photos:
+        dims = None
+        with open(os.path.join(KIT_DIR, f), "rb") as fh: hd = fh.read(24)
+        if hd[:8] == b"\x89PNG\r\n\x1a\n": dims = [int.from_bytes(hd[16:20], "big"), int.from_bytes(hd[20:24], "big")]
+        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": _KIT_THUMB.get(f, ""), "dims": dims})
+    if latest:
+        folder = KIT_TOP + "Latest Release - " + latest["name"] + "/"
+        ri = rels.index(latest); total = len(latest["tracks"]) + len(latest.get("upcoming") or [])
+        stem = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(os.path.basename(latest["art"]))[0].lower()).strip("-")
+        cover_jpg = "Images/share/" + stem + ".jpg"
+        for ti, t in enumerate(latest["tracks"]):
+            files.append({"path": folder + os.path.basename(t["file"]), "src": t["file"], "type": "album", "title": t["title"], "ri": ri, "ti": ti,
+                          "tag": {"title": t["title"], "album": latest["name"], "track": f"{t.get('num', ti + 1)}/{total}", "year": year_of(latest), "genre": "Outsider",
+                                  "cover": cover_jpg if os.path.exists(os.path.join(ROOT, cover_jpg)) else ""}})
+        png = os.path.splitext(latest["art"])[0] + ".png"
+        art = png if os.path.exists(os.path.join(ROOT, png)) else latest["art"]
+        files.append({"path": folder + "Cover" + os.path.splitext(art)[1], "src": art, "type": "cover"})
+        ly = os.path.dirname(latest["tracks"][0]["file"]) + "/lyrics.txt"
+        if os.path.exists(os.path.join(ROOT, ly)): files.append({"path": folder + "lyrics.txt", "src": ly, "type": "albumtext"})
+    for f in files:
+        f["name"] = f["path"].rsplit("/", 1)[1]; f["ext"] = f["name"].rsplit(".", 1)[1].upper()
+        n = size(f["src"]); f["bytes"] = n; f["size"] = fmt(n); f["mb"] = round(n / 1048576, 1)
+    # (when the kit last changed: the last commit that touched its files or the songs list here; a file's own date is
+    # useless, since a fresh copy of the repository dates every file to the moment it was copied)
+    try:
+        import subprocess as _sp2
+        _upd = _sp2.run(["git", "log", "-1", "--format=%cs", "--", "Images/press-kit", "releases.json"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    except Exception: _upd = ""
+    return {"top": KIT_TOP, "files": files, "bytes": sum(f["bytes"] for f in files), "facts": KIT_FACTS,
+            "updated": _upd or time.strftime("%Y-%m-%d"),
+            "latest": {"name": latest["name"], "ri": rels.index(latest)} if latest else None}
+_kitdata = _press_kit()
+html = html.replace("__KIT_MB__", str(max(1, round(_kitdata["bytes"] / 1048576))))
+html = html.replace("__KIT_JSON__", json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))
 
 # strip HTML comments + indentation, collapse blank lines
 html = re.sub(r"<!--(?!\[).*?-->", "", html, flags=re.S)
