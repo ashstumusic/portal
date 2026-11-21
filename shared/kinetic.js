@@ -268,7 +268,7 @@
     if (fx) items.push({ group: 'Actions', title: fx.getAttribute('aria-pressed') === 'true' ? 'Turn motion effects off' : 'Turn motion effects on', run: () => fx.click() });
     const mail = $('a[href^="mailto:"]');
     if (mail && navigator.clipboard) items.push({ group: 'Actions', title: 'Copy booking email address', sub: mail.href.slice(7).split('?')[0], run: () => navigator.clipboard.writeText(mail.href.slice(7).split('?')[0]).then(() => announce('Email address copied')) });
-    const kit = $('a[href$=".zip"]');
+    const kit = $('[data-kit-zip]');   // (the press kit's Download: its ZIP is made in the browser, so it is no .zip link)
     if (kit) items.push({ group: 'Actions', title: 'Download the press kit', sub: 'ZIP', run: () => kit.click() });
     // Streaming services (the toolbar's links): each opens Ash Stu's page there.
     const seenP = new Set();

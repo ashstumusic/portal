@@ -98,6 +98,33 @@ def plan(rel):
     f = asset_name(rel['name'])
     return {'file': f, 'url': 'https://github.com/%s/releases/download/%s/%s' % (REPO, TAG, f), 'bytes': size, 'entries': entries, 'songs': songs}
 
+def live_plan(rel):
+    """The album download as the visitor's browser makes it (owner's request: "do the album downloads live too"; no ZIP is
+    stored anywhere): -> {'name': file name, 'bytes': about how big, 'files': [{'path', 'src', 'bytes', 'tag'?}]} or None.
+    Same contents as before: the songs (each labelled: title, artist, album, track, genre, year, cover), the cover and,
+    when there is one, lyrics.txt, in one folder named like the file. The label is written in the browser (liveZip in
+    index-src.html); the sound is the site's own file, unchanged."""
+    tracks = rel.get('tracks') or []
+    if not tracks: return None
+    base = rel['name'] if 'ash stu' in rel['name'].lower() else 'Ash Stu - ' + rel['name']
+    folder = _safe(base) + '/'
+    total = len(tracks) + len(rel.get('upcoming') or [])
+    cj = _cover_jpeg(rel); cover = os.path.relpath(cj, ROOT).replace(os.sep, '/') if cj else ''
+    year = _release_year(rel['name']) or (rel.get('date') or '')[:4] or str(rel.get('year') or '')
+    files = []
+    for i, t in enumerate(tracks):
+        tag = {'title': t['title'], 'album': rel['name'], 'track': '%d/%d' % (t.get('num', i + 1), total), 'genre': GENRE, 'cover': cover}
+        if year: tag['year'] = year
+        files.append({'path': folder + _safe(os.path.basename(t['file'])), 'src': t['file'], 'tag': tag})
+    art = rel.get('art') or ''
+    png = os.path.splitext(art)[0] + '.png'
+    art = png if art and os.path.isfile(os.path.join(ROOT, png)) else art
+    if art and os.path.isfile(os.path.join(ROOT, art)): files.append({'path': folder + 'Cover' + os.path.splitext(art)[1], 'src': art})
+    ly = os.path.dirname(tracks[0]['file']) + '/lyrics.txt'
+    if os.path.isfile(os.path.join(ROOT, ly)): files.append({'path': folder + 'lyrics.txt', 'src': ly})
+    for f in files: f['bytes'] = os.path.getsize(os.path.join(ROOT, f['src']))
+    return {'name': _safe(base) + '.zip', 'bytes': sum(f['bytes'] for f in files), 'files': files}
+
 def build(rel):
     pl = plan(rel); os.makedirs(OUT, exist_ok=True); path = os.path.join(OUT, pl['file'])
     with zipfile.ZipFile(path, 'w', zipfile.ZIP_STORED) as z:

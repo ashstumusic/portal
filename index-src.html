@@ -2548,11 +2548,12 @@ if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank"
 // Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
 var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
 if (listen) status += '<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-' + rIdx + '">Listen on</span><span class="rel-stores" role="group" aria-labelledby="rel-listen-' + rIdx + '">' + listen + '</span></div>';
-// Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
+// Download: the album's ZIP is made in the browser when pressed (albumZip; the files are rel.zip, see scripts/album_zip.py live_plan).
+// Its link is the album's own page, for anyone without JavaScript.
 // It sits beside Play, in the card's action row under "Listen on" (owner's request).
 var dl = '';
-if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
-dl = '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
+if (rel.zip && rel.zip.files && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + 'about ' + Math.round(rel.zip.bytes / 1048576) + ' MB)';
+dl = '<a href="albums/' + String(rel.name).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '/" class="rel-btn rel-dl" data-live-zip data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
@@ -2654,27 +2655,25 @@ function kitSound(u8) {   // the sound inside an MP3, without its old labels (ID
   if (e - s >= 128 && u8[e - 128] === 84 && u8[e - 127] === 65 && u8[e - 126] === 71) e -= 128;
   return u8.subarray(s, e);
 }
-var _kitBusy = false;
-function kitZip(status, btn) {
-  if (_kitBusy || !KIT) return; _kitBusy = true;
-  var files = KIT.files, total = KIT.bytes || 1, got = 0, covers = {}, out = new Array(files.length);
-  var say = function(t) { if (status) status.textContent = t; };
-  if (btn) btn.setAttribute('aria-busy', 'true');
-  say('Preparing the press kit: 0%');
+// One maker for every download (the press kit and each album): fetch the files, label the songs, put them in one ZIP,
+// save it under its name. -> a Promise of the saved size in bytes. onStep(percent) is told how far it has got.
+function liveZip(files, filename, onStep) {
+  var total = files.reduce(function(n, f) { return n + (f.bytes || 0); }, 0) || 1, got = 0, covers = {}, out = new Array(files.length);
   var get = function(url) { return fetch(encodeURI(url)).then(function(r) { if (!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
   var cover = function(url) { if (!url) return Promise.resolve(null); if (!covers[url]) covers[url] = get(url); return covers[url]; };
   var i = 0;
+  if (onStep) onStep(0);
   function worker() {
     if (i >= files.length) return Promise.resolve();
     var k = i++, f = files[k];
     return Promise.all([get(f.src), f.tag ? cover(f.tag.cover) : null]).then(function(r) {
       var data = r[0];
       if (f.tag) { var lab = kitId3(f.tag, r[1]), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); data = d; }
-      out[k] = data; got += f.bytes; say('Preparing the press kit: ' + Math.min(99, Math.round(got / total * 100)) + '%');
+      out[k] = data; got += f.bytes || 0; if (onStep) onStep(Math.min(99, Math.round(got / total * 100)));
       return worker();
     });
   }
-  Promise.all([worker(), worker(), worker()]).then(function() {
+  return Promise.all([worker(), worker(), worker()]).then(function() {
     var enc = new TextEncoder(), parts = [], central = [], off = 0, now = new Date();
     var dt = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF, dd = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
     files.forEach(function(f, k) {
@@ -2690,18 +2689,44 @@ function kitZip(status, btn) {
       central.push(c.buffer, name);
       off += 30 + name.length + data.length;
     });
-    var cdSize = central.reduce(function(s, x) { return s + x.byteLength; }, 0);
+    var cdSize = central.reduce(function(n, x) { return n + x.byteLength; }, 0);
     var e = new DataView(new ArrayBuffer(22));
     e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cdSize, true); e.setUint32(16, off, true);
     var blob = new Blob(parts.concat(central, [e.buffer]), { type: 'application/zip' });
     var url = URL.createObjectURL(blob), a = document.createElement('a');
-    a.href = url; a.download = 'Ash Stu - Press Kit.zip'; document.body.appendChild(a); a.click(); a.remove();
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
-    say('Saved: Ash Stu - Press Kit.zip (' + Math.round(blob.size / 1048576) + ' MB)');
+    return blob.size;
+  });
+}
+var _kitBusy = false;
+function kitZip(status, btn) {
+  if (_kitBusy || !KIT) return; _kitBusy = true;
+  var say = function(t) { if (status) status.textContent = t; };
+  if (btn) btn.setAttribute('aria-busy', 'true');
+  liveZip(KIT.files, 'Ash Stu - Press Kit.zip', function(p) { say('Preparing the press kit: ' + p + '%'); }).then(function(size) {
+    say('Saved: Ash Stu - Press Kit.zip (' + Math.round(size / 1048576) + ' MB)');
     if (window.kinetic && window.kinetic.announce) window.kinetic.announce('The press kit is downloading.');
   }).catch(function() {
     say('The press kit could not be prepared. Check the connection and press Download again.');
   }).then(function() { _kitBusy = false; if (btn) btn.removeAttribute('aria-busy'); });
+}
+// An album's Download (owner's request: "do the album downloads live too"): the same maker, with the album's files
+// (rel.zip, written by generate_content.py). While it works the button's word counts up ("Loading 42%": short enough for a phone's button).
+function albumZip(btn, rIdx) {
+  var rel = RELEASE_LIST[rIdx];
+  if (!rel || !rel.zip || !rel.zip.files || btn.getAttribute('aria-busy') === 'true') return;
+  var word = btn.querySelector('.btn-word'), label = btn.getAttribute('aria-label');
+  var show = function(t) { if (word) { word.dataset.auto = '0'; word.textContent = t; } };
+  btn.setAttribute('aria-busy', 'true');
+  if (window.kinetic && window.kinetic.announce) window.kinetic.announce('Preparing ' + rel.name + ' for download.');
+  liveZip(rel.zip.files, rel.zip.name, function(p) { show('Loading ' + p + '%'); }).then(function() {
+    if (window.kinetic && window.kinetic.announce) window.kinetic.announce(rel.name + ' is downloading.');
+  }).catch(function() {
+    if (window.kinetic && window.kinetic.announce) window.kinetic.announce(rel.name + ' could not be prepared. Check the connection and press Download again.');
+  }).then(function() {
+    btn.removeAttribute('aria-busy'); if (word) { word.textContent = 'Download'; word.dataset.auto = '1'; } btn.setAttribute('aria-label', label);
+  });
 }
 var KIT = null;
 function renderPressKit() {
@@ -3700,17 +3725,10 @@ var wasStill=still();new MutationObserver(function(){var now=still();if(now!==wa
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setup);
 /* The logos keep one fixed order (Apple Music, Spotify, YouTube): they no longer trade places. */
 setup();setTimeout(setup,1500);})();</script>
-<script>/* Album downloads. Each release's Download button is a plain link to a ready-made ZIP (made by scripts/album_zip.py,
-   kept on the repository's GitHub Release "downloads"), so the browser starts saving at once and handles the rest.
-   Two small helps here: the connection to the file servers is opened as soon as the pointer or focus reaches a
-   Download button, so the press itself has nothing left to set up; and screen readers are told the download began. */
-(function(){
-var warm=false;function prep(e){var b=e.target.closest&&e.target.closest('.rel-dl');if(!b||warm)return;warm=true;
-['https://github.com','https://release-assets.githubusercontent.com'].forEach(function(h){var l=document.createElement('link');l.rel='preconnect';l.href=h;document.head.appendChild(l);});}
-['pointerover','focusin','touchstart'].forEach(function(t){document.addEventListener(t,prep,{passive:true,capture:true});});
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl:not([data-kit-zip])');if(!b)return;e.stopPropagation();   /* (not the press kit's Download: it makes its ZIP itself) */var rel=(window.RELEASE_LIST||[])[+b.dataset.rel];
-if(rel&&window.kinetic&&window.kinetic.announce)window.kinetic.announce(rel.name+' is downloading.');},true);
-})();</script>
+<script>/* Album downloads. Each release's Download button makes the album's ZIP in the browser when pressed (albumZip, from
+   the site's own files: no ZIP is stored anywhere). One listener for all of them, so it also covers cards drawn again. */
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.rel-dl[data-live-zip]');if(!b)return;e.preventDefault();e.stopPropagation();albumZip(b,+b.dataset.rel);},true);
+</script>
 <script>/* Toolbar rail (phones): mark which edges have more to slide to, so the row can fade out there; and when the
    current section changes, bring its button into view inside the rail. */
 (function(){var r=document.querySelector('.nav-rail');if(!r)return;

@@ -66,8 +66,72 @@
     ],
     "featured": false,
     "zip": {
-      "url": "https://github.com/ashstumusic/portal/releases/download/downloads/My-Anima-Ash-Stu.zip",
-      "bytes": 34557052
+      "name": "Ash Stu - My Anima.zip",
+      "bytes": 40339758,
+      "files": [
+        {
+          "path": "Ash Stu - My Anima/04. Still Sad.mp3",
+          "src": "Audio/My Anima/04. Still Sad.mp3",
+          "tag": {
+            "title": "Still Sad",
+            "album": "My Anima",
+            "track": "4/10",
+            "genre": "Outsider",
+            "cover": "Images/share/my-anima.jpg",
+            "year": "2026"
+          },
+          "bytes": 8868204
+        },
+        {
+          "path": "Ash Stu - My Anima/06. Worship Song.mp3",
+          "src": "Audio/My Anima/06. Worship Song.mp3",
+          "tag": {
+            "title": "Worship Song",
+            "album": "My Anima",
+            "track": "6/10",
+            "genre": "Outsider",
+            "cover": "Images/share/my-anima.jpg",
+            "year": "2026"
+          },
+          "bytes": 5818150
+        },
+        {
+          "path": "Ash Stu - My Anima/08. You Are What You Love.mp3",
+          "src": "Audio/My Anima/08. You Are What You Love.mp3",
+          "tag": {
+            "title": "You Are What You Love",
+            "album": "My Anima",
+            "track": "8/10",
+            "genre": "Outsider",
+            "cover": "Images/share/my-anima.jpg",
+            "year": "2026"
+          },
+          "bytes": 5532901
+        },
+        {
+          "path": "Ash Stu - My Anima/10. Somewhere, Sometime.mp3",
+          "src": "Audio/My Anima/10. Somewhere, Sometime.mp3",
+          "tag": {
+            "title": "Somewhere, Sometime",
+            "album": "My Anima",
+            "track": "10/10",
+            "genre": "Outsider",
+            "cover": "Images/share/my-anima.jpg",
+            "year": "2026"
+          },
+          "bytes": 13266205
+        },
+        {
+          "path": "Ash Stu - My Anima/Cover.png",
+          "src": "Images/Releases/My Anima.png",
+          "bytes": 6845855
+        },
+        {
+          "path": "Ash Stu - My Anima/lyrics.txt",
+          "src": "Audio/My Anima/lyrics.txt",
+          "bytes": 8443
+        }
+      ]
     }
   },
   {
@@ -132,8 +196,137 @@
     ],
     "featured": true,
     "zip": {
-      "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-II.zip",
-      "bytes": 71748701
+      "name": "Ash Stu, Vol. II.zip",
+      "bytes": 71928533,
+      "files": [
+        {
+          "path": "Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3",
+          "src": "Audio/Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3",
+          "tag": {
+            "title": "Cool Cat Can't Comprehend",
+            "album": "Ash Stu, Vol. II",
+            "track": "1/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 7088718
+        },
+        {
+          "path": "Ash Stu, Vol. II/02. Dirge for Ducklings.mp3",
+          "src": "Audio/Ash Stu, Vol. II/02. Dirge for Ducklings.mp3",
+          "tag": {
+            "title": "Dirge for Ducklings",
+            "album": "Ash Stu, Vol. II",
+            "track": "2/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 5723565
+        },
+        {
+          "path": "Ash Stu, Vol. II/03. Savior Complicated.mp3",
+          "src": "Audio/Ash Stu, Vol. II/03. Savior Complicated.mp3",
+          "tag": {
+            "title": "Savior Complicated",
+            "album": "Ash Stu, Vol. II",
+            "track": "3/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 6391750
+        },
+        {
+          "path": "Ash Stu, Vol. II/04. Annabel Lena.mp3",
+          "src": "Audio/Ash Stu, Vol. II/04. Annabel Lena.mp3",
+          "tag": {
+            "title": "Annabel Lena",
+            "album": "Ash Stu, Vol. II",
+            "track": "4/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 3950445
+        },
+        {
+          "path": "Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3",
+          "src": "Audio/Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3",
+          "tag": {
+            "title": "Summertime Even on the Moon",
+            "album": "Ash Stu, Vol. II",
+            "track": "5/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 9782333
+        },
+        {
+          "path": "Ash Stu, Vol. II/06. Performatives Anonymous.mp3",
+          "src": "Audio/Ash Stu, Vol. II/06. Performatives Anonymous.mp3",
+          "tag": {
+            "title": "Performatives Anonymous",
+            "album": "Ash Stu, Vol. II",
+            "track": "6/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 4680131
+        },
+        {
+          "path": "Ash Stu, Vol. II/07. Theory of Hope.mp3",
+          "src": "Audio/Ash Stu, Vol. II/07. Theory of Hope.mp3",
+          "tag": {
+            "title": "Theory of Hope",
+            "album": "Ash Stu, Vol. II",
+            "track": "7/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 15288994
+        },
+        {
+          "path": "Ash Stu, Vol. II/08. Peacekeepers.mp3",
+          "src": "Audio/Ash Stu, Vol. II/08. Peacekeepers.mp3",
+          "tag": {
+            "title": "Peacekeepers",
+            "album": "Ash Stu, Vol. II",
+            "track": "8/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 13270281
+        },
+        {
+          "path": "Ash Stu, Vol. II/09. The Wandering Jerk.mp3",
+          "src": "Audio/Ash Stu, Vol. II/09. The Wandering Jerk.mp3",
+          "tag": {
+            "title": "The Wandering Jerk",
+            "album": "Ash Stu, Vol. II",
+            "track": "9/9",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-ii.jpg",
+            "year": "2026"
+          },
+          "bytes": 4902999
+        },
+        {
+          "path": "Ash Stu, Vol. II/Cover.png",
+          "src": "Images/Releases/Ash Stu, Vol. II.png",
+          "bytes": 839171
+        },
+        {
+          "path": "Ash Stu, Vol. II/lyrics.txt",
+          "src": "Audio/Ash Stu, Vol. II/lyrics.txt",
+          "bytes": 10146
+        }
+      ]
     }
   },
   {
@@ -231,8 +424,228 @@
     ],
     "featured": false,
     "zip": {
-      "url": "https://github.com/ashstumusic/portal/releases/download/downloads/Ash-Stu-Vol-I.zip",
-      "bytes": 97468599
+      "name": "Ash Stu, Vol. I.zip",
+      "bytes": 97407717,
+      "files": [
+        {
+          "path": "Ash Stu, Vol. I/01. The Cosmos Is Alive.mp3",
+          "src": "Audio/Ash Stu, Vol. I/01. The Cosmos Is Alive.mp3",
+          "tag": {
+            "title": "The Cosmos Is Alive",
+            "album": "Ash Stu, Vol. I",
+            "track": "1/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 7310573
+        },
+        {
+          "path": "Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3",
+          "src": "Audio/Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3",
+          "tag": {
+            "title": "There Used To Be a Brighter Boy",
+            "album": "Ash Stu, Vol. I",
+            "track": "2/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 2740985
+        },
+        {
+          "path": "Ash Stu, Vol. I/03. Drive Me Home.mp3",
+          "src": "Audio/Ash Stu, Vol. I/03. Drive Me Home.mp3",
+          "tag": {
+            "title": "Drive Me Home",
+            "album": "Ash Stu, Vol. I",
+            "track": "3/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 8766860
+        },
+        {
+          "path": "Ash Stu, Vol. I/04. Who Stuns the Birds.mp3",
+          "src": "Audio/Ash Stu, Vol. I/04. Who Stuns the Birds.mp3",
+          "tag": {
+            "title": "Who Stuns the Birds",
+            "album": "Ash Stu, Vol. I",
+            "track": "4/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 9217133
+        },
+        {
+          "path": "Ash Stu, Vol. I/05. The Helpful Raven.mp3",
+          "src": "Audio/Ash Stu, Vol. I/05. The Helpful Raven.mp3",
+          "tag": {
+            "title": "The Helpful Raven",
+            "album": "Ash Stu, Vol. I",
+            "track": "5/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 5594553
+        },
+        {
+          "path": "Ash Stu, Vol. I/06. VCR.mp3",
+          "src": "Audio/Ash Stu, Vol. I/06. VCR.mp3",
+          "tag": {
+            "title": "VCR",
+            "album": "Ash Stu, Vol. I",
+            "track": "6/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 15120157
+        },
+        {
+          "path": "Ash Stu, Vol. I/07. Waste My Time.mp3",
+          "src": "Audio/Ash Stu, Vol. I/07. Waste My Time.mp3",
+          "tag": {
+            "title": "Waste My Time",
+            "album": "Ash Stu, Vol. I",
+            "track": "7/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 9843095
+        },
+        {
+          "path": "Ash Stu, Vol. I/08. Pretend.mp3",
+          "src": "Audio/Ash Stu, Vol. I/08. Pretend.mp3",
+          "tag": {
+            "title": "Pretend",
+            "album": "Ash Stu, Vol. I",
+            "track": "8/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 8800481
+        },
+        {
+          "path": "Ash Stu, Vol. I/09. Relapse Sonnet.mp3",
+          "src": "Audio/Ash Stu, Vol. I/09. Relapse Sonnet.mp3",
+          "tag": {
+            "title": "Relapse Sonnet",
+            "album": "Ash Stu, Vol. I",
+            "track": "9/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 6285288
+        },
+        {
+          "path": "Ash Stu, Vol. I/10. Pick Up the Phone.mp3",
+          "src": "Audio/Ash Stu, Vol. I/10. Pick Up the Phone.mp3",
+          "tag": {
+            "title": "Pick Up the Phone",
+            "album": "Ash Stu, Vol. I",
+            "track": "10/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 1247212
+        },
+        {
+          "path": "Ash Stu, Vol. I/11. Why Have Eyes.mp3",
+          "src": "Audio/Ash Stu, Vol. I/11. Why Have Eyes.mp3",
+          "tag": {
+            "title": "Why Have Eyes",
+            "album": "Ash Stu, Vol. I",
+            "track": "11/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 4397928
+        },
+        {
+          "path": "Ash Stu, Vol. I/12. Unanswerable Questions.mp3",
+          "src": "Audio/Ash Stu, Vol. I/12. Unanswerable Questions.mp3",
+          "tag": {
+            "title": "Unanswerable Questions",
+            "album": "Ash Stu, Vol. I",
+            "track": "12/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 2393457
+        },
+        {
+          "path": "Ash Stu, Vol. I/13. A Grief Preserved.mp3",
+          "src": "Audio/Ash Stu, Vol. I/13. A Grief Preserved.mp3",
+          "tag": {
+            "title": "A Grief Preserved",
+            "album": "Ash Stu, Vol. I",
+            "track": "13/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 2697772
+        },
+        {
+          "path": "Ash Stu, Vol. I/14. Future Lives.mp3",
+          "src": "Audio/Ash Stu, Vol. I/14. Future Lives.mp3",
+          "tag": {
+            "title": "Future Lives",
+            "album": "Ash Stu, Vol. I",
+            "track": "14/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 1616807
+        },
+        {
+          "path": "Ash Stu, Vol. I/15. Don't Wish Your Life Away.mp3",
+          "src": "Audio/Ash Stu, Vol. I/15. Don't Wish Your Life Away.mp3",
+          "tag": {
+            "title": "Don't Wish Your Life Away",
+            "album": "Ash Stu, Vol. I",
+            "track": "15/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 3061620
+        },
+        {
+          "path": "Ash Stu, Vol. I/16. Anybody Still Awake .mp3",
+          "src": "Audio/Ash Stu, Vol. I/16. Anybody Still Awake?.mp3",
+          "tag": {
+            "title": "Anybody Still Awake?",
+            "album": "Ash Stu, Vol. I",
+            "track": "16/16",
+            "genre": "Outsider",
+            "cover": "Images/share/ash-stu-vol-i.jpg",
+            "year": "2025"
+          },
+          "bytes": 4439215
+        },
+        {
+          "path": "Ash Stu, Vol. I/Cover.png",
+          "src": "Images/Releases/Ash Stu, Vol. I.png",
+          "bytes": 3862570
+        },
+        {
+          "path": "Ash Stu, Vol. I/lyrics.txt",
+          "src": "Audio/Ash Stu, Vol. I/lyrics.txt",
+          "bytes": 12011
+        }
+      ]
     }
   }
 ]

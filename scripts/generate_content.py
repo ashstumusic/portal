@@ -236,10 +236,11 @@ def gen_releases():
     for r in releases:
         r['featured'] = r is lead
         del r['_sort'], r['_lead'], r['_order']
-        # The release's ready-made ZIP (see album_zip.py): the link the Download button uses, and its exact size.
-        zp = album_zip.plan(r)
+        # The release's download, made in the visitor's browser when Download is pressed (album_zip.live_plan): its file
+        # name, about how big, and the files that go in it. No ZIP is stored anywhere.
+        zp = album_zip.live_plan(r)
         if zp:
-            r['zip'] = {'url': zp['url'], 'bytes': zp['bytes']}
+            r['zip'] = zp
     return releases
 
 
