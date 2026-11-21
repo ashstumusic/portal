@@ -1,4 +1,4 @@
 type: Album
-date: 2026-11-07
+year: 2026
 featured: no
 order: 1

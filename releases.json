@@ -6,7 +6,6 @@
     "art2x": "Images/Releases/My Anima-800.webp",
     "tint": "#a7774f",
     "year": 2026,
-    "date": "2026-11-07",
     "apple": null,
     "spotify": null,
     "tracks": [
@@ -68,7 +67,7 @@
     "featured": false,
     "zip": {
       "url": "https://github.com/ashstumusic/portal/releases/download/downloads/My-Anima-Ash-Stu.zip",
-      "bytes": 34557136
+      "bytes": 34557052
     }
   },
   {
