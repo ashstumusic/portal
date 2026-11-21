@@ -2686,6 +2686,7 @@ function kitDoc(src, name, opener) {
       '<article class="kd-page" tabindex="-1"></article>';
     document.body.appendChild(_kdlg);
     _kdlg.querySelector('.kd-close').addEventListener('click', function() { _kdlg.close(); });
+    _kdlg.querySelector('.kd-dl').addEventListener('click', function(e) { e.preventDefault(); var d = this; kitSaveOne(decodeURIComponent(d.getAttribute('href')), d.getAttribute('download'), { text: 1 }, d); });   /* (TXT or PDF) */
     _kdlg.addEventListener('click', function(e) { if (e.target === _kdlg) _kdlg.close(); });   // (a click outside the page closes it)
     _kdlg.addEventListener('close', function() { document.documentElement.classList.remove('kd-open'); if (_kdlg._opener && _kdlg._opener.focus) _kdlg._opener.focus(); });
   }
@@ -2805,40 +2806,159 @@ function kitCanM4a() {
 }
 // The chooser: a small pop-up asking which formats, before a download starts. -> a Promise of {audio, image} or null.
 var _fdlg = null;
-function kitPickFormats(what, hasImages, opener, onlyImages) {   /* (onlyImages: one photo: just the Photos choice) */
+// The chooser (every download: the press kit, each album, each photo, each video, each text file): a small pop-up asking
+// which format, showing only the kinds of file in that download. kinds: {audio, image, video, text}. -> a Promise of
+// {audio, image, video, text} or null. The last choice of each kind is remembered.
+function kitPickFormats(what, kinds, opener) {
   var saved = {}; try { saved = JSON.parse(localStorage.getItem('ash_dl_fmt') || '{}'); } catch (e) {}
+  var n = ['audio', 'image', 'video', 'text'].filter(function(k) { return kinds[k]; }).length;
   return kitCanM4a().then(function(m4a) {
     return new Promise(function(done) {
       if (!_fdlg) { _fdlg = document.createElement('dialog'); _fdlg.className = 'kit-doc kit-fmt'; _fdlg.setAttribute('aria-labelledby', 'kf-title'); document.body.appendChild(_fdlg); }
       var opt = function(name, value, label, note, on) { return '<label class="kf-opt"><input type="radio" name="' + name + '" value="' + value + '"' + (on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></label>'; };
+      var set = function(title, body) { return '<fieldset class="kf-set"><legend class="kd-h">' + title + '</legend>' + body + '</fieldset>'; };
       var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' ? 'jpg' : 'png';
+      var vd = /^(mp4|mp3|wav)$/.test(saved.video) ? saved.video : 'mp4', tx = saved.text === 'pdf' ? 'pdf' : 'txt';
       _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
-        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (onlyImages ? 'Pick the format your device can open. The picture is the same in each: only the file type changes.' : 'Pick the formats your devices can open. The sound and pictures are the same in each: only the file type changes.') + '</p>' +
-        (onlyImages ? '' : '<fieldset class="kf-set"><legend class="kd-h">Songs</legend>' +
+        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (n > 1 ? 'Pick the formats your devices can open.' : 'Pick the format your device can open.') + ' The content is the same in each: only the file type changes.</p>' +
+        (kinds.audio ? set('Songs',
           opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
           opt('audio', 'wav', 'WAV', 'Plays on everything, even old CD players and editors. About four times larger.', a === 'wav') +
-          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : '') + '</fieldset>') +
-        (hasImages ? '<fieldset class="kf-set"><legend class="kd-h">Photos</legend>' +
+          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : '')) : '') +
+        (kinds.video ? set('Videos',
+          opt('video', 'mp4', 'MP4', 'The video and its sound. Plays on phones, computers and TVs.', vd === 'mp4') +
+          opt('video', 'mp3', 'Sound only, MP3', 'Just the performance, for a radio station or a playlist.', vd === 'mp3') +
+          opt('video', 'wav', 'Sound only, WAV', 'Just the performance, for editors and older players.', vd === 'wav')) : '') +
+        (kinds.image ? set('Photos',
           opt('image', 'png', 'PNG', 'As taken, with no loss.', im === 'png') +
-          opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg') + '</fieldset>' : '') +
-        (onlyImages ? '' : '<p class="kf-fixed">Videos come as MP4 and the text files as plain text: both open on every device.</p>') +
+          opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg')) : '') +
+        (kinds.text ? set('Text',
+          opt('text', 'txt', 'Plain text (TXT)', 'Opens in any app; easy to copy from.', tx === 'txt') +
+          opt('text', 'pdf', 'PDF', 'Laid out on the page, ready to print or attach.', tx === 'pdf')) : '') +
         '<div class="kf-btns"><button type="submit" value="go" class="rel-btn rel-dl kf-go" aria-label="Download"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></button>' +
         '<button type="submit" value="cancel" class="rel-lyrics-toggle kd-close" aria-label="Cancel"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></form>';
       var form = _fdlg.querySelector('form');
+      var pick = function(k, d) { var x = form.querySelector('[name=' + k + ']:checked'); return x ? x.value : (saved[k] || d); };
       var finish = function() {
         _fdlg.removeEventListener('close', finish);
-        if (_fdlg.returnValue !== 'go') { if (opener && opener.focus) opener.focus(); return done(null); }
-        var f = { audio: (form.querySelector('[name=audio]:checked') || {}).value || saved.audio || 'mp3', image: (form.querySelector('[name=image]:checked') || {}).value || 'png' };
-        try { localStorage.setItem('ash_dl_fmt', JSON.stringify(f)); } catch (e) {}
         if (opener && opener.focus) opener.focus();
+        if (_fdlg.returnValue !== 'go') return done(null);
+        var f = { audio: pick('audio', 'mp3'), image: pick('image', 'png'), video: pick('video', 'mp4'), text: pick('text', 'txt') };
+        try { localStorage.setItem('ash_dl_fmt', JSON.stringify(f)); } catch (e) {}
         done(f);
       };
       _fdlg.returnValue = '';
       _fdlg.addEventListener('close', finish);
-      _fdlg.addEventListener('click', function(e) { if (e.target === _fdlg) _fdlg.close('cancel'); });
+      _fdlg.onclick = function(e) { if (e.target === _fdlg) _fdlg.close('cancel'); };
       _fdlg.showModal();
       var first = form.querySelector('input:checked'); if (first) first.focus();
     });
+  });
+}
+// A video's sound alone (Videos: "Sound only"): decoded from the MP4 here, then WAV, or MP3 through lamejs 1.2.1 (fetched only
+// when someone picks it), at 192 kbps: above the video's own 128 kbps sound, so nothing more is lost.
+var _lameLib = null;
+function kitLame() {
+  if (window.lamejs) return Promise.resolve(window.lamejs);
+  if (!_lameLib) _lameLib = new Promise(function(ok, no) { var sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js'; sc.onload = function() { ok(window.lamejs); }; sc.onerror = no; document.head.appendChild(sc); });
+  return _lameLib;
+}
+function kitDecodeAny(u8, rate) {
+  var Ctx = window.OfflineAudioContext || window.webkitOfflineAudioContext, ctx = new Ctx(2, 1, rate || 44100), buf = u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
+  return new Promise(function(ok, no) { var p = ctx.decodeAudioData(buf, ok, no); if (p && p.then) p.then(ok, no); });
+}
+function kitMp3(ab, tag) {
+  return kitLame().then(function(L) {
+    var ch = Math.min(2, ab.numberOfChannels), enc = new L.Mp3Encoder(ch, ab.sampleRate, 192), parts = [], block = 1152 * 8;
+    var toI16 = function(f) { var o = new Int16Array(f.length); for (var i = 0; i < f.length; i++) { var v = Math.max(-1, Math.min(1, f[i])); o[i] = v < 0 ? v * 32768 : v * 32767; } return o; };
+    var l = toI16(ab.getChannelData(0)), r = ch > 1 ? toI16(ab.getChannelData(1)) : null;
+    for (var i = 0; i < l.length; i += block) { var b = r ? enc.encodeBuffer(l.subarray(i, i + block), r.subarray(i, i + block)) : enc.encodeBuffer(l.subarray(i, i + block)); if (b.length) parts.push(new Uint8Array(b)); }
+    var e = enc.flush(); if (e.length) parts.push(new Uint8Array(e));
+    var lab = tag ? kitId3(tag, null) : new Uint8Array(0), len = lab.length + parts.reduce(function(t, x) { return t + x.length; }, 0), out = new Uint8Array(len), o = 0;
+    out.set(lab, 0); o = lab.length; parts.forEach(function(x) { out.set(x, o); o += x.length; }); return out;
+  });
+}
+function kitVideoSound(u8, to, tag) { return kitDecodeAny(u8, 44100).then(function(ab) { return to === 'mp3' ? kitMp3(ab, tag) : kitWav(ab, tag); }); }
+// A text file as a PDF (Text: "PDF"): US Letter pages, Helvetica, the file's own lines wrapped to the page; its first line
+// and the lines between the "=====" rules (song titles) in bold, the rules themselves left out. Written by hand: no library.
+function kitPdf(txt) {
+  var L = txt.replace(/^﻿/, '').replace(/\r/g, '').split('\n');
+  var cv = document.createElement('canvas').getContext('2d');
+  var W = 612, H = 792, M = 60, maxW = W - 2 * M, lines = [], first = true, inHead = false;
+  var win = { '‘': 145, '’': 146, '“': 147, '”': 148, '–': 150, '—': 151, '…': 133, '•': 149 };
+  var wrap = function(t, size, bold) {
+    cv.font = (bold ? 'bold ' : '') + (size * 10) + 'px Helvetica, Arial, sans-serif';
+    var words = t.split(/(\s+)/), cur = '', out = [];
+    var lim = maxW - 12;
+    words.forEach(function(w) {
+      var test = cur + w; if (cv.measureText(test).width / 10 > lim && cur.trim()) { out.push(cur.replace(/\s+$/, '')); cur = w.replace(/^\s+/, ''); } else cur = test;
+      while (cv.measureText(cur).width / 10 > lim && cur.length > 1) {   // (a word longer than the line, like a long web address: split it)
+        var k = cur.length; while (k > 1 && cv.measureText(cur.slice(0, k)).width / 10 > lim) k--; out.push(cur.slice(0, k)); cur = cur.slice(k);
+      }
+    });
+    out.push(cur); return out;
+  };
+  for (var i = 0; i < L.length; i++) {
+    var t = L[i];
+    if (first && t.trim()) { wrap(t.trim(), 18, true).forEach(function(x) { lines.push([[x, 0], 18, true]); }); lines.push([['', 0], 11, false]); first = false; continue; }
+    if (/^\s*=+\s*$/.test(t)) { inHead = !inHead; if (inHead) lines.push([['', 0], 6, false]); continue; }
+    if (/^\s*-{3,}\s*$/.test(t)) { lines.push([['', 0], 6, false]); continue; }
+    var bold = inHead && t.trim() && !/^From /.test(t.trim()), heading = /^-{3,}$/.test((L[i + 1] || '').trim()) && t.trim();
+    var ind = (/^\s*/.exec(t)[0].length) * 3, cols = t.trim().split(/\s{2,}/);
+    if (cols.length === 2 && !heading && !bold) {   // (two columns: a label and its value, or a file and its details, set at a fixed tab)
+      var tab = ind + (/:$/.test(cols[0]) ? 130 : 290);
+      cv.font = '110px Helvetica, Arial, sans-serif';
+      if (cv.measureText(cols[0]).width / 10 + ind + 10 < tab && cv.measureText(cols[1]).width / 10 + tab <= maxW) { lines.push([[cols[0], ind], 11, false, cols[1], tab]); continue; }
+      if (cv.measureText(cols[1]).width / 10 + tab > maxW) {   // (too long to sit beside its label: the label, then the value on its own line(s))
+        lines.push([[cols[0], ind], 11, false]); wrap(cols[1], 11, false).forEach(function(x) { lines.push([[x, ind + 12], 11, false]); }); continue;
+      }
+    }
+    wrap(t.trim(), heading ? 13 : 11, bold || !!heading).forEach(function(x) { lines.push([[x, ind], heading ? 13 : 11, bold || !!heading]); });
+  }
+  var pages = [[]], y = H - M;
+  lines.forEach(function(l) { var lead = l[1] * 1.35; if (y - lead < M) { pages.push([]); y = H - M; } pages[pages.length - 1].push([l[0][0], l[1], l[2], y - l[1], l[0][1], l[3], l[4]]); y -= lead; });
+  var enc = function(t) { var o = ''; for (var k = 0; k < t.length; k++) { var c = t[k], code = c.charCodeAt(0); if (win[c]) o += '\\' + win[c].toString(8); else if (code > 255) o += '?'; else if (c === '(' || c === ')' || c === '\\') o += '\\' + c; else if (code > 126) o += '\\' + code.toString(8); else o += c; } return o; };
+  var objs = [], add = function(x) { objs.push(x); return objs.length; };
+  var cat = add(''), pagesId = add(''), f1 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'), f2 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  var kids = [];
+  pages.forEach(function(pg) {
+    var c = 'BT\n' + pg.filter(function(l) { return l[0]; }).map(function(l) { return '/' + (l[2] ? 'F2' : 'F1') + ' ' + l[1] + ' Tf 1 0 0 1 ' + (M + l[4]) + ' ' + l[3].toFixed(1) + ' Tm (' + enc(l[0]) + ') Tj' + (l[5] ? ' 1 0 0 1 ' + (M + l[6]) + ' ' + l[3].toFixed(1) + ' Tm (' + enc(l[5]) + ') Tj' : ''); }).join('\n') + '\nET';
+    var cs = add('<< /Length ' + c.length + ' >>\nstream\n' + c + '\nendstream');
+    kids.push(add('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /Font << /F1 ' + f1 + ' 0 R /F2 ' + f2 + ' 0 R >> >> /Contents ' + cs + ' 0 R >>'));
+  });
+  objs[cat - 1] = '<< /Type /Catalog /Pages ' + pagesId + ' 0 R >>';
+  objs[pagesId - 1] = '<< /Type /Pages /Kids [' + kids.map(function(k) { return k + ' 0 R'; }).join(' ') + '] /Count ' + kids.length + ' >>';
+  var out = '%PDF-1.4\n', offs = [];
+  objs.forEach(function(o, k) { offs.push(out.length); out += (k + 1) + ' 0 obj\n' + o + '\nendobj\n'; });
+  var x = out.length; out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n' + offs.map(function(o) { return ('000000000' + o).slice(-10) + ' 00000 n \n'; }).join('') + 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + cat + ' 0 R >>\nstartxref\n' + x + '\n%%EOF\n';
+  var u8 = new Uint8Array(out.length); for (var k2 = 0; k2 < out.length; k2++) u8[k2] = out.charCodeAt(k2) & 255; return u8;
+}
+// Convert one file as the visitor chose. -> Promise of [bytes, new name]. f: {src, path, tag?, kind?}
+function kitConvert(f, data, fmt, coverBytes) {
+  var isMp3 = /\.mp3$/i.test(f.src), isImg = /\.png$/i.test(f.src), isVid = /\.mp4$/i.test(f.src), isTxt = /\.txt$/i.test(f.src);
+  if (isMp3 && fmt.audio && fmt.audio !== 'mp3') return kitAudio(data, fmt.audio, f.tag).then(function(d) { return [d, f.path.replace(/\.mp3$/i, '.' + fmt.audio)]; });
+  if (isImg && fmt.image === 'jpg') return kitJpeg(data).then(function(d) { return [d, f.path.replace(/\.png$/i, '.jpg')]; });
+  if (isVid && fmt.video && fmt.video !== 'mp4') { var title = f.path.split('/').pop().replace(/\.mp4$/i, ''); return kitVideoSound(data, fmt.video, { title: title, album: 'Ash Stu - Live', track: '1/1' }).then(function(d) { return [d, f.path.replace(/\.mp4$/i, '.' + fmt.video)]; }); }
+  if (isTxt && fmt.text === 'pdf') return Promise.resolve([kitPdf(new TextDecoder().decode(data)), f.path.replace(/\.txt$/i, '.pdf')]);
+  if (f.tag && isMp3) { var lab = kitId3(f.tag, coverBytes), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); return Promise.resolve([d, f.path]); }
+  return Promise.resolve([data, f.path]);
+}
+// One file, chosen and saved on its own (a photo's, a video's or a text file's own Download)
+function kitSaveOne(src, name, kinds, opener) {
+  return kitPickFormats(name.replace(/\.[a-z0-9]+$/i, ''), kinds, opener).then(function(fmt) {
+    if (!fmt) return;
+    var word = opener && opener.querySelector('.btn-word'), was = word && word.textContent;
+    if (word) { word.dataset.auto = '0'; word.textContent = 'Preparing'; }
+    if (opener) opener.setAttribute('aria-busy', 'true');
+    return fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function(b) {
+      return kitConvert({ src: src, path: name }, new Uint8Array(b), fmt, null);
+    }).then(function(r) {
+      var ext = r[1].split('.').pop().toLowerCase(), type = { jpg: 'image/jpeg', png: 'image/png', mp3: 'audio/mpeg', wav: 'audio/wav', mp4: 'video/mp4', pdf: 'application/pdf', txt: 'text/plain' }[ext] || 'application/octet-stream';
+      var url = URL.createObjectURL(new Blob([r[0]], { type: type })), a = document.createElement('a');
+      a.href = url; a.download = r[1]; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
+    }).catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(name + ' could not be downloaded. Check the connection and try again.'); })
+      .then(function() { if (word) { word.textContent = was || 'Download'; word.dataset.auto = '1'; } if (opener) opener.removeAttribute('aria-busy'); });
   });
 }
 // One maker for every download (the press kit and each album): fetch the files, label the songs, put them in one ZIP,
@@ -2855,12 +2975,7 @@ function liveZip(files, filename, onStep, fmt) {
     if (i >= files.length) return Promise.resolve();
     var k = i++, f = files[k];
     return Promise.all([get(f.src), f.tag ? cover(f.tag.cover) : null]).then(function(r) {
-      var data = r[0], isMp3 = /\.mp3$/i.test(f.src), isImg = /\.png$/i.test(f.src);
-      // (the format the visitor picked: songs as WAV or M4A, photos as JPEG; everything else as it is)
-      if (isMp3 && fmt.audio && fmt.audio !== 'mp3') return kitAudio(data, fmt.audio, f.tag).then(function(d) { return [d, f.path.replace(/\.mp3$/i, '.' + fmt.audio)]; });
-      if (isImg && fmt.image === 'jpg') return kitJpeg(data).then(function(d) { return [d, f.path.replace(/\.png$/i, '.jpg')]; });
-      if (f.tag && isMp3) { var lab = kitId3(f.tag, r[1]), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); data = d; }
-      return [data, f.path];
+      return kitConvert(f, r[0], fmt, r[1]);   /* (the format the visitor picked for each kind of file) */
     }).then(function(r) {
       out[k] = r[0]; paths[k] = r[1]; got += f.bytes || 0; if (onStep) onStep(Math.min(99, Math.round(got / total * 100)));
       return worker();
@@ -2895,7 +3010,7 @@ function liveZip(files, filename, onStep, fmt) {
 var _kitBusy = false;
 function kitZip(status, btn) {
   if (_kitBusy || !KIT) return;
-  kitPickFormats('the press kit', true, btn).then(function(fmt) { if (fmt) kitZipGo(status, btn, fmt); });
+  kitPickFormats('the press kit', { audio: 1, image: 1, video: 1, text: 1 }, btn).then(function(fmt) { if (fmt) kitZipGo(status, btn, fmt); });
 }
 function kitZipGo(status, btn, fmt) {
   if (_kitBusy) return; _kitBusy = true;
@@ -2913,7 +3028,7 @@ function kitZipGo(status, btn, fmt) {
 function albumZip(btn, rIdx) {
   var rel = RELEASE_LIST[rIdx];
   if (!rel || !rel.zip || !rel.zip.files || btn.getAttribute('aria-busy') === 'true') return;
-  kitPickFormats(rel.name, true, btn).then(function(fmt) { if (fmt) albumZipGo(btn, rIdx, fmt); });
+  kitPickFormats(rel.name, { audio: 1, image: 1, text: 1 }, btn).then(function(fmt) { if (fmt) albumZipGo(btn, rIdx, fmt); });
 }
 function albumZipGo(btn, rIdx, fmt) {
   var rel = RELEASE_LIST[rIdx];
@@ -3087,26 +3202,16 @@ card.querySelectorAll('.epk-doc-link').forEach(function(a) {
 });
 // Live videos: the thumbnail and Play open the site's video player on that video
 card.querySelectorAll('.epk-video').forEach(function(el) {
-  var open = function(e) { e.stopPropagation(); var v = VIDEO_LIST.filter(function(x) { return x.title === el.dataset.video; })[0]; if (v) openLightbox(v); };
+  var open = function(e) { e.stopPropagation(); var v = VIDEO_LIST.filter(function(x) { return x.title === el.dataset.video; })[0]; if (v) openLightbox(v, true); };   /* (that video alone) */
   el.querySelector('.epk-video-thumb').addEventListener('click', open);
   el.querySelector('.epk-vplay').addEventListener('click', open);
 });
-// A single photo's Download asks PNG or JPEG too (owner's request), then saves it (converted here if JPEG)
-card.querySelectorAll('.epk-shot-dl').forEach(function(d) {
+// A single file's own Download (each photo, each live video) asks its format too (owner's request), then saves it
+card.querySelectorAll('.epk-shot-dl, .epk-video .epk-file-dl').forEach(function(d) {
   d.addEventListener('click', function(e) {
     e.preventDefault(); e.stopPropagation();
     var src = decodeURIComponent(d.getAttribute('href')), name = d.getAttribute('download');
-    kitPickFormats(name.replace(/\.png$/i, ''), true, d, true).then(function(fmt) {
-      if (!fmt) return;
-      var jpg = fmt.image === 'jpg' && /\.png$/i.test(src);
-      fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function(b) {
-        return jpg ? kitJpeg(new Uint8Array(b)) : new Uint8Array(b);
-      }).then(function(u8) {
-        var url = URL.createObjectURL(new Blob([u8], { type: jpg ? 'image/jpeg' : 'image/png' })), a = document.createElement('a');
-        a.href = url; a.download = jpg ? name.replace(/\.png$/i, '.jpg') : name; document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
-      }).catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(name + ' could not be downloaded. Check the connection and try again.'); });
-    });
+    kitSaveOne(src, name, /\.mp4$/i.test(src) ? { video: 1 } : { image: 1 }, d);
   });
 });
 // Download: the ZIP is made here, now, from the files on the site (kitZip)
@@ -3196,9 +3301,12 @@ let _lbIdx = 0;
 var _lbPrevFocus = null;
 var _lbOpen = false;
 var _lbWatcher = null;
-function openLightbox(v) {
+var _lbSingle = false;   /* (a video opened from the press kit plays on its own: no Previous, Next or dots into the other videos) */
+function openLightbox(v, single) {
 if (_lbOpen) return;
 _lbOpen = true;
+_lbSingle = !!single;
+document.getElementById('vid-lightbox').classList.toggle('lb-single', _lbSingle);
 if (!npAudio.paused) { npAudio.pause(); npSetPlaying(false); }
 _lbPrevFocus = document.activeElement;
 _lbIdx = VIDEO_LIST.indexOf(v);
@@ -3229,7 +3337,7 @@ if (!dotsEl.children.length) {
 VIDEO_LIST.forEach((_,i) => {
 const d = document.createElement('button');
 d.type = 'button'; d.className = 'lb-dot'; d.setAttribute('aria-label', 'Video '+(i+1)+': '+VIDEO_LIST[i].title);
-d.onclick = () => { _lbIdx = i; _lbShow(i); };
+d.onclick = () => { if (_lbSingle) return; _lbIdx = i; _lbShow(i); };
 dotsEl.appendChild(d);
 });
 }
@@ -3259,6 +3367,7 @@ if (_srAnnounce) { _srAnnounce.textContent = ''; setTimeout(function() { _srAnno
 document.getElementById('lb-retry').addEventListener('click', function() { _lbShow(_lbIdx); document.getElementById('lb-close').focus(); });
 var _lbNavDebounce = 0;
 function lbNav(dir) {
+if (_lbSingle) return;
 var now = Date.now();
 if (now - _lbNavDebounce < 300) return;
 _lbNavDebounce = now;
