@@ -363,7 +363,18 @@ def _press_kit():
     photos = sorted((f for f in os.listdir(KIT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))),
                     key=lambda n: (KIT_PHOTO_ORDER.index(n) if n in KIT_PHOTO_ORDER else len(KIT_PHOTO_ORDER), n.lower()))   # (the owner's order; any new photo after them)
     # the two text files
-    lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order."]
+    # the live videos' songs too (owner's request): their words as on the release they are from (lyrics.json, keyed by the
+    # release's song file, or by its lyrics file for a song not released yet), never the video's captions
+    vsongs = []
+    for title in KIT_VIDEOS:
+        for r in rels:
+            hit = next((t for t in (r.get("tracks") or []) if t["title"].lower() == title.lower()), None)
+            key = hit and hit["file"]
+            if not hit:
+                up = next((t for t in (r.get("upcoming") or []) if t["title"].lower() == title.lower()), None)
+                key = up and up.get("lyrics"); hit = up
+            if hit: vsongs.append((r, hit, key)); break
+    lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order" + (", then to the songs of its " + str(len(vsongs)) + " live videos." if vsongs else ".")]
     lines += [""]
     for ri, ti, r, t in songs:
         words = [(x or "").strip() for _, x in ((lyr.get(t["file"]) or {}).get("lines") or [])]
@@ -371,6 +382,14 @@ def _press_kit():
         lines += ["", "=" * 40, t["title"].upper(), "From " + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else ""), "=" * 40, ""]
         lines += words or ["(Instrumental)"]
         lines += [""]
+    if vsongs:
+        lines += ["", "", "LIVE VIDEOS", "-" * 40, ""]
+        for r, t, key in vsongs:
+            words = [(x or "").strip() for _, x in ((lyr.get(key) or {}).get("lines") or [])]
+            words = [w for w in words if w]
+            lines += ["", "=" * 40, t["title"].upper(), "From " + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else "") + ", seen in the live video", "=" * 40, ""]
+            lines += words or ["(Instrumental)"]
+            lines += [""]
     lines += ["", "-" * 40, "Ash Stu  -  " + KIT_FACTS["site"], ""]
     F = KIT_FACTS
     fs = ["ASH STU - FACT SHEET", "", F["pitch"], "",
@@ -387,7 +406,7 @@ def _press_kit():
     fs += ["", "", "IN THIS PRESS KIT", "-" * 40, "",
            "Songs folder: a sampler of " + str(len(songs)) + " songs (MP3), each named for the song and the album it is from, with the year and length:",
            *["  " + (t["title"] + " - " + r["name"] + ".mp3").ljust(_w) + (year_of(r) or "") + ((", " + length(t["file"])) if length(t["file"]) else "") for _, _, r, t in songs], "",
-           "Ash Stu - Lyrics.txt", "  The words to the " + str(len(songs)) + " songs in the Songs folder.", "",
+           "Ash Stu - Lyrics.txt", "  The words to the " + str(len(songs)) + " songs in the Songs folder" + (" and to the songs of the live videos." if vsongs else "."), "",
            "Ash Stu - Fact Sheet.txt", "  This file.", "",
            "Photos folder (PNG), with photo credits:", *["  " + (f.ljust(max(map(len, photos)) + 3) + ("Photo: " + _KIT_CREDIT[f] if f in _KIT_CREDIT else "")).rstrip() for f in photos], ""]
     for _who, _url in PHOTOGRAPHERS.items():
@@ -402,7 +421,8 @@ def _press_kit():
             n = round(MP4(os.path.join(ROOT, v["file"])).info.length); ln = f"{n // 60}:{n % 60:02d}"
         except Exception: ln = ""
         _vb = os.path.getsize(os.path.join(ROOT, v["file"]))
-        vids.append({"title": title, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
+        _rel = next((r["name"] for r in rels for t in (r.get("tracks") or []) + (r.get("upcoming") or []) if t["title"].lower() == title.lower()), "")   # (the release its song is from)
+        vids.append({"title": title, "from": _rel, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
                      "file": v["file"], "size": f"{_vb / 1048576:.0f} MB"})
     if vids:
         _vw = max(len(v["title"] + " - Ash Stu (Live).mp4") for v in vids) + 3

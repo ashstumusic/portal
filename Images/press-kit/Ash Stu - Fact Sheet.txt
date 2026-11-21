@@ -36,7 +36,7 @@ Songs folder: a sampler of 5 songs (MP3), each named for the song and the album 
   You Are What You Love - My Anima.mp3                 2026, 2:18
 
 Ash Stu - Lyrics.txt
-  The words to the 5 songs in the Songs folder.
+  The words to the 5 songs in the Songs folder and to the songs of the live videos.
 
 Ash Stu - Fact Sheet.txt
   This file.

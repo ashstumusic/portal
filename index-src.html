@@ -2224,6 +2224,7 @@ row.innerHTML =
 '<span class="rel-track-num" aria-hidden="true">' + r.num + '</span>' +
 '<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
 '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
+'<span class="rel-track-word" aria-hidden="true"><span class="rtw-play">Play</span><span class="rtw-on">Playing</span><span class="rtw-off">Paused</span></span>' +   /* (a word with the picture: owner's rule; it follows the song's state) */
 '<span class="rel-track-title">' + escHtml(t.title) + '</span>' +
 '';
 // The lyrics toggle is a sibling of the row, not inside it: a button
@@ -3113,7 +3114,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
     var meta = v.note + (v.length ? ' · ' + v.length : '');
     return '<div class="epk-video" data-video="' + escHtml(v.title) + '">' +
       '<button type="button" class="epk-video-thumb" tabindex="-1" aria-hidden="true"><img src="' + escHtml(encodeURI(v.thumb)) + '" alt="" width="576" height="324" loading="lazy" decoding="async"/></button>' +
-      '<p class="epk-shot-name">' + escHtml(v.title) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
+      '<p class="epk-shot-name">' + escHtml(v.title + (v.from ? ' - from ' + v.from : '')) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +   /* ("Song - from Album", as on the sampler) */
       '<div class="epk-video-btns"><button type="button" class="rel-lyrics-toggle epk-vplay" aria-label="Play ' + escHtml(v.title) + ', ' + escHtml(meta.toLowerCase()) + '"><svg class="lyr-ico" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button>' +
       (v.file ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(kitUrl(v.file)) + '" download="' + escHtml(v.title) + ' - Ash Stu (Live).mp4" aria-label="Download ' + escHtml(v.title) + ', the video (MP4, ' + escHtml(v.size) + ')" title="Download ' + escHtml(v.title) + ' (MP4, ' + escHtml(v.size) + ')"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' : '') + '</div></div>';   /* (owner's request: a Download for the video file in place of the YouTube link) */
   }).join('') + '</div></div>' : '') +
@@ -3175,11 +3176,12 @@ KIT.files.forEach(function(f, k) {
     var idx = f.type === 'song' ? si++ : -1;
     var row = document.createElement('button'); row.type = 'button'; row.className = 'rel-track';
     row.dataset.release = f.ri; row.dataset.track = f.ti;
-    var shown = t.title + ' - ' + RELEASE_LIST[f.ri].name;   /* (owner's request: every track titled "its name - the album it's from") */
+    var shown = t.title + ' - from ' + RELEASE_LIST[f.ri].name;   /* (owner's request: every track titled "its name - the album it's from") */
     row.setAttribute('aria-label', 'Play ' + shown + ', track ' + num + '');
     row.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + num + '</span>' +
       '<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
       '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
+      '<span class="rel-track-word" aria-hidden="true"><span class="rtw-play">Play</span><span class="rtw-on">Playing</span><span class="rtw-off">Paused</span></span>' +   /* (a word with the picture: owner's rule; it follows the song's state) */
       '<span class="rel-track-title">' + escHtml(shown) + '</span>' +
       (f.length ? '<span class="epk-from">' + escHtml(f.length) + '</span>' : '');   /* (how long: a booker with three minutes picks fast) */
     // (a kit song plays the kit's songs in turn; a song of the latest release plays that release, as on its own card)
