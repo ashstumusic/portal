@@ -498,6 +498,9 @@ def main():
             listen.append(f'<li><a href="{esc(rel["apple"])}" rel="noopener">Apple Music</a></li>')
         if rel.get('spotify'):
             listen.append(f'<li><a href="{esc(rel["spotify"])}" rel="noopener">Spotify</a></li>')
+        for key, store in (('amazon', 'Amazon Music'), ('deezer', 'Deezer')):
+            if rel.get(key):
+                listen.append(f'<li><a href="{esc(rel[key])}" rel="noopener">{store}</a></li>')
         listen.append('<li><a href="/#music">Play on ashstu.art</a></li>')
         if unrel:
             listen = ['<li>Not released yet</li>']
@@ -659,7 +662,9 @@ def main():
         listen = []
         if rel.get('apple'): listen.append(f'<a href="{esc(rel["apple"])}" rel="noopener">Apple Music</a>')
         if rel.get('spotify'): listen.append(f'<a href="{esc(rel["spotify"])}" rel="noopener">Spotify</a>')
-        listen_line = (' · Listen on ' + ' and '.join(listen)) if listen else ''
+        for key, store in (('amazon', 'Amazon Music'), ('deezer', 'Deezer')):
+            if rel.get(key): listen.append(f'<a href="{esc(rel[key])}" rel="noopener">{store}</a>')
+        listen_line = (' · Listen on ' + (', '.join(listen[:-1]) + ' and ' + listen[-1] if len(listen) > 1 else listen[0])) if listen else ''
         status = ''
         if waiting and n_out: status = f' · {n_out} of {n_all} tracks out now'
         elif waiting: status = ' · not released yet'
@@ -685,7 +690,7 @@ def main():
              'albumReleaseType': {'Single': 'SingleRelease', 'EP': 'EPRelease'}.get(kind, 'AlbumRelease'),
              **({'datePublished': rdate} if rdate else {}),
              'numTracks': n_all,
-             **({'sameAs': [u for u in (rel.get('apple'), rel.get('spotify')) if u]} if (rel.get('apple') or rel.get('spotify')) else {}),
+             **({'sameAs': [u for u in (rel.get('apple'), rel.get('spotify'), rel.get('amazon'), rel.get('deezer')) if u]} if (rel.get('apple') or rel.get('spotify') or rel.get('amazon') or rel.get('deezer')) else {}),
              **({'track': {'@type': 'ItemList', 'numberOfItems': len(ld_tracks), 'itemListElement': ld_tracks}} if ld_tracks else {}),
              'dateModified': modified},
             {'@type': 'WebPage', '@id': url, 'url': url, 'name': title, 'inLanguage': 'en', 'dateModified': modified,

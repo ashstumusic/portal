@@ -214,6 +214,10 @@ def gen_releases():
             # though some streaming links exist (more services coming).
             **({'soon': True} if links.get('soon', '').strip().lower() in ('yes', 'true', '1') else {}),
             'spotify': links.get('spotify'),
+            # More stores (links.txt "amazon:" / "deezer:"), listed in the card's "Listen on" line after Apple Music and
+            # Spotify. Left out when not set.
+            **({'amazon': links['amazon']} if links.get('amazon') else {}),
+            **({'deezer': links['deezer']} if links.get('deezer') else {}),
             'tracks': tracks,
             **({'upcoming': upcoming} if upcoming else {}),
             '_sort': sort_val,

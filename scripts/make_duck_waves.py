@@ -128,7 +128,6 @@ open(os.path.join(IMG, 'rubber-duck.svg'), 'w').write(
 # forward from the bill and rising a little in a gentle wave (staying clear of the name above), turning a little, growing as they leave the bill and shrinking away near the top. Same pencil
 # line and gradient as the duck; drawn afresh each frame, so they boil like everything else.
 NCW, NCH, NF = 120, 120, 12
-BILL = (89, 81)
 def note_shape(kind):
     """note drawings in note space (head at the origin, about 10 units tall): (stroked lines, filled heads)"""
     head = lambda cx, cy: [(cx + 2.6 * math.cos(a) * math.cos(-.45) - 1.8 * math.sin(a) * math.sin(-.45),
@@ -137,23 +136,33 @@ def note_shape(kind):
         return [[(2.2, -.8), (2.2, -11)], qbez((2.2, -11), (6.5, -8.5), (5.5, -4.5))], [head(0, 0)]
     else:           # two beamed notes
         return [[(2.2, -.8), (2.2, -11)], [(10.2, -2.3), (10.2, -12.5)], [(2.2, -11), (10.2, -12.5)], [(2.2, -9), (10.2, -10.5)]], [head(0, 0), head(8, -1.5)]
+# One row per duck pose, in the duck sheet's order, so the swim (duck-eight, which picks the duck's row) picks the
+# matching row here too: each starts the tune at that pose's bill and sends it the way the bill points.
+# (where the bill is, in notes-cell units; how far the notes travel across and up over their flight)
+BILLS = [((88, 81), 17, 9),     # side on: straight ahead from the bill
+         ((76, 85), 22, 10),    # three-quarter towards you
+         ((66, 87), 20, 13),    # facing you: from the "o", up and off to the side so the face stays clear
+         ((83, 79), 22, 9),     # three-quarter away
+         ((66, 70), 16, 10)]    # back to you: from beyond the head
 ncells = []
-for f in range(NF):
+for row, (BILL, DX, DY) in enumerate(BILLS):
+  for f in range(NF):
     parts = []
     for k in range(3):
         t = ((f / NF) + k / 3) % 1                       # 0 = just left the bill, 1 = gone
         kind = (k + (1 if (f + 4 * k) // NF % 2 else 0)) % 2
-        x = BILL[0] + 4 + 26 * t                                            # (carried forward from the bill, at head height...)
-        y = BILL[1] - 3 - 9 * t - 3.5 * math.sin(t * 2 * math.pi + k * 2.1)  # (...lifting only a little, in a gentle wave: the name sits close above)
+        x = BILL[0] + 4 + DX * t                                            # (carried away from the bill...)
+        y = BILL[1] - 3 - DY * t - 3.5 * math.sin(t * 2 * math.pi + k * 2.1)  # (...lifting only a little, in a gentle wave: the name sits close above)
         sc = 1.2 * ((.55 + 1.6 * t) if t < .3 else 1.03 - .45 * max(0, t - .7) / .3)
         rot = math.radians(-12 + 22 * math.sin(t * 5 + k))
         tf = lambda pts: [(x + sc * (px * math.cos(rot) - py * math.sin(rot)), y + sc * (px * math.sin(rot) + py * math.cos(rot))) for px, py in pts]
         strokes, heads = note_shape(kind)
         parts.append(''.join(f'<path d="{path(wobble(tf(h), rng, .18), True)}" fill="url(#g)" stroke="none"/>' for h in heads))
         parts.append(f'<path d="{" ".join(path(wobble(tf(st), rng, .22)) for st in strokes)}" fill="none"/>')
-    ncells.append(f'<g transform="translate({f * NCW} 0)">{"".join(parts)}</g>')
+    ncells.append(f'<g transform="translate({f * NCW} {row * NCH})">{"".join(parts)}</g>')
+NR = len(BILLS)
 open(os.path.join(IMG, 'duck-notes.svg'), 'w').write(
-    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {NCW * NF} {NCH}" width="{NCW * NF}" height="{NCH}">'
+    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {NCW * NF} {NCH * NR}" width="{NCW * NF}" height="{NCH * NR}">'
     '<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="70" y1="0" x2="120" y2="0" spreadMethod="pad">'
     '<stop offset="0" stop-color="#B0145E"/><stop offset=".5" stop-color="#A8400A"/><stop offset="1" stop-color="#0B6A8C"/></linearGradient></defs>'
     f'<g stroke="url(#g)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">{"".join(ncells)}</g></svg>\n')
