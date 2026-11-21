@@ -210,6 +210,10 @@ _parts = _script_re.split(html)
 for _i in range(0, len(_parts), 2):  # even indices = markup outside <script>
     _parts[_i] = re.sub(r'(src|href)="(Images/[^"?]+)"', _same_url_as_css, _parts[_i])
 html = "".join(_parts)
+# The head script that waits for the pencil-shading image before showing the name's shading asks for it by the
+# stylesheet's exact URL too (it asked for the bare "/Images/pencil-hatch.webp", so the 216KB image was downloaded twice).
+if _CSS_IMG_V.get("Images/pencil-hatch.webp"):
+    html = html.replace('h.src="/Images/pencil-hatch.webp"', 'h.src="/Images/pencil-hatch.webp?v=' + _CSS_IMG_V["Images/pencil-hatch.webp"] + '"')
 
 # Externalize the main script: one hashed, cached file instead of an
 # inline render-blocking block that re-downloads every visit. `defer` runs
