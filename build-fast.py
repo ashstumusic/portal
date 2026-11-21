@@ -387,7 +387,7 @@ def _press_kit():
         for r, t, key in vsongs:
             words = [(x or "").strip() for _, x in ((lyr.get(key) or {}).get("lines") or [])]
             words = [w for w in words if w]
-            lines += ["", "=" * 40, t["title"].upper(), ("From " if any(x is t for x in (r.get("tracks") or [])) else "Unreleased, from ") + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else "") + ", seen in the live video", "=" * 40, ""]
+            lines += ["", "=" * 40, t["title"].upper(), "From " + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else "") + ", seen in the live video", "=" * 40, ""]
             lines += words or ["(Instrumental)"]
             lines += [""]
     lines += ["", "-" * 40, "Ash Stu  -  " + KIT_FACTS["site"], ""]

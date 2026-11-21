@@ -146,8 +146,8 @@ def video_album(title, upcoming=False):   # the album the song is on (released) 
 def video_from(title):
     out, soon = video_album(title), video_album(title, True)
     if out: return f'From <a href="/albums/{slugify(out)}/">{esc(out)}</a>'
-    if soon: return f'Unreleased, from <a href="/albums/{slugify(soon)}/">{esc(soon)}</a>'
-    return 'Unreleased'
+    if soon: return f'From <a href="/albums/{slugify(soon)}/">{esc(soon)}</a>'
+    return ''
 def render_video_card(v, v_idx):
     yt_btn = ''
     if v.get('youtube'):
@@ -164,7 +164,7 @@ def render_video_card(v, v_idx):
     kicker = 'Video' + (f'<span class="rel-year"><span class="rel-sep"> · </span><time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3>'
-            + f'<p class="vid-from">{video_from(v["title"])}</p>'
+            + (f'<p class="vid-from">{video_from(v["title"])}</p>' if video_from(v['title']) else '')
             + '</div>'
             f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'
             f'<span class="vid-thumb">{thumb_el}</span>'
