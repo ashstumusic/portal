@@ -94,7 +94,8 @@
   });
 
   // ── SPOTLIGHT CARDS ───────────────────────────────────────────────
-  const CARD_SEL = '.rel-card, .vid-card, .record, .book-card, .new-record, .video-link';
+  // (the whole video card, not just its thumbnail, so every release card lights up the same way: owner's request)
+  const CARD_SEL = '.rel-card, .vid-card-wrap, .record, .book-card, .new-record, .video-link';
   let litCard = null, litRect = null, stale = true, measuredT = 0;
   addEventListener('scroll', () => { stale = true; }, { passive: true }); addEventListener('resize', () => { stale = true; }, { passive: true });
   if (finePointer) {

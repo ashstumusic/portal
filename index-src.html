@@ -1832,6 +1832,19 @@ setTracklist(rIdx, false);
 }
 ['play', 'pause', 'playing'].forEach(function(ev) { npAudio.addEventListener(ev, function() { updatePlayUI(); }); });
 var _partyPlayingIdx = -1;
+// The album whose song is in the player - playing or paused - is "cued": its card shows "Now playing" with the
+// song's name (the bars move only while it plays). The player bar must be showing: the song the home page keeps
+// standing by, unseen, doesn't count.
+function syncCued() {
+var cur = pState.playlist[pState.plIdx], on = !!(cur && npBar.classList.contains('show'));
+document.querySelectorAll('.rel-card').forEach(function(c) {
+  var me = on && +c.dataset.release === cur.releaseIdx;
+  c.classList.toggle('is-cued', me);
+  var song = c.querySelector('.rel-eq-song');
+  if (song) song.textContent = me ? String(cur.title || '').replace(/<[^>]*>/g, '') : '';
+});
+}
+if (window.MutationObserver && typeof npBar !== 'undefined' && npBar) new MutationObserver(function() { syncCued(); }).observe(npBar, { attributes: true, attributeFilter: ['class'] });
 function updatePlayUI() {
 var _nowIdx = !npAudio.paused ? pState.releaseIdx : -1;
 // The row of the song in the player shows level bars in place of its number
@@ -1844,6 +1857,7 @@ if (_curRow) { _curRow.classList.add('active'); _curRow.classList.toggle('is-pau
 /* (No confetti pop from the card when a track starts.) */
 _partyPlayingIdx = _nowIdx;
 document.querySelectorAll('.rel-card.now-playing').forEach(function(c) { c.classList.remove('now-playing'); });
+syncCued();
 Object.keys(_discCache).forEach(function(rIdx) {
 var svg = _discCache[rIdx];
 var isPlaying = parseInt(rIdx) === pState.releaseIdx && !npAudio.paused;
@@ -2911,15 +2925,20 @@ if (!grid) return;
 var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function decorate() {
 grid.querySelectorAll('.rel-card').forEach(function(card) {
-// (the chip sits in the card's top line, after the year - never on the cover, which is never covered by anything)
-var cat = card.querySelector('.rel-info .rel-cat');
-if (!cat || cat.querySelector('.rel-eq')) return;
+// "Now playing" lives in the card's Tracks bar, after the count ("10 tracks  ▮▮▮ NOW PLAYING · Still Sad"): the
+// card's status strip, beside the list the song belongs to, the same on every screen - and never on the cover. It
+// shows whenever one of the album's songs is in the player (playing or paused: the bars hold still while paused).
+// A release with no Tracks bar (a single) carries it in its top line instead. Decoration only (aria-hidden): the
+// Play/Pause button and the player itself say what is playing.
+if (card.querySelector('.rel-eq')) return;
+var host = card.querySelector('.rel-tl-toggle'), label = host && host.querySelector('.rel-tl-label');
 var e = document.createElement('span'); e.className = 'party-eq rel-eq'; e.setAttribute('aria-hidden', 'true');
-e.innerHTML = '<i></i><i></i><i></i><i></i> Now playing'; cat.appendChild(e);
+e.innerHTML = '<i></i><i></i><i></i><i></i><span class="rel-eq-word">Now playing</span><span class="rel-eq-song"></span>';
+if (label) label.after(e); else { var cat = card.querySelector('.rel-info .rel-cat'); if (cat) cat.appendChild(e); }
 });
 }
-decorate();
-new MutationObserver(decorate).observe(grid, { childList: true, subtree: false });
+decorate(); if (typeof syncCued === 'function') syncCued();
+new MutationObserver(function() { decorate(); if (typeof syncCued === 'function') syncCued(); }).observe(grid, { childList: true, subtree: false });
 /* Confetti pop from a card when its release starts (skips release 0 while
    the hero panel, which pops its own, is on screen). One fixed canvas,
    created on first use, drawn only while pieces are alive. */
