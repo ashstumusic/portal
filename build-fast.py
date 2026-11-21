@@ -310,8 +310,6 @@ print(f"Wrote {p_out}: {len(_p)//1024}KB")
 #                 as their cover (the label is written in the browser; the sound is the site's file, unchanged)
 #   the fact sheet and the lyrics (plain text, written here into Images/press-kit/)
 #   Photos/       the PNGs in Images/press-kit/
-#   Latest Release - <name>/   the release the site features (owner's request: "include my latest music release with
-#                 every download"): its songs labelled as on its own Download, its cover and its lyrics.txt
 KIT_DIR = os.path.join(ROOT, "Images", "press-kit")
 KIT_TOP = "Ash Stu - Press Kit/"
 KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", "Worship Song", "You Are What You Love"]
@@ -360,10 +358,8 @@ def _press_kit():
                       "ri": ri, "ti": ti, "from": r["name"] + (" (" + year_of(r) + ")" if year_of(r) else ""), "length": length(t["file"]), "tag": {"title": t["title"], "album": "Ash Stu - Press Kit", "track": f"{k}/{len(songs)}", "cover": KIT_SONG_COVER}})
     photos = sorted((f for f in os.listdir(KIT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))),
                     key=lambda n: (0 if "headshot" in n.lower() and "(wide)" not in n.lower() else 1, n.lower()))   # (the headshots, then the wide shots)
-    latest = next((r for r in rels if r.get("featured") and r.get("tracks")), next((r for r in rels if r.get("tracks")), None))
     # the two text files
     lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order."]
-    if latest: lines += ["The words to the latest release are in its own folder."]   # (owner's wording)
     lines += [""]
     for ri, ti, r, t in songs:
         words = [(x or "").strip() for _, x in ((lyr.get(t["file"]) or {}).get("lines") or [])]
@@ -392,12 +388,6 @@ def _press_kit():
            "Photos folder (PNG), with photo credits:", *["  " + (f.ljust(max(map(len, photos)) + 3) + ("Photo: " + _KIT_CREDIT[f] if f in _KIT_CREDIT else "")).rstrip() for f in photos], ""]
     for _who, _url in PHOTOGRAPHERS.items():
         if any(_KIT_CREDIT.get(f) == _who for f in photos): fs += [_who + ", photographer: " + _url, ""]
-    if latest:
-        n_l = len(latest["tracks"])
-        fs += ["Latest Release - " + latest["name"] + " folder: the whole album as released:",
-               "  " + str(n_l) + " songs (MP3, numbered in album order, each labelled with the album's cover)",
-               "  " + latest["name"] + " - Cover" + (".png" if os.path.exists(os.path.join(ROOT, os.path.splitext(latest["art"])[0] + ".png")) else os.path.splitext(latest["art"])[1]) + "   the album cover",
-               "  " + latest["name"] + " - Lyrics.txt  the words to all " + str(n_l) + " songs (a separate file from Ash Stu - Lyrics.txt above)", ""]
     fs += ["Free to use for booking, press and promotion of Ash Stu.", ""]
     texts = {"Ash Stu - Fact Sheet.txt": fs, "Ash Stu - Lyrics.txt": lines}
     for name, body in texts.items():
@@ -412,23 +402,6 @@ def _press_kit():
         if hd[:8] == b"\x89PNG\r\n\x1a\n": dims = [int.from_bytes(hd[16:20], "big"), int.from_bytes(hd[20:24], "big")]
         files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": ("Images/embedded/" + _KIT_THUMB[f]) if f in _KIT_THUMB else "", "dims": dims,
                       **({"credit": _KIT_CREDIT[f], "creditUrl": PHOTOGRAPHERS.get(_KIT_CREDIT[f], "")} if f in _KIT_CREDIT else {})})
-    if latest:
-        folder = KIT_TOP + "Latest Release - " + latest["name"] + "/"
-        ri = rels.index(latest); total = len(latest["tracks"]) + len(latest.get("upcoming") or [])
-        stem = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(os.path.basename(latest["art"]))[0].lower()).strip("-")
-        cover_jpg = "Images/share/" + stem + ".jpg"
-        for ti, t in enumerate(latest["tracks"]):
-            files.append({"path": folder + os.path.basename(t["file"]), "src": t["file"], "type": "album", "title": t["title"], "ri": ri, "ti": ti, "length": length(t["file"]),
-                          "tag": {"title": t["title"], "album": latest["name"], "track": f"{t.get('num', ti + 1)}/{total}", "year": year_of(latest), "genre": "Outsider",
-                                  "cover": cover_jpg if os.path.exists(os.path.join(ROOT, cover_jpg)) else ""}})
-        png = os.path.splitext(latest["art"])[0] + ".png"
-        art = png if os.path.exists(os.path.join(ROOT, png)) else latest["art"]
-        _cd = None
-        with open(os.path.join(ROOT, art), "rb") as fh: _hd = fh.read(24)
-        if _hd[:8] == b"\x89PNG\r\n\x1a\n": _cd = [int.from_bytes(_hd[16:20], "big"), int.from_bytes(_hd[20:24], "big")]
-        files.append({"path": folder + latest["name"] + " - Cover" + os.path.splitext(art)[1], "src": art, "type": "cover", "thumb": latest["art"], "dims": _cd})
-        ly = os.path.dirname(latest["tracks"][0]["file"]) + "/lyrics.txt"
-        if os.path.exists(os.path.join(ROOT, ly)): files.append({"path": folder + latest["name"] + " - Lyrics.txt", "src": ly, "type": "albumtext"})
     for f in files:
         f["name"] = f["path"].rsplit("/", 1)[1]; f["ext"] = f["name"].rsplit(".", 1)[1].upper()
         n = size(f["src"]); f["bytes"] = n; f["size"] = fmt(n); f["mb"] = round(n / 1048576, 1)
@@ -439,8 +412,7 @@ def _press_kit():
         _upd = _sp2.run(["git", "log", "-1", "--format=%cs", "--", "Images/press-kit", "releases.json"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     except Exception: _upd = ""
     return {"top": KIT_TOP, "files": files, "bytes": sum(f["bytes"] for f in files), "facts": KIT_FACTS,
-            "updated": _upd or time.strftime("%Y-%m-%d"),
-            "latest": {"name": latest["name"], "ri": rels.index(latest)} if latest else None}
+            "updated": _upd or time.strftime("%Y-%m-%d")}
 _kitdata = _press_kit()
 html = html.replace("__KIT_MB__", str(max(1, round(_kitdata["bytes"] / 1048576))))
 html = html.replace("__KIT_JSON__", json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))

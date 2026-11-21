@@ -2763,7 +2763,6 @@ if (hasLyr) inKit.push('their lyrics');
 if (hasSheet) inKit.push('a fact sheet');
 if (nPics) inKit.push(nPics + (nPics === 1 ? ' photo' : ' photos'));
 if (nLogo) inKit.push('the logo');
-if (KIT.latest) inKit.push('the latest release, ' + KIT.latest.name);
 var inKitText = inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0];
 var facts = '';
 if (latest) facts += '<div class="epk-fact"><dt>Latest release</dt><dd><a href="albums/' + slug(latest.name) + '/">' + escHtml(latest.name) + '</a>' + (latest.date ? ', ' + fullDate(latest.date) : '') + '</dd></div>';
@@ -2797,7 +2796,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       (f.credit ? '<p class="epk-shot-credit">Photo: ' + (f.creditUrl ? '<a href="' + escHtml(f.creditUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(f.credit) + '</a>' : escHtml(f.credit)) + '</p>' : '') +
       '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
-  tlToggle({ name: 'the Press Kit', tracks: KIT.files.filter(function(f) { return f.type === 'song' || f.type === 'album'; }) }, 'kit') +   /* (owner's request: the list is just a tracklist) */
+  tlToggle({ name: 'the Press Kit', tracks: KIT.files.filter(function(f) { return f.type === 'song'; }) }, 'kit') +   /* (owner's request: the list is just a tracklist) */
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
 if (sec) sec.classList.add('epk-merged');
@@ -2832,19 +2831,12 @@ card.addEventListener('click', function(e) {
 var PIC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>';
 var DOC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 17h5"/></svg>';
 var DL = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>';
-var frag = document.createDocumentFragment(), si = 0, grouped = false, num = 0;
+var frag = document.createDocumentFragment(), si = 0, num = 0;
 KIT.files.forEach(function(f, k) {
-  if (f.type !== 'song' && f.type !== 'album') return;   /* (just a tracklist: the songs; the images are in the row above, the two text files under Read) */
+  if (f.type !== 'song') return;   /* (just a tracklist: the songs; the images are in the row above, the two text files under Read) */
   var wrap = document.createElement('div'); wrap.className = 'rel-track-wrap';
   var href = kitUrl(f.src);
   // (the latest release's files come under a line naming its folder, as they sit in the ZIP)
-  if (!grouped && /^(album|cover|albumtext)$/.test(f.type)) {
-    grouped = true;
-    var g = document.createElement('p'); g.className = 'epk-group';
-    g.textContent = f.path.split('/').slice(-2, -1)[0]; num = 0;
-    frag.appendChild(g);
-  }
-  if (!grouped && !num) { var g0 = document.createElement('p'); g0.className = 'epk-group'; g0.textContent = 'Sampler'; frag.appendChild(g0); }
   num++;
   var playable = (f.type === 'song' || f.type === 'album') && ok(f);
   if (playable) {
@@ -2853,7 +2845,7 @@ KIT.files.forEach(function(f, k) {
     var row = document.createElement('button'); row.type = 'button'; row.className = 'rel-track';
     row.dataset.release = f.ri; row.dataset.track = f.ti;
     var shown = t.title + ' - ' + RELEASE_LIST[f.ri].name;   /* (owner's request: every track titled "its name - the album it's from") */
-    row.setAttribute('aria-label', 'Play ' + shown + ', track ' + num + (f.type === 'album' ? ' of the latest release' : ' of the sampler'));
+    row.setAttribute('aria-label', 'Play ' + shown + ', track ' + num + '');
     row.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + num + '</span>' +
       '<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
       '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
