@@ -3278,7 +3278,10 @@ function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()
 function deal(){for(var t=0;t<2;t++){if(!deck.length)deck=shuffle(pool.map(function(_,i){return i;}));for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0)return deck.splice(k,1)[0];deck=[];}return -1;}
 function put(w,i){shown[w]=i;var im=slots[w];im.removeAttribute('srcset');im.removeAttribute('sizes');im.src=pool[i].src;im.alt=pool[i].alt;}
 slots.forEach(function(_,w){put(w,deal());});
-pool.forEach(function(it){var p=new Image();p.src=it.src;});
+// (the rest of the pool is fetched only once About is about to come into view - it is the last section, and many
+// visitors never reach it)
+var warmed=false,warm=function(){if(warmed)return;warmed=true;pool.forEach(function(it){var p=new Image();p.src=it.src;});};
+var _as=document.getElementById('about');if(_as&&'IntersectionObserver' in window){var _ao=new IntersectionObserver(function(e){if(e[0].isIntersecting){warm();_ao.disconnect();}},{rootMargin:'1000px 0px'});_ao.observe(_as);}else warm();
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
 var onScreen=false,sec=document.getElementById('about');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);else onScreen=true;
@@ -3367,7 +3370,9 @@ var items=[
 // the songs, each shown with the cover of its album in front of the file
 var COVER={'Ash Stu, Vol. II':'Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp','My Anima':'Images/Releases/My%20Anima.webp'};
 [['Dirge for Ducklings','Ash Stu, Vol. II'],['Still Sad','My Anima'],['Summertime Even on the Moon','Ash Stu, Vol. II'],['Worship Song','My Anima'],['You Are What You Love','My Anima']].forEach(function(t){items.push({src:COVER[t[1]],alt:'Song file in the press kit: '+t[0]+', from '+t[1],name:t[0]+'.mp3',audio:true});});
-items.forEach(function(it){var p=new Image();p.src=it.src;});
+// (the other files' pictures are fetched only once the Press Kit is about to come into view, not with the page)
+var warmed=false,warm=function(){if(warmed)return;warmed=true;items.forEach(function(it){var p=new Image();p.src=it.src;});};
+var _ks=document.getElementById('epk');if(_ks&&'IntersectionObserver' in window){var _ko=new IntersectionObserver(function(e){if(e[0].isIntersecting){warm();_ko.disconnect();}},{rootMargin:'800px 0px'});_ko.observe(_ks);}else warm();
 // every window is drawn as a file: a blank page, the photo (or the song's album cover) in front of it, and its type
 imgs.forEach(function(im){var sl=im.closest('.epk-slot');if(sl&&!sl.querySelector('.epk-ext')){var b=document.createElement('span');b.className='epk-ext';b.setAttribute('aria-hidden','true');sl.appendChild(b);}});
 var n=items.length,W=imgs.length,shown=[],deck=[];
