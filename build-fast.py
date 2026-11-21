@@ -306,6 +306,23 @@ _kit = os.path.join(ROOT, "ash-stu-press-kit.zip")
 html = html.replace("__KIT_MB__", str(max(1, round(os.path.getsize(_kit) / 1048576))) if os.path.exists(_kit) else "")
 html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
 
+# ...and lists what is inside it (Press Kit's Show/Hide file list): songs first, then photos, each with its type and size.
+import zipfile as _zf, html as _h
+_NOTE = '<svg class="epk-row-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>'
+_PIC = '<svg class="epk-row-ico" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>'
+_rows = []
+if os.path.exists(_kit):
+    _files = [i for i in _zf.ZipFile(_kit).infolist() if not i.is_dir() and not os.path.basename(i.filename).startswith(".")]
+    _songs = sorted([i for i in _files if i.filename.lower().endswith((".mp3", ".wav", ".m4a", ".flac"))], key=lambda i: os.path.basename(i.filename).lower())
+    _pics = sorted([i for i in _files if i not in _songs], key=lambda i: os.path.basename(i.filename).lower())
+    for n, i in enumerate(_songs + _pics, 1):
+        _base, _ext = os.path.splitext(os.path.basename(i.filename))
+        _mb = i.file_size / 1048576
+        _rows.append(f'<li class="epk-row"><span class="epk-row-num">{n}</span>{_NOTE if i in _songs else _PIC}'
+                     f'<span class="epk-row-name">{_h.escape(_base)}</span>'
+                     f'<span class="epk-row-meta">{_ext[1:].upper()} · {_mb:.1f} MB</span></li>')
+html = html.replace("__KIT_LIST__", "".join(_rows)).replace("__KIT_COUNT__", str(len(_rows)))
+
 # strip HTML comments + indentation, collapse blank lines
 html = re.sub(r"<!--(?!\[).*?-->", "", html, flags=re.S)
 html = "\n".join(l.strip() for l in html.split("\n") if l.strip())
