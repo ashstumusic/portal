@@ -88,8 +88,8 @@ def render_release_card(rel, r_idx):
         btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
                    f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
-    if not btns or rel.get('soon'):
-        btns += '<span class="rel-btn rel-btn--label"><span class="rel-label-text">Distributing Soon</span></span>'
+    status = ('<p class="rel-status"><span>Coming soon to streaming</span></p>'
+              if not btns or rel.get('soon') else '')
     tracklist = ''
     upcoming = rel.get('upcoming', [])
     if len(rel['tracks']) + len(upcoming) > 1:
@@ -109,9 +109,9 @@ def render_release_card(rel, r_idx):
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-info"><p class="rel-cat">{esc(rel["type"])}'
             + (f'<span class="rel-year"> · <time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
-            f'</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3></div>'
+            f'</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>{status}</div>'
             f'<div class="rel-art-wrap">'
-            f'<img src=""{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
+            f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
             + (f'srcset="{esc(rel["art"].replace(" ", "%20"))} 504w, {esc(rel["art2x"].replace(" ", "%20"))} 800w" sizes="(max-width: 600px) 92vw, 400px" ' if rel.get("art2x") else '') +
             f'class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>'
             f'</div>'

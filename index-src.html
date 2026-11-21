@@ -2471,7 +2471,8 @@ var btns = '';
 if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 // A clock beside the words (a picture and a word, like every button-shaped thing on the site).
-if (!btns || rel.soon) btns += '<span class="rel-btn rel-btn--label">' + SOON_ICON + '<span class="rel-label-text">Distributing Soon</span></span>';
+// Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
+var status = (!btns || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
 // Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
 if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
 btns += '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
@@ -2479,7 +2480,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat">' + escHtml(rel.type) + (rel.year ? '<span class="rel-year"> · <time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
+'<div class="rel-info"><p class="rel-cat">' + escHtml(rel.type) + (rel.year ? '<span class="rel-year"> · <time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + status + '</div>' +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
 '</div>' +
