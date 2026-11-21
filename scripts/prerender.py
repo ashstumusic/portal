@@ -139,25 +139,26 @@ def render_release_card(rel, r_idx):
 def render_video_card(v, v_idx):
     yt_btn = ''
     if v.get('youtube'):
-        yt_btn = (f'<a class="vid-yt" href="{esc(v["youtube"])}" target="_blank" rel="noopener noreferrer" '
+        yt_btn = (f'<div class="vid-avail"><p class="vid-listen"><span class="vid-listen-label">Watch on</span>'
+                   f'<a class="vid-tile" href="{esc(v["youtube"])}" target="_blank" rel="noopener noreferrer" '
                    f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
-                   f'<span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a>')
+                   f'<span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a></p></div>')
     if v.get('thumb'):
         srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1024w" sizes="(max-width: 600px) 92vw, 400px"' if v.get('thumb2x') else '')
         thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
-    # Laid out like a release card: the type and year and the title on the left with a row of buttons (Play, then
-    # YouTube) under them, and the thumbnail on the right with nothing over it. The thumbnail still plays the video
-    # when clicked, but the Play button is the control for keyboards and screen readers (the thumbnail is skipped).
+    # Laid out like an album card: the type and year and the title, then "Watch on" with a YouTube tile, then the one
+    # Play button; the thumbnail on the right with nothing over it. Only Play plays (not the card or the thumbnail).
     kicker = 'Video' + (f'<span class="rel-year"><span class="rel-sep"> · </span><time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3></div>'
             f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'
             f'<span class="vid-thumb">{thumb_el}</span>'
             f'</button>'
+            f'{yt_btn}'
             f'<div class="vid-btns"><button type="button" class="vid-yt vid-play" data-video-index="{v_idx}" aria-label="Play &quot;{esc(v["title"])}&quot;">'
-            f'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button>{yt_btn}</div>'
+            f'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button></div>'
             f'</div>')
 
 
