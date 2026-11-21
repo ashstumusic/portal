@@ -220,7 +220,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
        (its children sit in the toolbar as before); on phones it is one row you can slide sideways. -->
   <div class="nav-rail">
   <ul class="nav-links" role="list">
-    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Press Kit &amp; Contact</span></a></li>
+    <li><a href="#contact"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Contact</span></a></li>
+    <li><a href="#epk-card"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg><span>Press Kit</span></a></li>
     <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Music</span></a></li>
     <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
   </ul>
@@ -262,7 +263,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" aria-label="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" aria-label="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span></a>
   </div>
-  <a href="#epk">Press Kit &amp; Contact</a>
+  <a href="#contact">Contact</a>
+  <a href="#epk-card">Press Kit</a>
   <a href="#music">Music</a>
   <a href="#videos">Videos</a>
   <button type="button" class="drawer-search k-search-btn" aria-label="Search songs, videos, sections and actions" aria-haspopup="dialog"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
@@ -598,7 +600,7 @@ if (e.key === 'ArrowRight') lbNav(1);
 }
 });
 (function() {
-const ids = ['epk','music','videos'];   /* (Contact is part of Press Kit & Contact, id epk) */
+const ids = ['contact','epk-card','music','videos'];   /* (Contact and Press Kit: two buttons into the Press Kit & Contact section) */
 const links = {};
 ids.forEach(id => { links[id] = document.querySelector(`.nav-links a[href="#${id}"]`); });
 const nav = document.querySelector('.nav');
@@ -610,10 +612,10 @@ let offsets = [], ticking = false, heroH = 400, aboutTop = 0, _picked = '';
 ids.forEach(id => { if (links[id]) links[id].addEventListener('click', () => { _picked = id; }); });
 // Arriving at a section (a section page such as /contact/, or an address ending #contact) counts as picking it, so
 // its link is the lit one: Press Kit and Contact are short, and by position alone the next section was lit instead.
-(function() { var dm = document.querySelector('meta[name="deep-section"]'), start = (dm && dm.content) || location.hash.slice(1); if (start === 'contact') start = 'epk'; if (ids.indexOf(start) >= 0) _picked = start; })();
+(function() { var dm = document.querySelector('meta[name="deep-section"]'), start = (dm && dm.content) || location.hash.slice(1); if (start === 'epk' || start === 'press-kit') start = 'epk-card'; if (ids.indexOf(start) >= 0) _picked = start; })();
 ['wheel', 'touchmove', 'keydown'].forEach(ev => window.addEventListener(ev, () => { _picked = ''; }, { passive: true }));
 function cacheOffsets() {
-offsets = ids.map(id => ({ id, top: (document.getElementById(id) || {}).offsetTop || 0 }));
+offsets = ids.map(id => { var el = document.getElementById(id); return { id, top: el ? Math.round(el.getBoundingClientRect().top + window.scrollY) : 0 }; });   /* (measured on the page: the contact line and the press kit card sit inside a section) */
 var ab = document.getElementById('about') || document.querySelector('.bio-section'); aboutTop = ab ? ab.offsetTop : 0;
 heroH = heroSection ? heroSection.offsetHeight : 400;
 }
