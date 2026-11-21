@@ -2636,6 +2636,69 @@ if (partyEl) partyEl.classList.toggle('is-soon', !hasLinks);
 // "Ash Stu - Press Kit.zip". Songs get a fresh label at the front (ID3 2.3: title, artist, album, track, cover): the sound
 // is the site's file byte for byte. Files are stored, not compressed (MP3s and PNGs do not shrink).
 function kitUrl(p) { return String(p).split('/').map(encodeURIComponent).join('/'); }   // (a site path as a web address, every part encoded in full: a "?" in a song's name must not start a query)
+// THE PRESS KIT'S TEXT FILES AS A DOCUMENT (owner's request: "dont just open the txt in the browser. display the txt
+// formatted in a pop up doc"). The same words as the file, laid out: its first line is the title; a line underlined with
+// dashes is a section heading; a block between two lines of "=" is a song's heading (its title, then where it is from);
+// "Label:   value" lines are a list of facts; indented lines are list items (columns kept apart); web addresses are links.
+// A <dialog>: Escape or Close shuts it and the focus goes back to the link. Download saves the plain file.
+function kitDocHtml(txt, title) {
+  var L = txt.replace(/^﻿/, '').replace(/\r/g, '').split('\n'), out = [], i = 0, list = null, facts = null, verse = null;
+  var link = function(t) { return escHtml(t).replace(/https?:\/\/[^\s<]+/g, function(u) { return '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + u + '</a>'; }).replace(/\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, function(m) { return '<a href="mailto:' + m + '">' + m + '</a>'; }); };
+  // (the file writes song titles in capitals; the document shows them as the songs are named)
+  var named = {}; (window.RELEASE_LIST || []).forEach(function(r) { (r.tracks || []).concat(r.upcoming || []).forEach(function(t) { named[String(t.title).toUpperCase()] = t.title; }); });
+  var flush = function() { if (list) { out.push('<ul class="kd-list">' + list.join('') + '</ul>'); list = null; } if (facts) { out.push('<dl class="kd-facts">' + facts.join('') + '</dl>'); facts = null; } if (verse) { out.push('<p class="kd-verse">' + verse.join('<br>') + '</p>'); verse = null; } };
+  while (i < L.length && !L[i].trim()) i++;
+  if (i < L.length) { out.push('<h2 class="kd-title" id="kd-title">' + escHtml(title || L[i].trim()) + '</h2>'); i++; }
+  for (; i < L.length; i++) {
+    var l = L[i], t = l.trim(), next = (L[i + 1] || '').trim();
+    if (/^=+$/.test(t)) {   // a song's heading: =====, TITLE, From ..., =====
+      flush(); var title = (L[i + 1] || '').trim(), from = (L[i + 2] || '').trim(), close = (L[i + 3] || '').trim();
+      if (/^=+$/.test(close)) { out.push('<h3 class="kd-song">' + escHtml(named[title] || title) + '</h3>' + (from ? '<p class="kd-from">' + escHtml(from) + '</p>' : '')); i += 3; }
+      else if (/^=+$/.test(from)) { out.push('<h3 class="kd-song">' + escHtml(named[title] || title) + '</h3>'); i += 2; }
+      continue;
+    }
+    if (/^-{3,}$/.test(t)) { flush(); out.push('<hr class="kd-rule">'); continue; }
+    if (/^-{3,}$/.test(next) && t) { flush(); out.push('<h3 class="kd-h">' + escHtml(t) + '</h3>'); i++; continue; }
+    if (!t) { flush(); continue; }
+    var m = /^([A-Za-z][^:]{0,30}):\s{2,}(.+)$/.exec(t);
+    if (m && !/^\s/.test(l)) { if (list || verse) flush(); (facts = facts || []).push('<div><dt>' + escHtml(m[1]) + '</dt><dd>' + link(m[2]) + '</dd></div>'); continue; }
+    if (/^\s{2,}/.test(l)) {   // an indented line: a list item; "   " or more between parts keeps them in columns
+      if (facts || verse) flush();
+      var cols = t.split(/\s{2,}/), sub = /^\s{4,}/.test(l) && list && list.length;
+      var item = cols.length > 1 ? '<span class="kd-name">' + link(cols[0]) + '</span><span class="kd-meta">' + link(cols.slice(1).join(' · ')) + '</span>' : link(t);
+      if (sub) list[list.length - 1] = list[list.length - 1].replace(/<\/li>$/, '<span class="kd-sub">' + item + '</span></li>');
+      else (list = list || []).push('<li>' + item + '</li>');
+      continue;
+    }
+    if (/:$/.test(t) && /^\s{2,}/.test(L[i + 1] || '')) { flush(); out.push('<p class="kd-lead">' + link(t) + '</p>'); continue; }
+    if (list || facts) flush();
+    (verse = verse || []).push(link(t));
+  }
+  flush();
+  return out.join('');
+}
+var _kdlg = null;
+function kitDoc(src, name, opener) {
+  if (!_kdlg) {
+    _kdlg = document.createElement('dialog'); _kdlg.className = 'kit-doc'; _kdlg.setAttribute('aria-labelledby', 'kd-title');
+    _kdlg.innerHTML = '<div class="kd-bar"><a class="rel-lyrics-toggle epk-file-dl kd-dl" download><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
+      '<button type="button" class="rel-lyrics-toggle kd-close" aria-label="Close"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
+      '<article class="kd-page" tabindex="-1"></article>';
+    document.body.appendChild(_kdlg);
+    _kdlg.querySelector('.kd-close').addEventListener('click', function() { _kdlg.close(); });
+    _kdlg.addEventListener('click', function(e) { if (e.target === _kdlg) _kdlg.close(); });   // (a click outside the page closes it)
+    _kdlg.addEventListener('close', function() { document.documentElement.classList.remove('kd-open'); if (_kdlg._opener && _kdlg._opener.focus) _kdlg._opener.focus(); });
+  }
+  var page = _kdlg.querySelector('.kd-page'), dl = _kdlg.querySelector('.kd-dl');
+  _kdlg._opener = opener;
+  dl.href = kitUrl(src); dl.setAttribute('download', name); dl.setAttribute('aria-label', 'Download ' + name); dl.title = 'Download ' + name;
+  page.classList.toggle('kd-lyrics', /lyrics/i.test(name));
+  page.innerHTML = '<p class="kd-loading">Opening ' + escHtml(name) + '…</p>';
+  if (!_kdlg.open) { _kdlg.showModal(); document.documentElement.classList.add('kd-open'); }
+  fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.text(); }).then(function(t) {
+    page.innerHTML = kitDocHtml(t, name.replace(/\.txt$/i, '')); page.scrollTop = 0; page.focus({ preventScroll: true });
+  }).catch(function() { page.innerHTML = '<p class="kd-loading">' + escHtml(name) + ' could not be opened. <a href="' + escHtml(kitUrl(src)) + '" target="_blank" rel="noopener">Open the file</a> instead.</p>'; });
+}
 var _crcT = null;
 function kitCrc(u8, c) {
   if (!_crcT) { _crcT = new Uint32Array(256); for (var n = 0; n < 256; n++) { var x = n; for (var k = 0; k < 8; k++) x = x & 1 ? 0xEDB88320 ^ (x >>> 1) : x >>> 1; _crcT[n] = x >>> 0; } }
@@ -2770,7 +2833,7 @@ var facts = '';
 if (latest) facts += '<div class="epk-fact"><dt>Latest release</dt><dd><a href="albums/' + slug(latest.name) + '/">' + escHtml(latest.name) + '</a>' + (latest.date ? ', ' + fullDate(latest.date) : '') + '</dd></div>';
 facts += '<div class="epk-fact"><dt>In the kit</dt><dd>' + escHtml(inKitText) + '</dd></div>';
 // (the two text files: the list below is only the songs now, so they are opened from here)
-var docs = KIT.files.filter(function(f) { return f.type === 'text'; }).map(function(f) { return '<a href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener">' + escHtml(f.name.replace(/^Ash Stu - /, '').replace(/\.txt$/, '')) + '</a>'; });
+var docs = KIT.files.filter(function(f) { return f.type === 'text'; }).map(function(f) { return '<a href="' + escHtml(kitUrl(f.src)) + '" class="epk-doc-link" data-doc="' + escHtml(f.src) + '" data-name="' + escHtml(f.name) + '" aria-haspopup="dialog">' + escHtml(f.name.replace(/^Ash Stu - /, '').replace(/\.txt$/, '')) + '</a>'; });   /* (opens in a pop-up document: kitDoc) */
 if (docs.length) facts += '<div class="epk-fact"><dt>Read</dt><dd>' + docs.join(' · ') + '</dd></div>';
 if (KIT.updated) facts += '<div class="epk-fact"><dt>Updated</dt><dd><time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></dd></div>';
 // "Listen on": Ash Stu's own page on each service, as in the toolbar (owner's request: Play and Download go below the
@@ -2892,6 +2955,10 @@ KIT.files.forEach(function(f, k) {
   frag.appendChild(wrap);
 });
 tl.appendChild(frag);
+// Read: the text files open as a formatted document in a pop-up (kitDoc); the link itself is the plain file, for a new tab
+card.querySelectorAll('.epk-doc-link').forEach(function(a) {
+  a.addEventListener('click', function(e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); e.stopPropagation(); kitDoc(a.dataset.doc, a.dataset.name, a); });
+});
 // Live videos: the thumbnail and Play open the site's video player on that video
 card.querySelectorAll('.epk-video').forEach(function(el) {
   var open = function(e) { e.stopPropagation(); var v = VIDEO_LIST.filter(function(x) { return x.title === el.dataset.video; })[0]; if (v) openLightbox(v); };
