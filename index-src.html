@@ -3078,7 +3078,6 @@ var dlName = 'Download Press Kit (ZIP file, about ' + mb + ' MB)';
 var sec = document.getElementById('epk');
 [].slice.call(sec ? sec.querySelectorAll('.epk-photos') : []).forEach(function(p) { if (p.parentNode) p.parentNode.removeChild(p); });
 var lead = photos.filter(function(f) { return /headshot-1/i.test(f.name); })[0] || photos.filter(function(f) { return !/logo/i.test(f.name); })[0];
-var latest = RELEASE_LIST[FEATURED_IDX] || RELEASE_LIST[0];
 var slug = function(x) { return String(x).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); };
 var inKit = [nSongs + (nSongs === 1 ? ' song' : ' songs')];
 if (hasLyr) inKit.push('their lyrics');
@@ -3089,7 +3088,6 @@ if (nVids) inKit.push(nVids + (nVids === 1 ? ' live video' : ' live videos'));
 if (nLogo) inKit.push('the logo');
 var inKitText = inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0];
 var facts = '';
-if (latest) facts += '<div class="epk-fact"><dt>Latest release</dt><dd><a href="albums/' + slug(latest.name) + '/">' + escHtml(latest.name) + '</a>' + (latest.date ? ', ' + fullDate(latest.date) : '') + '</dd></div>';
 facts += '<div class="epk-fact"><dt>In the kit</dt><dd>' + escHtml(inKitText) + '</dd></div>';
 // (the two text files: the list below is only the songs now, so they are opened from here)
 var docs = KIT.files.filter(function(f) { return f.type === 'text' && !/lyrics/i.test(f.name); })   /* (not the lyrics: the sampler's tracks have Lyrics buttons; owner's request) */.map(function(f) { return '<a href="' + escHtml(kitUrl(f.src)) + '" class="epk-doc-link" data-doc="' + escHtml(f.src) + '" data-name="' + escHtml(f.name) + '" aria-haspopup="dialog">' + escHtml(f.name.replace(/^Ash Stu - /, '').replace(/\.txt$/, '')) + '</a>'; });   /* (opens in a pop-up document: kitDoc) */
@@ -3169,7 +3167,7 @@ KIT.files.forEach(function(f, k) {
   if (f.type !== 'song') return;   /* (just a tracklist: the songs; the images are in the row above, the two text files under Read) */
   var wrap = document.createElement('div'); wrap.className = 'rel-track-wrap';
   var href = kitUrl(f.src);
-  // (the latest release's files come under a line naming its folder, as they sit in the ZIP)
+
   num++;
   var playable = (f.type === 'song' || f.type === 'album') && ok(f);
   if (playable) {
