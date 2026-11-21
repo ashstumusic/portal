@@ -401,7 +401,9 @@ def _press_kit():
             from mutagen.mp4 import MP4
             n = round(MP4(os.path.join(ROOT, v["file"])).info.length); ln = f"{n // 60}:{n % 60:02d}"
         except Exception: ln = ""
-        vids.append({"title": title, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE})
+        _vb = os.path.getsize(os.path.join(ROOT, v["file"]))
+        vids.append({"title": title, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
+                     "file": v["file"], "size": f"{_vb / 1048576:.0f} MB"})
     if vids:
         fs += ["", "LIVE VIDEOS (on YouTube; not in the ZIP)", "-" * 40, ""]
         for v in vids:
