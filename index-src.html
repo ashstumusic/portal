@@ -2762,6 +2762,8 @@ var inKit = [nSongs + (nSongs === 1 ? ' song' : ' songs')];
 if (hasLyr) inKit.push('their lyrics');
 if (hasSheet) inKit.push('a fact sheet');
 if (nPics) inKit.push(nPics + (nPics === 1 ? ' photo' : ' photos'));
+var nVids = KIT.files.filter(function(f) { return f.type === 'video'; }).length;
+if (nVids) inKit.push(nVids + (nVids === 1 ? ' live video' : ' live videos'));
 if (nLogo) inKit.push('the logo');
 var inKitText = inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0];
 var facts = '';

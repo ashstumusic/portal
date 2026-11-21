@@ -405,10 +405,12 @@ def _press_kit():
         vids.append({"title": title, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
                      "file": v["file"], "size": f"{_vb / 1048576:.0f} MB"})
     if vids:
-        fs += ["", "LIVE VIDEOS (on YouTube; not in the ZIP)", "-" * 40, ""]
+        fs += ["Videos folder: " + str(len(vids)) + " live videos (MP4), also on YouTube:"]
         for v in vids:
-            fs += [v["title"] + "  -  " + v["note"].lower() + ((", " + v["length"]) if v["length"] else ""), "  " + v["youtube"], ""]
+            fs += ["  " + v["title"] + " - Ash Stu (Live).mp4   " + v["note"].lower() + ((", " + v["length"]) if v["length"] else ""), "    " + v["youtube"]]
         fs += [""]
+        for v in vids:   # (in the ZIP too: owner's request)
+            files.append({"path": KIT_TOP + "Videos/" + v["title"] + " - Ash Stu (Live).mp4", "src": v["file"], "type": "video"})
     fs += ["Free to use for booking, press and promotion of Ash Stu.", ""]
     texts = {"Ash Stu - Fact Sheet.txt": fs, "Ash Stu - Lyrics.txt": lines}
     for name, body in texts.items():
