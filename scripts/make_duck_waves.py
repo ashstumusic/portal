@@ -135,8 +135,9 @@ LETTERS = {
     'H': [[(0, 0), (0, 1)], [(1, 0), (1, 1)], [(0, .5), (1, .5)]],
 }
 # where they float (the middle of the line - the part on screen), which letter, size and lean
-SOUP = [(400, 'O', 15, -6), (458, 'B', 14, 8), (516, 'A', 16, -4), (574, 'S', 14, 10), (632, 'U', 15, -8),
-        (690, 'C', 14, 5), (748, 'T', 15, -10), (806, 'E', 14, 6)]
+SOUP = [(458, 'A', 16, -6), (508, 'S', 14, 8), (558, 'H', 15, -5),      # ASH ... STU (owner's request: only these letters),
+        (642, 'S', 14, 9), (692, 'T', 15, -8), (742, 'U', 15, 6)]           # a little gap between the two words, all within
+                                                                           # the part of the line a phone shows
 groups = []
 for f in range(FRAMES):
     pts = [(x, water_y(x, f)) for x in range(0, W + 1, 3)]

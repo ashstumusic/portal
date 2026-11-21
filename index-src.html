@@ -3332,7 +3332,7 @@ for(var k=0;k<4;k++){var gap=parseFloat(getComputedStyle(top).marginBottom)+pars
 if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
 // the wavy line under the name is as wide as the name (it spanned the whole panel), and a little thinner when shorter
 var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name);var sw=rn.getBoundingClientRect().width;
-if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(26,Math.min(64,sw*.12)))+'px');}}
+if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(40,Math.min(64,sw*.12)))+'px');}}
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
 }
