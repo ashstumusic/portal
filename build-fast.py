@@ -1,3 +1,4 @@
+import time
 #!/usr/bin/env python3
 """Build the deployed index.html + cached assets from index-src.html.
 
@@ -301,8 +302,43 @@ _loader = ('<script>(function(s){var d=document,done=0;function go(){if(done)ret
 html = html.replace("</body>", _loader + "\n</body>", 1)
 print(f"Wrote {p_out}: {len(_p)//1024}KB")
 
-# The press-kit download states its size (a 33MB surprise is unkind on a phone plan): measured here so it stays true.
+# The Press Kit carries the words of its songs as one plain-text file, "Ash Stu - Lyrics.txt" (owner's request), written here
+# from lyrics.json in the order of its Songs folder. The ZIP is rewritten only when those words have changed.
 _kit = os.path.join(ROOT, "ash-stu-press-kit.zip")
+def _kit_lyrics():
+    import zipfile as _zf, json as _json
+    if not os.path.exists(_kit): return
+    _rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
+    _lyr = _json.load(open(os.path.join(ROOT, "lyrics.json"), encoding="utf-8"))
+    _z = _zf.ZipFile(_kit)
+    _songs = sorted(i.filename for i in _z.infolist() if i.filename.lower().endswith(".mp3"))
+    _top = (_songs[0].split("/")[0] + "/") if _songs and "/" in _songs[0] else ""
+    out = ["ASH STU - LYRICS", "", "The words to the " + str(len(_songs)) + " songs in this press kit, in the order of the Songs folder.", ""]
+    for f in _songs:
+        title = re.sub(r"^Ash Stu - ", "", os.path.splitext(os.path.basename(f))[0])
+        hit = next(((r, t) for r in _rels for t in (r.get("tracks") or []) if t["title"].lower() == title.lower()), None)
+        lines = [(x or "").strip() for _, x in ((_lyr.get(hit[1]["file"]) or {}).get("lines") or [])] if hit else []
+        lines = [l for l in lines if l]
+        out += ["", "=" * 40, title.upper(), ("From " + hit[0]["name"] + (" (" + str(hit[0]["year"]) + ")" if hit[0].get("year") else "")) if hit else "", "=" * 40, ""]
+        out += lines or ["(Instrumental)"]
+        out += [""]
+    out += ["", "-" * 40, "Ash Stu  -  https://ashstu.art", ""]
+    data = "\r\n".join(out).encode("utf-8-sig")   # (the mark at the start tells every browser and editor it is UTF-8, so the curly quotes show right)
+    name = _top + "Ash Stu - Lyrics.txt"
+    try: cur = _z.read(name)
+    except KeyError: cur = None
+    if cur == data: return
+    tmp = _kit + ".tmp"
+    with _zf.ZipFile(tmp, "w") as zo:
+        for i in _z.infolist():
+            if i.filename == name: continue
+            n = _zf.ZipInfo(i.filename, i.date_time); n.compress_type = i.compress_type; n.external_attr = i.external_attr
+            zo.writestr(n, _z.read(i.filename))
+        n = _zf.ZipInfo(name, time.localtime()[:6]); n.compress_type = _zf.ZIP_DEFLATED; n.external_attr = 0o644 << 16
+        zo.writestr(n, data)
+    _z.close(); os.replace(tmp, _kit)
+    print("Press kit: wrote " + name)
+_kit_lyrics()
 html = html.replace("__KIT_MB__", str(max(1, round(os.path.getsize(_kit) / 1048576))) if os.path.exists(_kit) else "")
 html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
 
@@ -322,18 +358,20 @@ if os.path.exists(_kit):
     _keep = {os.path.basename(i.filename) for i in _files}
     for _f in os.listdir(_kd):
         if _f not in _keep: os.remove(os.path.join(_kd, _f))
-    for i in sorted(_files, key=lambda i: (not _isSong(i), os.path.basename(i.filename).lower())):
+    _isText = lambda i: i.filename.lower().endswith(".txt")
+    for i in sorted(_files, key=lambda i: (0 if _isSong(i) else 1 if _isText(i) else 2, os.path.basename(i.filename).lower())):
         _fn = os.path.basename(i.filename); _base, _ext = os.path.splitext(_fn)
         _href = ""
         if not _isSong(i):
             _dst = os.path.join(_kd, _fn)
-            if not (os.path.exists(_dst) and os.path.getsize(_dst) == i.file_size):
+            if not (os.path.exists(_dst) and os.path.getsize(_dst) == i.file_size and __import__("zlib").crc32(open(_dst, "rb").read()) == i.CRC):
                 with open(_dst, "wb") as _o: _o.write(_z.read(i))
             _href = "Images/press-kit/" + _fn
         # name: the file's own name, shown as it is on the page; title: the song's title ("Ash Stu - " and the type taken off),
         # used to find its recording and lyrics; thumb: the site's small copy of a photo, for the file tiles.
-        _kitdata["files"].append({"name": _fn, "title": re.sub(r"^Ash Stu - ", "", _base), "type": "song" if _isSong(i) else "photo",
+        _kitdata["files"].append({"name": _fn, "title": re.sub(r"^Ash Stu - ", "", _base), "type": "song" if _isSong(i) else "text" if _isText(i) else "photo",
                                   "ext": _ext[1:].upper(), "mb": round(i.file_size / 1048576, 1), "href": _href,
+                                  "size": (f"{i.file_size / 1048576:.1f} MB" if i.file_size >= 104858 else f"{max(1, round(i.file_size / 1024))} KB"),
                                   "thumb": _KIT_THUMB.get(_fn, "")})
     _kitdata["bytes"] = os.path.getsize(_kit)
 html = html.replace("__KIT_JSON__", _json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))
