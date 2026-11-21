@@ -1169,6 +1169,14 @@ if (_fabMusic) _fabMusic.addEventListener('click', fabClick);
 var _featuredPlay = document.getElementById('featured-play');
 if (_featuredPlay) {
 _featuredPlay.addEventListener('click', function() { toggleRelease(FEATURED_IDX); });
+// A click anywhere else in the Latest Release panel (the cover, the name, the space around them) plays or pauses the
+// album too - a mouse/touch shortcut for its Play button (owner's request). The store links keep their own clicks.
+var _party = document.getElementById('party');
+if (_party) _party.addEventListener('click', function(e) {
+  if (e.target.closest('a, button, input')) return;
+  var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
+  toggleRelease(FEATURED_IDX);
+});
 }
 var _npArt = document.createElement('img');
 _npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = '';   /* decorative here: it sits inside the "Open full-screen player" button, which has its own name */ _npArt.hidden = true;
@@ -1940,14 +1948,17 @@ overlay.className = 'rel-play-overlay';
 // aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
 overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-// PATTERN (card opens its tracks): a click anywhere on an album card that isn't one of its own buttons, links or
-// track list shows or hides the track list, like its Tracks bar (below). Only the Play button plays and pauses.
+// PATTERN (card plays and opens its tracks): a click anywhere on an album card that isn't one of its own buttons,
+// links or track list plays the album (or pauses it) and opens its track list (below). The Play button plays and
+// pauses only; the Tracks bar only opens and closes the list.
 var _rb = card.querySelector('.rel-btns'); if (_rb) _rb.insertBefore(overlay, _rb.firstChild); else wrap.appendChild(overlay);
 card.addEventListener('click', function(e) {
   if (e.target.closest('a, button, input, select, textarea, summary, details, .rel-tracklist, .rel-single-lyrics')) return;
-  var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't open the list)
-  // (owner's request: a click on the card shows or hides its track list - it never plays; only the Play button plays and pauses)
-  if (card.querySelector('.rel-tl-toggle')) setTracklist(rIdx, false);
+  var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't start the music)
+  // (owner's request: a click on the card plays the album - or pauses it, if it is the one playing - and opens its
+  // track list, so you see the songs as they play; it never closes the list: that is the Tracks bar's job)
+  toggleRelease(rIdx);
+  if (card.querySelector('.rel-tl-toggle') && !card.classList.contains('tracks-open')) setTracklist(rIdx, false);
 });
 _discCache[rIdx] = overlay.querySelector('svg');
 // (the disc is no longer inside the cover, so a press of the disc button itself - keyboard, screen reader, or a click
@@ -2576,8 +2587,12 @@ if (title) title.textContent = rel.name;
 var btnsEl = document.querySelector('.featured-btns');
 if (btnsEl) {
 var h = '';
-if (rel.apple) h += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: ' + escHtml(rel.name) + '"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>';
-if (rel.spotify) h += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Spotify: ' + escHtml(rel.name) + '"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Spotify</span></span></a>';
+// Every store the release is on, in one row of logo tiles under a single "Listen on" (owner's request), each tile a
+// logo over a short name; the spoken name is the full one ("Listen on YouTube Music: Ash Stu, Vol. II").
+var STORES = [['apple', 'Apple Music', 'Apple'], ['spotify', 'Spotify', 'Spotify'], ['ytmusic', 'YouTube Music', 'YouTube'], ['amazon', 'Amazon Music', 'Amazon'], ['deezer', 'Deezer', 'Deezer']].filter(function(m) { return rel[m[0]]; });
+if (STORES.length) h = '<p class="f-listen-label">Listen on</p>' + STORES.map(function(m) {
+  return '<a href="' + escHtml(rel[m[0]]) + '" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on ' + m[1] + ': ' + escHtml(rel.name) + '"><span class="pt pt--' + m[0] + '" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">' + m[2] + '</span></a>';
+}).join('');
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming
@@ -3292,11 +3307,11 @@ if(document.readyState==='complete')build();else addEventListener('load',build);
    - no file is ever in two windows at once;
    - files are dealt from a shuffled deck, so every file comes round before any repeats (no near-repeats, no file
      left out for long), and the same window is never picked twice running;
-   - a pause of 0.8 - 2.9 s between pops (so each pop is seen on its own).
+   - a pause of 0.8 - 2.9 s after each pop before the next begins (so each pop is seen on its own, never two at once).
    Only while the section is on screen and the tab is visible; with reduced motion or effects off, four files chosen
    at random and no movement. */
 (function(){var imgs=[].slice.call(document.querySelectorAll('.epk-photos img'));if(imgs.length<2)return;
-var P='Images/embedded/',AUDIO=P+'epk-audio-file.svg';
+var P='Images/embedded/';
 var items=[
  {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu portrait',name:'IMG_0001.jpg'},
  {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing',name:'IMG_0002.jpg'},
@@ -3308,8 +3323,12 @@ var items=[
  {src:P+'epk-ash-stu-stairs.webp',alt:'Ash Stu on an outdoor staircase',name:'IMG_0008.jpg'},
  {src:P+'epk-ash-stu-logo.webp',alt:'Ash Stu logo: an embroidered daffodil patch',name:'IMG_0009.png'}
 ];
-['Dirge for Ducklings','Still Sad','Summertime Even on the Moon','Worship Song','You Are What You Love'].forEach(function(t){items.push({src:AUDIO,alt:'Song file in the press kit: '+t,name:t+'.mp3',audio:true});});
-items.forEach(function(it){if(!it.audio){var p=new Image();p.src=it.src;}});
+// the songs, each shown with the cover of its album in front of the file
+var COVER={'Ash Stu, Vol. II':'Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp','My Anima':'Images/Releases/My%20Anima.webp'};
+[['Dirge for Ducklings','Ash Stu, Vol. II'],['Still Sad','My Anima'],['Summertime Even on the Moon','Ash Stu, Vol. II'],['Worship Song','My Anima'],['You Are What You Love','My Anima']].forEach(function(t){items.push({src:COVER[t[1]],alt:'Song file in the press kit: '+t[0]+', from '+t[1],name:t[0]+'.mp3',audio:true});});
+items.forEach(function(it){var p=new Image();p.src=it.src;});
+// every window is drawn as a file: a blank page, the photo (or the song's album cover) in front of it, and its type
+imgs.forEach(function(im){var sl=im.closest('.epk-slot');if(sl&&!sl.querySelector('.epk-ext')){var b=document.createElement('span');b.className='epk-ext';b.setAttribute('aria-hidden','true');sl.appendChild(b);}});
 var n=items.length,W=imgs.length,shown=[],deck=[];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
 function deal(){   // the next file from the shuffled deck that isn't already in a window
@@ -3317,7 +3336,8 @@ function deal(){   // the next file from the shuffled deck that isn't already in
     for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0)return deck.splice(k,1)[0];deck=[];}
   return -1;}
 function put(w,i){var im=imgs[w],it=items[i],f=im.closest('.epk-file');shown[w]=i;im.src=it.src;im.alt=it.alt;
-  if(f){f.classList.toggle('is-audio',!!it.audio);var l=f.querySelector('.epk-name');if(l)l.textContent=it.name;}}
+  if(f){f.classList.toggle('is-audio',!!it.audio);var l=f.querySelector('.epk-name');if(l)l.textContent=it.name;
+    var x=f.querySelector('.epk-ext');if(x)x.textContent=(it.name.split('.').pop()||'').toUpperCase();}}
 imgs.forEach(function(_,w){put(w,deal());});
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
 var onScreen=true,sec=document.getElementById('epk');
@@ -3326,15 +3346,15 @@ if(!imgs[0].animate)return;
 var lastW=-1;
 function pop(el,frames,dur,ease){var a=el.animate(frames,{duration:dur,easing:ease,fill:'forwards'});return a.finished.then(function(){return a;},function(){return a;});}
 function step(){
-  if(!still()&&onScreen&&!document.hidden){
-    var w;do{w=Math.floor(Math.random()*W);}while(W>1&&w===lastW);lastW=w;
-    var i=deal();
-    if(i>=0){var im=imgs[w],tile=im.closest('.epk-file')||im;
-      pop(tile,[{transform:'scale(1)',opacity:1},{transform:'scale(.82)',opacity:0}],130,'cubic-bezier(.4,0,1,1)').then(function(a){
-        put(w,i);
-        return pop(tile,[{transform:'scale(.5)',opacity:0},{transform:'scale(1.06)',opacity:1,offset:.62},{transform:'scale(.985)',opacity:1,offset:.84},{transform:'scale(1)',opacity:1}],320,'cubic-bezier(.2,.75,.3,1)').then(function(b){a.cancel();b.cancel();});});}
-  }
-  setTimeout(step,800+Math.random()*2100);}
+  var next=function(){setTimeout(step,800+Math.random()*2100);};   // the pause is counted from the end of a pop, so two never overlap
+  if(still()||!onScreen||document.hidden){next();return;}
+  var w;do{w=Math.floor(Math.random()*W);}while(W>1&&w===lastW);lastW=w;
+  var i=deal();if(i<0){next();return;}
+  var im=imgs[w],tile=im.closest('.epk-file')||im;
+  pop(tile,[{transform:'scale(1)',opacity:1},{transform:'scale(.82)',opacity:0}],130,'cubic-bezier(.4,0,1,1)').then(function(a){
+    put(w,i);
+    return pop(tile,[{transform:'scale(.5)',opacity:0},{transform:'scale(1.06)',opacity:1,offset:.62},{transform:'scale(.985)',opacity:1,offset:.84},{transform:'scale(1)',opacity:1}],320,'cubic-bezier(.2,.75,.3,1)').then(function(b){a.cancel();b.cancel();});
+  }).then(next,next);}
 setTimeout(step,1200+Math.random()*1500);})();</script>
 <script>/* The toolbar's three streaming logos: one of them is always open as its full badge in the site's dark glass, like every other button
    ("Listen on Apple Music", "Listen on Spotify", "Watch on YouTube"), and every five seconds they trade places:

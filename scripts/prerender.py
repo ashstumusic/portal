@@ -203,13 +203,11 @@ def inject_featured(page, rel):
         lambda m: m.group(1) + esc(rel['name']) + m.group(2),
         page, count=1,
     )
-    btns = ''
-    if rel.get('apple'):
-        btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="f-btn" '
-                   f'aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>')
-    if rel.get('spotify'):
-        btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="f-btn" '
-                   f'aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
+    stores = [(k, n, w) for k, n, w in (('apple', 'Apple Music', 'Apple'), ('spotify', 'Spotify', 'Spotify'), ('ytmusic', 'YouTube Music', 'YouTube'),
+                                       ('amazon', 'Amazon Music', 'Amazon'), ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
+    btns = ('<p class="f-listen-label">Listen on</p>' + ''.join(
+        f'<a href="{esc(rel[k])}" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on {n}: {esc(rel["name"])}">'
+        f'<span class="pt pt--{k}" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">{w}</span></a>' for k, n, w in stores)) if stores else ''
     page = re.sub(
         r'(<div class="featured-btns">).*?(</div>)',
         lambda m: m.group(1) + btns + m.group(2),

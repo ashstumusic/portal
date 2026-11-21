@@ -167,3 +167,13 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 4. Turn on reduced motion, forced colours, and 200% zoom. Does it still work and show?
 5. Listen with a real screen reader (VoiceOver, NVDA). This has **not** been done yet for this site and is the
    most valuable check still outstanding, along with testing by disabled users.
+
+### Click shortcuts on larger areas
+- A whole area may be clickable as a mouse/touch shortcut (an album card plays and opens its tracks; the mini player's
+  bar opens the full-screen player) only when everything it does is also a real, focusable, named button nearby
+  (Play, the Tracks bar, "Open full-screen player"). The shortcut itself is not focusable, so keyboard users meet each
+  action once.
+- Nothing shows a pointing hand unless clicking it does something (the hero's big "Ash Stu" used to: removed).
+- A part of a button that looks like its own control (the Tracks bar's "Show" / "Hide" chip) stays part of that one
+  button - never a button inside a button.
+

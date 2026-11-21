@@ -83,3 +83,11 @@ FIXED: shared/system.css (track list Lyrics buttons, player and viewer button wo
   — Visual clarity: text large enough to read
   — The Lyrics word on each track grew from 11px to 13px; the words under the player and video viewer icons from 11px to 12px
 CHECKED: every button at rest and pointed at, measured from the rendered pixels (glass has no single background colour, so axe can't judge it): all at least 4.5:1, most 8:1 or more
+FIXED: shared/system.css (album cards' Tracks bar)
+  — Affordance: a control must look like one
+  — The "Show" / "Hide" end of the Tracks bar was plain text with a chevron; it is now drawn as a glass button chip (gold when the bar is pointed at or focused). The whole bar stays the one real button, with aria-expanded
+FIXED: shared/system.css (first screen's "Ash Stu")
+  — Misleading affordance: nothing may look clickable that is not
+  — The big name showed a pointing hand but did nothing when clicked (left over from a removed press effect); it now shows the normal arrow
+CHECKED: every clickable on the home page, players, video viewer and a song page: all real buttons, links, sliders or switches with names and visible focus rings, except two documented mouse shortcuts that duplicate real buttons (album card, mini player bar)
+
