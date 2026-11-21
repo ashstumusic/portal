@@ -387,7 +387,7 @@ def _press_kit():
         for r, t, key in vsongs:
             words = [(x or "").strip() for _, x in ((lyr.get(key) or {}).get("lines") or [])]
             words = [w for w in words if w]
-            lines += ["", "=" * 40, t["title"].upper(), (("From " + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else "")) if any(x is t for x in (r.get("tracks") or [])) else "Unreleased") + ", seen in the live video", "=" * 40, ""]
+            lines += ["", "=" * 40, t["title"].upper(), ("From " if any(x is t for x in (r.get("tracks") or [])) else "Unreleased, from ") + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else "") + ", seen in the live video", "=" * 40, ""]
             lines += words or ["(Instrumental)"]
             lines += [""]
     lines += ["", "-" * 40, "Ash Stu  -  " + KIT_FACTS["site"], ""]
@@ -422,9 +422,10 @@ def _press_kit():
         except Exception: ln = ""
         _vb = os.path.getsize(os.path.join(ROOT, v["file"]))
         _hit = next(((r, t) for r in rels for t in (r.get("tracks") or []) + (r.get("upcoming") or []) if t["title"].lower() == title.lower()), None)   # (the release its song is from)
-        _rel = _hit[0]["name"] if _hit and any(t is _hit[1] for t in (_hit[0].get("tracks") or [])) else ""   # ("" = not released: the card says so)
+        _rel = _hit[0]["name"] if _hit else ""   # (the album it is on, or will be on)
+        _soon = bool(_hit) and not any(t is _hit[1] for t in (_hit[0].get("tracks") or []))   # (not out yet: "unreleased")
         _lk = (_hit[1].get("file") or _hit[1].get("lyrics") or "") if _hit else ""   # (its words, as on the release: never the video's captions)
-        vids.append({"title": title, "from": _rel, "lyricsKey": _lk, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
+        vids.append({"title": title, "from": _rel, "soon": _soon, "lyricsKey": _lk, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
                      "file": v["file"], "size": f"{_vb / 1048576:.0f} MB"})
     if vids:
         _vw = max(len(v["title"] + " - Ash Stu (Live).mp4") for v in vids) + 3
