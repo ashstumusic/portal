@@ -2537,7 +2537,7 @@ if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank"
 // A clock beside the words (a picture and a word, like every button-shaped thing on the site).
 // Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
 var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
-if (listen) status += '<p class="rel-listen"><span class="rel-listen-label">Listen on</span>' + listen + '</p>';
+if (listen) status += '<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-' + rIdx + '">Listen on</span><span class="rel-stores" role="group" aria-labelledby="rel-listen-' + rIdx + '">' + listen + '</span></div>';
 // Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
 // It sits beside Play, in the card's action row under "Listen on" (owner's request).
 var dl = '';
@@ -2597,9 +2597,9 @@ var h = '';
 // Every store the release is on, in one row of logo tiles under a single "Listen on" (owner's request), each tile a
 // logo over a short name; the spoken name is the full one ("Listen on YouTube Music: Ash Stu, Vol. II").
 var STORES = [['apple', 'Apple Music', 'Apple'], ['spotify', 'Spotify', 'Spotify'], ['ytmusic', 'YouTube Music', 'YouTube'], ['amazon', 'Amazon Music', 'Amazon'], ['deezer', 'Deezer', 'Deezer']].filter(function(m) { return rel[m[0]]; });
-if (STORES.length) h = '<p class="f-listen-label">Listen on</p>' + STORES.map(function(m) {
+if (STORES.length) h = '<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + STORES.map(function(m) {
   return '<a href="' + escHtml(rel[m[0]]) + '" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on ' + m[1] + ': ' + escHtml(rel.name) + '"><span class="pt pt--' + m[0] + '" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">' + m[2] + '</span></a>';
-}).join('');
+}).join('') + '</div>';
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming

@@ -102,7 +102,8 @@ def render_release_card(rel, r_idx):
     status = ('<p class="rel-status"><span>Coming soon to streaming</span></p>'
               if not listen or rel.get('soon') else '')
     if listen:
-        status += f'<p class="rel-listen"><span class="rel-listen-label">Listen on</span>{listen}</p>'
+        status += (f'<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-{r_idx}">Listen on</span>'
+                   f'<span class="rel-stores" role="group" aria-labelledby="rel-listen-{r_idx}">{listen}</span></div>')
     tracklist = ''
     upcoming = rel.get('upcoming', [])
     if len(rel['tracks']) + len(upcoming) > 1:
@@ -205,9 +206,9 @@ def inject_featured(page, rel):
     )
     stores = [(k, n, w) for k, n, w in (('apple', 'Apple Music', 'Apple'), ('spotify', 'Spotify', 'Spotify'), ('ytmusic', 'YouTube Music', 'YouTube'),
                                        ('amazon', 'Amazon Music', 'Amazon'), ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
-    btns = ('<p class="f-listen-label">Listen on</p>' + ''.join(
+    btns = ('<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + ''.join(
         f'<a href="{esc(rel[k])}" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on {n}: {esc(rel["name"])}">'
-        f'<span class="pt pt--{k}" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">{w}</span></a>' for k, n, w in stores)) if stores else ''
+        f'<span class="pt pt--{k}" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">{w}</span></a>' for k, n, w in stores) + '</div>') if stores else ''
     page = re.sub(
         r'(<div class="featured-btns">).*?(</div>)',
         lambda m: m.group(1) + btns + m.group(2),
