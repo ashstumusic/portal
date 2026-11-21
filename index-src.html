@@ -3276,16 +3276,18 @@ if(!('IntersectionObserver' in window)){on();return;}var o=new IntersectionObser
 var P='Images/embedded/';
 var pool=[
  {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley'},
- {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu singing at the piano under a red light'},
- {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing at the keyboard'},
- {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano on stage'},
+ {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu singing at the piano under a red light',g:'stage'},
+ {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing at the keyboard',g:'stage'},
+ {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano on stage',g:'stage'},
  {src:P+'epk-ash-stu-studio-session.webp',alt:'Ash Stu in a studio session'},
  {src:'Images/Profile-4-720.webp',alt:'Ash Stu as a kid with his first guitar'},
  {src:'Images/Profile-6-720.webp',alt:'Ash Stu at the piano'}
 ];
 var shown=[],deck=[];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
-function deal(){for(var t=0;t<2;t++){if(!deck.length)deck=shuffle(pool.map(function(_,i){return i;}));for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0)return deck.splice(k,1)[0];deck=[];}return -1;}
+/* (the three stage-show shots look alike side by side, so at most one of them is ever up at a time) */
+function twin(i){var g=pool[i].g;return !!g&&shown.some(function(j){return j!=null&&pool[j].g===g;});}
+function deal(){for(var t=0;t<2;t++){if(!deck.length)deck=shuffle(pool.map(function(_,i){return i;}));for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0&&!twin(deck[k]))return deck.splice(k,1)[0];deck=[];}return -1;}
 function put(w,i){shown[w]=i;var im=slots[w];im.removeAttribute('srcset');im.removeAttribute('sizes');im.src=pool[i].src;im.alt=pool[i].alt;}
 slots.forEach(function(_,w){put(w,deal());});
 // (the rest of the pool is fetched only once About is about to come into view - it is the last section, and many
