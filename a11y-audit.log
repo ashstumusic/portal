@@ -91,3 +91,6 @@ FIXED: shared/system.css (first screen's "Ash Stu")
   — The big name showed a pointing hand but did nothing when clicked (left over from a removed press effect); it now shows the normal arrow
 CHECKED: every clickable on the home page, players, video viewer and a song page: all real buttons, links, sliders or switches with names and visible focus rings, except two documented mouse shortcuts that duplicate real buttons (album card, mini player bar)
 
+FIXED: shared/system.css (mini player seek bar)
+  — Target size (WCAG 2.5.8)
+  — The seek control itself is now the full 24px strip (26px on phones) with the thin line, fill and knob drawn inside it in the same place as before; it used to be the 2-4px line with an invisible grab strip around it, which axe (rightly) measured as a 2px control. Automated scan: zero violations in every state
