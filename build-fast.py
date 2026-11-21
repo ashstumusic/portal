@@ -310,8 +310,8 @@ html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
 # The photos are also unpacked to Images/press-kit/ (only when missing or changed), so each can be opened or downloaded alone.
 import zipfile as _zf, json as _json
 _kitdata = {"bytes": 0, "files": []}
-_KIT_THUMB = {"Ash Stu - Headshot.png": "epk-ash-stu-stairs.webp", "Ash Stu - Singing Live.png": "epk-ash-stu-singing.webp?v=3",
-              "Ash Stu - Guitar Close-Up.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
+_KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=3",
+              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
               "Ash Stu - Logo.png": "epk-ash-stu-logo.webp"}
 if os.path.exists(_kit):
     _z = _zf.ZipFile(_kit)
