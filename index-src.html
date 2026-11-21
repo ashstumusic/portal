@@ -2823,7 +2823,7 @@ var setMore = function(open) {
   card.classList.toggle('kit-collapsed', !open);
   more.setAttribute('aria-expanded', String(open));
   more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the photos, live videos and tracks');
-  if (open) queueMarquees();
+  if (open) { openList(); queueMarquees(); }   /* (opening the card opens its tracklist too: owner's request) */
 };
 setMore(false);
 card.querySelector('.rel-btns').appendChild(more);
