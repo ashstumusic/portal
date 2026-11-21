@@ -624,7 +624,7 @@
 
   // Settings for the footer's settings panel (kinetic.js picks these up).
   window.kineticItems = () => [
-    { group: 'Settings', label: 'Effects', on: fxPref, title: fxPref ? 'Turn effects off' : 'Turn effects on', sub: 'Haze, stars, tag flare, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Effects ${fxPref ? 'on' : 'off'}`); } },
+    { group: 'Settings', label: 'Effects', on: fxPref, title: fxPref ? 'Turn effects off' : 'Turn effects on', sub: 'Haze, stars, the swimming duck, photo shuffles, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Effects ${fxPref ? 'on' : 'off'}`); } },
   ];
 
   syncFx();

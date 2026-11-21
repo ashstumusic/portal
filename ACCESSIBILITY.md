@@ -42,7 +42,7 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 ### Settings switches
 - `<button role="switch" aria-checked>`.
 - Name = the setting's label (`aria-labelledby`); description = the line under it (`aria-describedby`).
-  Announced as "Effects, switch, on. Haze, stars, tag flare, confetti and fireworks."
+  Announced as "Effects, switch, on. Haze, stars, the swimming duck, photo shuffles, confetti and fireworks."
 - Enter or Space flips it; focus stays on the row. The visible "On"/"Off" is `aria-hidden` (the state comes from
   `aria-checked`).
 
