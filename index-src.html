@@ -2822,24 +2822,31 @@ function kitPickFormats(what, kinds, opener) {
       if (!_fdlg) { _fdlg = document.createElement('dialog'); _fdlg.className = 'kit-doc kit-fmt'; _fdlg.setAttribute('aria-labelledby', 'kf-title'); document.body.appendChild(_fdlg); }
       var opt = function(name, value, label, note, on) { return '<label class="kf-opt"><input type="radio" name="' + name + '" value="' + value + '"' + (on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></label>'; };
       var set = function(title, body) { return '<fieldset class="kf-set"><legend class="kd-h">' + title + '</legend>' + body + '</fieldset>'; };
-      var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' ? 'jpg' : 'png';
-      var vd = /^(mp4|mp3|wav)$/.test(saved.video) ? saved.video : 'mp4', tx = saved.text === 'pdf' ? 'pdf' : 'txt';
+      var webp = kitCanWebp();
+      var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' || (saved.image === 'webp' && webp) ? saved.image : 'png';
+      var vd = /^(mp4|mov|m4v|mp3|wav)$/.test(saved.video) ? saved.video : 'mp4', tx = /^(pdf|docx)$/.test(saved.text) ? saved.text : 'txt';
+      // (each kind offers its three most-used formats: owner's request. One this browser cannot make is shown, switched off, saying why)
+      var optOff = function(label, note) { return '<div class="kf-opt kf-off" aria-disabled="true"><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></div>'; };
       _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
         '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (n > 1 ? 'Pick the formats your devices can open.' : 'Pick the format your device can open.') + ' The content is the same in each: only the file type changes.</p>' +
         (kinds.audio ? set('Songs',
           opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
           opt('audio', 'wav', 'WAV', 'Plays on everything, even old CD players and editors. About four times larger.', a === 'wav') +
-          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : '')) : '') +
+          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : optOff('M4A (AAC)', 'This browser cannot make M4A. Safari, or Chrome or Edge on Windows or Mac, can.'))) : '') +
         (kinds.video ? set('Videos',
           opt('video', 'mp4', 'MP4', 'The video and its sound. Plays on phones, computers and TVs.', vd === 'mp4') +
+          opt('video', 'mov', 'MOV (QuickTime)', 'For QuickTime, iMovie and Final Cut.', vd === 'mov') +
+          opt('video', 'm4v', 'M4V', 'For the Apple TV app, iTunes and older iPods.', vd === 'm4v') +
           opt('video', 'mp3', 'Sound only, MP3', 'Just the performance, for a radio station or a playlist.', vd === 'mp3') +
           opt('video', 'wav', 'Sound only, WAV', 'Just the performance, for editors and older players.', vd === 'wav')) : '') +
         (kinds.image ? set('Photos',
+          opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg') +
           opt('image', 'png', 'PNG', 'As taken, with no loss.', im === 'png') +
-          opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg')) : '') +
+          (webp ? opt('image', 'webp', 'WebP', 'Smallest, for websites and social media.', im === 'webp') : optOff('WebP', 'This browser cannot make WebP. Chrome, Edge and Firefox can.'))) : '') +
         (kinds.text ? set('Text',
           opt('text', 'txt', 'Plain text (TXT)', 'Opens in any app; easy to copy from.', tx === 'txt') +
-          opt('text', 'pdf', 'PDF', 'Laid out on the page, ready to print or attach.', tx === 'pdf')) : '') +
+          opt('text', 'pdf', 'PDF', 'Laid out on the page, ready to print or attach.', tx === 'pdf') +
+          opt('text', 'docx', 'Word (DOCX)', 'To edit or quote from in Word, Pages or Google Docs.', tx === 'docx')) : '') +
         '<div class="kf-btns"><button type="submit" value="go" class="rel-btn rel-dl kf-go" aria-label="Download"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></button>' +
         '<button type="submit" value="cancel" class="rel-lyrics-toggle kd-close" aria-label="Cancel"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></form>';
       var form = _fdlg.querySelector('form');
@@ -2938,12 +2945,70 @@ function kitPdf(txt) {
   var x = out.length; out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n' + offs.map(function(o) { return ('000000000' + o).slice(-10) + ' 00000 n \n'; }).join('') + 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + cat + ' 0 R >>\nstartxref\n' + x + '\n%%EOF\n';
   var u8 = new Uint8Array(out.length); for (var k2 = 0; k2 < out.length; k2++) u8[k2] = out.charCodeAt(k2) & 255; return u8;
 }
+var _webpOk = null;
+function kitCanWebp() { if (_webpOk === null) { try { var c = document.createElement('canvas'); c.width = c.height = 1; _webpOk = c.toDataURL('image/webp').indexOf('data:image/webp') === 0; } catch (e) { _webpOk = false; } } return _webpOk; }
+function kitImage(u8, to) {   // a PNG as JPEG (on white) or WebP (keeps see-through parts), full size
+  return new Promise(function(ok, no) {
+    var url = URL.createObjectURL(new Blob([u8], { type: 'image/png' })), im = new Image();
+    im.onload = function() {
+      var cv = document.createElement('canvas'); cv.width = im.naturalWidth; cv.height = im.naturalHeight; var g = cv.getContext('2d');
+      if (to === 'jpg') { g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height); }
+      g.drawImage(im, 0, 0); URL.revokeObjectURL(url);
+      cv.toBlob(function(b) { if (!b) return no(); b.arrayBuffer().then(function(x) { ok(new Uint8Array(x)); }, no); }, to === 'jpg' ? 'image/jpeg' : 'image/webp', .95);
+    };
+    im.onerror = function() { URL.revokeObjectURL(url); no(); };
+    im.src = url;
+  });
+}
+// MP4 as MOV or M4V: the same video and sound, the same bytes; only the file's opening label (its "ftyp" brands) changes
+function kitVideoBrand(u8, to) {
+  var out = new Uint8Array(u8), dv = new DataView(out.buffer, out.byteOffset);
+  if (String.fromCharCode(out[4], out[5], out[6], out[7]) !== 'ftyp') return out;
+  var size = dv.getUint32(0), put = function(o, t) { for (var k = 0; k < 4; k++) out[o + k] = t.charCodeAt(k); };
+  put(8, to === 'mov' ? 'qt  ' : 'M4V ');
+  if (to === 'mov') for (var o = 16; o + 4 <= size; o += 4) put(o, 'qt  ');
+  return out;
+}
+// A text file as a Word document (DOCX): its title and headings in bold, every line a paragraph
+function kitDocx(txt) {
+  var L = txt.replace(/^﻿/, '').replace(/\r/g, '').split('\n'), body = [], first = true, inHead = false;
+  var esc = function(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  var para = function(t, bold, size) { return '<w:p><w:r><w:rPr>' + (bold ? '<w:b/>' : '') + (size ? '<w:sz w:val="' + size * 2 + '"/>' : '') + '</w:rPr><w:t xml:space="preserve">' + esc(t) + '</w:t></w:r></w:p>'; };
+  for (var i = 0; i < L.length; i++) {
+    var t = L[i];
+    if (first && t.trim()) { body.push(para(t.trim(), true, 18)); first = false; continue; }
+    if (/^\s*=+\s*$/.test(t)) { inHead = !inHead; continue; }
+    if (/^\s*-{3,}\s*$/.test(t)) continue;
+    var heading = /^-{3,}$/.test((L[i + 1] || '').trim()) && t.trim();
+    body.push(para(t.replace(/\s{2,}/g, '\t'), (inHead && t.trim() && !/^From /.test(t.trim())) || !!heading, heading ? 13 : 0));
+  }
+  var doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + body.join('') + '<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1080" w:right="1080" w:bottom="1080" w:left="1080"/></w:sectPr></w:body></w:document>';
+  var types = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  return kitZipBytes([['[Content_Types].xml', types], ['_rels/.rels', rels], ['word/document.xml', doc]]);
+}
+function kitZipBytes(entries) {   // a small ZIP (stored) from [name, text] pairs
+  var enc = new TextEncoder(), parts = [], central = [], off = 0;
+  entries.forEach(function(e) {
+    var name = enc.encode(e[0]), data = typeof e[1] === 'string' ? enc.encode(e[1]) : e[1], crc = kitCrc(data);
+    var h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(12, 0x21, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(h.buffer), name, data);
+    var c = new DataView(new ArrayBuffer(46)); c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(14, 0x21, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), name); off += 30 + name.length + data.length;
+  });
+  var cd = central.reduce(function(t, x) { return t + x.length; }, 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, entries.length, true); e.setUint16(10, entries.length, true); e.setUint32(12, cd, true); e.setUint32(16, off, true);
+  var all = parts.concat(central, [new Uint8Array(e.buffer)]), out = new Uint8Array(all.reduce(function(t, x) { return t + x.length; }, 0)), o = 0;
+  all.forEach(function(x) { out.set(x, o); o += x.length; }); return out;
+}
 // Convert one file as the visitor chose. -> Promise of [bytes, new name]. f: {src, path, tag?, kind?}
 function kitConvert(f, data, fmt, coverBytes) {
   var isMp3 = /\.mp3$/i.test(f.src), isImg = /\.png$/i.test(f.src), isVid = /\.mp4$/i.test(f.src), isTxt = /\.txt$/i.test(f.src);
   if (isMp3 && fmt.audio && fmt.audio !== 'mp3') return kitAudio(data, fmt.audio, f.tag).then(function(d) { return [d, f.path.replace(/\.mp3$/i, '.' + fmt.audio)]; });
-  if (isImg && fmt.image === 'jpg') return kitJpeg(data).then(function(d) { return [d, f.path.replace(/\.png$/i, '.jpg')]; });
+  if (isImg && fmt.image && fmt.image !== 'png') return kitImage(data, fmt.image).then(function(d) { return [d, f.path.replace(/\.png$/i, '.' + fmt.image)]; });
+  if (isVid && (fmt.video === 'mov' || fmt.video === 'm4v')) return Promise.resolve([kitVideoBrand(data, fmt.video), f.path.replace(/\.mp4$/i, '.' + fmt.video)]);
   if (isVid && fmt.video && fmt.video !== 'mp4') { var title = f.path.split('/').pop().replace(/\.mp4$/i, ''); return kitVideoSound(data, fmt.video, { title: title, album: 'Ash Stu - Live', track: '1/1' }).then(function(d) { return [d, f.path.replace(/\.mp4$/i, '.' + fmt.video)]; }); }
+  if (isTxt && fmt.text === 'docx') return Promise.resolve([kitDocx(new TextDecoder().decode(data)), f.path.replace(/\.txt$/i, '.docx')]);
   if (isTxt && fmt.text === 'pdf') return Promise.resolve([kitPdf(new TextDecoder().decode(data)), f.path.replace(/\.txt$/i, '.pdf')]);
   if (f.tag && isMp3) { var lab = kitId3(f.tag, coverBytes), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); return Promise.resolve([d, f.path]); }
   return Promise.resolve([data, f.path]);
@@ -2962,7 +3027,7 @@ function kitSaveOne(src, name, kinds, opener, tag) {
     return Promise.all([typeof src === 'function' ? Promise.resolve(src()) : fetchBytes(src), tag && tag.cover ? fetchBytes(tag.cover).catch(function() { return null; }) : null]).then(function(r) {
       return kitConvert({ src: srcName, path: name, tag: tag }, r[0], fmt, r[1]);
     }).then(function(r) {
-      var ext = r[1].split('.').pop().toLowerCase(), type = { jpg: 'image/jpeg', png: 'image/png', mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4', mp4: 'video/mp4', pdf: 'application/pdf', txt: 'text/plain' }[ext] || 'application/octet-stream';
+      var ext = r[1].split('.').pop().toLowerCase(), type = { jpg: 'image/jpeg', png: 'image/png', mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4', mp4: 'video/mp4', mov: 'video/quicktime', m4v: 'video/x-m4v', webp: 'image/webp', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', pdf: 'application/pdf', txt: 'text/plain' }[ext] || 'application/octet-stream';
       var url = URL.createObjectURL(new Blob([r[0]], { type: type })), a = document.createElement('a');
       a.href = url; a.download = r[1]; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
