@@ -2944,22 +2944,31 @@ function kitConvert(f, data, fmt, coverBytes) {
   return Promise.resolve([data, f.path]);
 }
 // One file, chosen and saved on its own (a photo's, a video's or a text file's own Download)
-function kitSaveOne(src, name, kinds, opener) {
+// One file, chosen and saved on its own (a song's, a photo's, a video's, a lyric sheet's own Download). src: a site path, or
+// a function giving the file's bytes (a song's words, written here). tag: a song's details for its label.
+function kitSaveOne(src, name, kinds, opener, tag) {
   return kitPickFormats(name.replace(/\.[a-z0-9]+$/i, ''), kinds, opener).then(function(fmt) {
     if (!fmt) return;
     var word = opener && opener.querySelector('.btn-word'), was = word && word.textContent;
     if (word) { word.dataset.auto = '0'; word.textContent = 'Preparing'; }
     if (opener) opener.setAttribute('aria-busy', 'true');
-    return fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function(b) {
-      return kitConvert({ src: src, path: name }, new Uint8Array(b), fmt, null);
+    var fetchBytes = function(u) { return fetch(kitUrl(u)).then(function(r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
+    var srcName = typeof src === 'function' ? name : src;
+    return Promise.all([typeof src === 'function' ? Promise.resolve(src()) : fetchBytes(src), tag && tag.cover ? fetchBytes(tag.cover).catch(function() { return null; }) : null]).then(function(r) {
+      return kitConvert({ src: srcName, path: name, tag: tag }, r[0], fmt, r[1]);
     }).then(function(r) {
-      var ext = r[1].split('.').pop().toLowerCase(), type = { jpg: 'image/jpeg', png: 'image/png', mp3: 'audio/mpeg', wav: 'audio/wav', mp4: 'video/mp4', pdf: 'application/pdf', txt: 'text/plain' }[ext] || 'application/octet-stream';
+      var ext = r[1].split('.').pop().toLowerCase(), type = { jpg: 'image/jpeg', png: 'image/png', mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4', mp4: 'video/mp4', pdf: 'application/pdf', txt: 'text/plain' }[ext] || 'application/octet-stream';
       var url = URL.createObjectURL(new Blob([r[0]], { type: type })), a = document.createElement('a');
       a.href = url; a.download = r[1]; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
     }).catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(name + ' could not be downloaded. Check the connection and try again.'); })
       .then(function() { if (word) { word.textContent = was || 'Download'; word.dataset.auto = '1'; } if (opener) opener.removeAttribute('aria-busy'); });
   });
+}
+// A song's words as a text file (its title, where it is from, then the lines), for its lyrics' own Download
+function kitLyricsText(title, from, entry) {
+  var lines = ((entry && entry.lines) || []).map(function(l) { return String(l[1] || '').trim(); }).filter(Boolean);
+  return new TextEncoder().encode('﻿' + [title.toUpperCase(), from, '', ''].concat(lines, ['', '', 'Ash Stu  -  https://ashstu.art', '']).join('\r\n'));
 }
 // One maker for every download (the press kit and each album): fetch the files, label the songs, put them in one ZIP,
 // save it under its name. -> a Promise of the saved size in bytes. onStep(percent) is told how far it has got.
@@ -3177,13 +3186,24 @@ KIT.files.forEach(function(f, k) {
     // (a kit song plays the kit's songs in turn; a song of the latest release plays that release, as on its own card)
     row.addEventListener('click', function() { if (idx >= 0) playKit(idx); else playTrack(f.ri, f.ti); });
     wrap.appendChild(row);
+    // (the song's own Download, in the format the visitor picks: owner's request)
+    var sdl = document.createElement('a'); sdl.className = 'rel-lyrics-toggle epk-file-dl epk-song-dl'; sdl.href = kitUrl(f.src); sdl.setAttribute('download', f.name);
+    sdl.setAttribute('aria-label', 'Download ' + shown + ' (' + f.size + ')'); sdl.title = 'Download ' + shown;
+    sdl.innerHTML = DL;
+    (function(f, sdl) { sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); kitSaveOne(f.src, f.name, { audio: 1 }, sdl, f.tag); }); })(f, sdl);
     if (has) {
       wrap.classList.add('has-lyrics');
       wrap.appendChild(makeLyricsBtn(t.title));
       var lDiv = document.createElement('div'); lDiv.className = 'rel-lyrics';
       var lInner = document.createElement('div'); lInner.className = 'rel-lyrics-inner';
-      fillCardLyrics(lInner, entry, t.file); lDiv.appendChild(lInner); wrap.appendChild(lDiv);
+      fillCardLyrics(lInner, entry, t.file); lDiv.appendChild(lInner);
+      // (the words' own Download, as TXT or PDF: owner's request)
+      var ldl = document.createElement('button'); ldl.type = 'button'; ldl.className = 'rel-lyrics-toggle epk-file-dl epk-lyr-dl';
+      ldl.setAttribute('aria-label', 'Download the lyrics of ' + t.title); ldl.innerHTML = DL + '<span class="btn-word">Download lyrics</span>';
+      (function(t, f, entry, ldl) { ldl.addEventListener('click', function(e) { e.stopPropagation(); kitSaveOne(function() { return kitLyricsText(t.title, 'From ' + RELEASE_LIST[f.ri].name, entry); }, t.title + ' - Lyrics.txt', { text: 1 }, ldl); }); })(t, f, entry, ldl);
+      lDiv.appendChild(ldl); wrap.appendChild(lDiv);
     }
+    wrap.appendChild(sdl);
   } else {
     var a = document.createElement('a'); a.className = 'rel-track epk-photo-row'; a.href = href; a.target = '_blank'; a.rel = 'noopener';
     a.setAttribute('aria-label', 'Open ' + f.name + ' (' + f.size + '), file ' + (k + 1));
