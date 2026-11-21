@@ -69,21 +69,24 @@ POSES = []
 POSES.append(dict(
     lines=[qbez((-25, -13), (-22, -3), (-15, 0)), qbez((-25, -13), (-14, -5), (-3, -9)), circle(6, -20, 8.5, 1.9),
            qbez((12, -13), (22, -9), (17, 0)), qbez((-13, -6), (-6, -1), (2, -6)),
-           qbez((14, -22), (21, -21), (23, -18)) + qbez((23, -18), (19, -15.5), (14, -16.5))[1:]],
+           qbez((14, -21.5), (18.5, -21), (19.5, -19.5)) + qbez((19.5, -16.5), (18, -15.5), (14, -16.5)),   # (whistling: the bill pursed short...)
+           circle(21.3, -18, 2.1, 2.2)],                                                                     # (...round a little "o")
     fills=[poly_close(qbez((-25, -13), (-14, -5), (-3, -9)), qbez((12, -13), (22, -9), (17, 0)), [(-15, 0)], qbez((-15, 0), (-22, -3), (-25, -13))), circle(6, -20, 8.5, 0, 1)],
     eyes=[(9, -22)]))
 # three-quarter, turned towards you (still heading right)
 POSES.append(dict(
     lines=[qbez((-20, -11), (-18, -3), (-12, 0)), qbez((-20, -11), (-12, -6), (-5, -9)), circle(3, -20, 8.5, 1.9),
            qbez((9, -13), (17, -7), (12, 0)), qbez((-12, -5), (-6, -1), (-1, -5)),
-           qbez((4, -17.5), (11, -17.5), (12.5, -15.5)) + qbez((12.5, -15.5), (9, -13), (4, -14.5))[1:]],
+           qbez((4, -17.5), (8.5, -17.5), (9.5, -16.5)) + qbez((9.5, -14), (8, -13.2), (4, -14.5)),
+           circle(11, -15.3, 1.9, 2.2)],
     fills=[poly_close(qbez((-20, -11), (-12, -6), (-5, -9)), qbez((9, -13), (17, -7), (12, 0)), [(-12, 0)], qbez((-12, 0), (-18, -3), (-20, -11))), circle(3, -20, 8.5, 0, 1)],
     eyes=[(0, -22), (6.5, -22.5)]))
 # straight at you: a low round body under a round head, and the bill a small solid shape pointing at you
 POSES.append(dict(
     lines=[qbez((-21, 0), (-23, -8), (-9, -10)), qbez((21, 0), (23, -8), (9, -10)), circle(0, -22, 9.5, 1.9)],
     fills=[poly_close(qbez((-21, 0), (-23, -8), (-9, -10)), qbez((9, -10), (23, -8), (21, 0))), circle(0, -22, 9.5, 0, 1)],
-    solids=[poly_close(qbez((-5, -16), (0, -17.5), (5, -16)), qbez((5, -16), (10.5, -12.5), (8, -9.5)), qbez((8, -9.5), (0, -8), (-8, -9.5)), qbez((-8, -9.5), (-10.5, -12.5), (-5, -16)))],
+    solids=[circle(0, -14.5, 4.2, 0, 1)],          # (whistling: the bill puckered into a round "o"...)
+    holes=[circle(0, -14.3, 1.7, 0, 1)],          # (...open in the middle)
     eyes=[(-4, -23.5), (4, -23.5)]))
 # three-quarter, turned away (still heading right): its tail to you, the head going away
 POSES.append(dict(
@@ -108,6 +111,7 @@ for pi, pose in enumerate(POSES):
         lines += [path(wobble([(CX + x, CY + y) for x, y in st], rng, .3)) for st in RIPPLES]
         fills = ''.join(f'<path d="{path(place(fp), True)}" fill="#fff" stroke="none"/>' for fp in pose['fills'])
         solids = ''.join(f'<path d="{path(wobble(place(sp), rng, .2), True)}" fill="#C2560E" stroke="none"/>' for sp in pose.get('solids', []))   # (the bill: one orange, as a rubber duck's is)
+        solids += ''.join(f'<path d="{path(place(hp), True)}" fill="#2A1A24" stroke="none"/>' for hp in pose.get('holes', []))
         eyes = ''.join(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="1.8" fill="#2A1A24" stroke="none"/>' for ex, ey in place(pose['eyes']))
         cells.append(f'<g transform="translate({f * CW} {pi * CH})">{fills}<path d="{" ".join(lines)}" fill="none"/>{solids}{eyes}</g>')
 NP = len(POSES)
@@ -116,6 +120,43 @@ open(os.path.join(IMG, 'rubber-duck.svg'), 'w').write(
     '<defs><linearGradient id="g" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">'
     '<stop offset="0" stop-color="#B0145E"/><stop offset=".5" stop-color="#A8400A"/><stop offset="1" stop-color="#0B6A8C"/></linearGradient></defs>'
     f'<g stroke="url(#g)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">{"".join(cells)}</g></svg>\n')
+
+# ── the tune ── (owner's request: the duck whistles)
+# Images/duck-notes.svg: little hand-drawn music notes drifting up out of the duck's bill, 12 drawings stepped six a
+# second (a 2-second loop). Each cell is 120 x 120 units: its lower half lines up with a duck cell (so the bill, side
+# on, is at about (89, 81)) and the notes rise into the upper half. Three notes are in the air at a time, each carried
+# forward from the bill and rising a little in a gentle wave (staying clear of the name above), turning a little, growing as they leave the bill and shrinking away near the top. Same pencil
+# line and gradient as the duck; drawn afresh each frame, so they boil like everything else.
+NCW, NCH, NF = 120, 120, 12
+BILL = (89, 81)
+def note_shape(kind):
+    """note drawings in note space (head at the origin, about 10 units tall): (stroked lines, filled heads)"""
+    head = lambda cx, cy: [(cx + 2.6 * math.cos(a) * math.cos(-.45) - 1.8 * math.sin(a) * math.sin(-.45),
+                            cy + 2.6 * math.cos(a) * math.sin(-.45) + 1.8 * math.sin(a) * math.cos(-.45)) for a in (2 * math.pi * i / 16 for i in range(17))]
+    if kind == 0:   # a single eighth note
+        return [[(2.2, -.8), (2.2, -11)], qbez((2.2, -11), (6.5, -8.5), (5.5, -4.5))], [head(0, 0)]
+    else:           # two beamed notes
+        return [[(2.2, -.8), (2.2, -11)], [(10.2, -2.3), (10.2, -12.5)], [(2.2, -11), (10.2, -12.5)], [(2.2, -9), (10.2, -10.5)]], [head(0, 0), head(8, -1.5)]
+ncells = []
+for f in range(NF):
+    parts = []
+    for k in range(3):
+        t = ((f / NF) + k / 3) % 1                       # 0 = just left the bill, 1 = gone
+        kind = (k + (1 if (f + 4 * k) // NF % 2 else 0)) % 2
+        x = BILL[0] + 4 + 26 * t                                            # (carried forward from the bill, at head height...)
+        y = BILL[1] - 3 - 9 * t - 3.5 * math.sin(t * 2 * math.pi + k * 2.1)  # (...lifting only a little, in a gentle wave: the name sits close above)
+        sc = 1.2 * ((.55 + 1.6 * t) if t < .3 else 1.03 - .45 * max(0, t - .7) / .3)
+        rot = math.radians(-12 + 22 * math.sin(t * 5 + k))
+        tf = lambda pts: [(x + sc * (px * math.cos(rot) - py * math.sin(rot)), y + sc * (px * math.sin(rot) + py * math.cos(rot))) for px, py in pts]
+        strokes, heads = note_shape(kind)
+        parts.append(''.join(f'<path d="{path(wobble(tf(h), rng, .18), True)}" fill="url(#g)" stroke="none"/>' for h in heads))
+        parts.append(f'<path d="{" ".join(path(wobble(tf(st), rng, .22)) for st in strokes)}" fill="none"/>')
+    ncells.append(f'<g transform="translate({f * NCW} 0)">{"".join(parts)}</g>')
+open(os.path.join(IMG, 'duck-notes.svg'), 'w').write(
+    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {NCW * NF} {NCH}" width="{NCW * NF}" height="{NCH}">'
+    '<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="70" y1="0" x2="120" y2="0" spreadMethod="pad">'
+    '<stop offset="0" stop-color="#B0145E"/><stop offset=".5" stop-color="#A8400A"/><stop offset="1" stop-color="#0B6A8C"/></linearGradient></defs>'
+    f'<g stroke="url(#g)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">{"".join(ncells)}</g></svg>\n')
 
 # ── the figure 8 ──
 # 96 stepped positions over 16 seconds. Each picks the pose for the duck's heading (side on when crossing the pool,
