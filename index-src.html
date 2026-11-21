@@ -3256,6 +3256,12 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
+<script>/* The chalk stars (one 182KB sheet) are drawn only once the page has settled - after it has loaded and the
+   browser is idle, or at the first scroll - so they never compete with the first screen, where there are none. */
+(function(){var r=document.documentElement,done=false,go=function(){if(done)return;done=true;r.classList.add('stars-ready');};
+addEventListener('scroll',go,{once:true,passive:true});
+var idle=function(){(window.requestIdleCallback||function(f){setTimeout(f,600)})(go,{timeout:2500});};
+if(document.readyState==='complete')idle();else addEventListener('load',idle,{once:true});})();</script>
 <script>/* About's drawings (the soup line, the duck and its tune - about 250KB of drawing sheets) are fetched only as About
    comes near: until then they are not drawn at all, so a visitor who never scrolls that far never downloads them. */
 (function(){var a=document.getElementById('about');if(!a)return;var on=function(){a.classList.add('about-near');};
