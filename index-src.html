@@ -2840,11 +2840,12 @@ function openList() { if (!card.classList.contains('tracks-open')) { card.classL
 card.querySelector('.rel-tl-toggle').addEventListener('click', function() {
   if (card.classList.contains('tracks-open')) { card.classList.remove('tracks-open'); tl.style.maxHeight = '0'; syncTracklistExpanded(); } else openList();
 });
-// (a click anywhere else on a closed card opens it, like pressing Show)
+// (a click on the card's top part opens it, and pressing it again closes it, like Show / Hide; clicks among the
+// photos, videos and tracks never close it)
 card.addEventListener('click', function(e) {
-  if (e.target.closest('a, button, .rel-tracklist') || !card.classList.contains('kit-collapsed')) return;
+  if (e.target.closest('a, button, .rel-tracklist, .epk-gallery, .epk-videos')) return;
   var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
-  setMore(true);
+  setMore(card.classList.contains('kit-collapsed'));
 });
 // the rows: songs play (with Lyrics), photos open full size (with Download)
 var PIC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>';
