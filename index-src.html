@@ -2721,10 +2721,131 @@ function kitSound(u8) {   // the sound inside an MP3, without its old labels (ID
   if (e - s >= 128 && u8[e - 128] === 84 && u8[e - 127] === 65 && u8[e - 126] === 71) e -= 128;
   return u8.subarray(s, e);
 }
+// FORMATS (owner's request: let the visitor pick the format of a download, for devices that cannot open MP3 or PNG; the
+// quality stays the MP3's: nothing is made "lossless", it is only re-wrapped so more devices can play it). Songs: MP3
+// as they are, WAV (plays on everything; about four times larger), or M4A/AAC at 256 kbps (where the browser can make it:
+// Safari, and Chrome on Windows and Mac). Photos: PNG as they are, or JPEG. Videos are MP4 (H.264), which plays on
+// everything, and the text files are plain text: those have nothing to pick.
+function kitMp3Rate(u8) {   // the sample rate written in the first MP3 frame (44100, 48000...)
+  var i = kitSound(u8).byteOffset - u8.byteOffset;
+  for (; i < u8.length - 4; i++) if (u8[i] === 255 && (u8[i + 1] & 0xE0) === 0xE0) {
+    var ver = (u8[i + 1] >> 3) & 3, idx = (u8[i + 2] >> 2) & 3; if (idx === 3 || ver === 1) continue;
+    var base = [11025, 12000, 8000][idx]; return ver === 3 ? base * 4 : ver === 2 ? base * 2 : base;
+  }
+  return 44100;
+}
+function kitDecode(u8) {
+  var rate = kitMp3Rate(u8), Ctx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  var ctx = new Ctx(2, 1, rate), buf = u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
+  return new Promise(function(ok, no) { var p = ctx.decodeAudioData(buf, ok, no); if (p && p.then) p.then(ok, no); });
+}
+function kitWav(ab, tag) {
+  var ch = ab.numberOfChannels, n = ab.length, rate = ab.sampleRate, enc = new TextEncoder();
+  var info = [];   // (the song's details as a LIST INFO chunk: title, artist, album, track)
+  if (tag) [['INAM', tag.title], ['IART', 'Ash Stu'], ['IPRD', tag.album], ['ITRK', String(tag.track || '').split('/')[0]]].forEach(function(x) { if (x[1]) { var b = enc.encode(x[1] + '\0'); var pad = b.length & 1; var c = new Uint8Array(8 + b.length + pad); c.set(enc.encode(x[0]), 0); new DataView(c.buffer).setUint32(4, b.length, true); c.set(b, 8); info.push(c); } });
+  var infoLen = info.length ? 4 + info.reduce(function(t, c) { return t + c.length; }, 0) : 0;
+  var dataLen = n * ch * 2, head = new DataView(new ArrayBuffer(44 + (infoLen ? 8 + infoLen : 0)));
+  var str = function(o, t) { for (var i = 0; i < t.length; i++) head.setUint8(o + i, t.charCodeAt(i)); };
+  str(0, 'RIFF'); head.setUint32(4, head.byteLength - 8 + dataLen, true); str(8, 'WAVE'); str(12, 'fmt '); head.setUint32(16, 16, true);
+  head.setUint16(20, 1, true); head.setUint16(22, ch, true); head.setUint32(24, rate, true); head.setUint32(28, rate * ch * 2, true); head.setUint16(32, ch * 2, true); head.setUint16(34, 16, true);
+  var o = 36;
+  if (infoLen) { str(o, 'LIST'); head.setUint32(o + 4, infoLen, true); str(o + 8, 'INFO'); var hb = new Uint8Array(head.buffer), q = o + 12; info.forEach(function(c) { hb.set(c, q); q += c.length; }); o += 8 + infoLen; }
+  str(o, 'data'); head.setUint32(o + 4, dataLen, true);
+  var pcm = new Int16Array(n * ch), chans = []; for (var c = 0; c < ch; c++) chans.push(ab.getChannelData(c));
+  for (var i = 0, j = 0; i < n; i++) for (var c2 = 0; c2 < ch; c2++) { var v = Math.max(-1, Math.min(1, chans[c2][i])); pcm[j++] = v < 0 ? v * 32768 : v * 32767; }
+  var out = new Uint8Array(head.byteLength + pcm.byteLength); out.set(new Uint8Array(head.buffer), 0); out.set(new Uint8Array(pcm.buffer), head.byteLength); return out;
+}
+var _muxLib = null;
+function kitMuxer() {   // (the M4A box-writer, fetched only when someone picks M4A: mp4-muxer 5.1.3)
+  if (window.Mp4Muxer) return Promise.resolve(window.Mp4Muxer);
+  if (!_muxLib) _muxLib = new Promise(function(ok, no) { var sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.min.js'; sc.onload = function() { ok(window.Mp4Muxer); }; sc.onerror = no; document.head.appendChild(sc); });
+  return _muxLib;
+}
+function kitM4a(ab) {
+  return kitMuxer().then(function(M) {
+    var ch = Math.min(2, ab.numberOfChannels), rate = ab.sampleRate;
+    var muxer = new M.Muxer({ target: new M.ArrayBufferTarget(), audio: { codec: 'aac', numberOfChannels: ch, sampleRate: rate }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' });
+    var n = 0;   // (the muxer is given each AAC frame's time from a running count of samples: 1024 per frame)
+    return new Promise(function(ok, no) {
+      var enc = new AudioEncoder({ output: function(chunk, meta) {
+        var d = new Uint8Array(chunk.byteLength); chunk.copyTo(d);
+        muxer.addAudioChunkRaw(d, 'key', Math.round(n * 1e6 / rate), Math.round(1024 * 1e6 / rate), meta); n += 1024;
+      }, error: no });
+      enc.configure({ codec: 'mp4a.40.2', numberOfChannels: ch, sampleRate: rate, bitrate: 256000 });
+      var step = 1024 * 64, chans = [];   /* (whole AAC frames per chunk, so each chunk's time follows on exactly from the last) */ for (var c = 0; c < ch; c++) chans.push(ab.getChannelData(c));
+      for (var at = 0; at < ab.length; at += step) {
+        var len = Math.min(step, ab.length - at), buf = new Float32Array(len * ch);
+        for (var c3 = 0; c3 < ch; c3++) buf.set(chans[c3].subarray(at, at + len), c3 * len);
+        var frame = new AudioData({ format: 'f32-planar', sampleRate: rate, numberOfFrames: len, numberOfChannels: ch, timestamp: Math.round(at / rate * 1e6), data: buf });
+        enc.encode(frame); frame.close();
+      }
+      enc.flush().then(function() { enc.close(); muxer.finalize(); ok(new Uint8Array(muxer.target.buffer)); }, no);
+    });
+  });
+}
+function kitAudio(u8, to, tag) { return kitDecode(u8).then(function(ab) { return to === 'm4a' ? kitM4a(ab) : kitWav(ab, tag); }); }
+function kitJpeg(u8) {
+  return new Promise(function(ok, no) {
+    var url = URL.createObjectURL(new Blob([u8], { type: 'image/png' })), im = new Image();
+    im.onload = function() {
+      var cv = document.createElement('canvas'); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+      var g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height); g.drawImage(im, 0, 0); URL.revokeObjectURL(url);
+      cv.toBlob(function(b) { if (!b) return no(); b.arrayBuffer().then(function(x) { ok(new Uint8Array(x)); }, no); }, 'image/jpeg', .95);
+    };
+    im.onerror = function() { URL.revokeObjectURL(url); no(); };
+    im.src = url;
+  });
+}
+var _m4aOk = null;
+function kitCanM4a() {
+  if (_m4aOk) return _m4aOk;
+  _m4aOk = (typeof AudioEncoder === 'undefined' || !AudioEncoder.isConfigSupported) ? Promise.resolve(false) :
+    AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: 44100, numberOfChannels: 2, bitrate: 256000 }).then(function(r) { return !!r.supported; }, function() { return false; });
+  return _m4aOk;
+}
+// The chooser: a small pop-up asking which formats, before a download starts. -> a Promise of {audio, image} or null.
+var _fdlg = null;
+function kitPickFormats(what, hasImages, opener) {
+  var saved = {}; try { saved = JSON.parse(localStorage.getItem('ash_dl_fmt') || '{}'); } catch (e) {}
+  return kitCanM4a().then(function(m4a) {
+    return new Promise(function(done) {
+      if (!_fdlg) { _fdlg = document.createElement('dialog'); _fdlg.className = 'kit-doc kit-fmt'; _fdlg.setAttribute('aria-labelledby', 'kf-title'); document.body.appendChild(_fdlg); }
+      var opt = function(name, value, label, note, on) { return '<label class="kf-opt"><input type="radio" name="' + name + '" value="' + value + '"' + (on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></label>'; };
+      var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' ? 'jpg' : 'png';
+      _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
+        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">Pick the formats your devices can open. The sound and pictures are the same in each: only the file type changes.</p>' +
+        '<fieldset class="kf-set"><legend class="kd-h">Songs</legend>' +
+          opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
+          opt('audio', 'wav', 'WAV', 'Plays on everything, even old CD players and editors. About four times larger.', a === 'wav') +
+          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : '') + '</fieldset>' +
+        (hasImages ? '<fieldset class="kf-set"><legend class="kd-h">Photos</legend>' +
+          opt('image', 'png', 'PNG', 'As taken, with no loss.', im === 'png') +
+          opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg') + '</fieldset>' : '') +
+        '<p class="kf-fixed">Videos come as MP4 and the text files as plain text: both open on every device.</p>' +
+        '<div class="kf-btns"><button type="submit" value="go" class="rel-btn rel-dl kf-go" aria-label="Download"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></button>' +
+        '<button type="submit" value="cancel" class="rel-lyrics-toggle kd-close" aria-label="Cancel"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></form>';
+      var form = _fdlg.querySelector('form');
+      var finish = function() {
+        _fdlg.removeEventListener('close', finish);
+        if (_fdlg.returnValue !== 'go') { if (opener && opener.focus) opener.focus(); return done(null); }
+        var f = { audio: (form.querySelector('[name=audio]:checked') || {}).value || 'mp3', image: (form.querySelector('[name=image]:checked') || {}).value || 'png' };
+        try { localStorage.setItem('ash_dl_fmt', JSON.stringify(f)); } catch (e) {}
+        if (opener && opener.focus) opener.focus();
+        done(f);
+      };
+      _fdlg.returnValue = '';
+      _fdlg.addEventListener('close', finish);
+      _fdlg.addEventListener('click', function(e) { if (e.target === _fdlg) _fdlg.close('cancel'); });
+      _fdlg.showModal();
+      var first = form.querySelector('input:checked'); if (first) first.focus();
+    });
+  });
+}
 // One maker for every download (the press kit and each album): fetch the files, label the songs, put them in one ZIP,
 // save it under its name. -> a Promise of the saved size in bytes. onStep(percent) is told how far it has got.
-function liveZip(files, filename, onStep) {
-  var total = files.reduce(function(n, f) { return n + (f.bytes || 0); }, 0) || 1, got = 0, covers = {}, out = new Array(files.length);
+function liveZip(files, filename, onStep, fmt) {
+  fmt = fmt || {};
+  var total = files.reduce(function(n, f) { return n + (f.bytes || 0); }, 0) || 1, got = 0, covers = {}, out = new Array(files.length), paths = new Array(files.length);
   var get = function(url) { return fetch(kitUrl(url))   /* (each part encoded in full: a "?" in a song's name, as in "Anybody Still Awake?", must not start a query) */
     .then(function(r) { if (!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
   var cover = function(url) { if (!url) return Promise.resolve(null); if (!covers[url]) covers[url] = get(url); return covers[url]; };
@@ -2734,9 +2855,14 @@ function liveZip(files, filename, onStep) {
     if (i >= files.length) return Promise.resolve();
     var k = i++, f = files[k];
     return Promise.all([get(f.src), f.tag ? cover(f.tag.cover) : null]).then(function(r) {
-      var data = r[0];
-      if (f.tag) { var lab = kitId3(f.tag, r[1]), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); data = d; }
-      out[k] = data; got += f.bytes || 0; if (onStep) onStep(Math.min(99, Math.round(got / total * 100)));
+      var data = r[0], isMp3 = /\.mp3$/i.test(f.src), isImg = /\.png$/i.test(f.src);
+      // (the format the visitor picked: songs as WAV or M4A, photos as JPEG; everything else as it is)
+      if (isMp3 && fmt.audio && fmt.audio !== 'mp3') return kitAudio(data, fmt.audio, f.tag).then(function(d) { return [d, f.path.replace(/\.mp3$/i, '.' + fmt.audio)]; });
+      if (isImg && fmt.image === 'jpg') return kitJpeg(data).then(function(d) { return [d, f.path.replace(/\.png$/i, '.jpg')]; });
+      if (f.tag && isMp3) { var lab = kitId3(f.tag, r[1]), snd = kitSound(data), d = new Uint8Array(lab.length + snd.length); d.set(lab, 0); d.set(snd, lab.length); data = d; }
+      return [data, f.path];
+    }).then(function(r) {
+      out[k] = r[0]; paths[k] = r[1]; got += f.bytes || 0; if (onStep) onStep(Math.min(99, Math.round(got / total * 100)));
       return worker();
     });
   }
@@ -2744,7 +2870,7 @@ function liveZip(files, filename, onStep) {
     var enc = new TextEncoder(), parts = [], central = [], off = 0, now = new Date();
     var dt = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF, dd = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
     files.forEach(function(f, k) {
-      var name = enc.encode(f.path), data = out[k], crc = kitCrc(data);
+      var name = enc.encode(paths[k] || f.path), data = out[k], crc = kitCrc(data);
       var h = new DataView(new ArrayBuffer(30));
       h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, dt, true); h.setUint16(12, dd, true);
       h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
@@ -2768,10 +2894,14 @@ function liveZip(files, filename, onStep) {
 }
 var _kitBusy = false;
 function kitZip(status, btn) {
-  if (_kitBusy || !KIT) return; _kitBusy = true;
+  if (_kitBusy || !KIT) return;
+  kitPickFormats('the press kit', true, btn).then(function(fmt) { if (fmt) kitZipGo(status, btn, fmt); });
+}
+function kitZipGo(status, btn, fmt) {
+  if (_kitBusy) return; _kitBusy = true;
   var say = function(t) { if (status) status.textContent = t; };
   if (btn) btn.setAttribute('aria-busy', 'true');
-  liveZip(KIT.files, 'Ash Stu - Press Kit.zip', function(p) { say('Preparing the press kit: ' + p + '%'); }).then(function(size) {
+  liveZip(KIT.files, 'Ash Stu - Press Kit.zip', function(p) { say('Preparing the press kit: ' + p + '%'); }, fmt).then(function(size) {
     say('Saved: Ash Stu - Press Kit.zip (' + Math.round(size / 1048576) + ' MB)');
     if (window.kinetic && window.kinetic.announce) window.kinetic.announce('The press kit is downloading.');
   }).catch(function() {
@@ -2783,11 +2913,16 @@ function kitZip(status, btn) {
 function albumZip(btn, rIdx) {
   var rel = RELEASE_LIST[rIdx];
   if (!rel || !rel.zip || !rel.zip.files || btn.getAttribute('aria-busy') === 'true') return;
+  kitPickFormats(rel.name, true, btn).then(function(fmt) { if (fmt) albumZipGo(btn, rIdx, fmt); });
+}
+function albumZipGo(btn, rIdx, fmt) {
+  var rel = RELEASE_LIST[rIdx];
+  if (btn.getAttribute('aria-busy') === 'true') return;
   var word = btn.querySelector('.btn-word'), label = btn.getAttribute('aria-label');
   var show = function(t) { if (word) { word.dataset.auto = '0'; word.textContent = t; } };
   btn.setAttribute('aria-busy', 'true');
   if (window.kinetic && window.kinetic.announce) window.kinetic.announce('Preparing ' + rel.name + ' for download.');
-  liveZip(rel.zip.files, rel.zip.name, function(p) { show('Loading ' + p + '%'); }).then(function() {
+  liveZip(rel.zip.files, rel.zip.name, function(p) { show('Loading ' + p + '%'); }, fmt).then(function() {
     if (window.kinetic && window.kinetic.announce) window.kinetic.announce(rel.name + ' is downloading.');
   }).catch(function() {
     if (window.kinetic && window.kinetic.announce) window.kinetic.announce(rel.name + ' could not be prepared. Check the connection and press Download again.');
