@@ -2558,10 +2558,10 @@ tracklist +
 '</article>';
 }
 function renderVideoCard(v, vIdx) {
-// Laid out like an album card (owner's request): where to watch it ("Watch on" and a YouTube tile, like the album
-// cards' store tiles), then the card's one Play button. Only Play plays: the card and its thumbnail don't.
+// The card's two buttons share one row (owner's request): YouTube first and the larger of the two, since YouTube is
+// where the video lives, then Play. Only Play plays here: the card and its thumbnail don't.
 var ytBtn = v.youtube
-? '<div class="vid-avail"><p class="vid-listen"><span class="vid-listen-label">Watch on</span><a class="vid-tile" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span>YouTube</a></p></div>'
+? '<a class="vid-yt vid-ytbig" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word">YouTube</span></a>'
 : '';
 var thumbEl = v.thumb
 ? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
@@ -2573,8 +2573,7 @@ var thumbEl = v.thumb
 return '<div class="vid-card-wrap">' +
 '<div class="vid-info"><p class="rel-cat vid-cat">Video' + (v.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time>' + escHtml(String(v.year)) + '</time></span>' : '') + '</p><h3 class="vid-title">' + escHtml(v.title) + '</h3></div>' +
 '<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="' + vIdx + '"><span class="vid-thumb">' + thumbEl + '</span></button>' +
-ytBtn +
-'<div class="vid-btns"><button type="button" class="vid-yt vid-play" data-video-index="' + vIdx + '" aria-label="Play &quot;' + escHtml(v.title) + '&quot;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button>' + '</div>' +
+'<div class="vid-btns">' + ytBtn + '<button type="button" class="vid-yt vid-play" data-video-index="' + vIdx + '" aria-label="Play &quot;' + escHtml(v.title) + '&quot;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button></div>' +
 '</div>';
 }
 function renderFeatured(rel) {
