@@ -89,7 +89,7 @@ def render_release_card(rel, r_idx):
         listen += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
                    f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
-    for key, store in (('amazon', 'Amazon Music'), ('deezer', 'Deezer')):
+    for key, store in (('ytmusic', 'YouTube Music'), ('amazon', 'Amazon Music'), ('deezer', 'Deezer')):
         if rel.get(key):
             listen += (f'<a href="{esc(rel[key])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                        f'aria-label="Listen to {esc(rel["name"])} on {store}"><span class="pt pt--{key}" aria-hidden="true"></span> {store}</a>')
