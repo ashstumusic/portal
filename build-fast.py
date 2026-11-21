@@ -315,6 +315,8 @@ KIT_TOP = "Ash Stu - Press Kit/"
 KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", "Worship Song", "You Are What You Love"]
 KIT_PHOTO_ORDER = ["Ash Stu - Headshot-1.png", "Ash Stu - Headshot-2.png", "Ash Stu - Live at the Keyboard (Wide).png",
                    "Ash Stu - Headshot-3.png", "Ash Stu - Guitar in Alley (Wide).png"]   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
+KIT_VIDEOS = ["The Cloud for the Desert", "Theory of Hope"]   # (owner's choice: live solo acoustic performances, the first leads)
+KIT_VIDEO_NOTE = "Live, solo acoustic"
 KIT_SONG_COVER = "Images/embedded/kit-song-cover.jpg"   # (Headshot-1 as a JPEG: the picture music apps show for the kit's songs)
 # The artist's facts, as the site states them (About section, contact line). One place to change them: the Fact Sheet
 # and the press kit card are both written from here.
@@ -390,6 +392,21 @@ def _press_kit():
            "Photos folder (PNG), with photo credits:", *["  " + (f.ljust(max(map(len, photos)) + 3) + ("Photo: " + _KIT_CREDIT[f] if f in _KIT_CREDIT else "")).rstrip() for f in photos], ""]
     for _who, _url in PHOTOGRAPHERS.items():
         if any(_KIT_CREDIT.get(f) == _who for f in photos): fs += [_who + ", photographer: " + _url, ""]
+    vids = []
+    _vl = {v["title"]: v for v in _json.load(open(os.path.join(ROOT, "videos.json"), encoding="utf-8"))}
+    for title in KIT_VIDEOS:
+        v = _vl.get(title)
+        if not v: continue
+        try:
+            from mutagen.mp4 import MP4
+            n = round(MP4(os.path.join(ROOT, v["file"])).info.length); ln = f"{n // 60}:{n % 60:02d}"
+        except Exception: ln = ""
+        vids.append({"title": title, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE})
+    if vids:
+        fs += ["", "LIVE VIDEOS (on YouTube; not in the ZIP)", "-" * 40, ""]
+        for v in vids:
+            fs += [v["title"] + "  -  " + v["note"].lower() + ((", " + v["length"]) if v["length"] else ""), "  " + v["youtube"], ""]
+        fs += [""]
     fs += ["Free to use for booking, press and promotion of Ash Stu.", ""]
     texts = {"Ash Stu - Fact Sheet.txt": fs, "Ash Stu - Lyrics.txt": lines}
     for name, body in texts.items():
@@ -414,7 +431,7 @@ def _press_kit():
         _upd = _sp2.run(["git", "log", "-1", "--format=%cs", "--", "Images/press-kit", "releases.json"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     except Exception: _upd = ""
     return {"top": KIT_TOP, "files": files, "bytes": sum(f["bytes"] for f in files), "facts": KIT_FACTS,
-            "updated": _upd or time.strftime("%Y-%m-%d")}
+            "updated": _upd or time.strftime("%Y-%m-%d"), "videos": vids}
 _kitdata = _press_kit()
 html = html.replace("__KIT_MB__", str(max(1, round(_kitdata["bytes"] / 1048576))))
 html = html.replace("__KIT_JSON__", json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))

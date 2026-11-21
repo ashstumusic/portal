@@ -2796,6 +2796,14 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       (f.credit ? '<p class="epk-shot-credit">Photo: ' + (f.creditUrl ? '<a href="' + escHtml(f.creditUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(f.credit) + '</a>' : escHtml(f.credit)) + '</p>' : '') +
       '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
+  (KIT.videos && KIT.videos.length ? '<div class="epk-videos"><p class="epk-group">Live videos</p><div class="epk-video-row">' + KIT.videos.map(function(v, i) {
+    var meta = v.note + (v.length ? ' · ' + v.length : '');
+    return '<div class="epk-video" data-video="' + escHtml(v.title) + '">' +
+      '<button type="button" class="epk-video-thumb" tabindex="-1" aria-hidden="true"><img src="' + escHtml(encodeURI(v.thumb)) + '" alt="" width="576" height="324" loading="lazy" decoding="async"/></button>' +
+      '<p class="epk-shot-name">' + escHtml(v.title) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
+      '<div class="epk-video-btns"><button type="button" class="rel-lyrics-toggle epk-vplay" aria-label="Play ' + escHtml(v.title) + ', ' + escHtml(meta.toLowerCase()) + '"><svg class="lyr-ico" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button>' +
+      (v.youtube ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube: ' + escHtml(v.title) + '"><span class="pt pt--youtube" aria-hidden="true"></span></a>' : '') + '</div></div>';
+  }).join('') + '</div></div>' : '') +
   tlToggle({ name: 'the Press Kit', tracks: KIT.files.filter(function(f) { return f.type === 'song'; }) }, 'kit') +   /* (owner's request: the list is just a tracklist) */
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
@@ -2873,6 +2881,12 @@ KIT.files.forEach(function(f, k) {
   frag.appendChild(wrap);
 });
 tl.appendChild(frag);
+// Live videos: the thumbnail and Play open the site's video player on that video
+card.querySelectorAll('.epk-video').forEach(function(el) {
+  var open = function(e) { e.stopPropagation(); var v = VIDEO_LIST.filter(function(x) { return x.title === el.dataset.video; })[0]; if (v) openLightbox(v); };
+  el.querySelector('.epk-video-thumb').addEventListener('click', open);
+  el.querySelector('.epk-vplay').addEventListener('click', open);
+});
 // Download: the ZIP is made here, now, from the files on the site (kitZip)
 var prog = card.querySelector('.epk-progress');
 [card.querySelector('.epk-zip'), document.querySelector('#epk .btn-epk-dl')].forEach(function(b) {
