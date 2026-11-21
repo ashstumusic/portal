@@ -537,6 +537,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div class="lb-video-wrap">
       <button type="button" class="lb-arrow lb-arrow-prev" id="lb-prev" aria-label="Previous video" title="Previous video"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <video id="lb-video" controls preload="none" playsinline webkit-playsinline aria-label="Video player" alt="Video player"></video>
+      <!-- Sing-along captions (owner's request): the line being sung, and a ball that bounces onto each word as it is sung, timed
+           word by word from the isolated vocals (Video Files/Captions/<video>.words.json, made by scripts/caption_words.py). -->
+      <div class="lb-karaoke" id="lb-karaoke" aria-hidden="true" hidden><div class="kk-line"></div><span class="kk-ball"></span></div>
       <!-- Shown in place of the picture when the video file can't be loaded (offline, blocked, missing): says what happened and offers the way forward. Spoken through #sr-announce. -->
       <div class="lb-error" id="lb-error" hidden>
         <p>Couldn’t load this video. Check your connection and try again.</p>
@@ -3444,20 +3447,90 @@ tr.src = encPath(v.captions);
 vid.appendChild(tr);
 }
 lbCcSync(!!v.captions);
+kkLoad(v);
 document.getElementById('lb-error').hidden = true;
 if (_srAnnounce) _srAnnounce.textContent = '';
 vid.src = encPath(v.file);
 vid.play().catch(function(err) { if (err.name !== 'NotAllowedError' && err.name !== 'NotSupportedError' && err.name !== 'AbortError') console.warn('[video]', err); });
+}
+// SING-ALONG CAPTIONS (owner's request: "map the timing of each word ... make a little ball ... bounce on the word right as
+// it is being sung"). Each word's start was measured from the video's isolated vocals (Demucs, then CTC forced alignment
+// against the words; accurate to a few hundredths of a second). The ball lands on a word at the instant it starts, leaves at
+// once and arcs to land on the next word exactly as it starts; after the line's last word it bounces off to the right and
+// fades, and the next line's ball arrives from the left, landing on its first word on time. The clock is the video's own
+// (read every screen frame, smoothed between the video's updates). Reduced motion or Effects off: no arcs, the ball sits
+// on the word being sung and the words light as they are sung.
+var _kk = { data: null, raf: 0, line: -1, words: [], t: 0, wall: 0 };
+function kkStill() { return (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.classList.contains('psy-calm'); }
+function kkLoad(v) {
+  var box = document.getElementById('lb-karaoke'); _kk.data = null; _kk.line = -1; if (box) { box.hidden = true; box.querySelector('.kk-line').innerHTML = ''; }
+  if (!v || !v.captions) return;
+  var url = v.captions.replace(/\.vtt$/i, '.words.json'), want = v;
+  fetch(encPath(url)).then(function(r) { if (!r.ok) throw 0; return r.json(); }).then(function(d) {
+    if (VIDEO_LIST[_lbIdx] !== want || !d || !d.lines) return;
+    _kk.data = d; lbCcSync(true); kkRun();
+  }).catch(function() {});
+}
+function kkRun() { cancelAnimationFrame(_kk.raf); var step = function() { kkTick(); if (_lbOpen) _kk.raf = requestAnimationFrame(step); }; _kk.raf = requestAnimationFrame(step); }
+function kkClock(vid) {   // the video's time, smoothed: currentTime updates in steps, so between steps it runs on the wall clock
+  var ct = vid.currentTime, now = performance.now();
+  if (vid.paused || vid.seeking) { _kk.t = ct; _kk.wall = now; return ct; }
+  var est = _kk.t + (now - _kk.wall) / 1000 * (vid.playbackRate || 1);
+  if (Math.abs(ct - est) > .12 || ct > est) { _kk.t = ct; _kk.wall = now; return ct; }
+  return est;
+}
+function kkTick() {
+  var vid = document.getElementById('lb-video'), box = document.getElementById('lb-karaoke'), d = _kk.data;
+  if (!d || !box) return;
+  var on = lbCcOn(); box.hidden = !on; if (!on) return;
+  var t = kkClock(vid), L = d.lines, ENTER = .7, EXIT = .6;
+  // the line on show: from just before its first word (the ball's way in) until the ball has bounced off after its last
+  var idx = -1;
+  for (var i = 0; i < L.length; i++) {
+    var first = L[i].w[0][1], last = L[i].w[L[i].w.length - 1][1], next = L[i + 1] ? L[i + 1].w[0][1] : Infinity;
+    var from = first - Math.min(ENTER, Math.max(.25, first - (i ? L[i - 1].w[L[i - 1].w.length - 1][1] + .15 : 0)));
+    var to = Math.min(Math.max(last + EXIT, (L[i].e || last) + .3), next - Math.min(ENTER, Math.max(.25, next - last - .15)));   /* (the words stay until the last one has been sung out) */
+    if (t >= from && t < Math.max(to, last + .2)) { idx = i; break; }
+  }
+  var lineEl = box.querySelector('.kk-line'), ball = box.querySelector('.kk-ball');
+  if (idx !== _kk.line) {
+    _kk.line = idx; lineEl.innerHTML = '';
+    _kk.words = idx < 0 ? [] : L[idx].w.map(function(w) { var sp = document.createElement('span'); sp.className = 'kk-w'; sp.textContent = w[0]; lineEl.appendChild(sp); lineEl.appendChild(document.createTextNode(' ')); return { el: sp, t: w[1] }; });
+    box.classList.toggle('kk-empty', idx < 0);
+  }
+  if (idx < 0) { ball.style.opacity = '0'; return; }
+  var W = _kk.words, br = box.getBoundingClientRect(), pts = W.map(function(w) { var r = w.el.getBoundingClientRect(); return { x: r.left - br.left + r.width / 2, y: r.top - br.top, t: w.t }; });
+  W.forEach(function(w) { w.el.classList.toggle('kk-sung', t >= w.t); });
+  var R = 9, x, y, op = 1, squash = 1, first0 = pts[0], lastP = pts[pts.length - 1];
+  var arc = function(a, b, s, h) { return { x: a.x + (b.x - a.x) * s, y: a.y + (b.y - a.y) * s - 4 * h * s * (1 - s) }; };
+  var hOf = function(dt) { return Math.max(12, Math.min(46, 16 + dt * 30)); };
+  if (kkStill()) {   // (still: the ball rests on the word being sung)
+    var cur = pts.filter(function(p) { return t >= p.t; }).pop() || first0; x = cur.x; y = cur.y;
+  } else if (t < first0.t) {   // arriving from the left
+    var dur = Math.min(ENTER, first0.t - (t - 0)), start = { x: -24, y: first0.y - 10, t: first0.t - ENTER };
+    var s = Math.max(0, Math.min(1, (t - start.t) / ENTER)), pnt = arc(start, first0, s, hOf(ENTER) * .8); x = pnt.x; y = pnt.y; op = Math.min(1, s * 3);
+  } else if (t >= lastP.t) {   // off to the right, fading
+    var s2 = Math.min(1, (t - lastP.t) / EXIT), endP = { x: br.width + 30, y: lastP.y + 6 }, p2 = arc(lastP, endP, s2, hOf(EXIT));
+    x = p2.x; y = p2.y; op = 1 - s2 * s2;
+  } else {
+    for (var k = 0; k < pts.length - 1; k++) if (t >= pts[k].t && t < pts[k + 1].t) break;
+    var a = pts[k], b = pts[k + 1], s3 = (t - a.t) / Math.max(.001, b.t - a.t), p3 = arc(a, b, s3, hOf(b.t - a.t)); x = p3.x; y = p3.y;
+  }
+  // a quick squash just as it lands on a word
+  var since = Math.min.apply(null, pts.map(function(p) { return t >= p.t ? t - p.t : 9; }));
+  if (!kkStill() && since < .09) squash = .72 + .28 * (since / .09);
+  ball.style.opacity = String(op);
+  ball.style.transform = 'translate(' + (x - R).toFixed(1) + 'px,' + (y - 2 * R - 3).toFixed(1) + 'px) scale(' + (1 / squash * .9 + .1).toFixed(3) + ',' + squash.toFixed(3) + ')';
 }
 // Captions: on unless the visitor turned them off (remembered); the button says which, and is hidden for a video without them.
 function lbCcOn() { try { return localStorage.getItem('ash_cc') !== 'off'; } catch (e) { return true; } }
 function lbCcSync(has) {
   var b = document.getElementById('lb-cc'), vid = document.getElementById('lb-video'), on = lbCcOn();
   if (b) { b.hidden = !has; b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? 'Captions on: turn off' : 'Captions off: turn on'); }
-  var apply = function() { Array.from(vid.textTracks || []).forEach(function(t) { t.mode = on ? 'showing' : 'hidden'; }); };
+  var apply = function() { Array.from(vid.textTracks || []).forEach(function(t) { t.mode = on && !_kk.data ? 'showing' : 'hidden'; }); };   /* (the sing-along line takes the place of the plain captions) */
   apply(); var tr = vid.querySelector('track'); if (tr) tr.addEventListener('load', apply, { once: true });
 }
-document.getElementById('lb-cc').addEventListener('click', function() { try { localStorage.setItem('ash_cc', lbCcOn() ? 'off' : 'on'); } catch (e) {} lbCcSync(true); });
+document.getElementById('lb-cc').addEventListener('click', function() { try { localStorage.setItem('ash_cc', lbCcOn() ? 'off' : 'on'); } catch (e) {} lbCcSync(true); kkTick(); });
 // A video that can't load says so (it used to leave a silent black box) and offers another go. Closing the viewer
 // empties the player, which also raises an error event: _lbOpen is already false by then, so that one is ignored.
 document.getElementById('lb-video').addEventListener('error', function() {
@@ -3484,6 +3557,7 @@ if (_lbWatcher) { var _w = _lbWatcher; _lbWatcher = null; try { _w.destroy(); } 
 const lb = document.getElementById('vid-lightbox');
 const vid = document.getElementById('lb-video');
 vid.pause(); vid.src = '';
+cancelAnimationFrame(_kk.raf); _kk.data = null;
 lb.classList.remove('open');
 lb.setAttribute('aria-hidden', 'true');
 lb.inert = true;
