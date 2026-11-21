@@ -2786,7 +2786,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   (lead && lead.thumb ? '<div class="rel-art-wrap"><img src="' + escHtml(encodeURI(lead.thumb)) + '" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>' : '') +
   '<div class="rel-btns"><a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" data-kit-zip class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
   '<p class="epk-progress" role="status" aria-live="polite"></p></div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
-  '<div class="epk-gallery" role="list" aria-label="Images in the press kit">' + KIT.files.filter(function(f) { return (f.type === 'photo' || f.type === 'cover') && f.thumb; }).map(function(f) {
+  '<div class="epk-gallery" role="list" aria-label="Images in the press kit">' + KIT.files.filter(function(f) { return f.type === 'photo' && f.thumb; }).map(function(f) {
     var meta = f.ext + (f.dims ? ' · ' + f.dims[0] + ' × ' + f.dims[1] : '') + ' · ' + (f.size || f.mb + ' MB');
     return '<div class="epk-shot" role="listitem">' +
       '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +

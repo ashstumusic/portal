@@ -326,7 +326,8 @@ KIT_FACTS = {
     "site": "https://ashstu.art",
 }
 _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=3",
-              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp"}
+              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
+              "Ash Stu - Headshot-2 (Wide).png": "epk-ash-stu-headshot-2-wide.webp"}
 def _press_kit():
     import json as _json
     rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
@@ -354,7 +355,7 @@ def _press_kit():
         files.append({"path": KIT_TOP + "Songs/" + t["title"] + " - " + r["name"] + ".mp3", "src": t["file"], "type": "song", "title": t["title"],   # ("its name - the album it's from", as listed on the page)
                       "ri": ri, "ti": ti, "from": r["name"] + (" (" + year_of(r) + ")" if year_of(r) else ""), "length": length(t["file"]), "tag": {"title": t["title"], "album": "Ash Stu - Press Kit", "track": f"{k}/{len(songs)}", "cover": KIT_SONG_COVER}})
     photos = sorted((f for f in os.listdir(KIT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))),
-                    key=lambda n: (0 if "headshot" in n.lower() else 1, n.lower()))
+                    key=lambda n: (0 if "headshot" in n.lower() and "(wide)" not in n.lower() else 1, n.lower()))   # (the headshots, then the wide shots)
     latest = next((r for r in rels if r.get("featured") and r.get("tracks")), next((r for r in rels if r.get("tracks")), None))
     # the two text files
     lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order."]
