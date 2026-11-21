@@ -281,10 +281,10 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <canvas class="confetti-canvas" id="confetti-canvas" aria-hidden="true"></canvas>
     <span class="featured-badge" id="featured-badge"><span class="party-dot" aria-hidden="true"></span> Latest Release</span>
     <div class="featured-art-wrap featured-art-hero">
-      <span class="party-eq" aria-hidden="true"><i></i><i></i><i></i><i></i> Now playing</span>
       <img src="Images/embedded/featured-only-a-baby-vol-2.webp" alt="Ash Stu, Vol. II" class="featured-art featured-art-rounded" width="498" height="498" fetchpriority="high"/>
       <button type="button" class="featured-play-overlay" id="featured-play" aria-label="Play Ash Stu, Vol. II" title="Play Ash Stu, Vol. II"><span class="rel-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></span></button>
     </div>
+    <span class="party-eq" aria-hidden="true"><i></i><i></i><i></i><i></i> Now playing</span>   <!-- (shown in the badge's place while playing: CSS order puts it above the cover) -->
     <span class="featured-kicker">Album</span>
     <p class="featured-title">Ash Stu, Vol. II</p>
     <div class="featured-btns">
@@ -2911,10 +2911,11 @@ if (!grid) return;
 var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function decorate() {
 grid.querySelectorAll('.rel-card').forEach(function(card) {
-var wrap = card.querySelector('.rel-art-wrap'), img = wrap && wrap.querySelector('.rel-art');
-if (!wrap || !img || wrap.querySelector('.rel-eq')) return;
+// (the chip sits in the card's top line, after the year - never on the cover, which is never covered by anything)
+var cat = card.querySelector('.rel-info .rel-cat');
+if (!cat || cat.querySelector('.rel-eq')) return;
 var e = document.createElement('span'); e.className = 'party-eq rel-eq'; e.setAttribute('aria-hidden', 'true');
-e.innerHTML = '<i></i><i></i><i></i><i></i> Now playing'; wrap.appendChild(e);
+e.innerHTML = '<i></i><i></i><i></i><i></i> Now playing'; cat.appendChild(e);
 });
 }
 decorate();
