@@ -303,12 +303,12 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     </a>
   </div>
   <div class="epk-photos epk-photos-top">
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/></span><span class="epk-name" aria-hidden="true">Portrait.png</span></span>
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/></span><span class="epk-name" aria-hidden="true">Performing.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/></span><span class="epk-name" aria-hidden="true">IMG_0001.jpg</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/></span><span class="epk-name" aria-hidden="true">IMG_0002.jpg</span></span>
   </div>
   <div class="epk-photos epk-photos-bottom">
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/></span><span class="epk-name" aria-hidden="true">Piano.png</span></span>
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/></span><span class="epk-name" aria-hidden="true">Studio Session.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/></span><span class="epk-name" aria-hidden="true">IMG_0003.jpg</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/></span><span class="epk-name" aria-hidden="true">IMG_0004.jpg</span></span>
   </div>
 </section>
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">
@@ -2529,8 +2529,11 @@ if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank"
 var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
 if (listen) status += '<p class="rel-listen"><span class="rel-listen-label">Listen on</span>' + listen + '</p>';
 // Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
+// It sits in the card's Tracks bar ("9 tracks ... Show | Download"): the album's utility strip, beside the tracks it
+// downloads, leaving Play as the card's one main button. A release without a Tracks bar keeps it beside Play.
+var dl = '';
 if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
-btns += '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
+dl = '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
@@ -2540,8 +2543,8 @@ return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + esc
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
 '</div>' +
-'<div class="rel-btns">' + btns + '</div>' +
-(tracklist ? tlToggle(rel, rIdx) : '') +
+'<div class="rel-btns">' + btns + (tracklist ? '' : dl) + '</div>' +
+(tracklist ? tlToggle(rel, rIdx) + dl.replace('class="rel-btn rel-dl"', 'class="rel-btn rel-dl rel-bar-dl"') : '') +
 tracklist +
 '</article>';
 }
@@ -2928,16 +2931,14 @@ if (!grid) return;
 var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function decorate() {
 grid.querySelectorAll('.rel-card').forEach(function(card) {
-// "Now playing" lives in the card's Tracks bar, after the count ("10 tracks  ▮▮▮ NOW PLAYING · Still Sad"): the
-// card's status strip, beside the list the song belongs to, the same on every screen - and never on the cover. It
-// shows whenever one of the album's songs is in the player (playing or paused: the bars hold still while paused).
-// A release with no Tracks bar (a single) carries it in its top line instead. Decoration only (aria-hidden): the
-// Play/Pause button and the player itself say what is playing.
-if (card.querySelector('.rel-eq')) return;
-var host = card.querySelector('.rel-tl-toggle'), label = host && host.querySelector('.rel-tl-label');
+// "Now playing" is a small pill at the right-hand end of the card's top line ("ALBUM · 2026 ........ ▮▮▮ NOW PLAYING"),
+// never on the cover. It shows whenever one of the album's songs is in the player (playing or paused: the bars hold
+// still while paused). Decoration only (aria-hidden): the Play/Pause button and the player say what is playing.
+var cat = card.querySelector('.rel-info .rel-cat');
+if (!cat || card.querySelector('.rel-eq')) return;
 var e = document.createElement('span'); e.className = 'party-eq rel-eq'; e.setAttribute('aria-hidden', 'true');
-e.innerHTML = '<i></i><i></i><i></i><i></i><span class="rel-eq-word">Now playing</span><span class="rel-eq-song"></span>';
-if (label) label.after(e); else { var cat = card.querySelector('.rel-info .rel-cat'); if (cat) cat.appendChild(e); }
+e.innerHTML = '<i></i><i></i><i></i><i></i><span class="rel-eq-word">Now playing</span>';
+cat.appendChild(e);
 });
 }
 decorate(); if (typeof syncCued === 'function') syncCued();
@@ -3282,38 +3283,57 @@ requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline')
 var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
 if(document.readyState==='complete')build();else addEventListener('load',build);
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
-<script>/* Press Kit photos: a sideways shuffle. Every few seconds each photo slides right out
-   of its window and the next one slides in from the left, all four windows at once
-   as one body. Each photo moves one window along per turn.
-   A photo only enters its new window once it has completely left its old
-   one, so the same picture is never on screen twice.
-   Only while the section is on screen and the tab is visible; no movement
-   with reduced motion or effects off (one random order per
-   visit instead). */
+<script>/* Press Kit files (owner's request): the four windows show the press kit as files on a desktop - every photo in
+   the kit (IMG_0001.jpg ... IMG_0009.png) and every song in it ("Still Sad.mp3" ...) - each window changing on its
+   own at random. One window at a time, at a random moment, pops its file away and a new one pops in from the centre
+   like a file being created. Which window, when, and which file are all random, but:
+   - no file is ever in two windows at once;
+   - files are dealt from a shuffled deck, so every file comes round before any repeats (no near-repeats, no file
+     left out for long), and the same window is never picked twice running;
+   - a pause of 0.8 - 2.9 s between pops (so each pop is seen on its own).
+   Only while the section is on screen and the tab is visible; with reduced motion or effects off, four files chosen
+   at random and no movement. */
 (function(){var imgs=[].slice.call(document.querySelectorAll('.epk-photos img'));if(imgs.length<2)return;
-var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),n=items.length,cur=items.map(function(_,i){return i;});
-items.forEach(function(it){var p=new Image();p.src=it.src;});
-// a random starting order
-for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=cur[i];cur[i]=cur[j];cur[j]=x;}
-// (each photo is shown as a file, its name under it: the name follows the photo from window to window)
-var nameOf=function(src){var m=/epk-ash-stu-([a-z-]+)\./.exec(src)||[];return ({portrait:'Portrait.png',performing:'Performing.png',piano:'Piano.png','studio-session':'Studio Session.png'})[m[1]]||'';};
-var label=function(im){var f=im.closest('.epk-file'),l=f&&f.querySelector('.epk-name');if(l)l.textContent=nameOf(im.getAttribute('src'));};
-imgs.forEach(function(im,k){im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;label(im);});
+var P='Images/embedded/',AUDIO=P+'epk-audio-file.svg';
+var items=[
+ {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu portrait',name:'IMG_0001.jpg'},
+ {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing',name:'IMG_0002.jpg'},
+ {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano',name:'IMG_0003.jpg'},
+ {src:P+'epk-ash-stu-studio-session.webp',alt:'Ash Stu studio session',name:'IMG_0004.jpg'},
+ {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley',name:'IMG_0005.jpg'},
+ {src:P+'epk-ash-stu-guitar-door.webp',alt:'Ash Stu playing guitar by a wooden door',name:'IMG_0006.jpg'},
+ {src:P+'epk-ash-stu-singing.webp',alt:'Ash Stu singing',name:'IMG_0007.jpg'},
+ {src:P+'epk-ash-stu-stairs.webp',alt:'Ash Stu on an outdoor staircase',name:'IMG_0008.jpg'},
+ {src:P+'epk-ash-stu-logo.webp',alt:'Ash Stu logo: an embroidered daffodil patch',name:'IMG_0009.png'}
+];
+['Dirge for Ducklings','Still Sad','Summertime Even on the Moon','Worship Song','You Are What You Love'].forEach(function(t){items.push({src:AUDIO,alt:'Song file in the press kit: '+t,name:t+'.mp3',audio:true});});
+items.forEach(function(it){if(!it.audio){var p=new Image();p.src=it.src;}});
+var n=items.length,W=imgs.length,shown=[],deck=[];
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
+function deal(){   // the next file from the shuffled deck that isn't already in a window
+  for(var tries=0;tries<2;tries++){if(!deck.length)deck=shuffle(items.map(function(_,i){return i;}));
+    for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0)return deck.splice(k,1)[0];deck=[];}
+  return -1;}
+function put(w,i){var im=imgs[w],it=items[i],f=im.closest('.epk-file');shown[w]=i;im.src=it.src;im.alt=it.alt;
+  if(f){f.classList.toggle('is-audio',!!it.audio);var l=f.querySelector('.epk-name');if(l)l.textContent=it.name;}}
+imgs.forEach(function(_,w){put(w,deal());});
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
 var onScreen=true,sec=document.getElementById('epk');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
 if(!imgs[0].animate)return;
-var GAP=0,OUT=110,IN=130,busy=false;   // near-instant: all photos flick out together, then the next set flicks in together
-function slide(im,from,to,dur,ease){var a=im.animate([{transform:'translateX('+from+')'},{transform:'translateX('+to+')'}],{duration:dur,easing:ease,fill:'forwards'});
-return a.finished.then(function(){return a;},function(){return a;});}
-function turn(){if(busy||still()||!onScreen||document.hidden)return;busy=true;
-var old=cur.slice(),left=n;
-// window k: its photo slides out, starting a beat after the window before it
-var gone=imgs.map(function(im,k){return new Promise(function(res){setTimeout(function(){slide(im,'0','106%',OUT,'cubic-bezier(.55,0,.85,.35)').then(res);},k*GAP);});});
-imgs.forEach(function(im,k){var from=(k-1+n)%n;   // it receives the photo from the window before it
-Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;label(im);
-return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
-setInterval(turn,5200);})();</script>
+var lastW=-1;
+function pop(el,frames,dur,ease){var a=el.animate(frames,{duration:dur,easing:ease,fill:'forwards'});return a.finished.then(function(){return a;},function(){return a;});}
+function step(){
+  if(!still()&&onScreen&&!document.hidden){
+    var w;do{w=Math.floor(Math.random()*W);}while(W>1&&w===lastW);lastW=w;
+    var i=deal();
+    if(i>=0){var im=imgs[w],tile=im.closest('.epk-file')||im;
+      pop(tile,[{transform:'scale(1)',opacity:1},{transform:'scale(.82)',opacity:0}],130,'cubic-bezier(.4,0,1,1)').then(function(a){
+        put(w,i);
+        return pop(tile,[{transform:'scale(.5)',opacity:0},{transform:'scale(1.06)',opacity:1,offset:.62},{transform:'scale(.985)',opacity:1,offset:.84},{transform:'scale(1)',opacity:1}],320,'cubic-bezier(.2,.75,.3,1)').then(function(b){a.cancel();b.cancel();});});}
+  }
+  setTimeout(step,800+Math.random()*2100);}
+setTimeout(step,1200+Math.random()*1500);})();</script>
 <script>/* The toolbar's three streaming logos: one of them is always open as its full badge in the site's dark glass, like every other button
    ("Listen on Apple Music", "Listen on Spotify", "Watch on YouTube"), and every five seconds they trade places:
    all three move one place round, the open one closes and the one arriving at the right-hand end opens.
