@@ -2097,6 +2097,16 @@ setTimeout(land, 450); setTimeout(land, 1100);
    Play (cued, not started, as on a song page) and rings the album for a few seconds so the eye finds it.
    The album's own track list in the page's HTML is tucked out of sight once the real tracklist is open (kept for
    screen readers and crawlers, as a song page keeps its words). */
+/* Where an arriving card lands: just under the toolbar, with the card above it scrolled fully out of sight (its
+   edge used to peek above the gold ring) - the space kept is the gap between cards, less 2px, never under the ring's
+   8px plus a little. */
+function arriveTop(card) {
+var nav = document.querySelector('.nav'), nb = nav ? Math.max(0, nav.getBoundingClientRect().bottom) : 56;
+var prev = card.previousElementSibling, gap = 24;
+if (prev && prev.offsetHeight) gap = card.getBoundingClientRect().top - prev.getBoundingClientRect().bottom;
+var room = Math.max(12, Math.min(28, gap - 2));
+return Math.max(0, card.getBoundingClientRect().top + scrollY - nb - room);
+}
 var _albumDone = false, _albumAt = 0, _albumRing = 0;
 function openDeepAlbum() {
 if (_albumDone) return;
@@ -2120,7 +2130,7 @@ clearTimeout(_albumRing);
 _albumRing = setTimeout(function() { var c = document.querySelector('.rel-card.album-arrived'); if (c) c.classList.remove('album-arrived'); }, 4200);
 var moved = false;
 if (first) ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function(ev) { addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
-var land = function() { if (moved) return; var c = document.querySelector('.rel-card[data-release="' + rIdx + '"]'); if (!c) return; var top = c.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' }); };
+var land = function() { if (moved) return; var c = document.querySelector('.rel-card[data-release="' + rIdx + '"]'); if (!c) return; scrollTo({ top: arriveTop(c), behavior: 'auto' }); };
 setTimeout(land, 450); setTimeout(land, 1100);
 }
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { setTimeout(openDeepAlbum, 300); });
@@ -2139,7 +2149,7 @@ _videoDone = true;
 if (card) {
   card.classList.add('album-arrived');
   setTimeout(function() { card.classList.remove('album-arrived'); }, 4200);
-  var top = card.getBoundingClientRect().top + scrollY - 88; scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+  scrollTo({ top: arriveTop(card), behavior: 'auto' });
   try { card.focus({ preventScroll: true }); } catch (e) {}   // so closing the viewer returns focus to this video's card
 }
 if (!_lbOpen) openLightbox(v);
