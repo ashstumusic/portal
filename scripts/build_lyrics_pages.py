@@ -847,9 +847,9 @@ def main():
     def _join(names):
         return ', '.join(names[:-1]) + (' and ' if len(names) > 1 else '') + names[-1] if names else ''
     SECTION_PAGES = [
-        ('press-kit', 'epk', 'Press Kit', 'WebPage',
-         f'Press kit for {ARTIST} ({ARTIST_FULL}), outsider singer-songwriter from Guthrie, Oklahoma: songs, photos and logo for booking and press, in one download{kit_mb}.',
-         [f'<a href="/ash-stu-press-kit.zip">Download the press kit{kit_mb}</a>']),
+        ('press-kit', 'epk', 'Electronic Press Kit (EPK)', 'WebPage',
+         f'Electronic press kit (EPK) for {ARTIST}, outsider singer-songwriter from Guthrie, Oklahoma: songs, lyrics, fact sheet, photos, in one download{kit_mb}.',
+         [f'<a href="/ash-stu-press-kit.zip">Download the EPK (press kit){kit_mb}</a>']),
         ('contact', 'contact', 'Contact', 'ContactPage',
          f'Contact {ARTIST} ({ARTIST_FULL}) for shows, press or anything else: ashstumusic@gmail.com.',
          ['<a href="mailto:ashstumusic@gmail.com">ashstumusic@gmail.com</a>']),

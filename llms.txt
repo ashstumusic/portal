@@ -67,7 +67,7 @@ Each song has a one-word identifier ("cloud" is The Cloud for the Desert): ashst
 
 ## Sections
 
-- [Press Kit](https://ashstu.art/press-kit/)
+- [Electronic Press Kit (EPK)](https://ashstu.art/press-kit/)
 - [Contact](https://ashstu.art/contact/)
 - [Music](https://ashstu.art/music/)
 - [Videos](https://ashstu.art/videos/)
