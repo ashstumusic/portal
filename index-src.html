@@ -1985,6 +1985,19 @@ return rows.sort(function(a, b) { return a.num - b.num; });
    the player (and plays, where the browser allows autoplay; otherwise the
    play button is ready). Songs not out yet just open their lyrics. */
 var _deepDone = false, _deepAt = 0;
+// The sky turns from space black to white just above About. The white is painted on the page's own backdrop, under the
+// stars (not on About itself, which sits above them), so a star drifting into the daylight turns dark instead of being
+// covered: CSS draws the fade at --about-top, kept here as About's place on the page whenever the layout moves.
+(function() {
+  var a = document.getElementById('about'), root = document.documentElement;
+  if (!a) return;
+  var last = -1;
+  function sync() { var y = Math.round(a.getBoundingClientRect().top + scrollY); if (y !== last) { last = y; root.style.setProperty('--about-top', y + 'px'); } }
+  sync();
+  if (window.ResizeObserver) new ResizeObserver(sync).observe(document.body);
+  addEventListener('load', sync); addEventListener('resize', sync);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
+})();
 // A link straight to a section (ashstu.art/#videos): the browser picks where to scroll before the page has finished
 // laying out (the quote above Videos is re-fitted when its font arrives and grows by a line's worth), so the sections
 // below it landed about 30px low. Land once more when things have settled, unless the visitor has moved meanwhile.

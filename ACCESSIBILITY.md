@@ -57,6 +57,8 @@ sizes and must stay at zero issues. It only catches about half of real problems:
 - Cover button: named "Play <album>" / "Pause <album>" and plays or pauses with Enter or Space. With a mouse or
   finger the disc plays and the rest of the cover opens the tracklist.
 - Tracklist button: visible text "10 tracks", spoken name "10 tracks on <album>", with `aria-expanded`.
+- A release that isn't on streaming yet says so in a status line under its name ("Coming soon to streaming"), never
+  in a button-shaped box: anything shaped like a button must do something when pressed.
 - Each track: "Play <title>, track N"; its lyrics button "Show lyrics for <title>" with `aria-expanded`.
 - The song in the player has `aria-current` on its row.
 

@@ -67,3 +67,19 @@ FIXED: shared/system.css (phone held sideways, short screens)
 FIXED: index-src.html (scripts off)
   — Robustness: content available without scripting where possible
   — Without JavaScript the page fell back to an old light theme with white-on-white text and dead Search/Settings/Menu buttons; it now keeps the dark design, hides controls that cannot work and says so in readable text
+FIXED: shared/system.css (mini player: "Open full-screen player")
+  — Keyboard operability: the focused control must be visible (WCAG 2.4.7)
+  — The mini player's song area changed colour on focus but drew no ring; it now has the site's gold focus ring, drawn just inside it
+FIXED: shared/system.css (mini player seek line)
+  — Target size (WCAG 2.5.8)
+  — The invisible strip that makes the 2-4px seek line easy to grab overlapped the top of the Next button by a few pixels on wide screens; it is now 26px tall and leans upward, leaving a full 24px that belongs to the seek line alone (axe still measures the visible line and reports it; the real target is the strip)
+FIXED: shared/system.css (touch targets on cards, video viewer and toolbar)
+  — Keyboard and pointer operability: the site's own 44px touch rule
+  — The new card buttons (42px), the track list's Lyrics chips (36px), the video viewer's YouTube and Close (40px) and the phone toolbar's Home (38px) and Menu (40px) now grow to 44px on touch screens
+FIXED: index-src.html, scripts/prerender.py, shared/system.css (album cards: "Distributing Soon")
+  — Name, role, value: something shaped like a button must be one
+  — "Distributing Soon" looked like the main button on the card but did nothing when pressed; it is now a status line under the album name ("Coming soon to streaming")
+FIXED: shared/system.css (track list Lyrics buttons, player and viewer button words)
+  — Visual clarity: text large enough to read
+  — The Lyrics word on each track grew from 11px to 13px; the words under the player and video viewer icons from 11px to 12px
+CHECKED: every button at rest and pointed at, measured from the rendered pixels (glass has no single background colour, so axe can't judge it): all at least 4.5:1, most 8:1 or more
