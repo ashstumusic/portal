@@ -400,8 +400,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley" width="481" height="481"/></span>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu singing at the piano under a red light" width="481" height="481"/></span>
       </div>
-<div class="bio-side bio-side--l"><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-guitar-door.webp" alt="Ash Stu playing guitar by a wooden door" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/Profile-6-720.webp" srcset="Images/Profile-6-360.webp 360w, Images/Profile-6-720.webp 720w, Images/Profile-6-1000.webp 1000w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu at the piano" width="360" height="402"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/Profile-4-720.webp" srcset="Images/Profile-4-360.webp 360w, Images/Profile-4-720.webp 720w, Images/Profile-4-1000.webp 1000w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/></span></div>
-<div class="bio-side bio-side--r"><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-singing.webp?v=3" alt="Ash Stu singing on stage" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano on stage" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu in a studio session" width="481" height="481"/></span></div>
     </div>
   </div>
 </section>
@@ -3252,6 +3250,43 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
+<script>/* About's two small photos (owner's request): beside the portrait, two photos taken at random from a pool of
+   Ash's photos, and every so often one of them (never both at once) pops away and another pops in from its centre,
+   like the Press Kit files. The two are never the same photo, and photos are dealt from a shuffled deck, so every one
+   comes round before any repeats. Not the portrait itself, the wooden-door guitar, the singing shot or the logo (owner's
+   choice). Only while About is on screen and the tab is visible; with reduced motion or effects off, two photos chosen
+   at random and no movement. */
+(function(){var slots=[].slice.call(document.querySelectorAll('.bio-card-media .bw-shot img'));if(slots.length<2)return;
+var P='Images/embedded/';
+var pool=[
+ {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley'},
+ {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu singing at the piano under a red light'},
+ {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing at the keyboard'},
+ {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano on stage'},
+ {src:P+'epk-ash-stu-studio-session.webp',alt:'Ash Stu in a studio session'},
+ {src:'Images/Profile-4-720.webp',alt:'Ash Stu as a kid with his first guitar'},
+ {src:'Images/Profile-6-720.webp',alt:'Ash Stu at the piano'}
+];
+var shown=[],deck=[];
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
+function deal(){for(var t=0;t<2;t++){if(!deck.length)deck=shuffle(pool.map(function(_,i){return i;}));for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0)return deck.splice(k,1)[0];deck=[];}return -1;}
+function put(w,i){shown[w]=i;var im=slots[w];im.removeAttribute('srcset');im.removeAttribute('sizes');im.src=pool[i].src;im.alt=pool[i].alt;}
+slots.forEach(function(_,w){put(w,deal());});
+pool.forEach(function(it){var p=new Image();p.src=it.src;});
+var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
+var onScreen=false,sec=document.getElementById('about');
+if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);else onScreen=true;
+if(!slots[0].animate)return;
+var last=-1;
+function pop(el,f,d,e){var a=el.animate(f,{duration:d,easing:e,fill:'forwards'});return a.finished.then(function(){return a;},function(){return a;});}
+function step(){var next=function(){setTimeout(step,2600+Math.random()*3400);};
+ if(still()||!onScreen||document.hidden){next();return;}
+ var w=last<0?Math.floor(Math.random()*2):(Math.random()<.75?1-last:last);last=w;
+ var i=deal();if(i<0){next();return;}
+ var tile=slots[w].closest('.bw-shot')||slots[w];
+ pop(tile,[{transform:'scale(1)',opacity:1},{transform:'scale(.86)',opacity:0}],160,'cubic-bezier(.4,0,1,1)').then(function(a){put(w,i);
+  return pop(tile,[{transform:'scale(.6)',opacity:0},{transform:'scale(1.04)',opacity:1,offset:.62},{transform:'scale(.99)',opacity:1,offset:.84},{transform:'scale(1)',opacity:1}],360,'cubic-bezier(.2,.75,.3,1)').then(function(b){a.cancel();b.cancel();});}).then(next,next);}
+setTimeout(step,3000+Math.random()*2000);})();</script>
 <script>/* About card: "Ash Stu" and the tagline, one line each, sized to span the
    text panel (scaled down if the group would be taller than the photo
    column beside it); the description follows. Both gradients run in step.
