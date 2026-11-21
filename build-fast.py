@@ -421,8 +421,10 @@ def _press_kit():
             n = round(MP4(os.path.join(ROOT, v["file"])).info.length); ln = f"{n // 60}:{n % 60:02d}"
         except Exception: ln = ""
         _vb = os.path.getsize(os.path.join(ROOT, v["file"]))
-        _rel = next((r["name"] for r in rels for t in (r.get("tracks") or []) + (r.get("upcoming") or []) if t["title"].lower() == title.lower()), "")   # (the release its song is from)
-        vids.append({"title": title, "from": _rel, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
+        _hit = next(((r, t) for r in rels for t in (r.get("tracks") or []) + (r.get("upcoming") or []) if t["title"].lower() == title.lower()), None)   # (the release its song is from)
+        _rel = _hit[0]["name"] if _hit else ""
+        _lk = (_hit[1].get("file") or _hit[1].get("lyrics") or "") if _hit else ""   # (its words, as on the release: never the video's captions)
+        vids.append({"title": title, "from": _rel, "lyricsKey": _lk, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
                      "file": v["file"], "size": f"{_vb / 1048576:.0f} MB"})
     if vids:
         _vw = max(len(v["title"] + " - Ash Stu (Live).mp4") for v in vids) + 3

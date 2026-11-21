@@ -534,6 +534,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
         <a class="vid-yt" id="lb-yt" href="#" target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube">
 <span class="pt pt--youtube" aria-hidden="true"></span>YouTube
         </a>
+        <!-- Captions on or off (owner's request: closed captions as an option): the words of the song, timed to the video. Pressed = on; remembered. -->
+        <button type="button" class="vid-yt lb-cc" id="lb-cc" aria-pressed="true" title="Captions"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10.5 10.2a2.2 2.2 0 1 0 0 3.6M16.5 10.2a2.2 2.2 0 1 0 0 3.6"/></svg><span class="btn-word" aria-hidden="true">Captions</span></button>
         <button type="button" class="lb-close" id="lb-close" aria-label="Close" title="Close"><span class="btn-word" aria-hidden="true">Close</span></button>
       </div>
     </div>
@@ -3115,8 +3117,8 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
     return '<div class="epk-video" data-video="' + escHtml(v.title) + '">' +
       '<button type="button" class="epk-video-thumb" tabindex="-1" aria-hidden="true"><img src="' + escHtml(encodeURI(v.thumb)) + '" alt="" width="576" height="324" loading="lazy" decoding="async"/></button>' +
       '<p class="epk-shot-name">' + escHtml(v.title + (v.from ? ' - from ' + v.from : '')) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +   /* ("Song - from Album", as on the sampler) */
-      '<div class="epk-video-btns"><button type="button" class="rel-lyrics-toggle epk-vplay" aria-label="Play ' + escHtml(v.title) + ', ' + escHtml(meta.toLowerCase()) + '"><svg class="lyr-ico" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button>' +
-      (v.file ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(kitUrl(v.file)) + '" download="' + escHtml(v.title) + ' - Ash Stu (Live).mp4" aria-label="Download ' + escHtml(v.title) + ', the video (MP4, ' + escHtml(v.size) + ')" title="Download ' + escHtml(v.title) + ' (MP4, ' + escHtml(v.size) + ')"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' : '') + '</div></div>';   /* (owner's request: a Download for the video file in place of the YouTube link) */
+      '<div class="epk-video-btns">' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<button type="button" class="rel-lyrics-toggle epk-vlyr" aria-expanded="false" aria-controls="epk-vlyr-' + i + '" aria-label="Show lyrics for ' + escHtml(v.title) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg><svg class="lyr-chev" aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>' : '') + '<button type="button" class="rel-lyrics-toggle epk-vplay" aria-label="Play ' + escHtml(v.title) + ', ' + escHtml(meta.toLowerCase()) + '"><svg class="lyr-ico" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button>' +
+      (v.file ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(kitUrl(v.file)) + '" download="' + escHtml(v.title) + ' - Ash Stu (Live).mp4" aria-label="Download ' + escHtml(v.title) + ', the video (MP4, ' + escHtml(v.size) + ')" title="Download ' + escHtml(v.title) + ' (MP4, ' + escHtml(v.size) + ')"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' : '') + '</div>' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<div class="epk-vlyr-panel" id="epk-vlyr-' + i + '" role="region" tabindex="0" aria-label="Lyrics for ' + escHtml(v.title) + '" hidden><p class="epk-vlyr-from">From ' + escHtml(v.from || '') + '</p>' + ((LYRICS[v.lyricsKey].lines || []).map(function(l) { return String(l[1] || '').trim(); }).filter(Boolean).map(function(l) { return '<span class="rel-lyric-line">' + escHtml(l) + '</span>'; }).join('')) + '</div>' : '') + '</div>';   /* (owner's request: a Download for the video file in place of the YouTube link) */
   }).join('') + '</div></div>' : '') +
   '<p class="epk-group epk-sampler-h" id="epk-sampler-h">Sampler</p>' +   /* (owner's request: the tracklist is always open, like the photos and videos: a heading, not a Show/Hide bar) */
   '<div class="rel-tracklist" id="tracklist-kit" role="region" aria-labelledby="epk-sampler-h"></div></article>';
@@ -3220,6 +3222,14 @@ tl.appendChild(frag);
 // Read: the text files open as a formatted document in a pop-up (kitDoc); the link itself is the plain file, for a new tab
 card.querySelectorAll('.epk-doc-link').forEach(function(a) {
   a.addEventListener('click', function(e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); e.stopPropagation(); kitDoc(a.dataset.doc, a.dataset.name, a); });
+});
+// Live videos' Lyrics: the song's words as on its release, opened under the video (aria-expanded follows)
+card.querySelectorAll('.epk-vlyr').forEach(function(b) {
+  b.addEventListener('click', function(e) {
+    e.stopPropagation(); var p = document.getElementById(b.getAttribute('aria-controls')), open = p.hidden;
+    p.hidden = !open; b.classList.toggle('open', open); b.setAttribute('aria-expanded', String(open));
+    b.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' lyrics for ' + b.getAttribute('aria-label').replace(/^(Show|Hide) lyrics for /, ''));
+  });
 });
 // Live videos: the thumbnail and Play open the site's video player on that video
 card.querySelectorAll('.epk-video').forEach(function(el) {
@@ -3369,15 +3379,25 @@ document.getElementById('lb-next').disabled = (idx === VIDEO_LIST.length - 1);
 Array.from(vid.querySelectorAll('track')).forEach(function(t) { t.remove(); });
 if (v.captions) {
 var tr = document.createElement('track');
-tr.kind = 'captions'; tr.srclang = 'en'; tr.label = 'English'; tr.default = true;
+tr.kind = 'captions'; tr.srclang = 'en'; tr.label = 'English'; tr.default = lbCcOn();
 tr.src = encPath(v.captions);
 vid.appendChild(tr);
 }
+lbCcSync(!!v.captions);
 document.getElementById('lb-error').hidden = true;
 if (_srAnnounce) _srAnnounce.textContent = '';
 vid.src = encPath(v.file);
 vid.play().catch(function(err) { if (err.name !== 'NotAllowedError' && err.name !== 'NotSupportedError' && err.name !== 'AbortError') console.warn('[video]', err); });
 }
+// Captions: on unless the visitor turned them off (remembered); the button says which, and is hidden for a video without them.
+function lbCcOn() { try { return localStorage.getItem('ash_cc') !== 'off'; } catch (e) { return true; } }
+function lbCcSync(has) {
+  var b = document.getElementById('lb-cc'), vid = document.getElementById('lb-video'), on = lbCcOn();
+  if (b) { b.hidden = !has; b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? 'Captions on: turn off' : 'Captions off: turn on'); }
+  var apply = function() { Array.from(vid.textTracks || []).forEach(function(t) { t.mode = on ? 'showing' : 'hidden'; }); };
+  apply(); var tr = vid.querySelector('track'); if (tr) tr.addEventListener('load', apply, { once: true });
+}
+document.getElementById('lb-cc').addEventListener('click', function() { try { localStorage.setItem('ash_cc', lbCcOn() ? 'off' : 'on'); } catch (e) {} lbCcSync(true); });
 // A video that can't load says so (it used to leave a silent black box) and offers another go. Closing the viewer
 // empties the player, which also raises an error event: _lbOpen is already false by then, so that one is ignored.
 document.getElementById('lb-video').addEventListener('error', function() {
