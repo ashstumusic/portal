@@ -2808,13 +2808,26 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
 if (sec) sec.classList.add('epk-merged');
-// Play: the kit's songs as one list (Pause while it plays), after Download
-var overlay = document.createElement('button');
-overlay.type = 'button'; overlay.className = 'rel-play-overlay';
-overlay.setAttribute('aria-label', 'Play the ' + nSongs + ' songs in the press kit'); overlay.dataset.rel = 'the ' + nSongs + ' songs in the press kit';
-overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-card.querySelector('.rel-btns').appendChild(overlay);
-_discCache.kit = overlay.querySelector('svg');
+// Show / Hide (owner's request: "make the press kit collapsed by default. replace the play button with a show button"):
+// the card opens on its summary (who, the facts, Listen on, Download); Show brings in the photos, the live videos and
+// the tracks, Hide puts them away. The songs still play from the tracklist.
+card.classList.add('kit-collapsed');
+var more = document.createElement('button');
+more.type = 'button'; more.className = 'rel-btn rel-dl epk-show';
+more.setAttribute('aria-expanded', 'false');
+var gal = card.querySelector('.epk-gallery'), vids = card.querySelector('.epk-videos');
+if (gal) gal.id = 'epk-photos'; if (vids) vids.id = 'epk-live-videos';
+more.setAttribute('aria-controls', ['epk-photos', 'epk-live-videos', 'tracklist-kit'].filter(function(id) { return card.querySelector('#' + id); }).join(' '));
+more.innerHTML = '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var setMore = function(open) {
+  card.classList.toggle('kit-collapsed', !open);
+  more.setAttribute('aria-expanded', String(open));
+  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the photos, live videos and tracks');
+  if (open) queueMarquees();
+};
+setMore(false);
+card.querySelector('.rel-btns').appendChild(more);
+more.addEventListener('click', function(e) { e.stopPropagation(); setMore(card.classList.contains('kit-collapsed')); });
 function playKit(i) {
   if (!songs.length) return;
   var t = songs[i]; pState.kit = true; pState.releaseIdx = t.releaseIdx;
@@ -2823,17 +2836,15 @@ function playKit(i) {
   npLoad(t.title, 'Press Kit', t.file, true);
   updatePlayUI();
 }
-function toggleKit() { if (pState.kit && pState.playlist.length && npAudio.src) { if (npAudio.paused) npShow(); npToggle(); } else playKit(0); }
 function openList() { if (!card.classList.contains('tracks-open')) { card.classList.add('tracks-open'); syncTracklistExpanded(); recalcTracklistHeight(tl); queueMarquees(); } }
-overlay.addEventListener('click', function(e) { e.stopPropagation(); toggleKit(); });
 card.querySelector('.rel-tl-toggle').addEventListener('click', function() {
   if (card.classList.contains('tracks-open')) { card.classList.remove('tracks-open'); tl.style.maxHeight = '0'; syncTracklistExpanded(); } else openList();
 });
-// (a click anywhere else on the card plays it and opens its list, like an album card)
+// (a click anywhere else on a closed card opens it, like pressing Show)
 card.addEventListener('click', function(e) {
-  if (e.target.closest('a, button, .rel-tracklist')) return;
+  if (e.target.closest('a, button, .rel-tracklist') || !card.classList.contains('kit-collapsed')) return;
   var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
-  toggleKit(); openList();
+  setMore(true);
 });
 // the rows: songs play (with Lyrics), photos open full size (with Download)
 var PIC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>';
