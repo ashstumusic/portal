@@ -2805,7 +2805,7 @@ function kitCanM4a() {
 }
 // The chooser: a small pop-up asking which formats, before a download starts. -> a Promise of {audio, image} or null.
 var _fdlg = null;
-function kitPickFormats(what, hasImages, opener) {
+function kitPickFormats(what, hasImages, opener, onlyImages) {   /* (onlyImages: one photo: just the Photos choice) */
   var saved = {}; try { saved = JSON.parse(localStorage.getItem('ash_dl_fmt') || '{}'); } catch (e) {}
   return kitCanM4a().then(function(m4a) {
     return new Promise(function(done) {
@@ -2813,22 +2813,22 @@ function kitPickFormats(what, hasImages, opener) {
       var opt = function(name, value, label, note, on) { return '<label class="kf-opt"><input type="radio" name="' + name + '" value="' + value + '"' + (on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></label>'; };
       var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' ? 'jpg' : 'png';
       _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
-        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">Pick the formats your devices can open. The sound and pictures are the same in each: only the file type changes.</p>' +
-        '<fieldset class="kf-set"><legend class="kd-h">Songs</legend>' +
+        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (onlyImages ? 'Pick the format your device can open. The picture is the same in each: only the file type changes.' : 'Pick the formats your devices can open. The sound and pictures are the same in each: only the file type changes.') + '</p>' +
+        (onlyImages ? '' : '<fieldset class="kf-set"><legend class="kd-h">Songs</legend>' +
           opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
           opt('audio', 'wav', 'WAV', 'Plays on everything, even old CD players and editors. About four times larger.', a === 'wav') +
-          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : '') + '</fieldset>' +
+          (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : '') + '</fieldset>') +
         (hasImages ? '<fieldset class="kf-set"><legend class="kd-h">Photos</legend>' +
           opt('image', 'png', 'PNG', 'As taken, with no loss.', im === 'png') +
           opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg') + '</fieldset>' : '') +
-        '<p class="kf-fixed">Videos come as MP4 and the text files as plain text: both open on every device.</p>' +
+        (onlyImages ? '' : '<p class="kf-fixed">Videos come as MP4 and the text files as plain text: both open on every device.</p>') +
         '<div class="kf-btns"><button type="submit" value="go" class="rel-btn rel-dl kf-go" aria-label="Download"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></button>' +
         '<button type="submit" value="cancel" class="rel-lyrics-toggle kd-close" aria-label="Cancel"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></form>';
       var form = _fdlg.querySelector('form');
       var finish = function() {
         _fdlg.removeEventListener('close', finish);
         if (_fdlg.returnValue !== 'go') { if (opener && opener.focus) opener.focus(); return done(null); }
-        var f = { audio: (form.querySelector('[name=audio]:checked') || {}).value || 'mp3', image: (form.querySelector('[name=image]:checked') || {}).value || 'png' };
+        var f = { audio: (form.querySelector('[name=audio]:checked') || {}).value || saved.audio || 'mp3', image: (form.querySelector('[name=image]:checked') || {}).value || 'png' };
         try { localStorage.setItem('ash_dl_fmt', JSON.stringify(f)); } catch (e) {}
         if (opener && opener.focus) opener.focus();
         done(f);
@@ -3090,6 +3090,24 @@ card.querySelectorAll('.epk-video').forEach(function(el) {
   var open = function(e) { e.stopPropagation(); var v = VIDEO_LIST.filter(function(x) { return x.title === el.dataset.video; })[0]; if (v) openLightbox(v); };
   el.querySelector('.epk-video-thumb').addEventListener('click', open);
   el.querySelector('.epk-vplay').addEventListener('click', open);
+});
+// A single photo's Download asks PNG or JPEG too (owner's request), then saves it (converted here if JPEG)
+card.querySelectorAll('.epk-shot-dl').forEach(function(d) {
+  d.addEventListener('click', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    var src = decodeURIComponent(d.getAttribute('href')), name = d.getAttribute('download');
+    kitPickFormats(name.replace(/\.png$/i, ''), true, d, true).then(function(fmt) {
+      if (!fmt) return;
+      var jpg = fmt.image === 'jpg' && /\.png$/i.test(src);
+      fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function(b) {
+        return jpg ? kitJpeg(new Uint8Array(b)) : new Uint8Array(b);
+      }).then(function(u8) {
+        var url = URL.createObjectURL(new Blob([u8], { type: jpg ? 'image/jpeg' : 'image/png' })), a = document.createElement('a');
+        a.href = url; a.download = jpg ? name.replace(/\.png$/i, '.jpg') : name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+      }).catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(name + ' could not be downloaded. Check the connection and try again.'); });
+    });
+  });
 });
 // Download: the ZIP is made here, now, from the files on the site (kitZip)
 var prog = card.querySelector('.epk-progress');
