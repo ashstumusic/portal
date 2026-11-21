@@ -405,9 +405,10 @@ def _press_kit():
         vids.append({"title": title, "length": ln, "youtube": v.get("youtube", ""), "thumb": v.get("thumb", ""), "note": KIT_VIDEO_NOTE,
                      "file": v["file"], "size": f"{_vb / 1048576:.0f} MB"})
     if vids:
-        fs += ["Videos folder: " + str(len(vids)) + " live videos (MP4), also on YouTube:"]
+        _vw = max(len(v["title"] + " - Ash Stu (Live).mp4") for v in vids) + 3
+        fs += ["Videos folder: " + str(len(vids)) + " live videos (MP4):"]
         for v in vids:
-            fs += ["  " + v["title"] + " - Ash Stu (Live).mp4   " + v["note"].lower() + ((", " + v["length"]) if v["length"] else ""), "    " + v["youtube"]]
+            fs += ["  " + (v["title"] + " - Ash Stu (Live).mp4").ljust(_vw) + v["note"].lower() + ((", " + v["length"]) if v["length"] else "")]
         fs += [""]
         for v in vids:   # (in the ZIP too: owner's request)
             files.append({"path": KIT_TOP + "Videos/" + v["title"] + " - Ash Stu (Live).mp4", "src": v["file"], "type": "video"})
