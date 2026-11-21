@@ -1,9 +1,10 @@
 """Draw About's divider: a line of waves with a rubber duck swimming a figure 8 in it, whistling a tune (owner's requests).
 
 Writes four things:
-  Images/pool-waves.svg   the water: a hand-drawn line of gentle waves, drawn four times with a different hand
-                          wobble each time (1200 x 60 units per frame, stacked top to bottom). A white stencil:
-                          the stylesheet lays it over the name's gradient.
+  Images/pool-waves.svg   the water - an alphabet soup: a hand-drawn line of gentle waves with pasta letters bobbing
+                          in it, drawn four times with a different hand wobble each time (1200 x 60 units per
+                          frame, stacked top to bottom). A white stencil: the stylesheet lays it over the name's
+                          gradient.
   Images/rubber-duck.svg  the duck in five poses (rows: side on, three-quarter towards you, front, three-quarter
                           away, back), each drawn four times (columns) with a different hand wobble and bob, with a
                           ripple mark either side. 120 x 60 units per cell. Drawn in About's deep gradient, filled
@@ -116,12 +117,37 @@ def fill_shape(pts, rng=None, amp=0):
 
 rng = random.Random(1907)
 
-# ── the water ──
+# ── the water ── (an alphabet soup, owner's request: pasta letters bob in it as the duck swims around them)
 W, H, WATER = 1200, 60, 40
+def water_y(x, f): return WATER + 3.6 * math.sin((x + f * 9) / 15) + 1 * math.sin((x + f * 15) / 6.5)
+# Pasta letters, drawn in the same pencil line: each a few strokes in a unit box (x 0-1, y 0-1, top down).
+LETTERS = {
+    'A': [[(0, 1), (.5, 0), (1, 1)], [(.22, .62), (.78, .62)]],
+    'B': [[(.1, 0), (.1, 1)], [(.1, 0)] + [(.1 + .55 * math.sin(math.pi * t / 8), .25 - .25 * math.cos(math.pi * t / 8)) for t in range(1, 9)],
+          [(.1, .5)] + [(.1 + .7 * math.sin(math.pi * t / 8), .75 - .25 * math.cos(math.pi * t / 8)) for t in range(1, 9)]],
+    'C': [[(.5 + .5 * math.cos(a), .5 + .5 * math.sin(a)) for a in (math.radians(d) for d in range(-40, -321, -20))]],
+    'O': [[(.5 + .5 * math.cos(a), .5 + .5 * math.sin(a)) for a in (2 * math.pi * i / 16 for i in range(18))]],
+    'S': [[(.5 + .45 * math.cos(a), .25 + .25 * math.sin(a)) for a in (math.radians(d) for d in range(-20, -271, -25))] +
+          [(.5 + .45 * math.cos(a), .75 + .25 * math.sin(a)) for a in (math.radians(d) for d in range(-90, 111, 25))]],
+    'U': [[(0, 0), (0, .62)] + [(.5 - .5 * math.cos(math.pi * t / 8), .62 + .38 * math.sin(math.pi * t / 8)) for t in range(1, 9)] + [(1, 0)]],
+    'T': [[(0, 0), (1, 0)], [(.5, 0), (.5, 1)]],
+    'E': [[(.9, 0), (0, 0), (0, 1), (.9, 1)], [(0, .5), (.7, .5)]],
+    'H': [[(0, 0), (0, 1)], [(1, 0), (1, 1)], [(0, .5), (1, .5)]],
+}
+# where they float (the middle of the line - the part on screen), which letter, size and lean
+SOUP = [(400, 'O', 15, -6), (458, 'B', 14, 8), (516, 'A', 16, -4), (574, 'S', 14, 10), (632, 'U', 15, -8),
+        (690, 'C', 14, 5), (748, 'T', 15, -10), (806, 'E', 14, 6)]
 groups = []
 for f in range(FRAMES):
-    pts = [(x, WATER + 3.6 * math.sin((x + f * 9) / 15) + 1 * math.sin((x + f * 15) / 6.5)) for x in range(0, W + 1, 3)]
-    groups.append(f'<path transform="translate(0 {f * H})" d="{pencil(pts, rng, w=3.4, amp=.12, step=3, lift=.02, res=7)}"/>')
+    pts = [(x, water_y(x, f)) for x in range(0, W + 1, 3)]
+    strokes = [pencil(pts, rng, w=3.4, amp=.12, step=3, lift=.02, res=7)]
+    for k, (lx, ch, size, lean) in enumerate(SOUP):
+        # each letter rides the wave where it floats, bobbing with it from drawing to drawing, sunk a little into the
+        # soup (the line runs across its lower part) and rocking a few degrees as it bobs
+        wy = water_y(lx, f); rot = math.radians(lean + 5 * math.sin(f * 1.7 + k)); bw = size * (.62 if ch in 'TI' else .74)
+        place = lambda pts: [(lx + (px - .5) * bw * math.cos(rot) - (py - .8) * size * math.sin(rot), wy + (px - .5) * bw * math.sin(rot) + (py - .8) * size * math.cos(rot)) for px, py in pts]
+        strokes += [pencil(place(resample(st, .06)), rng, w=2.9, amp=.08, step=1.1, lift=.2, res=1.8) for st in LETTERS[ch]]
+    groups.append(f'<path transform="translate(0 {f * H})" d="{" ".join(strokes)}"/>')
 open(os.path.join(IMG, 'pool-waves.svg'), 'w').write(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H * FRAMES}" width="{W}" height="{H * FRAMES}">'
     f'<g fill="#fff" stroke="none">{"".join(groups)}</g></svg>\n')

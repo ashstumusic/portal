@@ -202,8 +202,8 @@ def inject_featured(page, rel):
         lambda m: m.group(1) + esc(rel['name']) + m.group(2),
         page, count=1,
     )
-    stores = [(k, n, w) for k, n, w in (('apple', 'Apple Music', 'Apple'), ('spotify', 'Spotify', 'Spotify'), ('ytmusic', 'YouTube Music', 'YouTube'),
-                                       ('amazon', 'Amazon Music', 'Amazon'), ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
+    stores = [(k, n, w) for k, n, w in (('apple', 'Apple Music', 'Apple Music'), ('spotify', 'Spotify', 'Spotify'), ('ytmusic', 'YouTube Music', 'YouTube Music'),
+                                       ('amazon', 'Amazon Music', 'Amazon Music'), ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
     btns = ('<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + ''.join(
         f'<a href="{esc(rel[k])}" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on {n}: {esc(rel["name"])}">'
         f'<span class="pt pt--{k}" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">{w}</span></a>' for k, n, w in stores) + '</div>') if stores else ''
@@ -213,13 +213,13 @@ def inject_featured(page, rel):
         page, count=1, flags=re.DOTALL,
     )
     # Badge doubles as the release-status tag: no streaming links yet
-    # reads "Distributing Soon" instead of "Latest Release". The .soon
+    # reads "Coming soon to streaming" instead of "Latest Release". The .soon
     # class flips it gold (see .featured-badge.soon in styles.css) - the
     # class is rewritten along with the text so the static snapshot always
     # matches what the JS render would produce.
     has_links = bool(rel.get('apple') or rel.get('spotify'))
     badge = ('<span aria-hidden="true">\u2605</span> Latest Release'
-             if has_links else 'Distributing Soon')
+             if has_links else 'Coming soon to streaming')
     badge_cls = 'featured-badge' if has_links else 'featured-badge soon'
     page = re.sub(
         r'<span class="featured-badge[^"]*"([^>]*)>.*?(</span>\s*<div class="featured-art-wrap)',

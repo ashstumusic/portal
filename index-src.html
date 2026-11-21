@@ -226,11 +226,11 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
   </ul>
   <div class="nav-platforms" aria-label="Streaming platforms">
-    <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Apple Music" title="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Apple</span></a>
+    <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Apple Music" title="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Apple Music</span></a>
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Spotify" title="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Spotify</span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Watch on YouTube" title="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">YouTube</span></a>
-    <a href="https://music.youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on YouTube Music" title="YouTube Music"><span class="pt pt--ytmusic" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">YT Music</span></a>
-    <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Amazon Music" title="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Amazon</span></a>
+    <a href="https://music.youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on YouTube Music" title="YouTube Music"><span class="pt pt--ytmusic" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">YouTube Music</span></a>
+    <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Amazon Music" title="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Amazon Music</span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Deezer" title="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Deezer</span></a>
   </div>
   </div>
@@ -401,7 +401,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
           <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
         </div>
         <div class="bio-rest">
-          <p class="bio-text bio-desc">Outsider singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.</p>
+          <p class="bio-text bio-desc">Outsider singer-songwriter from Guthrie,&nbsp;Oklahoma, formerly known as Ashton&nbsp;Stubblefield.</p>
         </div>
       </div>
       <div class="bio-card-media">
@@ -521,10 +521,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       <ol class="fs-lyrics-list" id="fs-lyrics-list"></ol>
     </section>
     <!-- Streaming links sit at the bottom, after the lyrics. -->
-    <div class="fs-platforms" id="fs-platforms">
-      <a href="#" id="fs-apple" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>
-      <a href="#" id="fs-spotify" target="_blank" rel="noopener noreferrer" class="f-btn" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>
-    </div>
+    <div class="fs-platforms" id="fs-platforms"><p class="f-listen-label" id="fs-listen-label">Listen on</p><div class="f-stores" id="fs-stores" role="group" aria-labelledby="fs-listen-label"></div></div>
   </div>
 </div>
 <div class="vid-lightbox" id="vid-lightbox" role="dialog" aria-modal="true" aria-label="Video player" aria-hidden="true" inert>
@@ -1323,8 +1320,6 @@ var fsCur = document.getElementById('fs-cur');
 var fsDur = document.getElementById('fs-dur');
 var fsPlayIcon = document.getElementById('fs-play-icon');
 var fsPlatforms = document.getElementById('fs-platforms');
-var fsApple = document.getElementById('fs-apple');
-var fsSpotify = document.getElementById('fs-spotify');
 var _fsOpen = false;
 function fsUpdateArt() {
 var art = npGetArt();
@@ -1345,12 +1340,13 @@ fsArt.hidden = true;
 if (ph) ph.style.display = '';
 }
 }
+// Every store the playing album is on, as the same "Listen on" dock as the Latest Release panel and the album cards.
+var STORE_LIST = [['apple', 'Apple Music'], ['spotify', 'Spotify'], ['ytmusic', 'YouTube Music'], ['amazon', 'Amazon Music'], ['deezer', 'Deezer']];
 function fsUpdatePlatforms() {
-var rel = RELEASE_LIST[pState.releaseIdx];
-var hasLinks = !!(rel && (rel.apple || rel.spotify));
-if (fsPlatforms) fsPlatforms.style.display = hasLinks ? 'flex' : 'none';
-if (rel && rel.apple) { fsApple.href = rel.apple; fsApple.style.display = ''; } else if (fsApple) { fsApple.style.display = 'none'; }
-if (rel && rel.spotify) { fsSpotify.href = rel.spotify; fsSpotify.style.display = ''; } else if (fsSpotify) { fsSpotify.style.display = 'none'; }
+var rel = RELEASE_LIST[pState.releaseIdx], box = document.getElementById('fs-stores');
+var on = rel ? STORE_LIST.filter(function(m) { return rel[m[0]]; }) : [];
+if (fsPlatforms) fsPlatforms.style.display = on.length ? '' : 'none';
+if (box) box.innerHTML = on.map(function(m) { return '<a href="' + escHtml(rel[m[0]]) + '" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on ' + m[1] + ': ' + escHtml(rel.name) + '"><span class="pt pt--' + m[0] + '" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">' + m[1] + '</span></a>'; }).join('');
 }
 function fsSync() {
 fsRenderLyrics();
@@ -2595,18 +2591,18 @@ if (btnsEl) {
 var h = '';
 // Every store the release is on, in one row of logo tiles under a single "Listen on" (owner's request), each tile a
 // logo over a short name; the spoken name is the full one ("Listen on YouTube Music: Ash Stu, Vol. II").
-var STORES = [['apple', 'Apple Music', 'Apple'], ['spotify', 'Spotify', 'Spotify'], ['ytmusic', 'YouTube Music', 'YouTube'], ['amazon', 'Amazon Music', 'Amazon'], ['deezer', 'Deezer', 'Deezer']].filter(function(m) { return rel[m[0]]; });
+var STORES = [['apple', 'Apple Music', 'Apple Music'], ['spotify', 'Spotify', 'Spotify'], ['ytmusic', 'YouTube Music', 'YouTube Music'], ['amazon', 'Amazon Music', 'Amazon Music'], ['deezer', 'Deezer', 'Deezer']].filter(function(m) { return rel[m[0]]; });
 if (STORES.length) h = '<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + STORES.map(function(m) {
   return '<a href="' + escHtml(rel[m[0]]) + '" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on ' + m[1] + ': ' + escHtml(rel.name) + '"><span class="pt pt--' + m[0] + '" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">' + m[2] + '</span></a>';
 }).join('') + '</div>';
 btnsEl.innerHTML = h;
 }
 // Badge doubles as the release-status tag: a release with no streaming
-// links yet reads "Distributing Soon" instead of "Latest Release".
+// links yet reads "Coming soon to streaming" (the same words as the album cards) instead of "Latest Release".
 var badgeEl = document.getElementById('featured-badge');
 if (badgeEl) {
 var hasLinks = !!(rel.apple || rel.spotify);
-badgeEl.innerHTML = hasLinks ? '<span class="party-dot" aria-hidden="true"></span> Latest Release' : SOON_ICON + ' Distributing Soon';
+badgeEl.innerHTML = hasLinks ? '<span class="party-dot" aria-hidden="true"></span> Latest Release' : SOON_ICON + ' Coming soon to streaming';
 // .soon flips the badge gold (announcement voice) vs red (release pop)
 badgeEl.classList.toggle('soon', !hasLinks);
 var partyEl = document.getElementById('party');
