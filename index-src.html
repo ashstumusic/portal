@@ -303,12 +303,12 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     </a>
   </div>
   <div class="epk-photos epk-photos-top">
-    <span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/></span>
-    <span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/></span><span class="epk-name" aria-hidden="true">Portrait.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/></span><span class="epk-name" aria-hidden="true">Performing.png</span></span>
   </div>
   <div class="epk-photos epk-photos-bottom">
-    <span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/></span>
-    <span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/></span><span class="epk-name" aria-hidden="true">Piano.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/></span><span class="epk-name" aria-hidden="true">Studio Session.png</span></span>
   </div>
 </section>
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">
@@ -3292,7 +3292,10 @@ var items=imgs.map(function(i){return {src:i.getAttribute('src'),alt:i.alt};}),n
 items.forEach(function(it){var p=new Image();p.src=it.src;});
 // a random starting order
 for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=cur[i];cur[i]=cur[j];cur[j]=x;}
-imgs.forEach(function(im,k){im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;});
+// (each photo is shown as a file, its name under it: the name follows the photo from window to window)
+var nameOf=function(src){var m=/epk-ash-stu-([a-z-]+)\./.exec(src)||[];return ({portrait:'Portrait.png',performing:'Performing.png',piano:'Piano.png','studio-session':'Studio Session.png'})[m[1]]||'';};
+var label=function(im){var f=im.closest('.epk-file'),l=f&&f.querySelector('.epk-name');if(l)l.textContent=nameOf(im.getAttribute('src'));};
+imgs.forEach(function(im,k){im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;label(im);});
 var still=function(){return matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('psy-calm');};
 var onScreen=true,sec=document.getElementById('epk');
 if(sec&&'IntersectionObserver' in window)new IntersectionObserver(function(e){onScreen=e[0].isIntersecting;}).observe(sec);
@@ -3305,7 +3308,7 @@ var old=cur.slice(),left=n;
 // window k: its photo slides out, starting a beat after the window before it
 var gone=imgs.map(function(im,k){return new Promise(function(res){setTimeout(function(){slide(im,'0','106%',OUT,'cubic-bezier(.55,0,.85,.35)').then(res);},k*GAP);});});
 imgs.forEach(function(im,k){var from=(k-1+n)%n;   // it receives the photo from the window before it
-Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;
+Promise.all([gone[k],gone[from]]).then(function(r){cur[k]=old[from];im.src=items[cur[k]].src;im.alt=items[cur[k]].alt;label(im);
 return slide(im,'-106%','0',IN,'cubic-bezier(.15,.7,.25,1)').then(function(a){r[0].cancel();a.cancel();if(--left===0)busy=false;});});});}
 setInterval(turn,5200);})();</script>
 <script>/* The toolbar's three streaming logos: one of them is always open as its full badge in the site's dark glass, like every other button
