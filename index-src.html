@@ -2452,6 +2452,19 @@ function wireVideos() {
 const grid = document.getElementById('video-grid');
 if (!grid || !VIDEO_LIST.length) return;
 grid.querySelectorAll('.vid-play').forEach(btn => { const pv = VIDEO_LIST[parseInt(btn.dataset.videoIndex, 10)]; if (pv) btn.addEventListener('click', () => openLightbox(pv)); });   // (the Play button beside YouTube)
+// PATTERN (whole card plays), as on the album cards: a click anywhere on a video card that isn't one of its buttons or
+// links (the thumbnail and Play open the video themselves; YouTube leaves the site) opens the video. Pointing at the
+// card lights up its Play button. A convenience only: Play does the same from the keyboard.
+grid.querySelectorAll('.vid-card-wrap').forEach(wrap => {
+  const pb = wrap.querySelector('.vid-play'), pv = pb && VIDEO_LIST[parseInt(pb.dataset.videoIndex, 10)];
+  if (!pv) return;
+  wrap.addEventListener('click', e => {
+    if (e.target.closest('a, button, input')) return;
+    const sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't open the video)
+    pb.focus({ preventScroll: true });   // (so closing the video brings focus back to this card's Play, not to the top of the page)
+    openLightbox(pv);
+  });
+});
 grid.querySelectorAll('.vid-card').forEach(card => {
 const v = VIDEO_LIST[parseInt(card.dataset.videoIndex, 10)];
 if (!v) return;
