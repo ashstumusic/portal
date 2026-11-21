@@ -3256,6 +3256,10 @@ function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>
+<script>/* About's drawings (the soup line, the duck and its tune - about 250KB of drawing sheets) are fetched only as About
+   comes near: until then they are not drawn at all, so a visitor who never scrolls that far never downloads them. */
+(function(){var a=document.getElementById('about');if(!a)return;var on=function(){a.classList.add('about-near');};
+if(!('IntersectionObserver' in window)){on();return;}var o=new IntersectionObserver(function(e){if(e[0].isIntersecting){on();o.disconnect();}},{rootMargin:'1200px 0px'});o.observe(a);})();</script>
 <script>/* About's two small photos (owner's request): beside the portrait, two photos taken at random from a pool of
    Ash's photos, and every so often one of them (never both at once) pops away and another pops in from its centre,
    like the Press Kit files. The two are never the same photo, and photos are dealt from a shuffled deck, so every one
