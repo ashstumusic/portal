@@ -351,7 +351,7 @@ def _press_kit():
     files = []
     songs = [x for x in (find(t) for t in KIT_SONGS) if x]
     for k, (ri, ti, r, t) in enumerate(songs, 1):
-        files.append({"path": KIT_TOP + "Songs/Ash Stu - " + t["title"] + ".mp3", "src": t["file"], "type": "song", "title": t["title"],
+        files.append({"path": KIT_TOP + "Songs/" + t["title"] + " - " + r["name"] + ".mp3", "src": t["file"], "type": "song", "title": t["title"],   # ("its name - the album it's from", as listed on the page)
                       "ri": ri, "ti": ti, "from": r["name"] + (" (" + year_of(r) + ")" if year_of(r) else ""), "length": length(t["file"]), "tag": {"title": t["title"], "album": "Ash Stu - Press Kit", "track": f"{k}/{len(songs)}", "cover": KIT_SONG_COVER}})
     photos = sorted((f for f in os.listdir(KIT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))),
                     key=lambda n: (0 if "headshot" in n.lower() else 1, n.lower()))
@@ -378,10 +378,10 @@ def _press_kit():
         fs += ["", line]
         for key, label in (("apple", "Apple Music"), ("spotify", "Spotify"), ("ytmusic", "YouTube Music"), ("amazon", "Amazon Music"), ("deezer", "Deezer")):
             if r.get(key): fs.append(f"  {label + ':':<16}{r[key]}")
-    _w = max([len("Ash Stu - " + t["title"] + ".mp3") for _, _, _, t in songs] or [0]) + 3
+    _w = max([len(t["title"] + " - " + r["name"] + ".mp3") for _, _, r, t in songs] or [0]) + 3
     fs += ["", "", "IN THIS PRESS KIT", "-" * 40, "",
-           "Songs folder: a sampler of " + str(len(songs)) + " songs (MP3), with the album each is from and its length:",
-           *["  " + ("Ash Stu - " + t["title"] + ".mp3").ljust(_w) + "from " + r["name"] + (" (" + year_of(r) + ")" if year_of(r) else "") + ((", " + length(t["file"])) if length(t["file"]) else "") for _, _, r, t in songs], "",
+           "Songs folder: a sampler of " + str(len(songs)) + " songs (MP3), each named for the song and the album it is from, with the year and length:",
+           *["  " + (t["title"] + " - " + r["name"] + ".mp3").ljust(_w) + (year_of(r) or "") + ((", " + length(t["file"])) if length(t["file"]) else "") for _, _, r, t in songs], "",
            "Ash Stu - Lyrics.txt", "  The words to the " + str(len(songs)) + " songs in the Songs folder.", "",
            "Ash Stu - Fact Sheet.txt", "  This file.", "",
            "Photos folder (PNG):", *["  " + f for f in photos], ""]
@@ -403,19 +403,22 @@ def _press_kit():
         dims = None
         with open(os.path.join(KIT_DIR, f), "rb") as fh: hd = fh.read(24)
         if hd[:8] == b"\x89PNG\r\n\x1a\n": dims = [int.from_bytes(hd[16:20], "big"), int.from_bytes(hd[20:24], "big")]
-        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": _KIT_THUMB.get(f, ""), "dims": dims})
+        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": ("Images/embedded/" + _KIT_THUMB[f]) if f in _KIT_THUMB else "", "dims": dims})
     if latest:
         folder = KIT_TOP + "Latest Release - " + latest["name"] + "/"
         ri = rels.index(latest); total = len(latest["tracks"]) + len(latest.get("upcoming") or [])
         stem = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(os.path.basename(latest["art"]))[0].lower()).strip("-")
         cover_jpg = "Images/share/" + stem + ".jpg"
         for ti, t in enumerate(latest["tracks"]):
-            files.append({"path": folder + os.path.basename(t["file"]), "src": t["file"], "type": "album", "title": t["title"], "ri": ri, "ti": ti,
+            files.append({"path": folder + os.path.basename(t["file"]), "src": t["file"], "type": "album", "title": t["title"], "ri": ri, "ti": ti, "length": length(t["file"]),
                           "tag": {"title": t["title"], "album": latest["name"], "track": f"{t.get('num', ti + 1)}/{total}", "year": year_of(latest), "genre": "Outsider",
                                   "cover": cover_jpg if os.path.exists(os.path.join(ROOT, cover_jpg)) else ""}})
         png = os.path.splitext(latest["art"])[0] + ".png"
         art = png if os.path.exists(os.path.join(ROOT, png)) else latest["art"]
-        files.append({"path": folder + latest["name"] + " - Cover" + os.path.splitext(art)[1], "src": art, "type": "cover"})
+        _cd = None
+        with open(os.path.join(ROOT, art), "rb") as fh: _hd = fh.read(24)
+        if _hd[:8] == b"\x89PNG\r\n\x1a\n": _cd = [int.from_bytes(_hd[16:20], "big"), int.from_bytes(_hd[20:24], "big")]
+        files.append({"path": folder + latest["name"] + " - Cover" + os.path.splitext(art)[1], "src": art, "type": "cover", "thumb": latest["art"], "dims": _cd})
         ly = os.path.dirname(latest["tracks"][0]["file"]) + "/lyrics.txt"
         if os.path.exists(os.path.join(ROOT, ly)): files.append({"path": folder + latest["name"] + " - Lyrics.txt", "src": ly, "type": "albumtext"})
     for f in files:

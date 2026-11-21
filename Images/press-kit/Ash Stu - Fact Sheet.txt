@@ -28,12 +28,12 @@ Ash Stu, Vol. I  -  album, November 7, 2025, 16 songs
 IN THIS PRESS KIT
 ----------------------------------------
 
-Songs folder: a sampler of 5 songs (MP3), with the album each is from and its length:
-  Ash Stu - Dirge for Ducklings.mp3           from Ash Stu, Vol. II (2026), 2:23
-  Ash Stu - Still Sad.mp3                     from My Anima (2026), 3:42
-  Ash Stu - Summertime Even on the Moon.mp3   from Ash Stu, Vol. II (2026), 4:05
-  Ash Stu - Worship Song.mp3                  from My Anima (2026), 2:25
-  Ash Stu - You Are What You Love.mp3         from My Anima (2026), 2:18
+Songs folder: a sampler of 5 songs (MP3), each named for the song and the album it is from, with the year and length:
+  Dirge for Ducklings - Ash Stu, Vol. II.mp3           2026, 2:23
+  Still Sad - My Anima.mp3                             2026, 3:42
+  Summertime Even on the Moon - Ash Stu, Vol. II.mp3   2026, 4:05
+  Worship Song - My Anima.mp3                          2026, 2:25
+  You Are What You Love - My Anima.mp3                 2026, 2:18
 
 Ash Stu - Lyrics.txt
   The words to the 5 songs in the Songs folder.
