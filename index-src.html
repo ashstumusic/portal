@@ -2714,7 +2714,7 @@ const vid = document.getElementById('lb-video');
 vid.pause();
 document.getElementById('lb-title').textContent = v.title;
 const yt = document.getElementById('lb-yt');
-if (v.youtube) { yt.href = v.youtube; yt.style.display = 'inline-flex'; }
+if (v.youtube) { yt.href = v.youtube; yt.style.display = 'inline-flex'; yt.setAttribute('aria-label', 'Watch "' + v.title + '" on YouTube (opens in a new tab)'); yt.dataset.newtab = '1'; }   // (named like the cards' YouTube buttons, for this video)
 else { yt.style.display = 'none'; }
 const dotsEl = document.getElementById('lb-dots');
 if (dotsEl) {
