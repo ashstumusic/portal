@@ -2617,18 +2617,18 @@ html { overscroll-behavior-y: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ""; position: absolute; pointer-events: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before {
   inset: 0; background: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) 0 50% / 200% 100% repeat-x;
-  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=4') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
-  mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=4') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
+  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
+  mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
 }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after {
   top: 0; height: 100%; aspect-ratio: 2; left: 50%; transform: translate(-50%, 0);
   background: url('Images/rubber-duck.svg') 0 0 / 400% 500% no-repeat;
   -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat; mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat;
 }
-:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url('Images/pool-waves.svg?v=4') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/pool-waves.svg?v=4') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
+:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
 :root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
 @media (forced-colors: active) {
-  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url('Images/pool-waves.svg?v=4') 50% 0 / auto 400% no-repeat; mask: url('Images/pool-waves.svg?v=4') 50% 0 / auto 400% no-repeat; }
+  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat; mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat; }
   :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
 }
 @keyframes pencil-boil-line {
@@ -5809,3 +5809,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy .rel-card .rel-tracklist .rel-track-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-inline: 10px 10px !important; }
   :root.psy .rel-card .rel-track-title.title-wrap:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { white-space: normal !important; line-height: 1.25 !important; text-wrap: balance; }
 }
+
+/* (phones: the soup line a touch shorter - 40px - so a little more of it shows across the name's width and all six
+   letters of ASH STU sit clear of its faded ends, with the duck's resting gap between the words) */
+@media (max-width: 699px) { :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { height: 40px !important; } }
