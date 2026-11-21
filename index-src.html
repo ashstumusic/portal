@@ -3105,7 +3105,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
     return '<div class="epk-shot" role="listitem">' +
       '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
         '<img src="' + escHtml(encodeURI(f.thumb)) + '" alt="" width="481" height="481" loading="lazy" decoding="async"/></a>' +
-      '<p class="epk-shot-name">' + escHtml(f.name) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
+      '<p class="epk-shot-name">' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
       (f.credit ? '<p class="epk-shot-credit">Photo: ' + (f.creditUrl ? '<a href="' + escHtml(f.creditUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(f.credit) + '</a>' : escHtml(f.credit)) + '</p>' : '') +
       '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
