@@ -1908,7 +1908,7 @@ if (!targetCard) return;
 var tl = targetCard.querySelector('.rel-tracklist');
 if (!tl) return;
 var wasOpen = targetCard.classList.contains('tracks-open');
-document.querySelectorAll('.rel-card.tracks-open').forEach(function(c) {
+document.querySelectorAll('#releases-grid .rel-card.tracks-open').forEach(function(c) {   /* (the albums' lists only: the press kit's sampler is always open) */
 c.classList.remove('tracks-open');
 var otl = c.querySelector('.rel-tracklist');
 if (otl) otl.style.maxHeight = '0';
@@ -1923,7 +1923,7 @@ if (autoPlay) playRelease(rIdx);
 }
 var LYRICS = {};
 function closeAllTracklists() {
-document.querySelectorAll('.rel-card.tracks-open').forEach(function(c) {
+document.querySelectorAll('#releases-grid .rel-card.tracks-open').forEach(function(c) {   /* (the albums' lists only: the press kit's sampler is always open) */
 c.classList.remove('tracks-open');
 var otl = c.querySelector('.rel-tracklist');
 if (otl) otl.style.maxHeight = '0';
@@ -2804,8 +2804,8 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       '<div class="epk-video-btns"><button type="button" class="rel-lyrics-toggle epk-vplay" aria-label="Play ' + escHtml(v.title) + ', ' + escHtml(meta.toLowerCase()) + '"><svg class="lyr-ico" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button>' +
       (v.youtube ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube: ' + escHtml(v.title) + '"><span class="pt pt--youtube" aria-hidden="true"></span></a>' : '') + '</div></div>';
   }).join('') + '</div></div>' : '') +
-  tlToggle({ name: 'the Press Kit', tracks: KIT.files.filter(function(f) { return f.type === 'song'; }) }, 'kit') +   /* (owner's request: the list is just a tracklist) */
-  '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
+  '<p class="epk-group epk-sampler-h" id="epk-sampler-h">Sampler</p>' +   /* (owner's request: the tracklist is always open, like the photos and videos: a heading, not a Show/Hide bar) */
+  '<div class="rel-tracklist" id="tracklist-kit" role="region" aria-labelledby="epk-sampler-h"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
 if (sec) sec.classList.add('epk-merged');
 // Show / Hide (owner's request: "make the press kit collapsed by default. replace the play button with a show button"):
@@ -2837,9 +2837,6 @@ function playKit(i) {
   updatePlayUI();
 }
 function openList() { if (!card.classList.contains('tracks-open')) { card.classList.add('tracks-open'); syncTracklistExpanded(); recalcTracklistHeight(tl); queueMarquees(); } }
-card.querySelector('.rel-tl-toggle').addEventListener('click', function() {
-  if (card.classList.contains('tracks-open')) { card.classList.remove('tracks-open'); tl.style.maxHeight = '0'; syncTracklistExpanded(); } else openList();
-});
 // (a click on the card's top part opens it, and pressing it again closes it, like Show / Hide; clicks among the
 // photos, videos and tracks never close it)
 card.addEventListener('click', function(e) {
