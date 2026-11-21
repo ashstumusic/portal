@@ -388,10 +388,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     </div>
   </div>
 </section>
-<section class="bio-section" id="about" aria-labelledby="about-h">
-  <div class="bio-section-header">
-    <h2 class="section-h" id="about-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.9-3.9 4-6 7.5-6s6.6 2.1 7.5 6"/></svg>About</h2>
-  </div>
+<section class="bio-section" id="about" aria-label="About Ash Stu">   <!-- (headerless: owner's request; the name and bio are in the press kit card) -->
   <div class="bio-body">
     <!-- One cream split-card, same object language as the contact card:
          text panel left, portrait right, childhood shots as
@@ -399,12 +396,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div class="bio-card">
       <div class="bio-card-text">
         <div class="bio-head">
-          <div class="bio-wall bio-wall--top"><p class="bio-name"><span class="bio-name-link">Ash Stu</span></p></div>
           <div class="bio-stroke" aria-hidden="true"><span class="duck-notes"></span></div>
           <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
-        </div>
-        <div class="bio-rest">
-          <p class="bio-text bio-desc">Outsider singer-songwriter from Guthrie,&nbsp;Oklahoma, formerly known as Ashton&nbsp;Stubblefield.</p>
         </div>
       </div>
       <div class="bio-card-media">
@@ -630,7 +623,7 @@ if ('ResizeObserver' in window) new ResizeObserver(function() { clearTimeout(_re
 /* (this script now starts after the first paint, which can be after the page's load event: run at once if so) */
 (function(f){ if (document.readyState === 'complete') setTimeout(f, 0); else window.addEventListener('load', f); })(function() { cacheOffsets(); updateNav(); });
 let _lastHeroOut = -1, _lastNavIn = -1, _lastCur = null, _lastScrolled = false, _lastAboutIn = -1;
-const aboutName = document.querySelector('.bio-wall--top') || document.querySelector('.bio-name');
+const aboutName = document.querySelector('.bio-wall--top') || document.querySelector('.bio-name');   /* (none now: the toolbar's name stays to the end) */
 // What updateNav needs to know about the page, measured in one go (readNav) so that it can be asked for at the moment
 // the browser reports a scroll, when the answer is free. Asking later in the frame, after the stars have been moved,
 // made the browser recompute the page's styles a second time on every frame of a scroll.
@@ -4038,7 +4031,8 @@ setTimeout(step,3000+Math.random()*2000);})();</script>
    (n below can repeat each line in extra decorative rows, hidden from
    screen readers; it is 1, so there are none.) */
 (function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
-if(!card||!text||!top||!bot)return;var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
+if(!card||!text||!bot)return;   /* (no name line any more: the tagline leads, owner's request) */
+if(!top){top=document.createElement('div');}var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
 function build(){
 top.querySelectorAll('[data-copy], .rep').forEach(function(e){e.remove();});bot.querySelectorAll('[data-copy]').forEach(function(e){e.remove();});
 var name=top.querySelector('.bio-name'),tag=bot.querySelector('.bio-tagline'),n=1; // one line each (was 4 repeated rows)
@@ -4056,7 +4050,7 @@ var cs=getComputedStyle(head),inner=head.clientWidth-parseFloat(cs.paddingLeft)-
 // wide desktop panel made it about 180px, far too big); the tagline matches the name's width,
 // and stays at least 17px so it can be read.
 var hs=document.querySelector('.section-h'),cap=2*parseFloat(getComputedStyle(hs||head).fontSize)||96;
-var nn=nat(name),nt=nat(tag);
+var nn=name?nat(name):0,nt=nat(tag);
 var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
 var f1,f2;
 if(!side&&media&&media.offsetWidth){
@@ -4064,15 +4058,15 @@ if(!side&&media&&media.offsetWidth){
   // it - "Ash Stu" about 78% of its width, the tagline 88% of the name's width (a gentle taper: name, duck line,
   // tagline), and the description no wider than the name, so the words read as one centred column under the photos.
   var col=Math.min(text.clientWidth||media.offsetWidth,media.offsetWidth);   // (the photo column - not the name's own box, which shrinks to fit the name)
-  f1=Math.min(col*.78/nn,cap*1.4);f2=Math.max(17,f1*nn*.88/nt);
-  var rest0=text.querySelector('.bio-rest');if(rest0){rest0.style.setProperty('max-width',Math.round(Math.max(280,f1*nn))+'px');}
-}else{f1=Math.min(inner*.98/nn,cap);f2=Math.min(inner*.95/nt,Math.max(17,f1*nn*.97/nt));}
+  f1=nn?Math.min(col*.78/nn,cap*1.4):0;f2=nn?Math.max(17,f1*nn*.88/nt):Math.max(17,Math.min(col*.82/nt,cap*.9));
+  var rest0=text.querySelector('.bio-rest');if(rest0&&nn){rest0.style.setProperty('max-width',Math.round(Math.max(280,f1*nn))+'px');}
+}else{f1=nn?Math.min(inner*.98/nn,cap):0;f2=nn?Math.min(inner*.95/nt,Math.max(17,f1*nn*.97/nt)):Math.max(17,Math.min(inner*.95/nt,cap*.9));}
 setSize(top,f1);setSize(bot,f2);
 if(side&&media){var rest=text.querySelector('.bio-rest'),avail=media.offsetHeight-(rest?rest.offsetHeight:0)-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
 for(var k=0;k<4;k++){var gap=parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop),used=top.offsetHeight+bot.offsetHeight+gap;
 if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
 // the wavy line under the name is as wide as the name (it spanned the whole panel), and a little thinner when shorter
-var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name);var sw=rn.getBoundingClientRect().width;
+var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name||tag);var sw=rn.getBoundingClientRect().width;
 if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(40,Math.min(64,sw*.12)))+'px');}}
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
