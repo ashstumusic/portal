@@ -54,8 +54,12 @@ sizes and must stay at zero issues. It only catches about half of real problems:
   button (focus is never left on nothing).
 
 ### Album cards
-- Cover button: named "Play <album>" / "Pause <album>" and plays or pauses with Enter or Space. With a mouse or
-  finger the disc plays and the rest of the cover opens the tracklist.
+- Play button (first in the card's row): named "Play <album>" / "Pause <album>"; plays or pauses with Enter or Space.
+- With a mouse or finger, a click anywhere on the card that isn't another of its buttons, links or its track list
+  (the cover included) plays or pauses too. Pointing at the card lights Play up, so the card says what a click does.
+  This is a convenience only: everything it does is also on the Play button.
+- Streaming links sit in the card's availability line ("Listen on Apple Music, Spotify"), apart from the card's own
+  actions (Play, Download).
 - Tracklist button: visible text "10 tracks", spoken name "10 tracks on <album>", with `aria-expanded`.
 - A release that isn't on streaming yet says so in a status line under its name ("Coming soon to streaming"), never
   in a button-shaped box: anything shaped like a button must do something when pressed.

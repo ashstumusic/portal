@@ -80,16 +80,19 @@ def render_release_card(rel, r_idx):
                  else 'EP cover: ' if rel['type'] == 'EP'
                  else 'Album cover: ')
     btns = ''
+    listen = ''   # streaming links: the card's availability line, apart from its own actions
     if rel.get('apple'):
-        btns += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
+        listen += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Apple Music" itemprop="url">'
                    f'<span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>')
     if rel.get('spotify'):
-        btns += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
+        listen += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
                    f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
     status = ('<p class="rel-status"><span>Coming soon to streaming</span></p>'
-              if not btns or rel.get('soon') else '')
+              if not listen or rel.get('soon') else '')
+    if listen:
+        status += f'<p class="rel-listen"><span class="rel-listen-label">Listen on</span>{listen}</p>'
     tracklist = ''
     upcoming = rel.get('upcoming', [])
     if len(rel['tracks']) + len(upcoming) > 1:
@@ -109,7 +112,8 @@ def render_release_card(rel, r_idx):
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
             f'<div class="rel-info"><p class="rel-cat">{esc(rel["type"])}'
             + (f'<span class="rel-year"> · <time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
-            f'</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>{status}</div>'
+            f'</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3></div>'
+            + (f'<div class="rel-avail">{status}</div>' if status else '') +
             f'<div class="rel-art-wrap">'
             f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
             + (f'srcset="{esc(rel["art"].replace(" ", "%20"))} 504w, {esc(rel["art2x"].replace(" ", "%20"))} 800w" sizes="(max-width: 600px) 92vw, 400px" ' if rel.get("art2x") else '') +

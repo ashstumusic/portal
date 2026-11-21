@@ -1923,14 +1923,22 @@ overlay.className = 'rel-play-overlay';
 // aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
 overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-var _rb = card.querySelector('.rel-btns'); if (_rb) _rb.insertBefore(overlay, _rb.firstChild); else wrap.appendChild(overlay);   // Play leads the card's row of buttons, off the cover
+// PATTERN (whole card plays): a click anywhere on an album card that isn't one of its own buttons, links or track
+// list plays or pauses it (below). Play leads the card's row of buttons and is the real Play/Pause control for the
+// keyboard and screen readers; pointing anywhere on the card lights it up, to show what a click will do.
+var _rb = card.querySelector('.rel-btns'); if (_rb) _rb.insertBefore(overlay, _rb.firstChild); else wrap.appendChild(overlay);
+card.addEventListener('click', function(e) {
+  if (e.target.closest('a, button, input, select, textarea, summary, details, .rel-tracklist, .rel-single-lyrics')) return;
+  var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't start the music)
+  toggleRelease(rIdx);
+});
 _discCache[rIdx] = overlay.querySelector('svg');
 // (the disc is no longer inside the cover, so a press of the disc button itself - keyboard, screen reader, or a click
 // on its edge - plays here; a click on the round disc plays through its own handler below and stops there)
 overlay.addEventListener('click', function(e) { e.stopPropagation(); closeAllTracklists(); toggleRelease(rIdx); });
 var circle = overlay.querySelector('.rel-play-circle');
 circle.addEventListener('click', function(e) { e.stopPropagation(); closeAllTracklists(); toggleRelease(rIdx); });
-wrap.addEventListener('click', function(e) { onRelOverlay(e, rIdx); });
+// (the cover is part of the card: a click on it plays or pauses, like anywhere else on the card)
 var tlBtn = card.querySelector('.rel-tl-toggle');
 if (tlBtn) tlBtn.addEventListener('click', function() { setTracklist(rIdx, false); });
 });
@@ -2481,11 +2489,15 @@ var SOON_ICON = '<svg class="soon-ico" aria-hidden="true" width="16" height="16"
 function renderReleaseCard(rel, rIdx) {
 var kindWord = rel.type === 'Single' ? 'Single cover: ' : rel.type === 'EP' ? 'EP cover: ' : 'Album cover: ';
 var btns = '';
-if (rel.apple) btns += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
-if (rel.spotify) btns += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
+// Streaming links live in the card's availability line ("Listen on  Apple Music  Spotify"), apart from the
+// card's own actions (Play, Download), so every card has the same shape whether or not it is on streaming yet.
+var listen = '';
+if (rel.apple) listen += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Apple Music" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
+if (rel.spotify) listen += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen to ' + escHtml(rel.name) + ' on Spotify"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 // A clock beside the words (a picture and a word, like every button-shaped thing on the site).
 // Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
-var status = (!btns || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
+var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
+if (listen) status += '<p class="rel-listen"><span class="rel-listen-label">Listen on</span>' + listen + '</p>';
 // Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
 if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
 btns += '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
@@ -2493,7 +2505,8 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat">' + escHtml(rel.type) + (rel.year ? '<span class="rel-year"> · <time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + status + '</div>' +
+'<div class="rel-info"><p class="rel-cat">' + escHtml(rel.type) + (rel.year ? '<span class="rel-year"> · <time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
+(status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
 '</div>' +
