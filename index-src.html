@@ -2413,7 +2413,7 @@ if (!card) return;
 /* (classes are only written when they really change: a watcher on the releases re-runs this whenever a release's class is touched) */
 if (lyrPaneMode()) { if (card.classList.contains('lyrics-open')) card.classList.remove('lyrics-open'); var ob = card.querySelector('.rel-lyrics-toggle.open'); if (card.classList.contains('lyrics-pane') !== !!ob) card.classList.toggle('lyrics-pane', !!ob); if (ob && ob._lyr) { var inr = ob._lyr.querySelector('.rel-lyrics-inner'); if (inr) { inr.classList.remove('lyr-wrap'); inr.style.removeProperty('--lyr-fs'); } } return; }
 if (card.classList.contains('lyrics-pane')) card.classList.remove('lyrics-pane');
-var openBtn = card.querySelector('.rel-lyrics-toggle.open'), want = !!openBtn;
+var openBtn = card.querySelector('.rel-lyrics-toggle.open'), want = !!openBtn && !card.classList.contains('epk-card');   /* (the Press Kit card opens lyrics in place: its file tiles have no room beside a side-by-side list) */
 if (card.classList.contains('lyrics-open') !== want) {
   /* the row the visitor just used stays where it is on screen while the card changes shape */
   var anchor = openBtn || (card.contains(document.activeElement) ? document.activeElement : card);
@@ -2651,6 +2651,11 @@ KIT.files.forEach(function(f) {
 });
 var nSongs = KIT.files.length - nPhotos - nText, n = KIT.files.length, mb = Math.round(KIT.bytes / 1048576);
 var dlName = 'Download Press Kit (ZIP file, ' + mb + ' MB)';
+// ONE PRESS KIT (owner's request: "combine the two versions into one"): the section's file tiles move into the card, under
+// its cover and buttons, and the section's own line of text and red Download button step aside (the card has both). They
+// stay in the page for anyone without JavaScript. Taken out before the card is redrawn, so a redraw keeps the same tiles.
+var sec = document.getElementById('epk'), photoSets = [].slice.call(sec ? sec.querySelectorAll('.epk-photos') : []);
+photoSets.forEach(function(p) { if (p.parentNode) p.parentNode.removeChild(p); });
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Press Kit: ' + nSongs + ' songs' + (nText ? ', their lyrics' : '') + ' and ' + nPhotos + ' photos by Ash Stu">' +
   '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Press Kit</span></p><h3 class="rel-name">Ash Stu</h3></div>' +
   '<div class="rel-avail"><p class="rel-status"><svg class="soon-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>' + nSongs + (nSongs === 1 ? ' song' : ' songs') + (nText ? ' with lyrics' : '') + ' and ' + nPhotos + (nPhotos === 1 ? ' photo' : ' photos') + ' for booking and press</span></p></div>' +
@@ -2659,6 +2664,8 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   tlToggle({ name: 'the Press Kit', tracks: KIT.files }, 'kit').replace(/(\d+) tracks? on the Press Kit/, '$1 files in the Press Kit').replace(/>(\d+) tracks?</, '>$1 files<') +
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
+if (photoSets.length) { var tiles = document.createElement('div'); tiles.className = 'epk-tiles'; photoSets.forEach(function(p) { tiles.appendChild(p); }); card.insertBefore(tiles, card.querySelector('.rel-tl-toggle')); }
+if (sec) sec.classList.add('epk-merged');
 // Play: the kit's songs as one list (Pause while it plays)
 var overlay = document.createElement('button');
 overlay.type = 'button'; overlay.className = 'rel-play-overlay';
