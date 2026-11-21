@@ -104,6 +104,11 @@ css = open("styles.css").read()
 css += "\n" + open("shared/kinetic.css").read()
 css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
 css += "\n" + open("shared/system.css").read()   # design system: type, spacing, radii, states (last word)
+# The stylesheets raise a rule's priority with a run of ":not(#\\#)" (each one counts as an ID) - up to 60 in a row,
+# about 330KB of the 790KB stylesheet. A run of N is written here as ONE ":not(#\\##\\#...)" with N IDs in it: the
+# same priority, the same meaning (it matches every element), a third of the size, and much less for a phone to parse.
+import re as _reNot
+css = _reNot.sub(r"(?::not\(#\\#\)){2,}", lambda m: ":not(" + "#\\#" * (len(m.group(0)) // 9) + ")", css)
 # Hover styles only while a mouse/trackpad is in use. A touch screen keeps
 # :hover on the last thing tapped, so a tapped toggle (shuffle, repeat...)
 # kept its hover look and seemed stuck "on" until you tapped elsewhere.
