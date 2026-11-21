@@ -358,7 +358,7 @@ def _press_kit():
     latest = next((r for r in rels if r.get("featured") and r.get("tracks")), next((r for r in rels if r.get("tracks")), None))
     # the two text files
     lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order."]
-    if latest: lines += ["The words to the latest release, " + latest["name"] + ", are in its own folder, in \"" + latest["name"] + " - Lyrics.txt\"."]
+    if latest: lines += ["The words to the latest release are in its own folder."]   # (owner's wording)
     lines += [""]
     for ri, ti, r, t in songs:
         words = [(x or "").strip() for _, x in ((lyr.get(t["file"]) or {}).get("lines") or [])]
