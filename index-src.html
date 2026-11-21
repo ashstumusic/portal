@@ -2633,6 +2633,7 @@ if (partyEl) partyEl.classList.toggle('is-soon', !hasLinks);
 // fetched from the site (kit-data, written by build-fast.py) and put into one ZIP right here, which is then saved as
 // "Ash Stu - Press Kit.zip". Songs get a fresh label at the front (ID3 2.3: title, artist, album, track, cover): the sound
 // is the site's file byte for byte. Files are stored, not compressed (MP3s and PNGs do not shrink).
+function kitUrl(p) { return String(p).split('/').map(encodeURIComponent).join('/'); }   // (a site path as a web address, every part encoded in full: a "?" in a song's name must not start a query)
 var _crcT = null;
 function kitCrc(u8, c) {
   if (!_crcT) { _crcT = new Uint32Array(256); for (var n = 0; n < 256; n++) { var x = n; for (var k = 0; k < 8; k++) x = x & 1 ? 0xEDB88320 ^ (x >>> 1) : x >>> 1; _crcT[n] = x >>> 0; } }
@@ -2659,7 +2660,8 @@ function kitSound(u8) {   // the sound inside an MP3, without its old labels (ID
 // save it under its name. -> a Promise of the saved size in bytes. onStep(percent) is told how far it has got.
 function liveZip(files, filename, onStep) {
   var total = files.reduce(function(n, f) { return n + (f.bytes || 0); }, 0) || 1, got = 0, covers = {}, out = new Array(files.length);
-  var get = function(url) { return fetch(encodeURI(url)).then(function(r) { if (!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
+  var get = function(url) { return fetch(kitUrl(url))   /* (each part encoded in full: a "?" in a song's name, as in "Anybody Still Awake?", must not start a query) */
+    .then(function(r) { if (!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
   var cover = function(url) { if (!url) return Promise.resolve(null); if (!covers[url]) covers[url] = get(url); return covers[url]; };
   var i = 0;
   if (onStep) onStep(0);
@@ -2765,20 +2767,29 @@ var facts = '';
 if (latest) facts += '<div class="epk-fact"><dt>Latest release</dt><dd><a href="albums/' + slug(latest.name) + '/">' + escHtml(latest.name) + '</a>' + (latest.date ? ', ' + fullDate(latest.date) : '') + '</dd></div>';
 facts += '<div class="epk-fact"><dt>In the kit</dt><dd>' + escHtml(inKitText) + '</dd></div>';
 if (KIT.updated) facts += '<div class="epk-fact"><dt>Updated</dt><dd><time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></dd></div>';
+// "Listen on": Ash Stu's own page on each service, as in the toolbar (owner's request: Play and Download go below the
+// streaming buttons, like on the music releases)
+var listen = '', seenSvc = {};
+[].slice.call(document.querySelectorAll('.nav .nav-platforms a.nav-platform')).forEach(function(a) {
+  var name = a.getAttribute('title') || '', ico = a.querySelector('.pt'); if (!name || seenSvc[name] || !ico) return; seenSvc[name] = 1;
+  var verb = /youtube$/i.test(name) && !/music/i.test(name) ? 'Watch on ' : 'Listen on ';
+  listen += '<a href="' + escHtml(a.href) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="' + verb + escHtml(name) + ': Ash Stu"><span class="' + escHtml(ico.className) + '" aria-hidden="true"></span> ' + escHtml(name) + '</a>';
+});
+if (listen) listen = '<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-kit">Listen on</span><span class="rel-stores" role="group" aria-labelledby="rel-listen-kit">' + listen + '</span></div>';
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Ash Stu press kit">' +
   '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main"><abbr title="Electronic Press Kit">EPK</abbr><span class="rel-sep"> · </span>Booking and press</span></p><h3 class="rel-name">Ash Stu</h3></div>' +
-  '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<dl class="epk-facts">' + facts + '</dl></div>' +
+  '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<dl class="epk-facts">' + facts + '</dl>' + listen + '</div>' +
   (lead && lead.thumb ? '<div class="rel-art-wrap"><img src="Images/embedded/' + escHtml(lead.thumb) + '" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>' : '') +
   '<div class="rel-btns"><a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" data-kit-zip class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
   '<p class="epk-progress" role="status" aria-live="polite"></p></div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
   '<div class="epk-gallery" role="list" aria-label="Photos in the press kit">' + photos.map(function(f) {
     var meta = f.ext + (f.dims ? ' · ' + f.dims[0] + ' × ' + f.dims[1] : '') + ' · ' + (f.size || f.mb + ' MB');
     return '<div class="epk-shot" role="listitem">' +
-      '<a class="epk-shot-img" href="' + escHtml(encodeURI(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
+      '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
         '<img src="Images/embedded/' + escHtml(f.thumb) + '" alt="" width="481" height="481" loading="lazy" decoding="async"/></a>' +
       '<p class="epk-shot-name">' + escHtml(f.name) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
-      '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(encodeURI(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
+      '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
   tlToggle({ name: 'the Press Kit', tracks: KIT.files }, 'kit').replace(/(\d+) tracks? on the Press Kit/, 'All $1 files in the Press Kit').replace(/>(\d+) tracks?</, '>All $1 files<') +
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
@@ -2818,7 +2829,7 @@ var DL = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox
 var frag = document.createDocumentFragment(), si = 0, grouped = false;
 KIT.files.forEach(function(f, k) {
   var wrap = document.createElement('div'); wrap.className = 'rel-track-wrap';
-  var href = encodeURI(f.src);
+  var href = kitUrl(f.src);
   // (the latest release's files come under a line naming its folder, as they sit in the ZIP)
   if (!grouped && /^(album|cover|albumtext)$/.test(f.type)) {
     grouped = true;
@@ -2836,7 +2847,8 @@ KIT.files.forEach(function(f, k) {
     row.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' +
       '<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
       '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
-      '<span class="rel-track-title">' + escHtml(f.name) + '</span>';   /* (the file's own name, as it is in the ZIP) */
+      '<span class="rel-track-title">' + escHtml(f.name) + '</span>' +   /* (the file's own name, as it is in the ZIP) */
+      (f.from || f.length ? '<span class="epk-from">' + escHtml([f.from ? 'from ' + f.from : '', f.length].filter(Boolean).join(' · ')) + '</span>' : '');   /* (which album, how long: a booker with three minutes picks fast) */
     // (a kit song plays the kit's songs in turn; a song of the latest release plays that release, as on its own card)
     row.addEventListener('click', function() { if (idx >= 0) playKit(idx); else playTrack(f.ri, f.ti); });
     wrap.appendChild(row);

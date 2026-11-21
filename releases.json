@@ -122,12 +122,12 @@
           "bytes": 13266205
         },
         {
-          "path": "Ash Stu - My Anima/Cover.png",
+          "path": "Ash Stu - My Anima/My Anima - Cover.png",
           "src": "Images/Releases/My Anima.png",
           "bytes": 6845855
         },
         {
-          "path": "Ash Stu - My Anima/lyrics.txt",
+          "path": "Ash Stu - My Anima/My Anima - Lyrics.txt",
           "src": "Audio/My Anima/lyrics.txt",
           "bytes": 8443
         }
@@ -317,12 +317,12 @@
           "bytes": 4902999
         },
         {
-          "path": "Ash Stu, Vol. II/Cover.png",
+          "path": "Ash Stu, Vol. II/Ash Stu, Vol. II - Cover.png",
           "src": "Images/Releases/Ash Stu, Vol. II.png",
           "bytes": 839171
         },
         {
-          "path": "Ash Stu, Vol. II/lyrics.txt",
+          "path": "Ash Stu, Vol. II/Ash Stu, Vol. II - Lyrics.txt",
           "src": "Audio/Ash Stu, Vol. II/lyrics.txt",
           "bytes": 10146
         }
@@ -636,12 +636,12 @@
           "bytes": 4439215
         },
         {
-          "path": "Ash Stu, Vol. I/Cover.png",
+          "path": "Ash Stu, Vol. I/Ash Stu, Vol. I - Cover.png",
           "src": "Images/Releases/Ash Stu, Vol. I.png",
           "bytes": 3862570
         },
         {
-          "path": "Ash Stu, Vol. I/lyrics.txt",
+          "path": "Ash Stu, Vol. I/Ash Stu, Vol. I - Lyrics.txt",
           "src": "Audio/Ash Stu, Vol. I/lyrics.txt",
           "bytes": 12011
         }

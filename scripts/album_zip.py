@@ -119,9 +119,9 @@ def live_plan(rel):
     art = rel.get('art') or ''
     png = os.path.splitext(art)[0] + '.png'
     art = png if art and os.path.isfile(os.path.join(ROOT, png)) else art
-    if art and os.path.isfile(os.path.join(ROOT, art)): files.append({'path': folder + 'Cover' + os.path.splitext(art)[1], 'src': art})
+    if art and os.path.isfile(os.path.join(ROOT, art)): files.append({'path': folder + _safe(rel['name'] + ' - Cover') + os.path.splitext(art)[1], 'src': art})   # ("Ash Stu, Vol. II - Cover.png": says what it is, even out of its folder)
     ly = os.path.dirname(tracks[0]['file']) + '/lyrics.txt'
-    if os.path.isfile(os.path.join(ROOT, ly)): files.append({'path': folder + 'lyrics.txt', 'src': ly})
+    if os.path.isfile(os.path.join(ROOT, ly)): files.append({'path': folder + _safe(rel['name'] + ' - Lyrics') + '.txt', 'src': ly})
     for f in files: f['bytes'] = os.path.getsize(os.path.join(ROOT, f['src']))
     return {'name': _safe(base) + '.zip', 'bytes': sum(f['bytes'] for f in files), 'files': files}
 

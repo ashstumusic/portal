@@ -28,31 +28,28 @@ Ash Stu, Vol. I  -  album, November 7, 2025, 16 songs
 IN THIS PRESS KIT
 ----------------------------------------
 
-Songs (MP3):
-  Ash Stu - Dirge for Ducklings.mp3
-  Ash Stu - Still Sad.mp3
-  Ash Stu - Summertime Even on the Moon.mp3
-  Ash Stu - Worship Song.mp3
-  Ash Stu - You Are What You Love.mp3
+Songs folder: a sampler of 5 songs (MP3), with the album each is from and its length:
+  Ash Stu - Dirge for Ducklings.mp3           from Ash Stu, Vol. II (2026), 2:23
+  Ash Stu - Still Sad.mp3                     from My Anima (2026), 3:42
+  Ash Stu - Summertime Even on the Moon.mp3   from Ash Stu, Vol. II (2026), 4:05
+  Ash Stu - Worship Song.mp3                  from My Anima (2026), 2:25
+  Ash Stu - You Are What You Love.mp3         from My Anima (2026), 2:18
 
-Lyrics:
-  Ash Stu - Lyrics.txt
+Ash Stu - Lyrics.txt
+  The words to the 5 songs in the Songs folder.
 
-Photos (PNG):
+Ash Stu - Fact Sheet.txt
+  This file.
+
+Photos folder (PNG):
   Ash Stu - Headshot-1.png
   Ash Stu - Headshot-2.png
   Ash Stu - Headshot-3.png
   Ash Stu - Guitar in Alley (Wide).png
 
-Latest release, Ash Stu, Vol. II (MP3, with its cover and lyrics):
-  01. Cool Cat Can't Comprehend.mp3
-  02. Dirge for Ducklings.mp3
-  03. Savior Complicated.mp3
-  04. Annabel Lena.mp3
-  05. Summertime Even on the Moon.mp3
-  06. Performatives Anonymous.mp3
-  07. Theory of Hope.mp3
-  08. Peacekeepers.mp3
-  09. The Wandering Jerk.mp3
+Latest Release - Ash Stu, Vol. II folder: the whole album as released:
+  9 songs (MP3, numbered in album order, each labelled with the album's cover)
+  Ash Stu, Vol. II - Cover.png   the album cover
+  Ash Stu, Vol. II - Lyrics.txt  the words to all 9 songs (a separate file from Ash Stu - Lyrics.txt above)
 
 Free to use for booking, press and promotion of Ash Stu.
