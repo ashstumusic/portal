@@ -75,6 +75,12 @@ def enc_path(p):
     return p.replace('"', '%22')
 
 
+def full_date(iso):
+    """'2026-06-12' -> 'June 12, 2026'"""
+    y, m, d = iso.split('-')
+    return f"{['January','February','March','April','May','June','July','August','September','October','November','December'][int(m) - 1]} {int(d)}, {y}"
+
+
 def render_release_card(rel, r_idx):
     kind_word = ('Single cover: ' if rel['type'] == 'Single'
                  else 'EP cover: ' if rel['type'] == 'EP'
@@ -114,9 +120,10 @@ def render_release_card(rel, r_idx):
                  'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>') if tracklist else ''
     return (f'<article class="rel-card" aria-label="{esc(rel["name"])} - {esc(rel["type"])} by Ash Stu" '
             f'itemscope itemtype="https://schema.org/MusicAlbum">'
-            f'<div class="rel-info"><p class="rel-cat">{esc(rel["type"])}'
-            + (f'<span class="rel-year"> · <time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
-            f'</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3></div>'
+            f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">{esc(rel["type"])}'
+            + (f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="{rel["date"]}">{full_date(rel["date"])}</time></span>' if rel.get("date")
+               else f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
+            f'</span></p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3></div>'
             + (f'<div class="rel-avail">{status}</div>' if status else '') +
             f'<div class="rel-art-wrap">'
             f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
@@ -143,7 +150,7 @@ def render_video_card(v, v_idx):
     # Laid out like a release card: the type and year and the title on the left with a row of buttons (Play, then
     # YouTube) under them, and the thumbnail on the right with nothing over it. The thumbnail still plays the video
     # when clicked, but the Play button is the control for keyboards and screen readers (the thumbnail is skipped).
-    kicker = 'Video' + (f'<span class="rel-year"> · <time>{v["year"]}</time></span>' if v.get('year') else '')
+    kicker = 'Video' + (f'<span class="rel-year"><span class="rel-sep"> · </span><time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3></div>'
             f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'

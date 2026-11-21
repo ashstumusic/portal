@@ -282,11 +282,11 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="featured-badge" id="featured-badge"><span class="party-dot" aria-hidden="true"></span> Latest Release</span>
     <div class="featured-art-wrap featured-art-hero">
       <img src="Images/embedded/featured-only-a-baby-vol-2.webp" alt="Ash Stu, Vol. II" class="featured-art featured-art-rounded" width="498" height="498" fetchpriority="high"/>
-      <button type="button" class="featured-play-overlay" id="featured-play" aria-label="Play Ash Stu, Vol. II" title="Play Ash Stu, Vol. II"><span class="rel-play-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg></span></button>
     </div>
     <span class="party-eq" aria-hidden="true"><i></i><i></i><i></i><i></i> Now playing</span>   <!-- (shown in the badge's place while playing: CSS order puts it above the cover) -->
     <span class="featured-kicker">Album</span>
     <p class="featured-title">Ash Stu, Vol. II</p>
+    <button type="button" class="f-play" id="featured-play" aria-label="Play Ash Stu, Vol. II" title="Play Ash Stu, Vol. II"><svg class="f-play-ico" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6,3 20,12 6,21"/></svg><span class="btn-word f-play-word" aria-hidden="true">Play</span></button>   <!-- (the featured album's one Play / Pause button: the cover itself plays nothing) -->
     <div class="featured-btns">
     <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: Ash Stu, Vol. II"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>
     <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Spotify: Ash Stu, Vol. II"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Spotify</span></span></a>
@@ -400,6 +400,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/Profile-4-720.webp" srcset="Images/Profile-4-360.webp 360w, Images/Profile-4-720.webp 720w, Images/Profile-4-1000.webp 1000w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu as a kid with his first guitar" width="360" height="480"/></span>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/Profile-6-720.webp" srcset="Images/Profile-6-360.webp 360w, Images/Profile-6-720.webp 720w, Images/Profile-6-1000.webp 1000w" sizes="(max-width: 700px) 46vw, 300px" alt="Ash Stu at the piano" width="360" height="402"/></span>
       </div>
+<div class="bio-side bio-side--l"><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-guitar-door.webp" alt="Ash Stu playing guitar by a wooden door" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-singing.webp" alt="Ash Stu singing on stage" width="481" height="481"/></span></div>
+<div class="bio-side bio-side--r"><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing at the keyboard" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano on stage" width="481" height="481"/></span><span class="bio-side-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu in a studio session" width="481" height="481"/></span></div>
     </div>
   </div>
 </section>
@@ -1869,7 +1871,7 @@ var card = svg.closest('.rel-card');
 if (card) card.classList.add('now-playing');
 }
 });
-var fp = document.querySelector('#featured-play .rel-play-circle svg');
+var fp = document.querySelector('#featured-play .f-play-ico');
 if (fp) {
 var fpPlaying = pState.releaseIdx === FEATURED_IDX && !npAudio.paused;
 var party = document.getElementById('party');
@@ -1877,8 +1879,9 @@ if (party) {
 /* (No confetti burst on play; the featured panel's own confetti and fireworks keep going.) */
 party.classList.toggle('is-playing', fpPlaying);
 }
-fp.innerHTML = fpPlaying ? PAUSE : PLAY;
-fp.style.marginLeft = fpPlaying ? '0' : '3px';
+fp.innerHTML = fpPlaying ? '<rect x="6" y="4" width="4.2" height="16" rx="1.2"/><rect x="13.8" y="4" width="4.2" height="16" rx="1.2"/>' : '<polygon points="6,3 20,12 6,21"/>';
+var fpBtn = fp.closest('button'), fpName = (RELEASE_LIST[FEATURED_IDX] || {}).name || '';
+if (fpBtn) { fpBtn.setAttribute('aria-label', (fpPlaying ? 'Pause ' : 'Play ') + fpName); fpBtn.title = (fpPlaying ? 'Pause ' : 'Play ') + fpName; var fw = fpBtn.querySelector('.f-play-word'); if (fw) fw.textContent = fpPlaying ? 'Pause' : 'Play'; }
 }
 }
 function setTracklist(rIdx, autoPlay) {
@@ -1937,14 +1940,14 @@ overlay.className = 'rel-play-overlay';
 // aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
 overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-// PATTERN (whole card plays): a click anywhere on an album card that isn't one of its own buttons, links or track
-// list plays or pauses it (below). Play leads the card's row of buttons and is the real Play/Pause control for the
-// keyboard and screen readers; pointing anywhere on the card lights it up, to show what a click will do.
+// PATTERN (card opens its tracks): a click anywhere on an album card that isn't one of its own buttons, links or
+// track list shows or hides the track list, like its Tracks bar (below). Only the Play button plays and pauses.
 var _rb = card.querySelector('.rel-btns'); if (_rb) _rb.insertBefore(overlay, _rb.firstChild); else wrap.appendChild(overlay);
 card.addEventListener('click', function(e) {
   if (e.target.closest('a, button, input, select, textarea, summary, details, .rel-tracklist, .rel-single-lyrics')) return;
-  var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't start the music)
-  toggleRelease(rIdx);
+  var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't open the list)
+  // (owner's request: a click on the card shows or hides its track list - it never plays; only the Play button plays and pauses)
+  if (card.querySelector('.rel-tl-toggle')) setTracklist(rIdx, false);
 });
 _discCache[rIdx] = overlay.querySelector('svg');
 // (the disc is no longer inside the cover, so a press of the disc button itself - keyboard, screen reader, or a click
@@ -2513,6 +2516,8 @@ return '<button type="button" class="rel-tl-toggle" aria-expanded="false" aria-c
 '<span class="rel-tl-more" aria-hidden="true"><svg class="rel-tl-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="rel-tl-word rel-tl-word--show">Show</span><span class="rel-tl-word rel-tl-word--hide">Hide</span></span></button>';
 }
 var SOON_ICON = '<svg class="soon-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+// "2026-06-12" -> "June 12, 2026" (read as a calendar date, never shifted by the visitor's time zone)
+function fullDate(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); if (!m) return ''; return ['January','February','March','April','May','June','July','August','September','October','November','December'][+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1]; }
 function renderReleaseCard(rel, rIdx) {
 var kindWord = rel.type === 'Single' ? 'Single cover: ' : rel.type === 'EP' ? 'EP cover: ' : 'Album cover: ';
 var btns = '';
@@ -2529,8 +2534,7 @@ if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank"
 var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
 if (listen) status += '<p class="rel-listen"><span class="rel-listen-label">Listen on</span>' + listen + '</p>';
 // Download: a plain link to the release's ready-made ZIP (rel.zip, see scripts/album_zip.py), so the browser itself does the download.
-// It sits in the card's Tracks bar ("9 tracks ... Show | Download"): the album's utility strip, beside the tracks it
-// downloads, leaving Play as the card's one main button. A release without a Tracks bar keeps it beside Play.
+// It sits beside Play, in the card's action row under "Listen on" (owner's request).
 var dl = '';
 if (rel.zip && rel.zip.url && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + Math.round(rel.zip.bytes / 1048576) + ' MB)';
 dl = '<a href="' + escHtml(rel.zip.url) + '" download class="rel-btn rel-dl" data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
@@ -2538,13 +2542,13 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat">' + escHtml(rel.type) + (rel.year ? '<span class="rel-year"> · <time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
+'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span></p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
 '</div>' +
-'<div class="rel-btns">' + btns + (tracklist ? '' : dl) + '</div>' +
-(tracklist ? tlToggle(rel, rIdx) + dl.replace('class="rel-btn rel-dl"', 'class="rel-btn rel-dl rel-bar-dl"') : '') +
+'<div class="rel-btns">' + btns + dl + '</div>' +
+(tracklist ? tlToggle(rel, rIdx) : '') +
 tracklist +
 '</article>';
 }
@@ -2560,7 +2564,7 @@ var thumbEl = v.thumb
 // keyboard nav) - .vid-card wraps only the thumbnail (the "play"
 // target), .vid-info sits beside it as a plain sibling row.
 return '<div class="vid-card-wrap">' +
-'<div class="vid-info"><p class="rel-cat vid-cat">Video' + (v.year ? '<span class="rel-year"> · <time>' + escHtml(String(v.year)) + '</time></span>' : '') + '</p><h3 class="vid-title">' + escHtml(v.title) + '</h3></div>' +
+'<div class="vid-info"><p class="rel-cat vid-cat">Video' + (v.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time>' + escHtml(String(v.year)) + '</time></span>' : '') + '</p><h3 class="vid-title">' + escHtml(v.title) + '</h3></div>' +
 '<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="' + vIdx + '"><span class="vid-thumb">' + thumbEl + '</span></button>' +
 '<div class="vid-btns"><button type="button" class="vid-yt vid-play" data-video-index="' + vIdx + '" aria-label="Play &quot;' + escHtml(v.title) + '&quot;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button>' + ytBtn + '</div>' +
 '</div>';
@@ -3268,15 +3272,23 @@ var cs=getComputedStyle(head),inner=head.clientWidth-parseFloat(cs.paddingLeft)-
 // and stays at least 17px so it can be read.
 var hs=document.querySelector('.section-h'),cap=2*parseFloat(getComputedStyle(hs||head).fontSize)||96;
 var nn=nat(name),nt=nat(tag);
-var f1=Math.min(inner*.98/nn,cap),f2=Math.min(inner*.95/nt,Math.max(17,f1*nn*.97/nt));
-setSize(top,f1);setSize(bot,f2);
 var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
+var f1,f2;
+if(!side&&media&&media.offsetWidth){
+  // Stacked under the photos (owner's request: balanced): the lettering is set in proportion to the photo column above
+  // it - "Ash Stu" about 78% of its width, the tagline 88% of the name's width (a gentle taper: name, duck line,
+  // tagline), and the description no wider than the name, so the words read as one centred column under the photos.
+  var col=Math.min(text.clientWidth||media.offsetWidth,media.offsetWidth);   // (the photo column - not the name's own box, which shrinks to fit the name)
+  f1=Math.min(col*.78/nn,cap*1.4);f2=Math.max(17,f1*nn*.88/nt);
+  var rest0=text.querySelector('.bio-rest');if(rest0){rest0.style.setProperty('max-width',Math.round(Math.max(280,f1*nn))+'px');}
+}else{f1=Math.min(inner*.98/nn,cap);f2=Math.min(inner*.95/nt,Math.max(17,f1*nn*.97/nt));}
+setSize(top,f1);setSize(bot,f2);
 if(side&&media){var rest=text.querySelector('.bio-rest'),avail=media.offsetHeight-(rest?rest.offsetHeight:0)-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
 for(var k=0;k<4;k++){var gap=parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop),used=top.offsetHeight+bot.offsetHeight+gap;
 if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
 // the wavy line under the name is as wide as the name (it spanned the whole panel), and a little thinner when shorter
 var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name);var sw=rn.getBoundingClientRect().width;
-if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(26,Math.min(50,sw*.08)))+'px');}}
+if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(26,Math.min(64,sw*.12)))+'px');}}
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
 }

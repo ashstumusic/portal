@@ -209,6 +209,8 @@ def gen_releases():
             # The year shown beside the release type ("Album · 2026"): links.txt "year: YYYY" if given, else the
             # year of its "date:" line. Left out when neither is set (no guessing from file history).
             **({'year': _release_year(links)} if _release_year(links) else {}),
+            # The full release date (links.txt "date: YYYY-MM-DD"), shown on the card as "June 12, 2026".
+            **({'date': links['date'].strip()} if re.match(r'^\d{4}-\d{2}-\d{2}$', (links.get('date') or '').strip()) else {}),
             'apple': links.get('apple'),
             # links.txt "soon: yes": show the "Distributing soon" tag even
             # though some streaming links exist (more services coming).

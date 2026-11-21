@@ -6,6 +6,7 @@
     "art2x": "Images/Releases/My Anima-800.webp",
     "tint": "#a7774f",
     "year": 2026,
+    "date": "2026-11-07",
     "apple": null,
     "spotify": null,
     "tracks": [
@@ -77,6 +78,7 @@
     "art2x": "Images/Releases/Ash Stu, Vol. II-800.webp",
     "tint": "#917c6d",
     "year": 2026,
+    "date": "2026-06-12",
     "apple": "https://music.apple.com/us/album/only-a-baby-vol-2/6779983161",
     "spotify": "https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P",
     "ytmusic": "https://music.youtube.com/playlist?list=OLAK5uy_k4na-IL3J82IGDfGJKtT4O3FHt3xTZm5E",
@@ -142,6 +144,7 @@
     "art2x": "Images/Releases/Ash Stu, Vol. I-800.webp",
     "tint": "#744838",
     "year": 2025,
+    "date": "2025-11-07",
     "apple": null,
     "soon": true,
     "spotify": null,
