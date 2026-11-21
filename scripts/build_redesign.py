@@ -330,7 +330,7 @@ def press_photos():
 def footer():
     links = ''.join(f'<li><a href="{esc(u)}">Ash Stu on {esc(n)}</a></li>' for n, u in profiles.items())
     year = datetime.date.today().year
-    logo = f'<img src="{rel_url(ARTIST["logo"])}" alt="{esc(alt_for(ARTIST["logo"]))}" width="56" height="56" loading="lazy">'
+    logo = (f'<img src="{rel_url(ARTIST["logo"])}" alt="{esc(alt_for(ARTIST["logo"]))}" width="56" height="56" loading="lazy">' if ARTIST.get("logo") else '')   # (the logo was taken off the site)
     return (logo + '\n  ' + f'<ul class="footer-links" role="list" aria-label="Ash Stu on other sites">{links}</ul>\n'
             f'  <p class="fine-print">© {year} Ash Stu</p>')
 
@@ -369,7 +369,7 @@ def jsonld():
             'description': ARTIST['description'], 'url': SITE,
             'genre': ARTIST['genres'],
             'image': {'@id': SITE + '#portrait'},
-            'logo': abs_url(ARTIST['logo']),
+            **({'logo': abs_url(ARTIST['logo'])} if ARTIST.get('logo') else {}),
             'foundingLocation': place, 'location': place,
             'member': {'@type': 'Person', '@id': SITE + '#person', 'name': ARTIST['legal_name'],
                        'alternateName': ARTIST['name'], 'homeLocation': place},

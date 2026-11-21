@@ -358,7 +358,7 @@ def _kit_texts():
     fs += ["", "", "IN THIS PRESS KIT", "-" * 40, "",
            "Songs (MP3):", *["  " + os.path.basename(f) for f in _songs], "",
            "Lyrics:", "  Ash Stu - Lyrics.txt", "",
-           "Photos and logo (PNG):", *["  " + f for f in _photos], "",
+           "Photos (PNG):", *["  " + f for f in _photos], "",
            "Free to use for booking, press and promotion of Ash Stu.", ""]
     texts["Ash Stu - Fact Sheet.txt"] = fs
     want = {(_top + k): ("\r\n".join(v)).encode("utf-8-sig") for k, v in texts.items()}   # (the mark at the start tells every browser and editor it is UTF-8)
@@ -390,8 +390,7 @@ html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
 import zipfile as _zf, json as _json
 _kitdata = {"bytes": 0, "files": []}
 _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=3",
-              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
-              "Ash Stu - Logo.png": "epk-ash-stu-logo.webp"}
+              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp"}
 if os.path.exists(_kit):
     _z = _zf.ZipFile(_kit)
     _files = [i for i in _z.infolist() if not i.is_dir() and not os.path.basename(i.filename).startswith(".")]

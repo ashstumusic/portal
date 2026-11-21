@@ -82,7 +82,6 @@
 
 * `hero-bg.webp`
 * `social-card.png`
-* `Icon.png` / `.webp`
 * `Cat.png` / `.webp`
 * `Cat_pop.webp`
 * `Cat_solo.png`

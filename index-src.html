@@ -220,8 +220,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
        (its children sit in the toolbar as before); on phones it is one row you can slide sideways. -->
   <div class="nav-rail">
   <ul class="nav-links" role="list">
-    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg><span>Press Kit</span></a></li>
-    <li><a href="#contact"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Contact</span></a></li>
+    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Press &amp; Contact</span></a></li>
     <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Music</span></a></li>
     <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
   </ul>
@@ -263,8 +262,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" aria-label="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" aria-label="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span></a>
   </div>
-  <a href="#epk">Press Kit</a>
-  <a href="#contact">Contact</a>
+  <a href="#epk">Press &amp; Contact</a>
   <a href="#music">Music</a>
   <a href="#videos">Videos</a>
   <button type="button" class="drawer-search k-search-btn" aria-label="Search songs, videos, sections and actions" aria-haspopup="dialog"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
@@ -304,7 +302,15 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h">
   <div class="epk-body">
-    <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg>Press Kit</h2>
+    <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>Press &amp; Contact</h2>
+    <!-- (owner's request: "combine press kit and contact into one section". The contact line keeps id="contact", so /contact/ and #contact links still land here.) -->
+  <div class="contact-inner" id="contact">
+    <p class="contact-intro">For shows, press, or anything – message directly.</p>
+    <a href="mailto:ashstumusic@gmail.com" class="contact-email-link" aria-label="Email Ash Stu: ashstumusic@gmail.com">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      ashstumusic@gmail.com
+    </a>
+  </div>
     <p class="epk-text">Songs and photos <br/>for booking and press.</p>
     <a href="ash-stu-press-kit.zip" download="Ash Stu - Press Kit.zip" class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit (ZIP file, __KIT_MB__ MB)" aria-label="Download Press Kit (ZIP file, __KIT_MB__ MB)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -325,18 +331,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
        from the ZIP itself, so it always matches the download; renderPressKit() below draws the card. -->
   <div class="epk-card-slot" id="epk-card"></div>
   <script type="application/json" id="kit-data">__KIT_JSON__</script>
-</section>
-<section class="section contact-section" id="contact" aria-labelledby="contact-h">
-  <h2 class="section-h" id="contact-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>Contact</h2>
-  <div class="section-inner">
-    <div class="contact-inner">
-      <p class="contact-intro">For shows, press, or anything – message directly.</p>
-      <a href="mailto:ashstumusic@gmail.com" class="contact-email-link" aria-label="Email Ash Stu: ashstumusic@gmail.com">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        ashstumusic@gmail.com
-      </a>
-    </div>
-  </div>
 </section>
 <section class="section releases-section" id="music" aria-labelledby="music-h">
   <h2 class="section-h" id="music-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Music</h2>
@@ -600,7 +594,7 @@ if (e.key === 'ArrowRight') lbNav(1);
 }
 });
 (function() {
-const ids = ['epk','contact','music','videos'];
+const ids = ['epk','music','videos'];   /* (Contact is part of Press & Contact, id epk) */
 const links = {};
 ids.forEach(id => { links[id] = document.querySelector(`.nav-links a[href="#${id}"]`); });
 const nav = document.querySelector('.nav');
@@ -612,7 +606,7 @@ let offsets = [], ticking = false, heroH = 400, aboutTop = 0, _picked = '';
 ids.forEach(id => { if (links[id]) links[id].addEventListener('click', () => { _picked = id; }); });
 // Arriving at a section (a section page such as /contact/, or an address ending #contact) counts as picking it, so
 // its link is the lit one: Press Kit and Contact are short, and by position alone the next section was lit instead.
-(function() { var dm = document.querySelector('meta[name="deep-section"]'), start = (dm && dm.content) || location.hash.slice(1); if (ids.indexOf(start) >= 0) _picked = start; })();
+(function() { var dm = document.querySelector('meta[name="deep-section"]'), start = (dm && dm.content) || location.hash.slice(1); if (start === 'contact') start = 'epk'; if (ids.indexOf(start) >= 0) _picked = start; })();
 ['wheel', 'touchmove', 'keydown'].forEach(ev => window.addEventListener(ev, () => { _picked = ''; }, { passive: true }));
 function cacheOffsets() {
 offsets = ids.map(id => ({ id, top: (document.getElementById(id) || {}).offsetTop || 0 }));
@@ -768,6 +762,7 @@ if (!rel || !rel.art || !rel.art2x) return '';
 return ' srcset="' + escHtml(encodeURI(rel.art)) + ' 504w, ' + escHtml(encodeURI(rel.art2x)) + ' 800w" sizes="' + sizes + '"';
 }
 function npGetArt() {
+if (pState.kit) return 'Images/embedded/epk-ash-stu-stairs.webp';   /* (the press kit's songs all wear Headshot-1, as in the ZIP) */
 if (pState.releaseIdx >= 0 && RELEASE_LIST[pState.releaseIdx]) return RELEASE_LIST[pState.releaseIdx].art;
 return '';
 }
@@ -1078,7 +1073,7 @@ if (pState.shuffle) { _npHist.push(pState.plIdx); if (_npHist.length > 60) _npHi
 pState.plIdx = nextIdx;
 var item = pState.playlist[nextIdx];
 var rel = RELEASE_LIST[item.releaseIdx];
-npLoad(item.title, rel ? rel.name : '', item.file, true);
+npLoad(item.title, pState.kit ? 'Press Kit' : (rel ? rel.name : ''), item.file, true);
 updatePlayUI();
 }
 function npPrev() {
@@ -1098,7 +1093,7 @@ var prevIdx = (pState.shuffle && _npBagFor === pState.playlist && _npHist.length
 pState.plIdx = prevIdx;
 var item = pState.playlist[prevIdx];
 var rel = RELEASE_LIST[item.releaseIdx];
-npLoad(item.title, rel ? rel.name : '', item.file, true);
+npLoad(item.title, pState.kit ? 'Press Kit' : (rel ? rel.name : ''), item.file, true);
 updatePlayUI();
 }
 // Shuffle/repeat buttons (bar and full-screen player): class and
@@ -2167,7 +2162,8 @@ if (!_lbOpen) openLightbox(v);
    line when its font arrives), unless the visitor has moved in the meantime. */
 (function() {
   var m = document.querySelector('meta[name="deep-section"]');
-  var t = m && m.content && document.getElementById(m.content);
+  var t = (m && m.content && document.getElementById(m.content)) || (location.hash === '#contact' ? document.getElementById('contact') : null);   /* (#contact: the contact line inside Press & Contact; land on the section's heading) */
+  if (t && t.closest('section')) t = t.closest('section');   /* (/contact/ names the contact line, inside Press & Contact: land on the section) */
   if (!t) return;
   var moved = false;
   ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function(ev) { addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
@@ -2674,7 +2670,6 @@ if (nLogo) inKit.push('the logo');
 var inKitText = inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0];
 var facts = '';
 if (latest) facts += '<div class="epk-fact"><dt>Latest release</dt><dd><a href="albums/' + slug(latest.name) + '/">' + escHtml(latest.name) + '</a>' + (latest.date ? ', ' + fullDate(latest.date) : '') + '</dd></div>';
-if (F.email) facts += '<div class="epk-fact"><dt>Booking and press</dt><dd><a href="mailto:' + escHtml(F.email) + '">' + escHtml(F.email) + '</a></dd></div>';
 facts += '<div class="epk-fact"><dt>In the kit</dt><dd>' + escHtml(inKitText) + '</dd></div>';
 if (KIT.updated) facts += '<div class="epk-fact"><dt>Updated</dt><dd><time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></dd></div>';
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
@@ -2683,7 +2678,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<dl class="epk-facts">' + facts + '</dl></div>' +
   (lead && lead.thumb ? '<div class="rel-art-wrap"><img src="Images/embedded/' + escHtml(lead.thumb) + '" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>' : '') +
   '<div class="rel-btns"><a href="ash-stu-press-kit.zip" download="Ash Stu - Press Kit.zip" class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
-  (F.email ? '<a href="mailto:' + escHtml(F.email) + '" class="rel-btn rel-dl epk-mail" aria-label="Email ' + escHtml(F.email) + ' for booking or press" title="Email ' + escHtml(F.email) + '">' + MAIL + '</a>' : '') + '</div>' +
+  '</div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
   '<div class="epk-gallery" role="list" aria-label="Photos in the press kit">' + photos.map(function(f) {
     var meta = f.ext + (f.dims ? ' · ' + f.dims[0] + ' × ' + f.dims[1] : '') + ' · ' + (f.size || f.mb + ' MB');
     return '<div class="epk-shot" role="listitem">' +
@@ -2701,7 +2696,7 @@ var overlay = document.createElement('button');
 overlay.type = 'button'; overlay.className = 'rel-play-overlay';
 overlay.setAttribute('aria-label', 'Play the ' + nSongs + ' songs in the press kit'); overlay.dataset.rel = 'the ' + nSongs + ' songs in the press kit';
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-card.querySelector('.rel-btns').insertBefore(overlay, card.querySelector('.epk-mail'));
+card.querySelector('.rel-btns').appendChild(overlay);
 _discCache.kit = overlay.querySelector('svg');
 function playKit(i) {
   if (!songs.length) return;
@@ -3525,7 +3520,7 @@ var P='Images/embedded/';
 // written from the ZIP by build-fast.py). Photos show the site's small copy; songs show their album's cover.
 var COVER={'Ash Stu, Vol. II':'Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp','My Anima':'Images/Releases/My%20Anima.webp'};
 var ALBUM={'Dirge for Ducklings':'Ash Stu, Vol. II','Summertime Even on the Moon':'Ash Stu, Vol. II','Still Sad':'My Anima','Worship Song':'My Anima','You Are What You Love':'My Anima'};
-var ALT={'Ash Stu - Headshot-1.png':'Ash Stu smiling on an outdoor staircase','Ash Stu - Headshot-2.png':'Ash Stu singing into a microphone on stage','Ash Stu - Headshot-3.png':'Ash Stu playing guitar by a wooden door','Ash Stu - Guitar in Alley (Wide).png':'Ash Stu with his guitar in an alley','Ash Stu - Logo.png':'Ash Stu logo: an embroidered daffodil patch'};
+var ALT={'Ash Stu - Headshot-1.png':'Ash Stu smiling on an outdoor staircase','Ash Stu - Headshot-2.png':'Ash Stu singing into a microphone on stage','Ash Stu - Headshot-3.png':'Ash Stu playing guitar by a wooden door','Ash Stu - Guitar in Alley (Wide).png':'Ash Stu with his guitar in an alley'};
 var _kd=null;try{_kd=JSON.parse(document.getElementById('kit-data').textContent);}catch(e){}
 var items=[];
 ((_kd&&_kd.files)||[]).forEach(function(f){
