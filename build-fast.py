@@ -313,6 +313,8 @@ print(f"Wrote {p_out}: {len(_p)//1024}KB")
 KIT_DIR = os.path.join(ROOT, "Images", "press-kit")
 KIT_TOP = "Ash Stu - Press Kit/"
 KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", "Worship Song", "You Are What You Love"]
+KIT_PHOTO_ORDER = ["Ash Stu - Headshot-1.png", "Ash Stu - Headshot-2.png", "Ash Stu - Live at the Keyboard (Wide).png",
+                   "Ash Stu - Headshot-3.png", "Ash Stu - Guitar in Alley (Wide).png"]   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
 KIT_SONG_COVER = "Images/embedded/kit-song-cover.jpg"   # (Headshot-1 as a JPEG: the picture music apps show for the kit's songs)
 # The artist's facts, as the site states them (About section, contact line). One place to change them: the Fact Sheet
 # and the press kit card are both written from here.
@@ -357,7 +359,7 @@ def _press_kit():
         files.append({"path": KIT_TOP + "Songs/" + t["title"] + " - " + r["name"] + ".mp3", "src": t["file"], "type": "song", "title": t["title"],   # ("its name - the album it's from", as listed on the page)
                       "ri": ri, "ti": ti, "from": r["name"] + (" (" + year_of(r) + ")" if year_of(r) else ""), "length": length(t["file"]), "tag": {"title": t["title"], "album": "Ash Stu - Press Kit", "track": f"{k}/{len(songs)}", "cover": KIT_SONG_COVER}})
     photos = sorted((f for f in os.listdir(KIT_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg"))),
-                    key=lambda n: (0 if "headshot" in n.lower() and "(wide)" not in n.lower() else 1, n.lower()))   # (the headshots, then the wide shots)
+                    key=lambda n: (KIT_PHOTO_ORDER.index(n) if n in KIT_PHOTO_ORDER else len(KIT_PHOTO_ORDER), n.lower()))   # (the owner's order; any new photo after them)
     # the two text files
     lines = ["ASH STU - LYRICS", "", "The words to the " + str(len(songs)) + " songs in the Songs folder of this press kit, in its order."]
     lines += [""]
