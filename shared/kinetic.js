@@ -493,7 +493,7 @@
       + '<div class="k-menu-settings" id="k-menu-settings-group" role="group" aria-labelledby="k-menu-settings"' + (fold && !setsOpen ? ' hidden' : '') + '>' + sets.map((it, i) => `<button type="button" class="settings-row" role="switch" aria-checked="${it.on ? 'true' : 'false'}" data-set="${i}" aria-labelledby="k-set-l${i}"${it.sub ? ` aria-describedby="k-set-d${i}"` : ''}><span class="settings-text"><span class="settings-label" id="k-set-l${i}">${escHtml(it.label || it.title)}</span>${it.sub ? `<span class="settings-sub" id="k-set-d${i}">${escHtml(it.sub)}</span>` : ''}</span><span class="settings-switch" aria-hidden="true"><span class="settings-knob"></span></span><span class="settings-state" aria-hidden="true">${it.on ? 'On' : 'Off'}</span></button>`).join('') + '</div>';
     menuBox.innerHTML = h; menuBox.classList.remove('searching');
     makeSearch($('.k-si', menuBox), { flow: true, onQuery: (has) => menuBox.classList.toggle('searching', has), beforeRun: () => closePalette(false) });
-    { const f = $('.k-si-input', menuBox); if (f) f.placeholder = 'Search songs, lyrics'; }   // the field shares its line with Close: a hint short enough to show whole
+    // (the menu's search field has its own full-width line now, so it keeps the same hint as the toolbar's: "Search songs, lyrics, videos")
     if (keep != null) $$('.settings-row', menuBox)[keep]?.focus({ preventScroll: true });
   }
   function setMode(m) {
