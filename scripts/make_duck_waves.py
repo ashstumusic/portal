@@ -139,20 +139,26 @@ SOUP = [(452, 'A', 16, -6), (496, 'S', 14, 8), (540, 'H', 15, -5),      # ASH ..
         (660, 'S', 14, 9), (704, 'T', 15, -8), (748, 'U', 15, 6)]           # with a gap between the words just wide enough for
                                                                            # the duck, which rests there when motion is off;
                                                                            # all within the part of the line a phone shows
-groups = []
+groups, lgroups = [], []
 for f in range(FRAMES):
     pts = [(x, water_y(x, f)) for x in range(0, W + 1, 3)]
     strokes = [pencil(pts, rng, w=3.4, amp=.12, step=3, lift=.02, res=7)]
+    letters = []
     for k, (lx, ch, size, lean) in enumerate(SOUP):
         # each letter rides the wave where it floats, bobbing with it from drawing to drawing, sunk a little into the
         # soup (the line runs across its lower part) and rocking a few degrees as it bobs
         wy = water_y(lx, f); rot = math.radians(lean + 5 * math.sin(f * 1.7 + k)); bw = size * (.62 if ch in 'TI' else .74)
         place = lambda pts: [(lx + (px - .5) * bw * math.cos(rot) - (py - .8) * size * math.sin(rot), wy + (px - .5) * bw * math.sin(rot) + (py - .8) * size * math.cos(rot)) for px, py in pts]
-        strokes += [pencil(place(resample(st, .06)), rng, w=2.9, amp=.08, step=1.1, lift=.2, res=1.8) for st in LETTERS[ch]]
+        letters += [pencil(place(resample(st, .06)), rng, w=2.9, amp=.08, step=1.1, lift=.2, res=1.8) for st in LETTERS[ch]]
     groups.append(f'<path transform="translate(0 {f * H})" d="{" ".join(strokes)}"/>')
-open(os.path.join(IMG, 'pool-waves.svg'), 'w').write(
-    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H * FRAMES}" width="{W}" height="{H * FRAMES}">'
-    f'<g fill="#fff" stroke="none">{"".join(groups)}</g></svg>\n')
+    lgroups.append(f'<path transform="translate(0 {f * H})" d="{" ".join(letters)}"/>')
+# The water line and the letters are two drawings (owner's request: the duck swims behind the letters on the far half of
+# each loop of its figure 8, and in front of them on the near half), laid one over the other in the same frame grid:
+#   Images/pool-waves.svg   the line of waves         Images/soup-letters.svg   the letters ASH ... STU
+for name, gs in (('pool-waves.svg', groups), ('soup-letters.svg', lgroups)):
+    open(os.path.join(IMG, name), 'w').write(
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H * FRAMES}" width="{W}" height="{H * FRAMES}">'
+        f'<g fill="#fff" stroke="none">{"".join(gs)}</g></svg>\n')
 
 # ── the duck ── (duck space: waterline y=0; only what's above the water is drawn)
 # Five poses, drawn like a Disney flipbook turn rather than a flat card spinning: side on (facing right),
@@ -299,5 +305,12 @@ for i in range(N):
     sc, dy = 1 - .28 * z, -7 * z
     sx = -sc if left else sc
     out.append(f'  {100 * i / N:.4g}% {{ left: {x:.2f}%; transform: translate(-50%, {dy:.1f}px) scale({sx:.3f}, {sc:.3f}); background-position-y: {row * 25}%; }}')
+out.append('}')
+# which side of the letters the duck is on, step by step with the swim: on the far half of a loop (z > 0) the letters
+# are drawn over it (z-index 3), on the near half under it (1); the duck itself is at 2
+out.append('@keyframes duck-depth {')
+for i in range(N):
+    th = 2 * math.pi * i / N
+    out.append(f'  {100 * i / N:.4g}% {{ z-index: {3 if math.sin(2 * th) > 0 else 1}; }}')
 out.append('}')
 print('\n'.join(out))

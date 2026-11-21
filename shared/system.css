@@ -2617,18 +2617,18 @@ html { overscroll-behavior-y: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { content: ""; position: absolute; pointer-events: none; }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before {
   inset: 0; background: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) 0 50% / 200% 100% repeat-x;
-  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
-  mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
+  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=7') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
+  mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/pool-waves.svg?v=7') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
 }
 :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after {
   top: 0; height: 100%; aspect-ratio: 2; left: 50%; transform: translate(-50%, 0);
   background: url('Images/rubber-duck.svg') 0 0 / 400% 500% no-repeat;
   -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat; mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat;
 }
-:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
+:root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { -webkit-mask: url('Images/pool-waves.svg?v=7') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/pool-waves.svg?v=7') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
 :root.psy.no-hatch #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
 @media (forced-colors: active) {
-  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat; mask: url('Images/pool-waves.svg?v=6') 50% 0 / auto 400% no-repeat; }
+  :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before { background: CanvasText; -webkit-mask: url('Images/pool-waves.svg?v=7') 50% 0 / auto 400% no-repeat; mask: url('Images/pool-waves.svg?v=7') 50% 0 / auto 400% no-repeat; }
   :root.psy #about .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { -webkit-mask: none; mask: none; }
 }
 @keyframes pencil-boil-line {
@@ -6140,3 +6140,146 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .auto-credit:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { bottom: 8px; right: 8px; font-size: 10.5px; padding: 3px 7px; pointer-events: auto; }
 :root.psy span.auto-credit:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: none; }
 :root.psy #epk .epk-shot-img:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; }
+
+/* The duck weaves through the alphabet soup (owner's request): the letters ASH ... STU are their own layer
+   (Images/soup-letters.svg, drawn by scripts/make_duck_waves.py in the water's frame grid), styled like the water line.
+   On the far half of each loop of the figure 8 they are drawn over the duck, so it swims behind them; on the near half
+   under it, so it swims in front (duck-depth, stepped with the swim). Order: water 0, letters 1 or 3, duck 2, tune 4. */
+:root.psy #about .bio-stroke::before:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { z-index: 0; }
+:root.psy #about .bio-stroke::after:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { z-index: 2; }
+:root.psy #about .bio-stroke .duck-notes:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { z-index: 4; }
+:root.psy #about .bio-stroke .duck-letters:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(100deg, #8F6400 0%, #B0145E 25%, #A8400A 50%, #0B6A8C 75%, #8F6400 100%) 0 50% / 200% 100% repeat-x;
+  -webkit-mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/soup-letters.svg?v=1') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in, source-in;
+  mask: url('Images/pencil-hatch.webp') .3em .1em / 3em 1.5em repeat, url('Images/soup-letters.svg?v=1') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect, intersect;
+}
+:root.psy.no-hatch #about .bio-stroke .duck-letters:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { -webkit-mask: url('Images/soup-letters.svg?v=1') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in; mask: url('Images/soup-letters.svg?v=1') 50% 0 / auto 400% no-repeat, linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
+@media (forced-colors: active) { :root.psy #about .bio-stroke .duck-letters:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: CanvasText; -webkit-mask: url('Images/soup-letters.svg?v=1') 50% 0 / auto 400% no-repeat; mask: url('Images/soup-letters.svg?v=1') 50% 0 / auto 400% no-repeat; forced-color-adjust: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root.psy:not(.psy-calm) #about .bio-stroke .duck-letters:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-flow 9s steps(54, end) infinite, pencil-boil-line .6667s step-end infinite, duck-depth 16s step-end infinite; }
+}
+@keyframes duck-depth {
+  0% { z-index: 1; }
+  1.042% { z-index: 3; }
+  2.083% { z-index: 3; }
+  3.125% { z-index: 3; }
+  4.167% { z-index: 3; }
+  5.208% { z-index: 3; }
+  6.25% { z-index: 3; }
+  7.292% { z-index: 3; }
+  8.333% { z-index: 3; }
+  9.375% { z-index: 3; }
+  10.42% { z-index: 3; }
+  11.46% { z-index: 3; }
+  12.5% { z-index: 3; }
+  13.54% { z-index: 3; }
+  14.58% { z-index: 3; }
+  15.62% { z-index: 3; }
+  16.67% { z-index: 3; }
+  17.71% { z-index: 3; }
+  18.75% { z-index: 3; }
+  19.79% { z-index: 3; }
+  20.83% { z-index: 3; }
+  21.88% { z-index: 3; }
+  22.92% { z-index: 3; }
+  23.96% { z-index: 3; }
+  25% { z-index: 3; }
+  26.04% { z-index: 1; }
+  27.08% { z-index: 1; }
+  28.12% { z-index: 1; }
+  29.17% { z-index: 1; }
+  30.21% { z-index: 1; }
+  31.25% { z-index: 1; }
+  32.29% { z-index: 1; }
+  33.33% { z-index: 1; }
+  34.38% { z-index: 1; }
+  35.42% { z-index: 1; }
+  36.46% { z-index: 1; }
+  37.5% { z-index: 1; }
+  38.54% { z-index: 1; }
+  39.58% { z-index: 1; }
+  40.62% { z-index: 1; }
+  41.67% { z-index: 1; }
+  42.71% { z-index: 1; }
+  43.75% { z-index: 1; }
+  44.79% { z-index: 1; }
+  45.83% { z-index: 1; }
+  46.88% { z-index: 1; }
+  47.92% { z-index: 1; }
+  48.96% { z-index: 1; }
+  50% { z-index: 1; }
+  51.04% { z-index: 3; }
+  52.08% { z-index: 3; }
+  53.12% { z-index: 3; }
+  54.17% { z-index: 3; }
+  55.21% { z-index: 3; }
+  56.25% { z-index: 3; }
+  57.29% { z-index: 3; }
+  58.33% { z-index: 3; }
+  59.38% { z-index: 3; }
+  60.42% { z-index: 3; }
+  61.46% { z-index: 3; }
+  62.5% { z-index: 3; }
+  63.54% { z-index: 3; }
+  64.58% { z-index: 3; }
+  65.62% { z-index: 3; }
+  66.67% { z-index: 3; }
+  67.71% { z-index: 3; }
+  68.75% { z-index: 3; }
+  69.79% { z-index: 3; }
+  70.83% { z-index: 3; }
+  71.88% { z-index: 3; }
+  72.92% { z-index: 3; }
+  73.96% { z-index: 3; }
+  75% { z-index: 3; }
+  76.04% { z-index: 1; }
+  77.08% { z-index: 1; }
+  78.12% { z-index: 1; }
+  79.17% { z-index: 1; }
+  80.21% { z-index: 1; }
+  81.25% { z-index: 1; }
+  82.29% { z-index: 1; }
+  83.33% { z-index: 1; }
+  84.38% { z-index: 1; }
+  85.42% { z-index: 1; }
+  86.46% { z-index: 1; }
+  87.5% { z-index: 1; }
+  88.54% { z-index: 1; }
+  89.58% { z-index: 1; }
+  90.62% { z-index: 1; }
+  91.67% { z-index: 1; }
+  92.71% { z-index: 1; }
+  93.75% { z-index: 1; }
+  94.79% { z-index: 1; }
+  95.83% { z-index: 1; }
+  96.88% { z-index: 1; }
+  97.92% { z-index: 1; }
+  98.96% { z-index: 1; }
+}
+/* "I think, and so, I am" (owner's request): the tagline's lettering, above the duck's water (its distance from the
+   waterline is set by the About lettering script to match the tagline's below it) */
+:root.psy #about .bio-wall--above:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: relative; z-index: 0; margin-top: 0; text-align: center; }
+:root.psy #about .bio-wall--above .bio-tagline:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 0; }
+:root.psy #about .bio-head > .bio-stroke:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { z-index: 1; }
+@media (prefers-reduced-motion: no-preference) { :root.psy:not(.psy-calm) #about .bio-wall--above:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { animation: name-jitter .6667s step-end infinite !important; } }
+/* Credit bubbles are always real links: on top of the photo, pressable, with a focus ring */
+:root.psy .photo-credit:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { z-index: 5 !important; pointer-events: auto !important; cursor: pointer; }
+:root.psy .photo-credit.credit-beside:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { position: absolute; bottom: auto !important; transform: translateY(-100%); }
+:root.psy .photo-credit:focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549) !important; outline-offset: 2px !important; }
+/* Video cards: the album the song was released on, under the title */
+:root.psy .vid-info > .vid-from:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { margin: 4px 0 0; color: rgb(220 228 232 / .85); font: 500 15px/1.35 var(--font-ui); }
+:root.psy .vid-info > .vid-from a:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: inherit; text-decoration: underline; text-decoration-color: rgb(247 197 73 / .6); text-underline-offset: 3px; }
+:root.psy .vid-info > .vid-from a:hover:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { color: var(--gold, #F7C549); }
+:root.psy .vid-info > .vid-from a:focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549); outline-offset: 2px; border-radius: 3px; }
+/* Every section on its own solid panel (owner's request: "give each section a solid background, like the epk has"):
+   the same dark, softly bordered and shadowed surface as the press kit card, one shade deeper so the cards inside it
+   (albums, videos, the press kit) still stand apart. About keeps its light page, on a solid light panel. */
+:root.psy :is(#epk, #music, #videos, #about):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) {
+  background: rgb(13 14 20) !important; border: 1px solid rgb(255 255 255 / .08); border-radius: 24px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .32), 0 12px 32px rgb(0 0 0 / .32);
+  margin: clamp(16px, 3vw, 32px) clamp(8px, 2.5vw, 32px) !important; isolation: isolate;
+}
+:root.psy #about:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: rgb(252 250 253) !important; border-color: rgb(0 0 0 / .06); }
+@media (forced-colors: active) { :root.psy :is(#epk, #music, #videos, #about):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: Canvas !important; border: 1px solid CanvasText; } }
+:root.psy :is(#epk, #music, #videos, #about):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { padding-top: clamp(24px, 4vw, 48px) !important; padding-bottom: clamp(24px, 4vw, 48px) !important; }

@@ -396,7 +396,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div class="bio-card">
       <div class="bio-card-text">
         <div class="bio-head">
-          <div class="bio-stroke" aria-hidden="true"><span class="duck-notes"></span></div>
+          <div class="bio-wall bio-wall--above"><p class="bio-tagline bio-tagline--above">I think, and so, I am</p></div>   <!-- (owner's request: same lettering as the line under the water, as far above the waterline as that one is below) -->
+          <div class="bio-stroke" aria-hidden="true"><span class="duck-letters"></span><span class="duck-notes"></span></div>
           <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
         </div>
       </div>
@@ -2571,6 +2572,12 @@ return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + esc
 tracklist +
 '</article>';
 }
+function vidAlbumLine(title) {
+  var rel = RELEASE_LIST.filter(function(r) { return (r.tracks || []).concat(r.upcoming || []).some(function(t) { return String(t.title).toLowerCase() === String(title).toLowerCase(); }); })[0];
+  if (!rel) return '';
+  var slug = String(rel.name).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return '<p class="vid-from">From <a href="/albums/' + slug + '/">' + escHtml(rel.name) + '</a></p>';
+}
 function renderVideoCard(v, vIdx) {
 // The card's two buttons share one row (owner's request): YouTube first and the larger of the two, since YouTube is
 // where the video lives, then Play. Only Play plays here: the card and its thumbnail don't.
@@ -2585,7 +2592,7 @@ var thumbEl = v.thumb
 // keyboard nav) - .vid-card wraps only the thumbnail (the "play"
 // target), .vid-info sits beside it as a plain sibling row.
 return '<div class="vid-card-wrap">' +
-'<div class="vid-info"><p class="rel-cat vid-cat">Video' + (v.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time>' + escHtml(String(v.year)) + '</time></span>' : '') + '</p><h3 class="vid-title">' + escHtml(v.title) + '</h3></div>' +
+'<div class="vid-info"><p class="rel-cat vid-cat">Video' + (v.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time>' + escHtml(String(v.year)) + '</time></span>' : '') + '</p><h3 class="vid-title">' + escHtml(v.title) + '</h3>' + vidAlbumLine(v.title) + '</div>' +   /* (the album its song was released on: owner's request) */
 '<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="' + vIdx + '"><span class="vid-thumb">' + thumbEl + '</span></button>' +
 '<div class="vid-btns">' + ytBtn + '<button type="button" class="vid-yt vid-play" data-video-index="' + vIdx + '" aria-label="Play &quot;' + escHtml(v.title) + '&quot;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button></div>' +
 '</div>';
@@ -3133,7 +3140,7 @@ var nSongs = KIT.files.filter(function(f) { return f.type === 'song'; }).length,
 var F = KIT.facts || {}, photos = KIT.files.filter(function(f) { return f.type === 'photo'; });
 var nPics = photos.length, nLogo = 0;
 var hasLyr = KIT.files.some(function(f) { return f.type === 'text' && /lyrics/i.test(f.name); }), hasSheet = KIT.files.some(function(f) { return /fact sheet/i.test(f.name); });
-var dlName = 'Download Press Kit (ZIP file, about ' + mb + ' MB)';
+var dlName = 'Download the Press Kit';   /* (no file type or size in the press kit's words: owner's request) */
 // PRESS KIT, AS BOOKERS AND PRESS USE IT (owner's request: "consider the grand picture ... its effectiveness in the music
 // industry ... optimize till it's as it should be"). A booker or writer comes for four things, in this order: who this is
 // (one line), the files (one download), the photos (seen at a glance, each saved on its own), and who to write to. So the
@@ -3167,13 +3174,13 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   '<div class="rel-btns"><a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" data-kit-zip class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
   '<p class="epk-progress" role="status" aria-live="polite"></p></div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
   '<p class="epk-group epk-photos-h" id="epk-photos-h">Photos</p><div class="epk-gallery" role="list" aria-labelledby="epk-photos-h">' + KIT.files.filter(function(f) { return f.type === 'photo' && f.thumb; }).map(function(f) {
-    var meta = f.ext + (f.dims ? ' · ' + f.dims[0] + ' × ' + f.dims[1] : '') + ' · ' + (f.size || f.mb + ' MB');
+    var meta = f.dims ? f.dims[0] + ' × ' + f.dims[1] + ' pixels' : '';
     return '<div class="epk-shot" role="listitem">' +
-      '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name) + ' full size (' + escHtml(meta) + ')">' +
+      '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size">' +
         '<img src="' + escHtml(encodeURI(f.thumb)) + '" alt="" width="481" height="481" loading="lazy" decoding="async"/></a>' +
-      '<p class="epk-shot-name">' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +
+      '<p class="epk-shot-name">' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '</p>' + (meta ? '<p class="epk-shot-meta">' + escHtml(meta) + '</p>' : '') +
       /* (the photographer's credit is the bubble on the photo's corner: the photo-credits script) */
-      '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name) + ' (' + escHtml(f.size || f.mb + ' MB') + ')" title="Download ' + escHtml(f.name) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
+      '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '" title="Download ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>';
   }).join('') + '</div>' +
   (KIT.videos && KIT.videos.length ? '<div class="epk-videos"><p class="epk-group">Live videos</p><div class="epk-video-row">' + KIT.videos.map(function(v, i) {
     var meta = v.note + (v.length ? ' · ' + v.length : '');
@@ -3181,7 +3188,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       '<button type="button" class="epk-video-thumb" tabindex="-1" aria-hidden="true"><img src="' + escHtml(encodeURI(v.thumb)) + '" alt="" width="576" height="324" loading="lazy" decoding="async"/></button>' +
       '<p class="epk-shot-name">' + escHtml(v.title + (v.from ? ' - from ' + v.from : '')) + '</p><p class="epk-shot-meta">' + escHtml(meta) + '</p>' +   /* ("Song - from Album", as on the sampler) */
       '<div class="epk-video-btns">' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<button type="button" class="rel-lyrics-toggle epk-vlyr" aria-expanded="false" aria-controls="epk-vlyr-' + i + '" aria-label="Show lyrics for ' + escHtml(v.title) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg><svg class="lyr-chev" aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>' : '') + '<button type="button" class="rel-lyrics-toggle epk-vplay" aria-label="Play ' + escHtml(v.title) + ', ' + escHtml(meta.toLowerCase()) + '"><svg class="lyr-ico" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button>' +
-      (v.file ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(kitUrl(v.file)) + '" download="' + escHtml(v.title) + ' - Ash Stu (Live).mp4" aria-label="Download ' + escHtml(v.title) + ', the video (MP4, ' + escHtml(v.size) + ')" title="Download ' + escHtml(v.title) + ' (MP4, ' + escHtml(v.size) + ')"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' : '') + '</div>' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<div class="epk-vlyr-panel" id="epk-vlyr-' + i + '" role="region" tabindex="0" aria-label="Lyrics for ' + escHtml(v.title) + '" hidden><p class="epk-vlyr-from">From ' + escHtml(v.from || '') + '</p>' + ((LYRICS[v.lyricsKey].lines || []).map(function(l) { return String(l[1] || '').trim(); }).filter(Boolean).map(function(l) { return '<span class="rel-lyric-line">' + escHtml(l) + '</span>'; }).join('')) + '</div>' : '') + '</div>';   /* (owner's request: a Download for the video file in place of the YouTube link) */
+      (v.file ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(kitUrl(v.file)) + '" download="' + escHtml(v.title) + ' - Ash Stu (Live).mp4" aria-label="Download the video of ' + escHtml(v.title) + '" title="Download the video of ' + escHtml(v.title) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' : '') + '</div>' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<div class="epk-vlyr-panel" id="epk-vlyr-' + i + '" role="region" tabindex="0" aria-label="Lyrics for ' + escHtml(v.title) + '" hidden><p class="epk-vlyr-from">From ' + escHtml(v.from || '') + '</p>' + ((LYRICS[v.lyricsKey].lines || []).map(function(l) { return String(l[1] || '').trim(); }).filter(Boolean).map(function(l) { return '<span class="rel-lyric-line">' + escHtml(l) + '</span>'; }).join('')) + '</div>' : '') + '</div>';   /* (owner's request: a Download for the video file in place of the YouTube link) */
   }).join('') + '</div></div>' : '') +
   '<p class="epk-group epk-sampler-h" id="epk-sampler-h">Sampler</p>' +   /* (owner's request: the tracklist is always open, like the photos and videos: a heading, not a Show/Hide bar) */
   '<div class="rel-tracklist" id="tracklist-kit" role="region" aria-labelledby="epk-sampler-h"></div></article>';
@@ -3254,7 +3261,7 @@ KIT.files.forEach(function(f, k) {
     wrap.appendChild(row);
     // (the song's own Download, in the format the visitor picks: owner's request)
     var sdl = document.createElement('a'); sdl.className = 'rel-lyrics-toggle epk-file-dl epk-song-dl'; sdl.href = kitUrl(f.src); sdl.setAttribute('download', f.name);
-    sdl.setAttribute('aria-label', 'Download ' + shown + ' (' + f.size + ')'); sdl.title = 'Download ' + shown;
+    sdl.setAttribute('aria-label', 'Download ' + shown); sdl.title = 'Download ' + shown;
     sdl.innerHTML = DL;
     (function(f, sdl) { sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); kitSaveOne(f.src, f.name, { audio: 1 }, sdl, f.tag); }); })(f, sdl);
     if (has) {
@@ -3272,10 +3279,10 @@ KIT.files.forEach(function(f, k) {
     wrap.appendChild(sdl);
   } else {
     var a = document.createElement('a'); a.className = 'rel-track epk-photo-row'; a.href = href; a.target = '_blank'; a.rel = 'noopener';
-    a.setAttribute('aria-label', 'Open ' + f.name + ' (' + f.size + '), file ' + (k + 1));
+    a.setAttribute('aria-label', 'Open ' + f.name.replace(/\.[a-z0-9]+$/i, '') + ', file ' + (k + 1));
     a.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' + (/text$/.test(f.type) ? DOC : PIC) + '<span class="rel-track-title">' + escHtml(f.name) + '</span>';
     var d = document.createElement('a'); d.className = 'rel-lyrics-toggle epk-file-dl'; d.href = href; d.setAttribute('download', f.name);
-    d.setAttribute('aria-label', 'Download ' + f.name + ' (' + f.size + ')'); d.title = 'Download ' + f.name + ' (' + f.size + ')';
+    d.setAttribute('aria-label', 'Download ' + f.name.replace(/\.[a-z0-9]+$/i, '')); d.title = 'Download ' + f.name.replace(/\.[a-z0-9]+$/i, '');
     d.innerHTML = DL;
     wrap.appendChild(a); wrap.appendChild(d);
   }
@@ -4105,6 +4112,8 @@ setTimeout(step,3000+Math.random()*2000);})();</script>
    (n below can repeat each line in extra decorative rows, hidden from
    screen readers; it is 1, so there are none.) */
 (function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
+/* one visit in a hundred, the duck has the last word (owner's request): the tagline reads "Quack, Quack." instead */
+if(bot&&Math.random()<.01){var _tg=bot.querySelector('.bio-tagline');if(_tg){_tg.dataset.measure=_tg.textContent;_tg.textContent='Quack, Quack.';}}
 if(!card||!text||!bot)return;   /* (no name line any more: the tagline leads, owner's request) */
 if(!top){top=document.createElement('div');}var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
 function build(){
@@ -4124,7 +4133,7 @@ var cs=getComputedStyle(head),inner=head.clientWidth-parseFloat(cs.paddingLeft)-
 // wide desktop panel made it about 180px, far too big); the tagline matches the name's width,
 // and stays at least 17px so it can be read.
 var hs=document.querySelector('.section-h'),cap=2*parseFloat(getComputedStyle(hs||head).fontSize)||96;
-var nn=name?nat(name):0,nt=nat(tag);
+var nn=name?nat(name):0,nt=(function(){if(!tag.dataset.measure)return nat(tag);var c=tag.cloneNode(false);c.textContent=tag.dataset.measure;c.style.position='absolute';c.style.visibility='hidden';tag.parentNode.appendChild(c);var v=nat(c);c.remove();return v;})();   /* ("Quack, Quack." is set at the usual tagline's size) */
 var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
 var f1,f2;
 if(!side&&media&&media.offsetWidth){
@@ -4136,12 +4145,18 @@ if(!side&&media&&media.offsetWidth){
   var rest0=text.querySelector('.bio-rest');if(rest0&&nn){rest0.style.setProperty('max-width',Math.round(Math.max(280,f1*nn))+'px');}
 }else{f1=nn?Math.min(inner*.98/nn,cap):0;f2=nn?Math.min(inner*.95/nt,Math.max(17,f1*nn*.97/nt)):Math.max(17,Math.min(inner*.95/nt,cap*.9));}
 setSize(top,f1);setSize(bot,f2);
+var above=text.querySelector('.bio-wall--above');if(above)setSize(above,f2);
 if(side&&media){var rest=text.querySelector('.bio-rest'),avail=media.offsetHeight-(rest?rest.offsetHeight:0)-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
 for(var k=0;k<4;k++){var gap=parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop),used=top.offsetHeight+bot.offsetHeight+gap;
-if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);}}
+if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);if(above)setSize(above,f2);}}
 // the wavy line under the name is as wide as the name (it spanned the whole panel), and a little thinner when shorter
 var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name||tag);var sw=rn.getBoundingClientRect().width;
 if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(40,Math.min(64,sw*.12)))+'px');}}
+// the line above the water sits exactly as far above the waterline (two thirds down the drawing) as the tagline sits
+// below it, measured on the letters themselves
+if(above&&st){above.style.removeProperty('translate');var wl=function(){var r=st.getBoundingClientRect();return r.top+r.height*40/60;},ink=function(el){var g=document.createRange();g.selectNodeContents(el);return g.getBoundingClientRect();};
+ var below=ink(tag).top-wl(),gapNow=wl()-ink(above.querySelector('.bio-tagline')).bottom;
+ above.style.setProperty('translate','0 '+(gapNow-below).toFixed(1)+'px');}
 // one clock for every row
 requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline').forEach(function(el){(el.getAnimations?el.getAnimations():[]).forEach(function(an){try{an.startTime=0;}catch(e){}});});});
 }
@@ -4274,14 +4289,19 @@ function who(src){src=src||'';for(var i=0;i<BY.length;i++)if(BY[i][0].test(src))
 function mark(im){
   if(im.dataset.credit==='shown')return;
   var name=who(im.getAttribute('src')),host=im.parentElement;if(!host)return;
-  var old=host.querySelector(':scope > .photo-credit.auto-credit');
+  var _l=host.closest('a,button'),old=_l?(_l.nextElementSibling&&_l.nextElementSibling.classList.contains('auto-credit')?_l.nextElementSibling:null):host.querySelector(':scope > .photo-credit.auto-credit');
   if(!name||(im.width&&im.width<120)){if(old)old.remove();return;}
   if(old&&old.dataset.who===name)return;if(old)old.remove();
-  var inLink=!!host.closest('a,button'),b=document.createElement(inLink?'span':'a');
+  var link=host.closest('a,button'),b=document.createElement('a');
   b.className='photo-credit auto-credit';b.dataset.who=name;b.textContent='Photo: '+name;
-  if(!inLink){b.href=WHO[name];b.target='_blank';b.rel='noopener noreferrer';b.setAttribute('aria-label','Photo by '+name+' (opens '+(name==='Jacci Mace'?'her photography page':'her page')+' on Facebook)');}
-  if(getComputedStyle(host).position==='static')host.style.position='relative';
-  host.appendChild(b);
+  b.href=WHO[name];b.target='_blank';b.rel='noopener noreferrer';b.setAttribute('aria-label','Photo by '+name+' (opens her page on Facebook)');
+  if(link){   if(window.ResizeObserver){if(!window._credRO)window._credRO=new ResizeObserver(function(es){es.forEach(function(e){var l=e.target,c=l.nextElementSibling;if(c&&c.classList.contains('credit-beside')){c.style.top=(l.offsetTop+l.offsetHeight-8)+'px';c.style.right=(c.parentElement.clientWidth-l.offsetLeft-l.offsetWidth+8)+'px';}});});window._credRO.observe(link);}
+    // (one link cannot sit inside another: the bubble goes just after the photo's link, placed over its bottom right corner)
+    var box=link.parentElement;if(getComputedStyle(box).position==='static')box.style.position='relative';
+    b.classList.add('credit-beside');b.style.top=(link.offsetTop+link.offsetHeight-8)+'px';b.style.right=(box.clientWidth-link.offsetLeft-link.offsetWidth+8)+'px';
+    var old2=box.querySelector(':scope > .credit-beside');if(old2)old2.remove();
+    link.insertAdjacentElement('afterend',b);
+  }else{if(getComputedStyle(host).position==='static')host.style.position='relative';host.appendChild(b);}
 }
 function scan(root){(root.querySelectorAll?root:document).querySelectorAll('img').forEach(mark);}
 scan(document);
@@ -4290,6 +4310,7 @@ new MutationObserver(function(rs){rs.forEach(function(r){
   else r.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='IMG')mark(n);else if(n.querySelectorAll)scan(n);});
 });}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['src']});
 addEventListener('load',function(){scan(document);});
+addEventListener('resize',function(){document.querySelectorAll('.credit-beside').forEach(function(b){var l=b.previousElementSibling;if(!l)return;b.style.top=(l.offsetTop+l.offsetHeight-8)+'px';b.style.right=(b.parentElement.clientWidth-l.offsetLeft-l.offsetWidth+8)+'px';});},{passive:true});
 })();</script>
 <script>/* Album downloads. Each release's Download button makes the album's ZIP in the browser when pressed (albumZip, from
    the site's own files: no ZIP is stored anywhere). One listener for all of them, so it also covers cards drawn again. */
