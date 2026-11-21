@@ -89,16 +89,16 @@ def render_release_card(rel, r_idx):
     listen = ''   # streaming links: the card's availability line, apart from its own actions
     if rel.get('apple'):
         listen += (f'<a href="{esc(rel["apple"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
-                  f'aria-label="Listen to {esc(rel["name"])} on Apple Music" itemprop="url">'
+                  f'aria-label="Listen on Apple Music: {esc(rel["name"])}" itemprop="url">'
                    f'<span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>')
     if rel.get('spotify'):
         listen += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
-                  f'aria-label="Listen to {esc(rel["name"])} on Spotify">'
+                  f'aria-label="Listen on Spotify: {esc(rel["name"])}">'
                    f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
     for key, store in (('ytmusic', 'YouTube Music'), ('amazon', 'Amazon Music'), ('deezer', 'Deezer')):
         if rel.get(key):
             listen += (f'<a href="{esc(rel[key])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
-                       f'aria-label="Listen to {esc(rel["name"])} on {store}"><span class="pt pt--{key}" aria-hidden="true"></span> {store}</a>')
+                       f'aria-label="Listen on {store}: {esc(rel["name"])}"><span class="pt pt--{key}" aria-hidden="true"></span> {store}</a>')
     status = ('<p class="rel-status"><span>Coming soon to streaming</span></p>'
               if not listen or rel.get('soon') else '')
     if listen:
