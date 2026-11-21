@@ -138,9 +138,9 @@ def render_release_card(rel, r_idx):
 
 
 RELEASES_FOR_VIDEOS = []   # (set in main: the album each video's song was released on, for its card)
-def video_album(title):
+def video_album(title):   # (only a song that is out: one not released yet, or on no release, says "Unreleased")
     for r in RELEASES_FOR_VIDEOS:
-        for t in (r.get('tracks') or []) + (r.get('upcoming') or []):
+        for t in (r.get('tracks') or []):
             if t['title'].lower() == title.lower(): return r['name']
     return ''
 def render_video_card(v, v_idx):
@@ -159,7 +159,7 @@ def render_video_card(v, v_idx):
     kicker = 'Video' + (f'<span class="rel-year"><span class="rel-sep"> · </span><time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3>'
-            + (f'<p class="vid-from">From <a href="/albums/{slugify(video_album(v["title"]))}/">{esc(video_album(v["title"]))}</a></p>' if video_album(v['title']) else '')
+            + (f'<p class="vid-from">From <a href="/albums/{slugify(video_album(v["title"]))}/">{esc(video_album(v["title"]))}</a></p>' if video_album(v['title']) else '<p class="vid-from">Unreleased</p>')
             + '</div>'
             f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'
             f'<span class="vid-thumb">{thumb_el}</span>'
