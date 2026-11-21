@@ -67,7 +67,7 @@
     "featured": false,
     "zip": {
       "name": "Ash Stu - My Anima.zip",
-      "bytes": 40339758,
+      "bytes": 40339759,
       "files": [
         {
           "path": "Ash Stu - My Anima/04. Still Sad.mp3",
@@ -129,7 +129,7 @@
         {
           "path": "Ash Stu - My Anima/My Anima - Lyrics.txt",
           "src": "Audio/My Anima/lyrics.txt",
-          "bytes": 8443
+          "bytes": 8444
         }
       ]
     }
@@ -197,7 +197,7 @@
     "featured": true,
     "zip": {
       "name": "Ash Stu, Vol. II.zip",
-      "bytes": 71928533,
+      "bytes": 71928538,
       "files": [
         {
           "path": "Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3",
@@ -324,7 +324,7 @@
         {
           "path": "Ash Stu, Vol. II/Ash Stu, Vol. II - Lyrics.txt",
           "src": "Audio/Ash Stu, Vol. II/lyrics.txt",
-          "bytes": 10146
+          "bytes": 10151
         }
       ]
     }
