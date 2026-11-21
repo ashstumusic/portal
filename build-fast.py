@@ -305,14 +305,33 @@ print(f"Wrote {p_out}: {len(_p)//1024}KB")
 # The Press Kit carries the words of its songs as one plain-text file, "Ash Stu - Lyrics.txt" (owner's request), written here
 # from lyrics.json in the order of its Songs folder. The ZIP is rewritten only when those words have changed.
 _kit = os.path.join(ROOT, "ash-stu-press-kit.zip")
-def _kit_lyrics():
+# The artist's facts for the press kit, as the site states them (About section, contact card). One place to change them:
+# the Fact Sheet in the ZIP and the Press Kit card on the page are both written from here.
+KIT_FACTS = {
+    "pitch": "Outsider singer-songwriter from Guthrie, Oklahoma, formerly known as Ashton Stubblefield.",
+    "from": "Guthrie, Oklahoma",
+    "aka": "Ashton Stubblefield",
+    "email": (re.search(r'mailto:([^"?]+)', open(os.path.join(ROOT, "index-src.html"), encoding="utf-8").read()) or [None, ""])[1],
+    "site": "https://ashstu.art",
+}
+def _kit_texts():
+    """Two plain-text files in the kit, rewritten in the ZIP only when their words change:
+    "Ash Stu - Lyrics.txt" (the words to its songs, in Songs-folder order) and "Ash Stu - Fact Sheet.txt" (who, where
+    from, releases with their store links, contact, and what is in the kit)."""
     import zipfile as _zf, json as _json
     if not os.path.exists(_kit): return
     _rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
     _lyr = _json.load(open(os.path.join(ROOT, "lyrics.json"), encoding="utf-8"))
     _z = _zf.ZipFile(_kit)
-    _songs = sorted(i.filename for i in _z.infolist() if i.filename.lower().endswith(".mp3"))
+    _all = [i.filename for i in _z.infolist() if not i.is_dir()]
+    _songs = sorted(f for f in _all if f.lower().endswith(".mp3"))
+    _photos = sorted((os.path.basename(f) for f in _all if f.lower().endswith((".png", ".jpg", ".jpeg"))), key=lambda n: (0 if "headshot" in n.lower() else 2 if "logo" in n.lower() else 1, n.lower()))   # (headshots first, the logo last: the order of the page)
     _top = (_songs[0].split("/")[0] + "/") if _songs and "/" in _songs[0] else ""
+    def _date(r):
+        m = re.match(r"(\d{4})-(\d{2})-(\d{2})$", r.get("date") or "")
+        if not m: return str(r.get("year") or "")
+        return ["January","February","March","April","May","June","July","August","September","October","November","December"][int(m[2]) - 1] + f" {int(m[3])}, {m[1]}"
+    # lyrics
     out = ["ASH STU - LYRICS", "", "The words to the " + str(len(_songs)) + " songs in this press kit, in the order of the Songs folder.", ""]
     for f in _songs:
         title = re.sub(r"^Ash Stu - ", "", os.path.splitext(os.path.basename(f))[0])
@@ -322,23 +341,47 @@ def _kit_lyrics():
         out += ["", "=" * 40, title.upper(), ("From " + hit[0]["name"] + (" (" + str(hit[0]["year"]) + ")" if hit[0].get("year") else "")) if hit else "", "=" * 40, ""]
         out += lines or ["(Instrumental)"]
         out += [""]
-    out += ["", "-" * 40, "Ash Stu  -  https://ashstu.art", ""]
-    data = "\r\n".join(out).encode("utf-8-sig")   # (the mark at the start tells every browser and editor it is UTF-8, so the curly quotes show right)
-    name = _top + "Ash Stu - Lyrics.txt"
-    try: cur = _z.read(name)
-    except KeyError: cur = None
-    if cur == data: return
+    out += ["", "-" * 40, "Ash Stu  -  " + KIT_FACTS["site"], ""]
+    texts = {"Ash Stu - Lyrics.txt": out}
+    # fact sheet
+    F = KIT_FACTS
+    fs = ["ASH STU - FACT SHEET", "", F["pitch"], "",
+          "Artist:              Ash Stu", "Formerly known as:   " + F["aka"], "From:                " + F["from"], "",
+          "Booking and press:   " + F["email"], "Website:             " + F["site"], "", "", "RELEASES", "-" * 40]
+    for r in _rels:
+        n_out, n_soon = len(r.get("tracks") or []), len(r.get("upcoming") or [])
+        line = r["name"] + "  -  " + (r.get("type") or "Album").lower() + ", " + (_date(r) or "date to come")
+        line += f", {n_out} songs" if not n_soon else f", {n_out} of its {n_out + n_soon} songs released so far"
+        fs += ["", line]
+        for k, label in (("apple", "Apple Music"), ("spotify", "Spotify"), ("ytmusic", "YouTube Music"), ("amazon", "Amazon Music"), ("deezer", "Deezer")):
+            if r.get(k): fs.append(f"  {label + ':':<16}{r[k]}")
+    fs += ["", "", "IN THIS PRESS KIT", "-" * 40, "",
+           "Songs (MP3):", *["  " + os.path.basename(f) for f in _songs], "",
+           "Lyrics:", "  Ash Stu - Lyrics.txt", "",
+           "Photos and logo (PNG):", *["  " + f for f in _photos], "",
+           "Free to use for booking, press and promotion of Ash Stu.", ""]
+    texts["Ash Stu - Fact Sheet.txt"] = fs
+    want = {(_top + k): ("\r\n".join(v)).encode("utf-8-sig") for k, v in texts.items()}   # (the mark at the start tells every browser and editor it is UTF-8)
+    have = {}
+    for k in want:
+        try: have[k] = _z.read(k)
+        except KeyError: have[k] = None
+    if all(have[k] == want[k] for k in want): return
     tmp = _kit + ".tmp"
     with _zf.ZipFile(tmp, "w") as zo:
         for i in _z.infolist():
-            if i.filename == name: continue
+            if i.filename in want: continue
             n = _zf.ZipInfo(i.filename, i.date_time); n.compress_type = i.compress_type; n.external_attr = i.external_attr
             zo.writestr(n, _z.read(i.filename))
-        n = _zf.ZipInfo(name, time.localtime()[:6]); n.compress_type = _zf.ZIP_DEFLATED; n.external_attr = 0o644 << 16
-        zo.writestr(n, data)
+        for k, data in want.items():
+            if have[k] == data:
+                old = _z.getinfo(k); n = _zf.ZipInfo(k, old.date_time)
+            else:
+                n = _zf.ZipInfo(k, time.localtime()[:6]); print("Press kit: wrote " + k)
+            n.compress_type = _zf.ZIP_DEFLATED; n.external_attr = 0o644 << 16
+            zo.writestr(n, data)
     _z.close(); os.replace(tmp, _kit)
-    print("Press kit: wrote " + name)
-_kit_lyrics()
+_kit_texts()
 html = html.replace("__KIT_MB__", str(max(1, round(os.path.getsize(_kit) / 1048576))) if os.path.exists(_kit) else "")
 html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
 
@@ -359,7 +402,13 @@ if os.path.exists(_kit):
     for _f in os.listdir(_kd):
         if _f not in _keep: os.remove(os.path.join(_kd, _f))
     _isText = lambda i: i.filename.lower().endswith(".txt")
-    for i in sorted(_files, key=lambda i: (0 if _isSong(i) else 1 if _isText(i) else 2, os.path.basename(i.filename).lower())):
+    # songs, then the text files, then the photos: headshots first (Headshot-1 leads), other photos, the logo last
+    _rank = lambda i: (0 if _isSong(i) else 1 if _isText(i) else 2 if "headshot" in i.filename.lower() else 4 if "logo" in i.filename.lower() else 3)
+    for i in sorted(_files, key=lambda i: (_rank(i), os.path.basename(i.filename).lower())):
+        _dims = None
+        if i.filename.lower().endswith(".png"):
+            with _z.open(i) as _fh: _hd = _fh.read(24)
+            if _hd[:8] == b"\x89PNG\r\n\x1a\n": _dims = [int.from_bytes(_hd[16:20], "big"), int.from_bytes(_hd[20:24], "big")]
         _fn = os.path.basename(i.filename); _base, _ext = os.path.splitext(_fn)
         _href = ""
         if not _isSong(i):
@@ -372,8 +421,10 @@ if os.path.exists(_kit):
         _kitdata["files"].append({"name": _fn, "title": re.sub(r"^Ash Stu - ", "", _base), "type": "song" if _isSong(i) else "text" if _isText(i) else "photo",
                                   "ext": _ext[1:].upper(), "mb": round(i.file_size / 1048576, 1), "href": _href,
                                   "size": (f"{i.file_size / 1048576:.1f} MB" if i.file_size >= 104858 else f"{max(1, round(i.file_size / 1024))} KB"),
-                                  "thumb": _KIT_THUMB.get(_fn, "")})
+                                  "thumb": _KIT_THUMB.get(_fn, ""), "dims": _dims})
     _kitdata["bytes"] = os.path.getsize(_kit)
+    _kitdata["updated"] = "%04d-%02d-%02d" % max(i.date_time for i in _files)[:3]   # (the newest file in it: when the kit last changed)
+    _kitdata["facts"] = KIT_FACTS
 html = html.replace("__KIT_JSON__", _json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))
 
 # strip HTML comments + indentation, collapse blank lines
