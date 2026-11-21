@@ -310,12 +310,18 @@ html = html.replace(" (ZIP file,  MB)", " (ZIP file)")
 # The photos are also unpacked to Images/press-kit/ (only when missing or changed), so each can be opened or downloaded alone.
 import zipfile as _zf, json as _json
 _kitdata = {"bytes": 0, "files": []}
+_KIT_THUMB = {"Ash Stu - Headshot.png": "epk-ash-stu-stairs.webp", "Ash Stu - Singing Live.png": "epk-ash-stu-singing.webp?v=3",
+              "Ash Stu - Guitar Close-Up.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
+              "Ash Stu - Logo.png": "epk-ash-stu-logo.webp"}
 if os.path.exists(_kit):
     _z = _zf.ZipFile(_kit)
     _files = [i for i in _z.infolist() if not i.is_dir() and not os.path.basename(i.filename).startswith(".")]
     _isSong = lambda i: i.filename.lower().endswith((".mp3", ".wav", ".m4a", ".flac"))
     _kd = os.path.join(ROOT, "Images", "press-kit")
     os.makedirs(_kd, exist_ok=True)
+    _keep = {os.path.basename(i.filename) for i in _files}
+    for _f in os.listdir(_kd):
+        if _f not in _keep: os.remove(os.path.join(_kd, _f))
     for i in sorted(_files, key=lambda i: (not _isSong(i), os.path.basename(i.filename).lower())):
         _fn = os.path.basename(i.filename); _base, _ext = os.path.splitext(_fn)
         _href = ""
@@ -324,8 +330,11 @@ if os.path.exists(_kit):
             if not (os.path.exists(_dst) and os.path.getsize(_dst) == i.file_size):
                 with open(_dst, "wb") as _o: _o.write(_z.read(i))
             _href = "Images/press-kit/" + _fn
-        _kitdata["files"].append({"name": _base.replace("_", " "), "file": _fn, "type": "song" if _isSong(i) else "photo",
-                                  "ext": _ext[1:].upper(), "mb": round(i.file_size / 1048576, 1), "href": _href})
+        # name: the file's own name, shown as it is on the page; title: the song's title ("Ash Stu - " and the type taken off),
+        # used to find its recording and lyrics; thumb: the site's small copy of a photo, for the file tiles.
+        _kitdata["files"].append({"name": _fn, "title": re.sub(r"^Ash Stu - ", "", _base), "type": "song" if _isSong(i) else "photo",
+                                  "ext": _ext[1:].upper(), "mb": round(i.file_size / 1048576, 1), "href": _href,
+                                  "thumb": _KIT_THUMB.get(_fn, "")})
     _kitdata["bytes"] = os.path.getsize(_kit)
 html = html.replace("__KIT_JSON__", _json.dumps(_kitdata, separators=(",", ":")).replace("</", "<\\/"))
 

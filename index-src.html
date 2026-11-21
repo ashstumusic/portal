@@ -306,18 +306,18 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <div class="epk-body">
     <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg>Press Kit</h2>
     <p class="epk-text">Songs and photos <br/>for booking and press.</p>
-    <a href="ash-stu-press-kit.zip" download class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit (ZIP file, __KIT_MB__ MB)" aria-label="Download Press Kit (ZIP file, __KIT_MB__ MB)">
+    <a href="ash-stu-press-kit.zip" download="Ash Stu - Press Kit.zip" class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit (ZIP file, __KIT_MB__ MB)" aria-label="Download Press Kit (ZIP file, __KIT_MB__ MB)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span>Download <br/>Press Kit</span>
     </a>
   </div>
   <div class="epk-photos epk-photos-top">
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu portrait"/></span><span class="epk-name" aria-hidden="true">IMG_0001.jpg</span></span>
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-performing.webp" alt="Ash Stu performing"/></span><span class="epk-name" aria-hidden="true">IMG_0002.jpg</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-stairs.webp" alt="Ash Stu smiling on an outdoor staircase"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-singing.webp?v=3" alt="Ash Stu singing into a microphone on stage"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Singing Live.png</span></span>
   </div>
   <div class="epk-photos epk-photos-bottom">
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu at the piano"/></span><span class="epk-name" aria-hidden="true">IMG_0003.jpg</span></span>
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-studio-session.webp" alt="Ash Stu studio session"/></span><span class="epk-name" aria-hidden="true">IMG_0004.jpg</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-guitar-door.webp" alt="Ash Stu playing guitar by a wooden door"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Guitar Close-Up.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Guitar in Alley (Wide).png</span></span>
   </div>
   <!-- What is inside the Press Kit ZIP (owner's request): a card built just like an album's, so it looks and works the same:
        cover, Play (the kit's songs, in the site's player), Download (the ZIP), and a "<n> files" bar opening one row per file.
@@ -2643,7 +2643,7 @@ KIT.files.forEach(function(f) {
   f.track = null;
   if (f.type !== 'song') { nPhotos++; return; }
   RELEASE_LIST.forEach(function(rel, r) { (rel.tracks || []).forEach(function(t, i) {
-    if (!f.track && String(t.title).toLowerCase() === f.name.toLowerCase()) f.track = { title: t.title, file: t.file, releaseIdx: r, trackIdx: i };
+    if (!f.track && String(t.title).toLowerCase() === String(f.title).toLowerCase()) f.track = { title: t.title, file: t.file, releaseIdx: r, trackIdx: i };
   }); });
   if (f.track) songs.push(f.track);
 });
@@ -2653,7 +2653,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Press Kit</span></p><h3 class="rel-name">Ash Stu</h3></div>' +
   '<div class="rel-avail"><p class="rel-status"><svg class="soon-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>' + nSongs + (nSongs === 1 ? ' song and ' : ' songs and ') + nPhotos + (nPhotos === 1 ? ' photo' : ' photos') + ' for booking and press</span></p></div>' +
   '<div class="rel-art-wrap"><img src="Images/embedded/epk-ash-stu-logo.webp" alt="Press Kit cover: the Ash Stu daffodil patch" class="rel-art" width="504" height="504" loading="lazy" decoding="async"/></div>' +
-  '<div class="rel-btns"><a href="ash-stu-press-kit.zip" download class="rel-btn rel-dl" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>' +
+  '<div class="rel-btns"><a href="ash-stu-press-kit.zip" download="Ash Stu - Press Kit.zip" class="rel-btn rel-dl" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div>' +
   tlToggle({ name: 'the Press Kit', tracks: KIT.files }, 'kit').replace(/(\d+) tracks? on the Press Kit/, '$1 files in the Press Kit').replace(/>(\d+) tracks?</, '>$1 files<') +
   '<div class="rel-tracklist" id="tracklist-kit"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
@@ -2695,11 +2695,11 @@ KIT.files.forEach(function(f, k) {
     var idx = si++, t = f.track, entry = LYRICS[t.file], has = !!(entry && entry.lines && entry.lines.length);
     var row = document.createElement('button'); row.type = 'button'; row.className = 'rel-track';
     row.dataset.release = t.releaseIdx; row.dataset.track = t.trackIdx;
-    row.setAttribute('aria-label', 'Play ' + t.title + ', file ' + (k + 1));
+    row.setAttribute('aria-label', 'Play ' + f.name + ', file ' + (k + 1));
     row.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' +
       '<svg class="rel-track-play" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0L10 6L0 12z" fill="currentColor"/></svg>' +
       '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
-      '<span class="rel-track-title">' + escHtml(t.title) + '</span>';
+      '<span class="rel-track-title">' + escHtml(f.name) + '</span>';   /* (the file's own name, as it is in the ZIP) */
     row.addEventListener('click', function() { playKit(idx); });
     wrap.appendChild(row);
     if (has) {
@@ -2711,10 +2711,10 @@ KIT.files.forEach(function(f, k) {
     }
   } else {
     var a = document.createElement('a'); a.className = 'rel-track epk-photo-row'; a.href = encodeURI(f.href); a.target = '_blank'; a.rel = 'noopener';
-    a.setAttribute('aria-label', 'Open ' + (f.type === 'song' ? 'song ' : 'photo ') + f.name + ' (' + size + '), file ' + (k + 1));
+    a.setAttribute('aria-label', 'Open ' + f.name + ' (' + f.mb + ' MB), file ' + (k + 1));
     a.innerHTML = '<span class="rel-track-num" aria-hidden="true">' + (k + 1) + '</span>' + PIC + '<span class="rel-track-title">' + escHtml(f.name) + '</span>';
-    var d = document.createElement('a'); d.className = 'rel-lyrics-toggle epk-file-dl'; d.href = encodeURI(f.href); d.setAttribute('download', f.file);
-    d.setAttribute('aria-label', 'Download ' + f.name + ' (' + size + ')'); d.title = 'Download ' + f.name + ' (' + size + ')';
+    var d = document.createElement('a'); d.className = 'rel-lyrics-toggle epk-file-dl'; d.href = encodeURI(f.href); d.setAttribute('download', f.name);
+    d.setAttribute('aria-label', 'Download ' + f.name + ' (' + f.mb + ' MB)'); d.title = 'Download ' + f.name + ' (' + f.mb + ' MB)';
     d.innerHTML = DL;
     wrap.appendChild(a); wrap.appendChild(d);
   }
@@ -3481,20 +3481,18 @@ if(document.readyState==='complete')build();else addEventListener('load',build);
    at random and no movement. */
 (function(){var imgs=[].slice.call(document.querySelectorAll('.epk-photos img'));if(imgs.length<2)return;
 var P='Images/embedded/';
-var items=[
- {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu portrait',name:'IMG_0001.jpg'},
- {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing',name:'IMG_0002.jpg'},
- {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano',name:'IMG_0003.jpg'},
- {src:P+'epk-ash-stu-studio-session.webp',alt:'Ash Stu studio session',name:'IMG_0004.jpg'},
- {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley',name:'IMG_0005.jpg'},
- {src:P+'epk-ash-stu-guitar-door.webp',alt:'Ash Stu playing guitar by a wooden door',name:'IMG_0006.jpg'},
- {src:P+'epk-ash-stu-singing.webp?v=3',alt:'Ash Stu singing',name:'IMG_0007.jpg'},
- {src:P+'epk-ash-stu-stairs.webp',alt:'Ash Stu on an outdoor staircase',name:'IMG_0008.jpg'},
- {src:P+'epk-ash-stu-logo.webp',alt:'Ash Stu logo: an embroidered daffodil patch',name:'IMG_0009.png'}
-];
-// the songs, each shown with the cover of its album in front of the file
+// Only the files really in the Press Kit, each under its own file name (the same list as the card below: kit-data,
+// written from the ZIP by build-fast.py). Photos show the site's small copy; songs show their album's cover.
 var COVER={'Ash Stu, Vol. II':'Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp','My Anima':'Images/Releases/My%20Anima.webp'};
-[['Dirge for Ducklings','Ash Stu, Vol. II'],['Still Sad','My Anima'],['Summertime Even on the Moon','Ash Stu, Vol. II'],['Worship Song','My Anima'],['You Are What You Love','My Anima']].forEach(function(t){items.push({src:COVER[t[1]],alt:'Song file in the press kit: '+t[0]+', from '+t[1],name:t[0]+'.mp3',audio:true});});
+var ALBUM={'Dirge for Ducklings':'Ash Stu, Vol. II','Summertime Even on the Moon':'Ash Stu, Vol. II','Still Sad':'My Anima','Worship Song':'My Anima','You Are What You Love':'My Anima'};
+var ALT={'Ash Stu - Headshot.png':'Ash Stu smiling on an outdoor staircase','Ash Stu - Singing Live.png':'Ash Stu singing into a microphone on stage','Ash Stu - Guitar Close-Up.png':'Ash Stu playing guitar by a wooden door','Ash Stu - Guitar in Alley (Wide).png':'Ash Stu with his guitar in an alley','Ash Stu - Logo.png':'Ash Stu logo: an embroidered daffodil patch'};
+var _kd=null;try{_kd=JSON.parse(document.getElementById('kit-data').textContent);}catch(e){}
+var items=[];
+((_kd&&_kd.files)||[]).forEach(function(f){
+  if(f.type==='song'){var al=ALBUM[f.title];if(COVER[al])items.push({src:COVER[al],alt:'Song file in the press kit: '+f.name+', from '+al,name:f.name,audio:true});}
+  else if(f.thumb)items.push({src:P+f.thumb,alt:ALT[f.name]||f.name,name:f.name});
+});
+if(items.length<2)return;
 // (the other files' pictures are fetched only once the Press Kit is about to come into view, not with the page)
 var warmed=false,warm=function(){if(warmed)return;warmed=true;items.forEach(function(it){var p=new Image();p.src=it.src;});};
 var _ks=document.getElementById('epk');if(_ks&&'IntersectionObserver' in window){var _ko=new IntersectionObserver(function(e){if(e[0].isIntersecting){warm();_ko.disconnect();}},{rootMargin:'800px 0px'});_ko.observe(_ks);}else warm();
