@@ -2264,7 +2264,9 @@ seen.push({ el: el, text: text, was: was });
 seen.forEach(function(o) { o.over = o.el.scrollWidth > o.el.clientWidth + 1; });
 // With motion off (reduced motion, or Effects off) the title cannot scroll, and it used to be simply cut off at the
 // edge of its row ("There Used To Be a Bright"). There it wraps onto a second line instead, so all of it can be read.
-var still = _titlesStill();
+// On phones too (owner's request, via the improvement loop): a title scrolling sideways in a narrow row is hard to read
+// on a small screen and most of the titles did; there they wrap onto a second line instead.
+var still = _titlesStill() || (window.matchMedia && matchMedia('(max-width: 699px)').matches);
 seen.forEach(function(o) {
 if (!o.over) return;
 if (still) { o.el.classList.add('title-wrap'); return; }
