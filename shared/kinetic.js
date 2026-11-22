@@ -525,7 +525,7 @@
       + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" tabindex="-1" hidden></ul>';
     const inp = $('.k-si-input', host), ul = $('.k-si-list', host);
     /* a narrow toolbar field has room for one word only: a short hint there, the full one elsewhere (the accessible name is unchanged) */
-    if (!flow && window.matchMedia) { const mqS = window.matchMedia('(max-width: 1099px)'), fullPh = inp.getAttribute('placeholder'); const setPh = () => inp.setAttribute('placeholder', mqS.matches ? 'Search' : fullPh); setPh(); mqS.addEventListener ? mqS.addEventListener('change', setPh) : mqS.addListener(setPh); }
+    if (!flow && window.matchMedia) { const mqS = window.matchMedia('(max-width: 1199px)'), fullPh = inp.getAttribute('placeholder'); const setPh = () => inp.setAttribute('placeholder', mqS.matches ? 'Search' : fullPh); setPh(); mqS.addEventListener ? mqS.addEventListener('change', setPh) : mqS.addListener(setPh); }
     let items = [], lyrics = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
     function draw() {
