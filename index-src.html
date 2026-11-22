@@ -215,18 +215,19 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <!-- The rail: the four section buttons and the three streaming logos. On wider screens it is not a box at all
        (its children sit in the toolbar as before); on phones it is one row you can slide sideways. -->
   <div class="nav-rail">
-  <ul class="nav-links" role="list">
-    <li><a href="#contact"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Contact</span></a></li>
-    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg><span>Press Kit</span></a></li>
-    <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Music</span></a></li>
-    <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
-  </ul>
+  <!-- (the streaming buttons come first here, as they are shown: the keyboard moves through the toolbar left to right) -->
   <div class="nav-platforms" aria-label="Streaming platforms">
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Apple Music" title="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Apple Music</span></a>
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Spotify" title="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Spotify</span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Watch on YouTube" title="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">YouTube</span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Deezer" title="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Deezer</span></a>
   </div>
+  <ul class="nav-links" role="list">
+    <li><a href="#contact"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Contact</span></a></li>
+    <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg><span>Press Kit</span></a></li>
+    <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Music</span></a></li>
+    <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
+  </ul>
   </div>
   <div class="k-tools">
     <!-- The search field's outline, here from the first paint (shared/kinetic.js fills it in and makes it work), so the toolbar does not rearrange itself a moment after the page loads. -->
@@ -302,6 +303,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       ashstumusic@gmail.com
     </a>
+    <!-- Copy (for visitors whose computer has no mail app set up: the email link then does nothing; copying works for everyone) -->
+    <button type="button" class="contact-copy" data-copy="ashstumusic@gmail.com" aria-label="Copy the email address" hidden><svg class="cc-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span class="btn-word">Copy</span></button>
   </div>
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h">
@@ -381,7 +384,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     </div>
   </div>
 </section>
-<section class="bio-section" id="about" aria-label="About Ash Stu">   <!-- (headerless: owner's request; the name and bio are in the press kit card) -->
+<section class="bio-section" id="about" aria-labelledby="about-h">   <!-- (headerless: owner's request; the name and bio are in the press kit card) -->
+  <h2 class="sr-only" id="about-h">About Ash Stu</h2>   <!-- (no visible heading - owner's request - but screen readers moving by heading can find the section) -->
   <div class="bio-body">
     <!-- One cream split-card, same object language as the contact card:
          text panel left, portrait right, childhood shots as
@@ -677,7 +681,7 @@ nav._gone = (1 - Math.min(1, Math.max(0, (heroOut - .3) / .35)) * (1 - Math.min(
    Checked on every scroll. */
 if (navHome) { var homeState = navIn <= .02 ? 'plain' : 'button';
  if (homeState !== navHome._st) { navHome._st = homeState; var lk = navHome.parentNode; lk.setAttribute('data-home', homeState); lk.classList.toggle('home-on', homeState === 'button'); if (homeState === 'plain') lk.setAttribute('aria-current', 'location'); else lk.removeAttribute('aria-current');   /* (the house is the selected item in the home section) */
-  if (homeState === 'plain') { lk.setAttribute('tabindex', '-1'); lk.setAttribute('aria-hidden', 'true'); } else { lk.removeAttribute('tabindex'); lk.removeAttribute('aria-hidden'); } } }
+  lk.removeAttribute('tabindex'); lk.removeAttribute('aria-hidden'); } }   /* (in the home section it stays reachable by keyboard and screen readers, marked as where you are - as the section buttons are; it used to vanish from both while still on screen) */
 if (aboutName && aboutIn !== _lastAboutIn) { aboutName.style.opacity = aboutIn; _lastAboutIn = aboutIn; }
 const scrolled = navIn > 0.5;
 if (scrolled !== _lastScrolled) { nav.classList.toggle('scrolled', scrolled); _lastScrolled = scrolled; }
@@ -746,7 +750,7 @@ function npShow() { npBar.classList.add('show'); document.body.classList.add('pl
 function npHide() { npBar.classList.remove('show'); document.body.classList.remove('player-active'); document.documentElement.classList.remove('player-on'); if(_fabMusic) _fabMusic.classList.remove('hidden'); }
 function npSetPlaying(p) {
 _npIcon.innerHTML = p ? PAUSE : PLAY;
-_npPlayBtn.setAttribute('aria-label', p ? 'Pause' : 'Play');
+var _npT = (_npTrackEl && _npTrackEl.textContent.trim()) || ''; _npPlayBtn.setAttribute('aria-label', (p ? 'Pause' : 'Play') + (_npT ? ' ' + _npT : ''));   /* (says what it plays) */
 if (typeof updatePlayUI === 'function') updatePlayUI();
 }
 // Covers are 504px files; a sharper 800px copy (rel.art2x, listed by scripts/generate_content.py only when the file
@@ -1178,7 +1182,7 @@ if (_party) _party.addEventListener('click', function(e) {
 });
 }
 var _npArt = document.createElement('img');
-_npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = '';   /* decorative here: it sits inside the "Open full-screen player" button, which has its own name */ _npArt.hidden = true;
+_npArt.id = 'np-art'; _npArt.className = 'np-art'; _npArt.alt = ''; _npArt.width = 88; _npArt.height = 88;   /* decorative here: it sits inside the "Open full-screen player" button, which has its own name */ _npArt.hidden = true;
 document.getElementById('np-expand').insertBefore(_npArt, document.getElementById('np-expand').firstChild);
 let _lastTimeStore = 0;
 const _npFill = document.getElementById('np-fill');
@@ -1305,7 +1309,7 @@ if ('mediaSession' in navigator) {
 (function() {
 var fs = document.getElementById('fs-player');
 var fsArt = document.createElement('img');
-fsArt.id = 'fs-art'; fsArt.className = 'fs-art'; fsArt.alt = '';   /* set to "Album cover: <album>" each time the cover changes (fsUpdateArt) */ fsArt.hidden = true;
+fsArt.id = 'fs-art'; fsArt.width = 504; fsArt.height = 504; fsArt.className = 'fs-art'; fsArt.alt = '';   /* set to "Album cover: <album>" each time the cover changes (fsUpdateArt) */ fsArt.hidden = true;
 document.getElementById('fs-art-wrap').appendChild(fsArt);
 var fsTrack = document.getElementById('fs-track');
 var fsAlbum = document.getElementById('fs-album');
@@ -1353,7 +1357,7 @@ npMarquee(fsAlbum);
 fsUpdateArt();
 fsUpdatePlatforms();
 fsPlayIcon.innerHTML = npAudio.paused ? PLAY : PAUSE;
-document.getElementById('fs-play').setAttribute('aria-label', npAudio.paused ? 'Play' : 'Pause');
+document.getElementById('fs-play').setAttribute('aria-label', (npAudio.paused ? 'Play' : 'Pause') + ((_npTrackEl && _npTrackEl.textContent.trim()) ? ' ' + _npTrackEl.textContent.trim() : ''));
 var fsRepeatBtn = document.getElementById('fs-repeat');
 if (fsRepeatBtn) fsRepeatBtn.classList.toggle('active', pState.repeat);
 if (npAudio.duration) {
@@ -1778,8 +1782,8 @@ if (fsCur.textContent !== txt) fsCur.textContent = txt;
 npAudio.addEventListener('loadedmetadata', function() {
 if (_fsOpen) fsDur.textContent = fmtT(npAudio.duration);
 });
-npAudio.addEventListener('play', function() { if (_fsOpen) { fsPlayIcon.innerHTML = PAUSE; document.getElementById('fs-play').setAttribute('aria-label', 'Pause'); } });
-npAudio.addEventListener('pause', function() { if (_fsOpen) { fsPlayIcon.innerHTML = PLAY; document.getElementById('fs-play').setAttribute('aria-label', 'Play'); } });
+npAudio.addEventListener('play', function() { if (_fsOpen) { fsPlayIcon.innerHTML = PAUSE; document.getElementById('fs-play').setAttribute('aria-label', 'Pause ' + ((_npTrackEl && _npTrackEl.textContent.trim()) || '')); } });
+npAudio.addEventListener('pause', function() { if (_fsOpen) { fsPlayIcon.innerHTML = PLAY; document.getElementById('fs-play').setAttribute('aria-label', 'Play ' + ((_npTrackEl && _npTrackEl.textContent.trim()) || '')); } });
 var _origNpLoad = npLoad;
 npLoad = function(track, album, src, autoplay, opts) {
 _origNpLoad(track, album, src, autoplay, opts);
@@ -4385,5 +4389,21 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
+<script>
+/* Contact's Copy button: copies the address, says "Copied" for two seconds (and tells screen readers). Shown only where
+   the browser can copy (it stays hidden otherwise, and without scripts). */
+(function() {
+  var b = document.querySelector('.contact-copy'); if (!b) return;
+  var can = !!(navigator.clipboard && window.isSecureContext) || !!document.queryCommandSupported; if (!can) return;
+  b.hidden = false; var w = b.querySelector('.btn-word'), t = 0;
+  b.addEventListener('click', function() {
+    var text = b.getAttribute('data-copy');
+    var done = function() { w.textContent = 'Copied'; b.classList.add('is-copied'); var sr = document.getElementById('sr-announce'); if (sr) { sr.textContent = ''; setTimeout(function() { sr.textContent = 'Email address copied'; }, 30); }
+      clearTimeout(t); t = setTimeout(function() { w.textContent = 'Copy'; b.classList.remove('is-copied'); }, 2000); };
+    var old = function() { var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, old); else old();
+  });
+})();
+</script>
 </body>
 </html>

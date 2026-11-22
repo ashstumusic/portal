@@ -321,7 +321,8 @@ for i in range(N):
     sc, dy = 1 - .28 * z, -6.5 * z
     sx = -sc if left else sc
     U = 100 / 60   # one drawing unit in cqh (the line is a size container: 1cqh = 1% of its height)
-    out.append(f'  {100 * i / N:.4g}% {{ left: calc(50% + {x * U:.2f}cqh); transform: translate(-50%, {dy * U:.2f}cqh) scale({sx:.3f}, {sc:.3f}); background-position-y: {row * 25}%; }}')
+    # (moved with transform only - it used to change `left`, which laid the page out again 6 times a second)
+    out.append(f'  {100 * i / N:.4g}% {{ transform: translate(calc(-50% + {x * U:.2f}cqh), {dy * U:.2f}cqh) scale({sx:.3f}, {sc:.3f}); background-position-y: {row * 25}%; }}')
 out.append('}')
 # which side of the letters the duck is on, step by step with the swim: on the far half of a loop (z > 0) the letters
 # are drawn over it (z-index 3), on the near half under it (1); the duck itself is at 2

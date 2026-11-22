@@ -2630,102 +2630,102 @@ html { overscroll-behavior-y: none; }
   75% { background-position-x: 100%; -webkit-mask-position: 2.5em .45em; mask-position: 2.5em .45em; }
 }
 @keyframes duck-eight {
-  0% { left: calc(50% + 0.00cqh); transform: translate(-50%, -0.00cqh) scale(1.000, 1.000); background-position-y: 75%; }
-  1.042% { left: calc(50% + 18.75cqh); transform: translate(-50%, -0.71cqh) scale(0.982, 0.982); background-position-y: 75%; }
-  2.083% { left: calc(50% + 37.42cqh); transform: translate(-50%, -1.40cqh) scale(0.964, 0.964); background-position-y: 75%; }
-  3.125% { left: calc(50% + 55.93cqh); transform: translate(-50%, -2.07cqh) scale(0.946, 0.946); background-position-y: 75%; }
-  4.167% { left: calc(50% + 74.19cqh); transform: translate(-50%, -2.71cqh) scale(0.930, 0.930); background-position-y: 75%; }
-  5.208% { left: calc(50% + 92.15cqh); transform: translate(-50%, -3.30cqh) scale(0.915, 0.915); background-position-y: 75%; }
-  6.25% { left: calc(50% + 109.70cqh); transform: translate(-50%, -3.83cqh) scale(0.901, 0.901); background-position-y: 75%; }
-  7.292% { left: calc(50% + 126.79cqh); transform: translate(-50%, -4.30cqh) scale(0.889, 0.889); background-position-y: 0%; }
-  8.333% { left: calc(50% + 143.33cqh); transform: translate(-50%, -4.69cqh) scale(0.879, 0.879); background-position-y: 0%; }
-  9.375% { left: calc(50% + 159.26cqh); transform: translate(-50%, -5.00cqh) scale(0.871, 0.871); background-position-y: 0%; }
-  10.42% { left: calc(50% + 174.51cqh); transform: translate(-50%, -5.23cqh) scale(0.865, 0.865); background-position-y: 0%; }
-  11.46% { left: calc(50% + 189.01cqh); transform: translate(-50%, -5.37cqh) scale(0.861, 0.861); background-position-y: 0%; }
-  12.5% { left: calc(50% + 202.70cqh); transform: translate(-50%, -5.42cqh) scale(0.860, 0.860); background-position-y: 0%; }
-  13.54% { left: calc(50% + 215.53cqh); transform: translate(-50%, -5.37cqh) scale(0.861, 0.861); background-position-y: 0%; }
-  14.58% { left: calc(50% + 227.43cqh); transform: translate(-50%, -5.23cqh) scale(0.865, 0.865); background-position-y: 0%; }
-  15.62% { left: calc(50% + 238.35cqh); transform: translate(-50%, -5.00cqh) scale(0.871, 0.871); background-position-y: 0%; }
-  16.67% { left: calc(50% + 248.26cqh); transform: translate(-50%, -4.69cqh) scale(0.879, 0.879); background-position-y: 25%; }
-  17.71% { left: calc(50% + 257.10cqh); transform: translate(-50%, -4.30cqh) scale(0.889, 0.889); background-position-y: 25%; }
-  18.75% { left: calc(50% + 264.85cqh); transform: translate(-50%, -3.83cqh) scale(0.901, 0.901); background-position-y: 25%; }
-  19.79% { left: calc(50% + 271.45cqh); transform: translate(-50%, -3.30cqh) scale(0.915, 0.915); background-position-y: 25%; }
-  20.83% { left: calc(50% + 276.90cqh); transform: translate(-50%, -2.71cqh) scale(0.930, 0.930); background-position-y: 25%; }
-  21.88% { left: calc(50% + 281.16cqh); transform: translate(-50%, -2.07cqh) scale(0.946, 0.946); background-position-y: 25%; }
-  22.92% { left: calc(50% + 284.21cqh); transform: translate(-50%, -1.40cqh) scale(0.964, 0.964); background-position-y: 25%; }
-  23.96% { left: calc(50% + 286.05cqh); transform: translate(-50%, -0.71cqh) scale(0.982, 0.982); background-position-y: 50%; }
-  25% { left: calc(50% + 286.67cqh); transform: translate(-50%, -0.00cqh) scale(1.000, 1.000); background-position-y: 50%; }
-  26.04% { left: calc(50% + 286.05cqh); transform: translate(-50%, 0.71cqh) scale(-1.018, 1.018); background-position-y: 50%; }
-  27.08% { left: calc(50% + 284.21cqh); transform: translate(-50%, 1.40cqh) scale(-1.036, 1.036); background-position-y: 25%; }
-  28.12% { left: calc(50% + 281.16cqh); transform: translate(-50%, 2.07cqh) scale(-1.054, 1.054); background-position-y: 25%; }
-  29.17% { left: calc(50% + 276.90cqh); transform: translate(-50%, 2.71cqh) scale(-1.070, 1.070); background-position-y: 25%; }
-  30.21% { left: calc(50% + 271.45cqh); transform: translate(-50%, 3.30cqh) scale(-1.085, 1.085); background-position-y: 25%; }
-  31.25% { left: calc(50% + 264.85cqh); transform: translate(-50%, 3.83cqh) scale(-1.099, 1.099); background-position-y: 25%; }
-  32.29% { left: calc(50% + 257.10cqh); transform: translate(-50%, 4.30cqh) scale(-1.111, 1.111); background-position-y: 25%; }
-  33.33% { left: calc(50% + 248.26cqh); transform: translate(-50%, 4.69cqh) scale(-1.121, 1.121); background-position-y: 25%; }
-  34.38% { left: calc(50% + 238.35cqh); transform: translate(-50%, 5.00cqh) scale(-1.129, 1.129); background-position-y: 0%; }
-  35.42% { left: calc(50% + 227.43cqh); transform: translate(-50%, 5.23cqh) scale(-1.135, 1.135); background-position-y: 0%; }
-  36.46% { left: calc(50% + 215.53cqh); transform: translate(-50%, 5.37cqh) scale(-1.139, 1.139); background-position-y: 0%; }
-  37.5% { left: calc(50% + 202.70cqh); transform: translate(-50%, 5.42cqh) scale(-1.140, 1.140); background-position-y: 0%; }
-  38.54% { left: calc(50% + 189.01cqh); transform: translate(-50%, 5.37cqh) scale(-1.139, 1.139); background-position-y: 0%; }
-  39.58% { left: calc(50% + 174.51cqh); transform: translate(-50%, 5.23cqh) scale(-1.135, 1.135); background-position-y: 0%; }
-  40.62% { left: calc(50% + 159.26cqh); transform: translate(-50%, 5.00cqh) scale(-1.129, 1.129); background-position-y: 0%; }
-  41.67% { left: calc(50% + 143.33cqh); transform: translate(-50%, 4.69cqh) scale(-1.121, 1.121); background-position-y: 0%; }
-  42.71% { left: calc(50% + 126.79cqh); transform: translate(-50%, 4.30cqh) scale(-1.111, 1.111); background-position-y: 0%; }
-  43.75% { left: calc(50% + 109.70cqh); transform: translate(-50%, 3.83cqh) scale(-1.099, 1.099); background-position-y: 75%; }
-  44.79% { left: calc(50% + 92.15cqh); transform: translate(-50%, 3.30cqh) scale(-1.085, 1.085); background-position-y: 75%; }
-  45.83% { left: calc(50% + 74.19cqh); transform: translate(-50%, 2.71cqh) scale(-1.070, 1.070); background-position-y: 75%; }
-  46.88% { left: calc(50% + 55.93cqh); transform: translate(-50%, 2.07cqh) scale(-1.054, 1.054); background-position-y: 75%; }
-  47.92% { left: calc(50% + 37.42cqh); transform: translate(-50%, 1.40cqh) scale(-1.036, 1.036); background-position-y: 75%; }
-  48.96% { left: calc(50% + 18.75cqh); transform: translate(-50%, 0.71cqh) scale(-1.018, 1.018); background-position-y: 75%; }
-  50% { left: calc(50% + 0.00cqh); transform: translate(-50%, 0.00cqh) scale(-1.000, 1.000); background-position-y: 75%; }
-  51.04% { left: calc(50% + -18.75cqh); transform: translate(-50%, -0.71cqh) scale(-0.982, 0.982); background-position-y: 75%; }
-  52.08% { left: calc(50% + -37.42cqh); transform: translate(-50%, -1.40cqh) scale(-0.964, 0.964); background-position-y: 75%; }
-  53.12% { left: calc(50% + -55.93cqh); transform: translate(-50%, -2.07cqh) scale(-0.946, 0.946); background-position-y: 75%; }
-  54.17% { left: calc(50% + -74.19cqh); transform: translate(-50%, -2.71cqh) scale(-0.930, 0.930); background-position-y: 75%; }
-  55.21% { left: calc(50% + -92.15cqh); transform: translate(-50%, -3.30cqh) scale(-0.915, 0.915); background-position-y: 75%; }
-  56.25% { left: calc(50% + -109.70cqh); transform: translate(-50%, -3.83cqh) scale(-0.901, 0.901); background-position-y: 75%; }
-  57.29% { left: calc(50% + -126.79cqh); transform: translate(-50%, -4.30cqh) scale(-0.889, 0.889); background-position-y: 0%; }
-  58.33% { left: calc(50% + -143.33cqh); transform: translate(-50%, -4.69cqh) scale(-0.879, 0.879); background-position-y: 0%; }
-  59.38% { left: calc(50% + -159.26cqh); transform: translate(-50%, -5.00cqh) scale(-0.871, 0.871); background-position-y: 0%; }
-  60.42% { left: calc(50% + -174.51cqh); transform: translate(-50%, -5.23cqh) scale(-0.865, 0.865); background-position-y: 0%; }
-  61.46% { left: calc(50% + -189.01cqh); transform: translate(-50%, -5.37cqh) scale(-0.861, 0.861); background-position-y: 0%; }
-  62.5% { left: calc(50% + -202.70cqh); transform: translate(-50%, -5.42cqh) scale(-0.860, 0.860); background-position-y: 0%; }
-  63.54% { left: calc(50% + -215.53cqh); transform: translate(-50%, -5.37cqh) scale(-0.861, 0.861); background-position-y: 0%; }
-  64.58% { left: calc(50% + -227.43cqh); transform: translate(-50%, -5.23cqh) scale(-0.865, 0.865); background-position-y: 0%; }
-  65.62% { left: calc(50% + -238.35cqh); transform: translate(-50%, -5.00cqh) scale(-0.871, 0.871); background-position-y: 0%; }
-  66.67% { left: calc(50% + -248.26cqh); transform: translate(-50%, -4.69cqh) scale(-0.879, 0.879); background-position-y: 25%; }
-  67.71% { left: calc(50% + -257.10cqh); transform: translate(-50%, -4.30cqh) scale(-0.889, 0.889); background-position-y: 25%; }
-  68.75% { left: calc(50% + -264.85cqh); transform: translate(-50%, -3.83cqh) scale(-0.901, 0.901); background-position-y: 25%; }
-  69.79% { left: calc(50% + -271.45cqh); transform: translate(-50%, -3.30cqh) scale(-0.915, 0.915); background-position-y: 25%; }
-  70.83% { left: calc(50% + -276.90cqh); transform: translate(-50%, -2.71cqh) scale(-0.930, 0.930); background-position-y: 25%; }
-  71.88% { left: calc(50% + -281.16cqh); transform: translate(-50%, -2.07cqh) scale(-0.946, 0.946); background-position-y: 25%; }
-  72.92% { left: calc(50% + -284.21cqh); transform: translate(-50%, -1.40cqh) scale(-0.964, 0.964); background-position-y: 25%; }
-  73.96% { left: calc(50% + -286.05cqh); transform: translate(-50%, -0.71cqh) scale(-0.982, 0.982); background-position-y: 50%; }
-  75% { left: calc(50% + -286.67cqh); transform: translate(-50%, -0.00cqh) scale(-1.000, 1.000); background-position-y: 50%; }
-  76.04% { left: calc(50% + -286.05cqh); transform: translate(-50%, 0.71cqh) scale(1.018, 1.018); background-position-y: 50%; }
-  77.08% { left: calc(50% + -284.21cqh); transform: translate(-50%, 1.40cqh) scale(1.036, 1.036); background-position-y: 25%; }
-  78.12% { left: calc(50% + -281.16cqh); transform: translate(-50%, 2.07cqh) scale(1.054, 1.054); background-position-y: 25%; }
-  79.17% { left: calc(50% + -276.90cqh); transform: translate(-50%, 2.71cqh) scale(1.070, 1.070); background-position-y: 25%; }
-  80.21% { left: calc(50% + -271.45cqh); transform: translate(-50%, 3.30cqh) scale(1.085, 1.085); background-position-y: 25%; }
-  81.25% { left: calc(50% + -264.85cqh); transform: translate(-50%, 3.83cqh) scale(1.099, 1.099); background-position-y: 25%; }
-  82.29% { left: calc(50% + -257.10cqh); transform: translate(-50%, 4.30cqh) scale(1.111, 1.111); background-position-y: 25%; }
-  83.33% { left: calc(50% + -248.26cqh); transform: translate(-50%, 4.69cqh) scale(1.121, 1.121); background-position-y: 25%; }
-  84.38% { left: calc(50% + -238.35cqh); transform: translate(-50%, 5.00cqh) scale(1.129, 1.129); background-position-y: 0%; }
-  85.42% { left: calc(50% + -227.43cqh); transform: translate(-50%, 5.23cqh) scale(1.135, 1.135); background-position-y: 0%; }
-  86.46% { left: calc(50% + -215.53cqh); transform: translate(-50%, 5.37cqh) scale(1.139, 1.139); background-position-y: 0%; }
-  87.5% { left: calc(50% + -202.70cqh); transform: translate(-50%, 5.42cqh) scale(1.140, 1.140); background-position-y: 0%; }
-  88.54% { left: calc(50% + -189.01cqh); transform: translate(-50%, 5.37cqh) scale(1.139, 1.139); background-position-y: 0%; }
-  89.58% { left: calc(50% + -174.51cqh); transform: translate(-50%, 5.23cqh) scale(1.135, 1.135); background-position-y: 0%; }
-  90.62% { left: calc(50% + -159.26cqh); transform: translate(-50%, 5.00cqh) scale(1.129, 1.129); background-position-y: 0%; }
-  91.67% { left: calc(50% + -143.33cqh); transform: translate(-50%, 4.69cqh) scale(1.121, 1.121); background-position-y: 0%; }
-  92.71% { left: calc(50% + -126.79cqh); transform: translate(-50%, 4.30cqh) scale(1.111, 1.111); background-position-y: 0%; }
-  93.75% { left: calc(50% + -109.70cqh); transform: translate(-50%, 3.83cqh) scale(1.099, 1.099); background-position-y: 75%; }
-  94.79% { left: calc(50% + -92.15cqh); transform: translate(-50%, 3.30cqh) scale(1.085, 1.085); background-position-y: 75%; }
-  95.83% { left: calc(50% + -74.19cqh); transform: translate(-50%, 2.71cqh) scale(1.070, 1.070); background-position-y: 75%; }
-  96.88% { left: calc(50% + -55.93cqh); transform: translate(-50%, 2.07cqh) scale(1.054, 1.054); background-position-y: 75%; }
-  97.92% { left: calc(50% + -37.42cqh); transform: translate(-50%, 1.40cqh) scale(1.036, 1.036); background-position-y: 75%; }
-  98.96% { left: calc(50% + -18.75cqh); transform: translate(-50%, 0.71cqh) scale(1.018, 1.018); background-position-y: 75%; }
+  0% { transform: translate(calc(-50% + 0.00cqh), -0.00cqh) scale(1.000, 1.000); background-position-y: 75%; }
+  1.042% { transform: translate(calc(-50% + 18.75cqh), -0.71cqh) scale(0.982, 0.982); background-position-y: 75%; }
+  2.083% { transform: translate(calc(-50% + 37.42cqh), -1.40cqh) scale(0.964, 0.964); background-position-y: 75%; }
+  3.125% { transform: translate(calc(-50% + 55.93cqh), -2.07cqh) scale(0.946, 0.946); background-position-y: 75%; }
+  4.167% { transform: translate(calc(-50% + 74.19cqh), -2.71cqh) scale(0.930, 0.930); background-position-y: 75%; }
+  5.208% { transform: translate(calc(-50% + 92.15cqh), -3.30cqh) scale(0.915, 0.915); background-position-y: 75%; }
+  6.25% { transform: translate(calc(-50% + 109.70cqh), -3.83cqh) scale(0.901, 0.901); background-position-y: 75%; }
+  7.292% { transform: translate(calc(-50% + 126.79cqh), -4.30cqh) scale(0.889, 0.889); background-position-y: 0%; }
+  8.333% { transform: translate(calc(-50% + 143.33cqh), -4.69cqh) scale(0.879, 0.879); background-position-y: 0%; }
+  9.375% { transform: translate(calc(-50% + 159.26cqh), -5.00cqh) scale(0.871, 0.871); background-position-y: 0%; }
+  10.42% { transform: translate(calc(-50% + 174.51cqh), -5.23cqh) scale(0.865, 0.865); background-position-y: 0%; }
+  11.46% { transform: translate(calc(-50% + 189.01cqh), -5.37cqh) scale(0.861, 0.861); background-position-y: 0%; }
+  12.5% { transform: translate(calc(-50% + 202.70cqh), -5.42cqh) scale(0.860, 0.860); background-position-y: 0%; }
+  13.54% { transform: translate(calc(-50% + 215.53cqh), -5.37cqh) scale(0.861, 0.861); background-position-y: 0%; }
+  14.58% { transform: translate(calc(-50% + 227.43cqh), -5.23cqh) scale(0.865, 0.865); background-position-y: 0%; }
+  15.62% { transform: translate(calc(-50% + 238.35cqh), -5.00cqh) scale(0.871, 0.871); background-position-y: 0%; }
+  16.67% { transform: translate(calc(-50% + 248.26cqh), -4.69cqh) scale(0.879, 0.879); background-position-y: 25%; }
+  17.71% { transform: translate(calc(-50% + 257.10cqh), -4.30cqh) scale(0.889, 0.889); background-position-y: 25%; }
+  18.75% { transform: translate(calc(-50% + 264.85cqh), -3.83cqh) scale(0.901, 0.901); background-position-y: 25%; }
+  19.79% { transform: translate(calc(-50% + 271.45cqh), -3.30cqh) scale(0.915, 0.915); background-position-y: 25%; }
+  20.83% { transform: translate(calc(-50% + 276.90cqh), -2.71cqh) scale(0.930, 0.930); background-position-y: 25%; }
+  21.88% { transform: translate(calc(-50% + 281.16cqh), -2.07cqh) scale(0.946, 0.946); background-position-y: 25%; }
+  22.92% { transform: translate(calc(-50% + 284.21cqh), -1.40cqh) scale(0.964, 0.964); background-position-y: 25%; }
+  23.96% { transform: translate(calc(-50% + 286.05cqh), -0.71cqh) scale(0.982, 0.982); background-position-y: 50%; }
+  25% { transform: translate(calc(-50% + 286.67cqh), -0.00cqh) scale(1.000, 1.000); background-position-y: 50%; }
+  26.04% { transform: translate(calc(-50% + 286.05cqh), 0.71cqh) scale(-1.018, 1.018); background-position-y: 50%; }
+  27.08% { transform: translate(calc(-50% + 284.21cqh), 1.40cqh) scale(-1.036, 1.036); background-position-y: 25%; }
+  28.12% { transform: translate(calc(-50% + 281.16cqh), 2.07cqh) scale(-1.054, 1.054); background-position-y: 25%; }
+  29.17% { transform: translate(calc(-50% + 276.90cqh), 2.71cqh) scale(-1.070, 1.070); background-position-y: 25%; }
+  30.21% { transform: translate(calc(-50% + 271.45cqh), 3.30cqh) scale(-1.085, 1.085); background-position-y: 25%; }
+  31.25% { transform: translate(calc(-50% + 264.85cqh), 3.83cqh) scale(-1.099, 1.099); background-position-y: 25%; }
+  32.29% { transform: translate(calc(-50% + 257.10cqh), 4.30cqh) scale(-1.111, 1.111); background-position-y: 25%; }
+  33.33% { transform: translate(calc(-50% + 248.26cqh), 4.69cqh) scale(-1.121, 1.121); background-position-y: 25%; }
+  34.38% { transform: translate(calc(-50% + 238.35cqh), 5.00cqh) scale(-1.129, 1.129); background-position-y: 0%; }
+  35.42% { transform: translate(calc(-50% + 227.43cqh), 5.23cqh) scale(-1.135, 1.135); background-position-y: 0%; }
+  36.46% { transform: translate(calc(-50% + 215.53cqh), 5.37cqh) scale(-1.139, 1.139); background-position-y: 0%; }
+  37.5% { transform: translate(calc(-50% + 202.70cqh), 5.42cqh) scale(-1.140, 1.140); background-position-y: 0%; }
+  38.54% { transform: translate(calc(-50% + 189.01cqh), 5.37cqh) scale(-1.139, 1.139); background-position-y: 0%; }
+  39.58% { transform: translate(calc(-50% + 174.51cqh), 5.23cqh) scale(-1.135, 1.135); background-position-y: 0%; }
+  40.62% { transform: translate(calc(-50% + 159.26cqh), 5.00cqh) scale(-1.129, 1.129); background-position-y: 0%; }
+  41.67% { transform: translate(calc(-50% + 143.33cqh), 4.69cqh) scale(-1.121, 1.121); background-position-y: 0%; }
+  42.71% { transform: translate(calc(-50% + 126.79cqh), 4.30cqh) scale(-1.111, 1.111); background-position-y: 0%; }
+  43.75% { transform: translate(calc(-50% + 109.70cqh), 3.83cqh) scale(-1.099, 1.099); background-position-y: 75%; }
+  44.79% { transform: translate(calc(-50% + 92.15cqh), 3.30cqh) scale(-1.085, 1.085); background-position-y: 75%; }
+  45.83% { transform: translate(calc(-50% + 74.19cqh), 2.71cqh) scale(-1.070, 1.070); background-position-y: 75%; }
+  46.88% { transform: translate(calc(-50% + 55.93cqh), 2.07cqh) scale(-1.054, 1.054); background-position-y: 75%; }
+  47.92% { transform: translate(calc(-50% + 37.42cqh), 1.40cqh) scale(-1.036, 1.036); background-position-y: 75%; }
+  48.96% { transform: translate(calc(-50% + 18.75cqh), 0.71cqh) scale(-1.018, 1.018); background-position-y: 75%; }
+  50% { transform: translate(calc(-50% + 0.00cqh), 0.00cqh) scale(-1.000, 1.000); background-position-y: 75%; }
+  51.04% { transform: translate(calc(-50% + -18.75cqh), -0.71cqh) scale(-0.982, 0.982); background-position-y: 75%; }
+  52.08% { transform: translate(calc(-50% + -37.42cqh), -1.40cqh) scale(-0.964, 0.964); background-position-y: 75%; }
+  53.12% { transform: translate(calc(-50% + -55.93cqh), -2.07cqh) scale(-0.946, 0.946); background-position-y: 75%; }
+  54.17% { transform: translate(calc(-50% + -74.19cqh), -2.71cqh) scale(-0.930, 0.930); background-position-y: 75%; }
+  55.21% { transform: translate(calc(-50% + -92.15cqh), -3.30cqh) scale(-0.915, 0.915); background-position-y: 75%; }
+  56.25% { transform: translate(calc(-50% + -109.70cqh), -3.83cqh) scale(-0.901, 0.901); background-position-y: 75%; }
+  57.29% { transform: translate(calc(-50% + -126.79cqh), -4.30cqh) scale(-0.889, 0.889); background-position-y: 0%; }
+  58.33% { transform: translate(calc(-50% + -143.33cqh), -4.69cqh) scale(-0.879, 0.879); background-position-y: 0%; }
+  59.38% { transform: translate(calc(-50% + -159.26cqh), -5.00cqh) scale(-0.871, 0.871); background-position-y: 0%; }
+  60.42% { transform: translate(calc(-50% + -174.51cqh), -5.23cqh) scale(-0.865, 0.865); background-position-y: 0%; }
+  61.46% { transform: translate(calc(-50% + -189.01cqh), -5.37cqh) scale(-0.861, 0.861); background-position-y: 0%; }
+  62.5% { transform: translate(calc(-50% + -202.70cqh), -5.42cqh) scale(-0.860, 0.860); background-position-y: 0%; }
+  63.54% { transform: translate(calc(-50% + -215.53cqh), -5.37cqh) scale(-0.861, 0.861); background-position-y: 0%; }
+  64.58% { transform: translate(calc(-50% + -227.43cqh), -5.23cqh) scale(-0.865, 0.865); background-position-y: 0%; }
+  65.62% { transform: translate(calc(-50% + -238.35cqh), -5.00cqh) scale(-0.871, 0.871); background-position-y: 0%; }
+  66.67% { transform: translate(calc(-50% + -248.26cqh), -4.69cqh) scale(-0.879, 0.879); background-position-y: 25%; }
+  67.71% { transform: translate(calc(-50% + -257.10cqh), -4.30cqh) scale(-0.889, 0.889); background-position-y: 25%; }
+  68.75% { transform: translate(calc(-50% + -264.85cqh), -3.83cqh) scale(-0.901, 0.901); background-position-y: 25%; }
+  69.79% { transform: translate(calc(-50% + -271.45cqh), -3.30cqh) scale(-0.915, 0.915); background-position-y: 25%; }
+  70.83% { transform: translate(calc(-50% + -276.90cqh), -2.71cqh) scale(-0.930, 0.930); background-position-y: 25%; }
+  71.88% { transform: translate(calc(-50% + -281.16cqh), -2.07cqh) scale(-0.946, 0.946); background-position-y: 25%; }
+  72.92% { transform: translate(calc(-50% + -284.21cqh), -1.40cqh) scale(-0.964, 0.964); background-position-y: 25%; }
+  73.96% { transform: translate(calc(-50% + -286.05cqh), -0.71cqh) scale(-0.982, 0.982); background-position-y: 50%; }
+  75% { transform: translate(calc(-50% + -286.67cqh), -0.00cqh) scale(-1.000, 1.000); background-position-y: 50%; }
+  76.04% { transform: translate(calc(-50% + -286.05cqh), 0.71cqh) scale(1.018, 1.018); background-position-y: 50%; }
+  77.08% { transform: translate(calc(-50% + -284.21cqh), 1.40cqh) scale(1.036, 1.036); background-position-y: 25%; }
+  78.12% { transform: translate(calc(-50% + -281.16cqh), 2.07cqh) scale(1.054, 1.054); background-position-y: 25%; }
+  79.17% { transform: translate(calc(-50% + -276.90cqh), 2.71cqh) scale(1.070, 1.070); background-position-y: 25%; }
+  80.21% { transform: translate(calc(-50% + -271.45cqh), 3.30cqh) scale(1.085, 1.085); background-position-y: 25%; }
+  81.25% { transform: translate(calc(-50% + -264.85cqh), 3.83cqh) scale(1.099, 1.099); background-position-y: 25%; }
+  82.29% { transform: translate(calc(-50% + -257.10cqh), 4.30cqh) scale(1.111, 1.111); background-position-y: 25%; }
+  83.33% { transform: translate(calc(-50% + -248.26cqh), 4.69cqh) scale(1.121, 1.121); background-position-y: 25%; }
+  84.38% { transform: translate(calc(-50% + -238.35cqh), 5.00cqh) scale(1.129, 1.129); background-position-y: 0%; }
+  85.42% { transform: translate(calc(-50% + -227.43cqh), 5.23cqh) scale(1.135, 1.135); background-position-y: 0%; }
+  86.46% { transform: translate(calc(-50% + -215.53cqh), 5.37cqh) scale(1.139, 1.139); background-position-y: 0%; }
+  87.5% { transform: translate(calc(-50% + -202.70cqh), 5.42cqh) scale(1.140, 1.140); background-position-y: 0%; }
+  88.54% { transform: translate(calc(-50% + -189.01cqh), 5.37cqh) scale(1.139, 1.139); background-position-y: 0%; }
+  89.58% { transform: translate(calc(-50% + -174.51cqh), 5.23cqh) scale(1.135, 1.135); background-position-y: 0%; }
+  90.62% { transform: translate(calc(-50% + -159.26cqh), 5.00cqh) scale(1.129, 1.129); background-position-y: 0%; }
+  91.67% { transform: translate(calc(-50% + -143.33cqh), 4.69cqh) scale(1.121, 1.121); background-position-y: 0%; }
+  92.71% { transform: translate(calc(-50% + -126.79cqh), 4.30cqh) scale(1.111, 1.111); background-position-y: 0%; }
+  93.75% { transform: translate(calc(-50% + -109.70cqh), 3.83cqh) scale(1.099, 1.099); background-position-y: 75%; }
+  94.79% { transform: translate(calc(-50% + -92.15cqh), 3.30cqh) scale(1.085, 1.085); background-position-y: 75%; }
+  95.83% { transform: translate(calc(-50% + -74.19cqh), 2.71cqh) scale(1.070, 1.070); background-position-y: 75%; }
+  96.88% { transform: translate(calc(-50% + -55.93cqh), 2.07cqh) scale(1.054, 1.054); background-position-y: 75%; }
+  97.92% { transform: translate(calc(-50% + -37.42cqh), 1.40cqh) scale(1.036, 1.036); background-position-y: 75%; }
+  98.96% { transform: translate(calc(-50% + -18.75cqh), 0.71cqh) scale(1.018, 1.018); background-position-y: 75%; }
 }
 @keyframes name-jitter {
   0% { filter: url(#hb1); translate: 0 0; rotate: 0deg; }
@@ -6515,3 +6515,22 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    white over its lower part, over the haze (which is drawn behind the page), keeping the soft gold glow on top. */
 :root.psy #about:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: radial-gradient(ellipse 70% 55% at 50% 42%, rgb(247 197 73 / .14), transparent 70%), linear-gradient(to bottom, rgb(255 255 255 / 0) 35%, rgb(255 255 255 / .85) 78%, #fff 100%) !important; }
 @media (forced-colors: active) { :root.psy #about:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background-image: none !important; } }
+/* (the empty, hidden word the button pass adds inside a video's picture button took a row gap and stretched every
+   video card by 21px just after the page loaded - a visible jump on /videos/ and /about/; the picture needs no word) */
+:root.psy .vid-card > .btn-word[data-auto]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none !important; }
+/* (Home in the home section: pressable like the current section's button - it takes you to the very top - and reachable) */
+:root.js.psy .nav .nav-logo:is([data-home="plain"], :not([data-home])):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { pointer-events: auto !important; cursor: pointer; }
+/* Contact's Copy button: the same glass button as the email link beside it, picture over... beside its word; gold on hover. */
+:root.psy #contact .contact-inner:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+:root.psy #contact .contact-intro:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex-basis: 100%; }
+:root.psy #contact .contact-copy:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .06); color: var(--text-1); font: 600 15px/1 var(--font-ui); cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+:root.psy #contact .contact-copy[hidden]:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { display: none; }
+:root.psy #contact .contact-copy .cc-ico:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { flex: none; }
+@media (hover: hover) { :root.psy #contact .contact-copy:hover:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { background: var(--gold, #F7C549); border-color: var(--gold, #F7C549); color: #111; } }
+:root.psy #contact .contact-copy:focus-visible:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { outline: 3px solid var(--gold, #F7C549); outline-offset: 2px; }
+:root.psy #contact .contact-copy:active:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { transform: scale(.97); }
+:root.psy #contact .contact-copy.is-copied:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border-color: var(--gold, #F7C549); }
+@media (forced-colors: active) { :root.psy #contact .contact-copy:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { border: 1px solid ButtonText; } }
+/* (Copy matches the email link beside it exactly: height, glass, border, type) */
+:root.psy #contact .contact-copy:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { min-height: 40px; height: 40px; background: rgb(255 255 255 / .1); border-color: rgb(245 245 247 / .55); }
+:root.psy #contact .contact-copy .btn-word:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#) { font: inherit !important; letter-spacing: inherit; }

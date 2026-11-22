@@ -183,7 +183,11 @@ html = re.sub(r'<link rel="preload"[^>]*>\n?', "", html)
 # (UI = Bricolage is the nav and all body text; Outfit used to be preloaded
 # here but nothing on the page renders in it any more, so that preload was
 # 20KB fetched at top priority and thrown away.)
-_PRELOAD_FONTS = {"Fonts/battambang/Battambang-Bold.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/bricolage/BricolageGrotesque-VF.ttf"}
+_PRELOAD_FONTS = {"Fonts/battambang/Battambang-Bold.ttf", "Fonts/xperimental/Boiled-Pasta.ttf", "Fonts/bricolage/BricolageGrotesque-VF.ttf",
+                  # (also the small ones whose late arrival moved the page: the quote's name above Videos gained a line when
+                  # Vast Shadow arrived, the About tagline changed size when its handwriting did, and the category labels;
+                  # a page opened at a section - /videos/, /about/ - jumped as they landed)
+                  "Fonts/vastshadow/VastShadow-Regular.ttf", "Fonts/j.d.ttf", "Fonts/nationalpark/NationalPark-VF.ttf"}
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS
