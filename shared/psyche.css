@@ -110,8 +110,8 @@
   /* The white chalk sheet is used as a stencil; the script gives each star
      its colour (background-color) and design/frame (mask-position). */
   background-color: #F4EDE4;
-  -webkit-mask: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
-          mask: url('Images/chalk-stars.webp') 0 0 / 300% 600% no-repeat;
+  -webkit-mask: url('Images/chalk-stars.webp?v=2') 0 0 / 300% 600% no-repeat;
+          mask: url('Images/chalk-stars.webp?v=2') 0 0 / 300% 600% no-repeat;
   opacity: .9; transition: opacity .45s linear;   /* a star fades where it would cross content as the sky turns */
 }
 @media print { .cut-stars { display: none; } }

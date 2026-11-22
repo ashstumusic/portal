@@ -15,7 +15,7 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 
-CELL, FRAMES, SS = 256, 3, 4            # cell px, boil frames, supersampling (drawn at 1024px, kept at 256px so the
+CELL, FRAMES, SS = 384, 3, 4            # cell px, boil frames, supersampling (drawn at 1536px, kept at 384px: sharp at the largest star, about 107px, on 3x screens; was 256, so the
                                          # largest stars stay sharp on 3x screens; was 128px, which went soft)
 N = CELL * SS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'chalk-stars.webp')

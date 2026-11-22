@@ -115,6 +115,12 @@ def fill_shape(pts, rng=None, amp=0):
     if rng: p = wobble(p, rng, amp)
     return curve(p[::1], True)
 
+def paths(ds, **attr):
+    """each pencil stroke its own shape: in one combined path, two strokes crossing (a stem over a note head, a letter's
+    bar over its stem) wound opposite ways and cut a hole where they met"""
+    a = ''.join(f' {k}="{v}"' for k, v in attr.items())
+    return ''.join(f'<path d="{d}"{a}/>' for d in ds)
+
 rng = random.Random(1907)
 
 # ── the water ── (an alphabet soup, owner's request: pasta letters bob in it as the duck swims around them)
@@ -150,8 +156,8 @@ for f in range(FRAMES):
         wy = water_y(lx, f); rot = math.radians(lean + 5 * math.sin(f * 1.7 + k)); bw = size * (.62 if ch in 'TI' else .74)
         place = lambda pts: [(lx + (px - .5) * bw * math.cos(rot) - (py - .8) * size * math.sin(rot), wy + (px - .5) * bw * math.sin(rot) + (py - .8) * size * math.cos(rot)) for px, py in pts]
         letters += [pencil(place(resample(st, .06)), rng, w=2.9, amp=.08, step=1.1, lift=.2, res=1.8) for st in LETTERS[ch]]
-    groups.append(f'<path transform="translate(0 {f * H})" d="{" ".join(strokes)}"/>')
-    lgroups.append(f'<path transform="translate(0 {f * H})" d="{" ".join(letters)}"/>')
+    groups.append(f'<g transform="translate(0 {f * H})">{paths(strokes)}</g>')
+    lgroups.append(f'<g transform="translate(0 {f * H})">{paths(letters)}</g>')
 # The water line and the letters are two drawings (owner's request: the duck swims behind the letters on the far half of
 # each loop of its figure 8, and in front of them on the near half), laid one over the other in the same frame grid:
 #   Images/pool-waves.svg   the line of waves         Images/soup-letters.svg   the letters ASH ... STU
@@ -235,7 +241,7 @@ for pi, pose in enumerate(POSES):
         for ex, ey in place(pose['eyes']):
             eyes += f'<path d="{fill_shape(oval(ex, ey, 1.75, 1.95, rng.uniform(-.3, .3), 14), rng, .04)}" fill="{INK}"/>'
             eyes += f'<circle cx="{ex - .55:.2f}" cy="{ey - .7:.2f}" r=".5" fill="#fff"/>'
-        cells.append(f'<g transform="translate({f * CW} {pi * CH})">{fills}<path d="{" ".join(strokes)}" fill="{PEN}"/>{bill}{eyes}</g>')   # (pen ink: owner's request)
+        cells.append(f'<g transform="translate({f * CW} {pi * CH})">{fills}{paths(strokes, fill=PEN)}{bill}{eyes}</g>')   # (pen ink: owner's request)
 NP = len(POSES)
 open(os.path.join(IMG, 'rubber-duck.svg'), 'w').write(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CW * FRAMES} {CH * NP}" width="{CW * FRAMES}" height="{CH * NP}">'
@@ -280,12 +286,12 @@ for row, (BILL, DX, DY) in enumerate(BILLS):
             strokes, hs = note_shape(kind)
             lines += [pencil(tf(st), rng, w=2.3 * min(1.15, sc), amp=.1, step=2, lift=.18, res=2.2) for st in strokes]
             heads += [curve(wobble(tf(h), rng, .05), True) for h in hs]
-        ncells.append(f'<g transform="translate({f * NCW} {row * NCH})"><path d="{" ".join(lines + heads)}" fill="url(#g)"/></g>')
+        ncells.append(f'<g transform="translate({f * NCW} {row * NCH})" fill="url(#g{row})">{paths(lines + heads)}</g>')
 NR = len(BILLS)
 open(os.path.join(IMG, 'duck-notes.svg'), 'w').write(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {NCW * NF} {NCH * NR}" width="{NCW * NF}" height="{NCH * NR}">'
-    '<defs><linearGradient id="g" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">'
-    '<stop offset="0" stop-color="#B0145E"/><stop offset=".5" stop-color="#A8400A"/><stop offset="1" stop-color="#0B6A8C"/></linearGradient></defs>'
+    "<defs>" + "".join(f'<linearGradient id="g{r}" gradientUnits="userSpaceOnUse" x1="{b[0][0] + OX + 2:.0f}" y1="0" x2="{b[0][0] + OX + b[1] - 6:.0f}" y2="0">'   # (one colour sweep per pose, across where its notes fly: pink at the bill to teal at the far end)
+                       '<stop offset="0" stop-color="#B0145E"/><stop offset=".5" stop-color="#A8400A"/><stop offset="1" stop-color="#0B6A8C"/></linearGradient>' for r, b in enumerate(BILLS)) + "</defs>"
     f'{"".join(ncells)}</svg>\n')
 
 # ── the figure 8 ──
