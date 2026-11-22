@@ -214,6 +214,7 @@ POSES.append(dict(
            qbez((-3.5, -2), (0, -8), (3.5, -2))],
     fills=[poly_close(qbez((-21, 0), (-23, -9), (-8, -12)), qbez((8, -12), (23, -9), (21, 0))), circle(0, -21, 9, 0, 1)],
     eyes=[]))
+NECKS = [(6, -20), (3, -20), (0, -22), (5, -21), (0, -21)]   # each pose's head centre
 RIPPLES = (qbez((-48, 9), (-40, 6), (-32, 9)), qbez((34, 9), (42, 6), (50, 9)))
 cells = []
 for pi, pose in enumerate(POSES):
@@ -222,7 +223,9 @@ for pi, pose in enumerate(POSES):
         place = lambda pts: [(CX + S * (x * math.cos(tip) - y * math.sin(tip)), CY + bob + S * (x * math.sin(tip) + y * math.cos(tip))) for x, y in pts]
         strokes = [pencil(place(st), rng) for st in pose['lines']]
         strokes += [pencil([(CX + x, CY + y) for x, y in st], rng, w=2.6, amp=.12, lift=.32) for st in RIPPLES]
-        fills = ''.join(f'<path d="{fill_shape(place(fp))}" fill="#fff"/>' for fp in pose['fills'])
+        # (plus the neck: the white of the head and of the body meet there, so nothing behind the duck shows between them)
+        hx, hy = NECKS[pi]
+        fills = ''.join(f'<path d="{fill_shape(place(fp))}" fill="#fff"/>' for fp in pose['fills'] + [oval(hx, hy + 7.5, 6.5, 5.5)])
         bill = ''
         if pose.get('bill'):
             bill = f'<path d="{fill_shape(place(pose["bill"]), rng, .12)}" fill="{BILL_ORANGE}"/>'
