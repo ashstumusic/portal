@@ -299,9 +299,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <h2 class="section-h" id="contact-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>Contact</h2>
   <div class="contact-inner">
     <p class="contact-intro">For shows, press, or anything – message directly.</p>
-    <a href="mailto:ashstumusic@gmail.com" class="contact-email-link" aria-label="Email Ash Stu: ashstumusic@gmail.com">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      ashstumusic@gmail.com
+    <a href="mailto:ashstumusic@gmail.com" class="contact-email-link">   <!-- (no aria-label: what it says out loud starts from the address you see, then says where it takes you) -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span class="sr-only">Email Ash Stu at </span>ashstumusic@gmail.com<span class="sr-only"> (opens your email app)</span>
     </a>
     <!-- Copy (for visitors whose computer has no mail app set up: the email link then does nothing; copying works for everyone) -->
     <button type="button" class="contact-copy" data-copy="ashstumusic@gmail.com" aria-label="Copy the email address"><svg class="cc-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span class="btn-word">Copy</span></button>
@@ -4360,7 +4360,7 @@ function mark(im){
   if(old&&old.dataset.who===name)return;if(old)old.remove();
   var link=host.closest('a,button'),b=document.createElement('a');
   b.className='photo-credit auto-credit';b.dataset.who=name;b.textContent='Photo: '+name;
-  b.href=WHO[name];b.target='_blank';b.rel='noopener noreferrer';b.setAttribute('aria-label','Photo by '+name+' (opens her page on Facebook)');
+  b.href=WHO[name];b.target='_blank';b.rel='noopener noreferrer';b.setAttribute('aria-label','Photo: '+name+' (her Facebook page)');   /* (starts with the words on the label, so voice control users can say what they see) */
   if(link){   if(window.ResizeObserver){if(!window._credRO)window._credRO=new ResizeObserver(function(es){es.forEach(function(e){var l=e.target,c=l.nextElementSibling;if(c&&c.classList.contains('credit-beside')){c.style.top=(l.offsetTop+l.offsetHeight-8)+'px';c.style.right=(c.parentElement.clientWidth-l.offsetLeft-l.offsetWidth+8)+'px';}});});window._credRO.observe(link);}
     // (one link cannot sit inside another: the bubble goes just after the photo's link, placed over its bottom right corner)
     var box=link.parentElement;if(getComputedStyle(box).position==='static')box.style.position='relative';
