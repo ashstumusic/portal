@@ -515,7 +515,24 @@
       + '<ul class="k-si-list" id="' + id + '" role="listbox" aria-label="Suggestions" tabindex="-1" hidden></ul>';
     const inp = $('.k-si-input', host), ul = $('.k-si-list', host);
     /* a narrow toolbar field has room for one word only: a short hint there, the full one elsewhere (the accessible name is unchanged) */
-    if (!flow && window.matchMedia) { const mqS = window.matchMedia('(max-width: 1199px)'), fullPh = inp.getAttribute('placeholder'); const setPh = () => inp.setAttribute('placeholder', mqS.matches ? 'Search' : fullPh); setPh(); mqS.addEventListener ? mqS.addEventListener('change', setPh) : mqS.addListener(setPh); }
+    // The toolbar field's hint is the longest wording that fits it whole: "Search songs, lyrics, videos" where there is
+    // room, then shorter, down to "Search" - never cut off with "..." ("Search songs, ..." at 1280px wide).
+    if (!flow) {
+      const fullPh = inp.getAttribute('placeholder'), opts = [fullPh, 'Search songs and videos', 'Search songs', 'Search'];
+      const cv = document.createElement('canvas').getContext('2d');
+      const setPh = () => {
+        if (host.matches(":focus-within")) return;
+        const cs = getComputedStyle(inp), room = inp.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+        if (!(room > 0)) return;
+        cv.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        // (under 1200px the resting field is a toolbar button, a picture and one word like its neighbours: "Search")
+        const ph = matchMedia('(max-width: 1199px)').matches ? 'Search' : (opts.find((t) => cv.measureText(t).width <= room) || 'Search');
+        if (inp.getAttribute('placeholder') !== ph) inp.setAttribute('placeholder', ph);
+      };
+      let phT = 0; const queuePh = () => { cancelAnimationFrame(phT); phT = requestAnimationFrame(setPh); };
+      queuePh(); addEventListener('resize', queuePh, { passive: true }); document.fonts?.ready?.then(queuePh);
+      host.addEventListener("focusout", () => setTimeout(queuePh, 250));
+    }
     let items = [], lyrics = [], hits = [], act = 0, cT = 0;
     const shut = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); host.classList.remove('open'); };
     function draw() {

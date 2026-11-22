@@ -345,7 +345,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
     <blockquote class="disc-quote">
-      <p class="dq-text"><span class="dq-nb"><span class="dq-mark dq-mark--open" aria-hidden="true"></span>Anybody</span> caught singin’ these songs without our permission, will be <br/>mighty good friends of ourn, cause we don’t give a dern. <br/>Publish it. Write it. Sing it. Swing to it. Yodel it. <br/>We wrote it, that’s all we wanted to <span class="dq-nb">do.<span class="dq-mark dq-mark--close" aria-hidden="true"></span></span></p>
+      <p class="dq-text"><span class="dq-nb"><span class="dq-mark dq-mark--open" aria-hidden="true"></span>Anybody</span> caught singin’ these songs without our permission, will be <br/>mighty good friends of ourn, cause we don’t give a dern. <br/>Publish it. Write it. Sing it. Swing to it. Yodel it. <br/>We wrote it, that’s all we <span class="dq-nb">wanted to do.<span class="dq-mark dq-mark--close" aria-hidden="true"></span></span></p>
       <cite>Woody Guthrie</cite>
     </blockquote>
     <script>
@@ -3210,12 +3210,12 @@ var slug = function(x) { return String(x).toLowerCase().replace(/&/g, 'and').rep
 // One line says what is in the kit (owner's request: no repeated labels), the fact sheet a link inside it, then when it
 // was last updated. The kit's own heading ("Press Kit") and the site's name make a card title unnecessary.
 var sheet = KIT.files.filter(function(f) { return f.type === 'text' && /fact sheet/i.test(f.name); })[0];
-var inKit = [nSongs + (nSongs === 1 ? ' song' : ' songs') + (hasLyr ? ' with lyrics' : '')];
+var inKit = [nSongs + (nSongs === 1 ? '\u00a0song' : '\u00a0songs') + (hasLyr ? ' with lyrics' : '')];
 var nVids = KIT.files.filter(function(f) { return f.type === 'video'; }).length;
-if (nVids) inKit.push(nVids + (nVids === 1 ? ' live video' : ' live videos'));
-if (nPics) inKit.push(nPics + (nPics === 1 ? ' photo' : ' photos'));
+if (nVids) inKit.push(nVids + (nVids === 1 ? '\u00a0live video' : '\u00a0live videos'));
+if (nPics) inKit.push(nPics + (nPics === 1 ? '\u00a0photo' : '\u00a0photos'));
 if (sheet) inKit.push('<a href="' + escHtml(kitUrl(sheet.src)) + '" class="epk-doc-link" data-doc="' + escHtml(sheet.src) + '" data-name="' + escHtml(sheet.name) + '" aria-haspopup="dialog">a fact sheet</a>');
-var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0]).replace(/^(\d+ songs?)/, function(m) { return escHtml(m); });
+var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0]).replace(/^(\d+\u00a0songs?)/, function(m) { return escHtml(m); });
 var facts = '<p class="epk-summary">' + inKitHtml + '.</p>' + (KIT.updated ? '<p class="epk-updated">Updated <time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></p>' : '');
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Ash Stu press kit">' +
