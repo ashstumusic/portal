@@ -331,4 +331,4 @@ img.k-blurup { background-size: cover; background-position: center; }
 .k-nokeys .k-palette-foot { display: none; }
 
 /* A looping animation whose element is off screen is paused (set by kinetic.js; see "Looping animations rest"). */
-:root .k-rest:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#), :root .k-rest:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::before, :root .k-rest:not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#):not(#\#)::after { animation-play-state: paused !important; }
+:root .k-rest:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\#), :root .k-rest:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\#)::before, :root .k-rest:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\#)::after { animation-play-state: paused !important; }
