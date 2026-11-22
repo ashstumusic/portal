@@ -47,10 +47,11 @@ def slugify(s):
 
 
 def cover_alts():
-    """Descriptive cover alt text kept in redesign/facts.json."""
+    """Descriptive cover alt text, kept in scripts/cover_alts.json (picture path -> description). It used to be read from
+    redesign/facts.json, which is no longer published, so the site's automatic rebuild lost the descriptions."""
     try:
-        with open(os.path.join(ROOT, 'redesign', 'facts.json'), encoding='utf-8') as f:
-            return json.load(f).get('alt', {})
+        with open(os.path.join(ROOT, 'scripts', 'cover_alts.json'), encoding='utf-8') as f:
+            return json.load(f)
     except (OSError, ValueError):
         return {}
 
