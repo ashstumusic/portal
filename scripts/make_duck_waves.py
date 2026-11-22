@@ -141,8 +141,8 @@ LETTERS = {
     'H': [[(0, 0), (0, 1)], [(1, 0), (1, 1)], [(0, .5), (1, .5)]],
 }
 # where they float (the middle of the line - the part on screen), which letter, size and lean
-SOUP = [(452, 'A', 16, -6), (496, 'S', 14, 8), (540, 'H', 15, -5),      # ASH ... STU (owner's request: only these letters),
-        (660, 'S', 14, 9), (704, 'T', 15, -8), (748, 'U', 15, 6)]           # with a gap between the words just wide enough for
+SOUP = [(452, 'A', 23, -6), (496, 'S', 20, 8), (540, 'H', 22, -5),      # ASH ... STU (owner's request: only these letters; bigger, owner's request),
+        (660, 'S', 20, 9), (704, 'T', 22, -8), (748, 'U', 22, 6)]           # with a gap between the words just wide enough for
                                                                            # the duck, which rests there when motion is off;
                                                                            # all within the part of the line a phone shows
 groups, lgroups = [], []
@@ -155,7 +155,7 @@ for f in range(FRAMES):
         # soup (the line runs across its lower part) and rocking a few degrees as it bobs
         wy = water_y(lx, f); rot = math.radians(lean + 5 * math.sin(f * 1.7 + k)); bw = size * (.62 if ch in 'TI' else .74)
         place = lambda pts: [(lx + (px - .5) * bw * math.cos(rot) - (py - .8) * size * math.sin(rot), wy + (px - .5) * bw * math.sin(rot) + (py - .8) * size * math.cos(rot)) for px, py in pts]
-        letters += [pencil(place(resample(st, .06)), rng, w=2.9, amp=.08, step=1.1, lift=.2, res=1.8) for st in LETTERS[ch]]
+        letters += [pencil(place(resample(st, .06)), rng, w=3.5, amp=.08, step=1.1, lift=.2, res=1.8) for st in LETTERS[ch]]
     groups.append(f'<g transform="translate(0 {f * H})">{paths(strokes)}</g>')
     lgroups.append(f'<g transform="translate(0 {f * H})">{paths(letters)}</g>')
 # The water line and the letters are two drawings (owner's request: the duck swims behind the letters on the far half of
