@@ -14,7 +14,7 @@ SUBSET_DIR = "Fonts/subsetted"
 os.makedirs(SUBSET_DIR, exist_ok=True)
 
 UNICODES = "U+0020-007E,U+00B7,U+00E9,U+2013-2014,U+2018-201F,U+2026,U+2022,U+2605,U+2715"
-FIGMENT_TEXT = "A figment of my own imagination."
+FIGMENT_TEXT = "A figment of my own imagination. HI, HOW ARE YOU"   # (the second: the 1-in-100 tagline)
 
 FONT_FILES = [
     "Fonts/Header.ttf", "Fonts/Header-Italic.ttf",

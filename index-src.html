@@ -4148,8 +4148,11 @@ setTimeout(step,3000+Math.random()*2000);})();</script>
    (n below can repeat each line in extra decorative rows, hidden from
    screen readers; it is 1, so there are none.) */
 (function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
-/* one visit in a hundred, the duck has the last word (owner's request): the tagline reads "Quack, Quack." instead */
-if(bot&&Math.random()<.01){var _tg=bot.querySelector('.bio-tagline');if(_tg){_tg.dataset.measure=_tg.textContent;_tg.textContent='Quack, Quack.';}}
+/* one visit in a hundred (owner's request; it replaces the old "Quack, Quack."): the tagline says "HI, HOW ARE YOU"
+   instead, in the same handwriting, each letter boiling like a hand-drawn flipbook (a few drawn poses, flipped through
+   a few times a second; still with reduced motion or Effects off). Screen readers hear the words once, plainly. */
+if(bot&&Math.random()<.01){var _tg=bot.querySelector('.bio-tagline');if(_tg){var _hi='HI, HOW ARE YOU';_tg.dataset.measure=_tg.textContent;_tg.classList.add('is-hi');
+  _tg.innerHTML='<span class="sr-only">'+_hi+'</span><span class="hi-ink" aria-hidden="true">'+_hi.split('').map(function(ch,i){return ch===' '?' ':'<span class="hi-l" style="--i:'+i+'">'+ch+'</span>';}).join('')+'</span>';}}
 if(!card||!text||!bot)return;   /* (no name line any more: the tagline leads, owner's request) */
 if(!top){top=document.createElement('div');}var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
 function build(){
@@ -4169,7 +4172,7 @@ var cs=getComputedStyle(head),inner=head.clientWidth-parseFloat(cs.paddingLeft)-
 // wide desktop panel made it about 180px, far too big); the tagline matches the name's width,
 // and stays at least 17px so it can be read.
 var hs=document.querySelector('.section-h'),cap=2*parseFloat(getComputedStyle(hs||head).fontSize)||96;
-var nn=name?nat(name):0,nt=(function(){if(!tag.dataset.measure)return nat(tag);var c=tag.cloneNode(false);c.textContent=tag.dataset.measure;c.style.position='absolute';c.style.visibility='hidden';tag.parentNode.appendChild(c);var v=nat(c);c.remove();return v;})();   /* ("Quack, Quack." is set at the usual tagline's size) */
+var nn=name?nat(name):0,nt=(function(){if(!tag.dataset.measure)return nat(tag);var c=tag.cloneNode(false);c.textContent=tag.dataset.measure;c.style.position='absolute';c.style.visibility='hidden';tag.parentNode.appendChild(c);var v=nat(c);c.remove();var ink=tag.querySelector('.hi-ink');return Math.max(v,ink?(function(){tag.style.setProperty('font-size','100px','important');var g=document.createRange();g.selectNodeContents(ink);return g.getBoundingClientRect().width/100;})():0);})();   /* (the swapped line is set at the usual tagline's size - smaller only if it would be wider) */
 var side=media&&Math.abs(media.getBoundingClientRect().top-text.getBoundingClientRect().top)<4&&media.offsetWidth<card.offsetWidth-40;
 var f1,f2;
 if(!side&&media&&media.offsetWidth){
@@ -4362,5 +4365,65 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
 <script>/* Volume slider: on iPhone/iPad the system owns the volume (a page
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
+<script>
+/* Space dust (owner's request): purplish dust drifting down out of the night where the page's black fades into white
+   above About, thinning and fading away as it falls into the light. Decoration only: aria-hidden, never takes a
+   click, drawn only while on screen; with reduced motion or Effects off it rests as a still sprinkle. */
+(function() {
+  var about = document.getElementById('about'); if (!about || !window.requestAnimationFrame) return;
+  var cv = document.createElement('canvas'); cv.className = 'space-dust'; cv.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(cv);   /* (in the page's back layer with the stars: under all the content) */
+  var ctx = cv.getContext('2d'), W = 0, H = 0, dpr = 1, parts = [], on = false, raf = 0, last = 0;
+  var HUES = [[186, 150, 255], [160, 120, 255], [214, 186, 255], [140, 110, 230], [228, 205, 255]];
+  var still = function() { return (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.classList.contains('psy-calm'); };
+  function spawn(p, anywhere) {
+    var c = HUES[(Math.random() * HUES.length) | 0];
+    p.x = Math.random() * W; p.y = anywhere ? Math.random() * H : -6 - Math.random() * 30;
+    p.r = .8 + Math.pow(Math.random(), 2) * 2.4;            /* mostly fine dust, a few bigger motes */
+    p.vy = 9 + Math.random() * 16 + p.r * 4;                   /* px per second: slow, the bigger a little faster */
+    p.vx = (Math.random() - .5) * 6; p.sway = Math.random() * 6.28; p.swayS = .4 + Math.random() * .8;
+    p.tw = Math.random() * 6.28; p.c = c; return p;
+  }
+  function place() {   /* from behind the Videos panel's lower part, through the black, down into the white */
+    var panel = document.getElementById('videos'), y = window.scrollY || 0;
+    var pb = panel ? panel.getBoundingClientRect().bottom + y : about.getBoundingClientRect().top + y - 160;
+    var at = about.getBoundingClientRect().top + y;
+    var top = Math.round(pb - (innerWidth < 768 ? 220 : 380)), bottom = Math.round(at + (innerWidth < 768 ? 160 : 230));
+    cv.style.top = top + 'px'; cv.style.height = (bottom - top) + 'px';
+  }
+  function size() {
+    place(); var r = cv.getBoundingClientRect(); dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.round(Math.min(170, Math.max(60, W / 8)));
+    parts = []; for (var i = 0; i < n; i++) parts.push(spawn({}, true));
+    draw(0);
+  }
+  function draw(dt) {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (dt) { p.y += p.vy * dt; p.sway += p.swayS * dt; p.x += (p.vx + Math.sin(p.sway) * 4) * dt; p.tw += dt * 2.2; if (p.y > H + 4) spawn(p); if (p.x < -4) p.x = W + 4; else if (p.x > W + 4) p.x = -4; }
+      var t = p.y / H;                                        /* 0 in the dark at the top, 1 down in the white */
+      var a = Math.min(1, (t < .08 ? t / .08 : 1) * Math.pow(Math.max(0, 1 - t), 1.25) * (.8 + .2 * Math.sin(p.tw)) * 1.15);
+      if (a <= .01) continue;
+      var c = p.c, g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.2);
+      g.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')');
+      g.addColorStop(.35, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (a * .45) + ')');
+      g.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 3.2, 0, 6.2832); ctx.fill();
+    }
+  }
+  function loop(ts) { var dt = last ? Math.min(.05, (ts - last) / 1000) : 0; last = ts; draw(dt); raf = on && !still() ? requestAnimationFrame(loop) : 0; }
+  function go() { if (raf || !on || still()) { if (!on || still()) draw(0); return; } last = 0; raf = requestAnimationFrame(loop); }
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(es) { on = es[0].isIntersecting; if (!on && raf) { cancelAnimationFrame(raf); raf = 0; } go(); }).observe(cv);
+  else on = true;
+  var rt = 0, again = function() { clearTimeout(rt); rt = setTimeout(function() { size(); go(); }, 150); };
+  window.addEventListener('resize', again);
+  if ('ResizeObserver' in window) { var lastH = 0; new ResizeObserver(function() { var h = document.body.scrollHeight; if (Math.abs(h - lastH) > 2) { lastH = h; again(); } }).observe(document.body); }   /* (sections above change height: follow them) */
+  new MutationObserver(go).observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+  if (window.matchMedia) { var mq = matchMedia('(prefers-reduced-motion: reduce)'); (mq.addEventListener ? mq.addEventListener('change', go) : mq.addListener(go)); }
+  size(); go();
+})();
+</script>
 </body>
 </html>
