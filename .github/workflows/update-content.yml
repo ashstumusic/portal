@@ -39,7 +39,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.12"   # (pinned: a brand-new Python can lack ready-made Pillow builds, which failed this job)
 
       # (Pillow reads each cover's average colour, shown while the cover loads)
       - name: Install Pillow
