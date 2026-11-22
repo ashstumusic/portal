@@ -8,22 +8,11 @@
 /* ── 1. FIELD + GLASS ───────────────────────────────────────────────── */
 /* The liquid field sits under everything; the page's own paper shows
    through it, so text over the open page keeps its contrast. */
-.psy-field {
-  position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1;
-  pointer-events: none; opacity: .3;
-}
-:root[data-theme="dark"] .psy-field { opacity: .36; }
+.psy-field { position: fixed;; inset: 0;; width: 100vw;; height: 100vh;; z-index: -1;; pointer-events: none;; }
 
 /* Frosted glass: translucent surface + blur + saturation boost, so the
    field refracts through as soft colour; razor-thin light edges. */
-.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
-  background: rgb(250 252 252 / .6);
-  background: rgb(from var(--cream) r g b / .6);
-  -webkit-backdrop-filter: blur(22px) saturate(1.8);
-          backdrop-filter: blur(22px) saturate(1.8);
-  border: 1px solid rgb(255 255 255 / .6);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .7), 0 18px 44px -24px rgb(70 10 140 / .45);
-}
+
 :root[data-theme="dark"].psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
   background: rgb(15 27 32 / .58);
   background: rgb(from var(--cream) r g b / .58);
@@ -36,22 +25,10 @@
   .psy :is(.rel-card, .vid-card-wrap, .contact-inner, .bio-card) { background: var(--cream); }
 }
 /* The nav bar becomes glass too: the field and photo refract through. */
-.psy .nav {
-  background: rgb(8 76 97 / .62);
-  -webkit-backdrop-filter: blur(18px) saturate(1.8);
-          backdrop-filter: blur(18px) saturate(1.8);
-  border-bottom: 1px solid rgb(255 255 255 / .16);
-}
+.psy .nav { background: rgb(8 76 97 / .62);; border-bottom: 1px solid rgb(255 255 255 / .16);; }
 
 /* ── 4. RIPPLE ──────────────────────────────────────────────── */
-.psy-ripple {
-  position: fixed; inset: 0; z-index: -1; pointer-events: none; --r: 0px;
-  -webkit-backdrop-filter: saturate(1.6) hue-rotate(40deg) blur(1.5px);
-          backdrop-filter: saturate(1.6) hue-rotate(40deg) blur(1.5px);
-  background: conic-gradient(from 0deg at var(--x) var(--y), rgb(91 33 255 / .12), rgb(255 31 168 / .12), rgb(198 255 0 / .12), rgb(236 232 255 / .12), rgb(91 33 255 / .12));
-  -webkit-mask: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 46px), #000 calc(var(--r) - 22px), #000 var(--r), transparent calc(var(--r) + 18px));
-          mask: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 46px), #000 calc(var(--r) - 22px), #000 var(--r), transparent calc(var(--r) + 18px));
-}
+.psy-ripple { position: fixed;; inset: 0;; z-index: -1;; pointer-events: none;; --r: 0px;; background: conic-gradient(from 0deg at var(--x) var(--y), rgb(91 33 255 / .12), rgb(255 31 168 / .12), rgb(198 255 0 / .12), rgb(236 232 255 / .12), rgb(91 33 255 / .12));; -webkit-mask: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 46px), #000 calc(var(--r) - 22px), #000 var(--r), transparent calc(var(--r) + 18px));; mask: radial-gradient(circle at var(--x) var(--y), transparent calc(var(--r) - 46px), #000 calc(var(--r) - 22px), #000 var(--r), transparent calc(var(--r) + 18px));; }
 
 /* ── CALM: effects off (setting) or reduced motion ──────────────────── */
 .psy-calm .psy-ripple { display: none; }
@@ -63,8 +40,6 @@
    alpha (measured 3.0-3.6:1 against the brightest bands at full field
    strength), and the field itself is a shade softer. */
 .psy .disc-quote, .psy .disc-quote cite { color: var(--ink); }
-.psy-field { opacity: .13; }
-:root[data-theme="dark"] .psy-field { opacity: .18; }
 
 /* Background only: every effect lives on the z-index -1 layer behind the
    page (field first, then the ripple, in DOM order), so content is
@@ -72,13 +47,7 @@
 
 /* Quieter (Nov 2026): the liquid field is a faint tint, the glass barely
    saturates it, and the click ripple is a soft shimmer. */
-.psy-field { opacity: .07; }
-:root[data-theme="dark"] .psy-field { opacity: .1; }
-.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
-  -webkit-backdrop-filter: blur(22px) saturate(1.15);
-          backdrop-filter: blur(22px) saturate(1.15);
-}
-.psy .nav { -webkit-backdrop-filter: blur(18px) saturate(1.15); backdrop-filter: blur(18px) saturate(1.15); }
+
 .psy-ripple {
   -webkit-backdrop-filter: saturate(1.2) hue-rotate(15deg) blur(1px);
           backdrop-filter: saturate(1.2) hue-rotate(15deg) blur(1px);
@@ -87,12 +56,7 @@
 /* Further back (Nov 2026): the field is a soft, desaturated wash - blurred
    so the colour bands melt together, and faint enough to sit well behind
    the content. Glass no longer boosts it at all. */
-.psy-field { opacity: .045; filter: blur(24px) saturate(.6); }
-:root[data-theme="dark"] .psy-field { opacity: .07; }
-.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, .contact-inner, .bio-card) {
-  -webkit-backdrop-filter: blur(22px);
-          backdrop-filter: blur(22px);
-}
+
 .psy .nav { -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
 
 /* ── STARS (see shared/psyche.js) ───────────────────────────────────────
@@ -100,11 +64,7 @@
    page, clips at its sides (no sideways scroll) and never takes the
    pointer. Each star shows one cell of the sheet (6 designs down, 3 boil
    frames across); the script flips frames and jitters it 8 times a second. */
-.cut-stars {
-  position: absolute; top: 0; left: 0; width: 100%; height: 0;
-  overflow: hidden; overflow: clip; pointer-events: none; z-index: 3;
-  transition: opacity .38s linear;   /* the whole sky fades when it squares up after a song pauses */
-}
+.cut-stars { position: absolute;; top: 0;; left: 0;; width: 100%;; height: 0;; overflow: hidden;; overflow: clip;; pointer-events: none;; transition: opacity .38s linear;; }
 .chalk-star {
   position: absolute; display: block;
   /* The white chalk sheet is used as a stencil; the script gives each star
@@ -114,7 +74,7 @@
           mask: url('Images/chalk-stars.webp?v=2') 0 0 / 300% 600% no-repeat;
   opacity: .9; transition: opacity .45s linear;   /* a star fades where it would cross content as the sky turns */
 }
-@media print { .cut-stars { display: none; } }
+@media print {  }
 /* Every section laid out up front, so the page's height (and the sky
    measured from it) doesn't shift as sections come into view. */
 .psy main > section { content-visibility: visible; }
@@ -130,7 +90,6 @@
 :root.psy .fab-music, :root.psy .hero-scroll { color: #120E08; border-color: rgb(18 14 8 / .6); }
 :root.psy :is(.rel-card:hover:not(:has(.rel-btn:hover)), .rel-card:focus-visible:not(:has(.rel-btn:focus-visible)), .featured-play-overlay:hover, .featured-play-overlay:focus-visible) .rel-play-circle svg { color: #120E08; }
 
-
 /* The music player wears the top toolbar's colour: the same translucent
    teal glass (selectors match the dark-theme player rules they replace). */
 :root[data-theme="dark"] #player-bar#player-bar,
@@ -140,7 +99,6 @@
           backdrop-filter: blur(18px) saturate(1.8);
 }
 :root[data-theme="dark"] #player-bar#player-bar { border-top: 1px solid rgb(255 255 255 / .16); }
-
 
 /* Confetti falls in front of the featured panel's album, text and buttons.
    The canvas ignores the pointer, so everything under it stays clickable. */
@@ -155,7 +113,6 @@
 /* Fireworks burst behind the album cover (and the rest of the panel's
    content); the confetti canvas stays in front. */
 .hero-split-right > .fireworks-canvas { z-index: 0; pointer-events: none; }
-
 
 /* Stronger (Nov 2026): the rainbow fog comes back up - still blurred so
    the bands melt, but clearly visible behind the space-black page. */
@@ -201,7 +158,6 @@
 /* In the top bar the name is small: a lighter offset shadow. */
 .nav-logo .hero-name { filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .5)); }
 
-
 /* Header and toolbar: the name is plain white (no gradient, no offset
    shadow); the toolbar's star logo is white too. The header has no logo. */
 .hero-name, .nav-logo .hero-name {
@@ -210,7 +166,6 @@
 }
 
 /* A bit fainter (Nov 2026). */
-.psy-field, :root[data-theme="dark"] .psy-field { opacity: .11; }
 
 /* The hero's "Ash Stu" is back to the site's yellow (gold, with its soft
    glow); the toolbar keeps a white name and no star. */

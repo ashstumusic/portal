@@ -2,7 +2,6 @@
    --text-1 main text and headings, --text-2 secondary lines, --text-3 muted (lyrics previews, dates, notes). */
 :root { --text-1: #F5F5F7; --text-2: rgb(238 242 245 / .84); --text-3: rgb(236 239 245 / .68); --text-meta: #8F999F; }   /* (--text-meta: track numbers, dates and small notes) */
 
-
 /* New local-file fonts - Playfair Display + two on-brand display faces that
    were already sitting unused in /Fonts (see design notes). Loaded as plain
    files, not base64: they're used sparingly (headlines + two accent spots),
@@ -58,43 +57,7 @@
    (rgb(from var(...) r g b / a)) so a tint always tracks its source token
    instead of drifting out of sync with it.
    ───────────────────────────────────────────────────────────────────── */
-:root {
-  /* Original brand palette: cool-white / deep teal / sunny yellow. Three
-     colors carry the whole site; the same token names keep every derived
-     alpha-tint working. */
-  --paper:      #F0F5F6;  /* body bg: cool near-white */
-  --paper-deep: #E2EBEE;  /* recessed surfaces: wells, hero spotlight panel */
-  --cream:      #FAFCFC;  /* raised surface: card fill, popovers */
-  --ink:        #084C61;  /* primary: deep teal - text, panels, CTAs */
-  --ink-soft:   #4A6E7C;  /* secondary/muted text */
-  --ink-hover: rgb(26,94,115);  /* fallback: older engines lack rgb(from…) */
-  --hairline: rgba(8,76,97,.08);  /* fallback: older engines lack rgb(from…) */
-  --player:     #F7C549;  /* music player: sunny gold surface - the site's
-                             accent yellow, so the player reads as "the music
-                             surface"; everything on it flips to its deep
-                             teal companion (#084C61) for contrast */
-  --player-hi: rgb(226,165,44);  /* fallback: deeper gold lifted surface (mobile band) */
-  --player-ink: #084C61;  /* deep teal: text, icons, accents on gold - the
-                             site's primary ink, carrying the brand color
-                             through the player surface */
-  --rust:       #084C61;  /* accent roles collapse into primary teal */
-  --rust-hover: rgb(0,58,79);  /* fallback: older engines lack rgb(from…) */
-  --gold:       #F7C549;  /* accent: sunny yellow - lamplight, hovers, marks */
-  --red:        #DF2B2C;  /* pop accent: Latest Release badge, confetti */
-  --gold-hover: rgb(212,169,63);  /* fallback: older engines lack rgb(from…) */
-  --sage:       #F7C549;  /* now-playing - 3-color palette, accent doubles
-                             as the "live" signal */
-  --radius:     8px;      /* was a 16px "squircle" - a shade sharper reads as
-                             a printed object (card, ticket) rather than an
-                             app tile; still soft enough to touch comfortably */
-  --sans:    system-ui, sans-serif;
-  --body:    'Body', var(--sans);         /* body copy, section headers, release-type labels */
-  --display: 'Display', Georgia, serif;   /* Playfair Display: editorial headlines */
-  --grit:    'Grit', var(--sans);         /* gritty overline labels */
-  --focus:  0 0 0 2px var(--paper), 0 0 0 4px var(--ink);
-  --ease:   cubic-bezier(.4,0,.2,1);
-  --ease-spring: cubic-bezier(.34,1.56,.64,1);
-}
+:root { --paper:      #F0F5F6;; --paper-deep: #E2EBEE;; --cream:      #FAFCFC;; --ink:        #084C61;; --ink-soft:   #4A6E7C;; --ink-hover: rgb(26,94,115);; --hairline: rgba(8,76,97,.08);; --player:     #F7C549;; --player-hi: rgb(226,165,44);; --player-ink: #084C61;; --rust:       #084C61;; --rust-hover: rgb(0,58,79);; --gold:       #F7C549;; --red:        #DF2B2C;; --gold-hover: rgb(212,169,63);; --sage:       #F7C549;; --focus:  0 0 0 2px var(--paper), 0 0 0 4px var(--ink);; --ease:   cubic-bezier(.4,0,.2,1);; --ease-spring: cubic-bezier(.34,1.56,.64,1);; }
 
 /* ── DARK THEME ──────────────────────────────────────────────────────
    Chosen by the theme toggle (data-theme, set before first paint from
@@ -126,21 +89,12 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; overflow-x: clip; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* Anchor jumps land below the fixed nav instead of under it. */
-[id] { scroll-margin-top: 64px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration:.01ms!important; animation-duration:.01ms!important; }
   html { scroll-behavior: auto; }
 }
-body {
-  /* Space black (the theme is always dark): a sky for the cutout stars. */
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans); line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-}
+body { background: var(--paper);; color: var(--ink);; font-family: var(--sans);; line-height: 1.65;; text-rendering: optimizeLegibility;; overflow-x: hidden;; }
 /* Controls, not content - buttons/links styled as buttons/draggable
    bars shouldn't ever show the browser's native text-selection
    highlight on tap-and-hold or drag. Real content (essays, bio copy,
@@ -169,14 +123,7 @@ a, button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-c
    load / unload" bug on the Galaxy S9. Lazy images now render plainly
    with no fade. */
 a { color: inherit; }
-html {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(8,76,97,.12) transparent;
-  scrollbar-color: rgb(from var(--ink) r g b / .12) transparent;
-}
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(8,76,97,.12); background: rgb(from var(--ink) r g b / .12); border-radius: 4px; }
+
 ::-webkit-scrollbar-thumb:hover { background: rgba(8,76,97,.25); background: rgb(from var(--ink) r g b / .25); }
 .skip {
   position: absolute; top: -999px; left: 1rem;
@@ -187,7 +134,7 @@ html {
 /* Fixed to the screen while focused, not to the top of the page: a song page opens already scrolled down to its
    song, and a link pinned to the page top made the first press of Tab throw the reader all the way back up. */
 .skip:focus { position: fixed; top: 1rem; }
-::selection { background: rgba(8,76,97,.15); background: rgb(from var(--ink) r g b / .15); color: var(--ink); }
+
 :focus:not(:focus-visible) { outline: none; }   /* hide rings only for mouse/touch focus; keyboard focus always shows one */
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
 
@@ -221,41 +168,17 @@ html {
    of transitioning background/box-shadow on a backdrop-filtered bar.
    An .556-alpha ink layer over the base .82 composites to exactly the old
    .92 fill (.556 + .82 x .444 = .92). */
-.nav::before {
-  content: ''; position: absolute; top:0;right:0;bottom:0;left:0; z-index: -1;
-  background: rgba(8,76,97,.556);
-  background: rgb(from var(--ink) r g b / .556);
-  box-shadow: 0 2px 20px rgba(8,76,97,.2);
-  opacity: 0; transition: opacity .4s var(--ease);
-  pointer-events: none;
-}
+.nav::before { content: "";; position: absolute;; top:0;; right:0;; left:0;; z-index: -1;; background: rgba(8,76,97,.556);; background: rgb(from var(--ink) r g b / .556);; box-shadow: 0 2px 20px rgba(8,76,97,.2);; opacity: 0;; transition: opacity .4s var(--ease);; pointer-events: none;; }
 .nav.scrolled::before { opacity: 1; }
 .nav-logo {
   display: flex; align-items: center; text-decoration: none; flex-shrink: 0;
   opacity: 0; min-width: 44px; min-height: 44px; padding: 4px 8px 4px 0;
 }
-.nav-logo .hero-brand { gap: .4rem; align-items: center; }
+.nav-logo .hero-brand { align-items: center;; }
 
 .nav-logo .hero-name { font-size: 1.805rem; padding-top: 0; line-height: 1; position: relative; top: 0.13em; }
-.nav-links {
-  display: flex; gap: 1.5rem;
- gap: clamp(1.5rem, 3vw, 2.5rem);
-  list-style: none; margin: 0 auto;
-}
-.nav-links a {
-  /* Was set in the handwritten script, uppercase, heavily tracked-out.
-     That combination fights itself: all-caps + wide tracking is a technique
-     for geometric type, and it strips a script font of the one thing that
-     read as "handmade" (its natural, un-tracked rhythm). Functional nav
-     labels need to scan fast, too - a plain sans does both jobs better and
-     leaves the handwriting for places where it can actually read as a hand. */
-  font-family: var(--sans); font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--text-1); text-decoration: none;
-  color: rgb(from var(--paper) r g b / .92); text-decoration: none;
-  transition: color .3s var(--ease); white-space: nowrap;
-  padding: .25rem .7rem; min-height: 44px; display: flex; align-items: center;
-  position: relative; border-radius: 10px;
-}
+.nav-links { display: flex;; list-style: none;; margin: 0 auto;; }
+.nav-links a { font-family: var(--sans);; font-weight: 600;; text-transform: uppercase;; text-decoration: none;; text-decoration: none;; transition: color .3s var(--ease);; white-space: nowrap;; min-height: 44px;; display: flex;; align-items: center;; position: relative;; }
 /* Same ink-bleed hover language as the streaming buttons (.rel-btn,
    .f-btn, .vid-yt): a gold lamplight bloom plus a gold fill, text flipping
    to ink - one consistent "button" highlight across the site. */
@@ -268,22 +191,7 @@ html {
   transition: opacity .5s var(--ease), transform .6s var(--ease);
   pointer-events: none;
 }
-.nav-links a::after {
-  content: ''; position: absolute;
-  left: 0; right: 0; top: 50%; z-index: -1;
-  /* Vertically tighter than the button's 44px hit-box: the pill hugs the
-     label instead of filling the whole tap target, so the highlight reads
-     as "this link" rather than a chunky filled button. */
-  height: calc(100% - 16px);
-  transform: translateY(-50%);
-  border-radius: inherit;
-  background: var(--gold);
-  box-shadow: 0 2px 12px rgba(247,197,73,.4);
-  box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
-  opacity: 0;
-  transition: opacity .25s var(--ease);
-  pointer-events: none;
-}
+.nav-links a::after { content: "";; position: absolute;; left: 0;; right: 0;; top: 50%;; z-index: -1;; transform: translateY(-50%);; pointer-events: none;; }
 .nav-links a:hover { color: var(--ink); }
 .nav-links a:hover::before { opacity: 1; transform: scale(1.5, 1.15); }
 .nav-links a:hover::after { opacity: 1; }
@@ -414,7 +322,6 @@ html {
   transition: opacity .3s var(--ease);
 }
 
-
 .hero-split {
   display: grid;
   grid-template-columns: 2.5fr 1fr;
@@ -470,7 +377,6 @@ html {
   background: url('Images/embedded/hero-ash-stu-guitar.webp') 8% 18% / cover no-repeat;
 }
 
-
 .warhol-half {
   width: 50%; height: 100%;
   flex-shrink: 0;
@@ -484,11 +390,7 @@ html {
   gap: 2px;
   background: #111;
 }
-.warhol-cell {
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-}
+.warhol-cell { display: flex;; align-items: center;; justify-content: center;; overflow: hidden;; }
 .warhol-cell img {
   width: 100%; height: 100%;
   object-fit: contain;
@@ -510,18 +412,7 @@ html {
   padding: 0 clamp(1.5rem,4vw,3rem) clamp(2rem,5vw,3.5rem);
   overflow: hidden;
 }
-.hero-name {
-  position: relative;
-  font-family: 'Logo', var(--display);
-  font-size: 4rem;
-  font-size: clamp(4rem, 9vw, 9rem);
-  line-height: 1; color: var(--gold);
-  font-weight: normal;
-  letter-spacing: -.02em;
-  margin: 0; padding-top: .15em;
-  text-shadow: 0 2px 20px rgba(0,0,0,.3), 0 0 60px rgba(247,197,73,.15);
-  text-shadow: 0 2px 20px rgba(0,0,0,.3), 0 0 60px rgb(from var(--gold) r g b / .15);
-}
+.hero-name { position: relative;; font-family: "Logo", var(--display);; font-size: 4rem;; font-size: clamp(4rem, 9vw, 9rem);; line-height: 1;; font-weight: normal;; letter-spacing: -.02em;; margin: 0;; padding-top: .15em;; }
 .hero-split-right {
   container-type: inline-size;
   position: relative;
@@ -564,15 +455,11 @@ html {
    retargets it to the next section and hides it on the last one. Glass disc
    keeps the gold chevron readable on any background it passes over. */
 
-
-
 /* While passing over featured content (only art/photo can happen now - the
    button zone is permanently reserved): stay present as a quiet ghost,
    never fully gone; hovering it brings it back to full strength. */
 
-
 /* keep clear of the player bar when it's docked */
-
 
 @keyframes heroScrollBob {
   0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -612,12 +499,7 @@ html {
 .pt--ytmusic { background-image: url('Icons/YouTube_Music.svg'); }
 .pt--deezer { background-image: url('Icons/Deezer.svg'); }
 
-
-.btn-epk {
-  font-size: .65rem; letter-spacing: .26em;
-  height: 50px; padding: 0 2.4rem;
-  font-weight: 600;
-}
+.btn-epk { height: 50px;; padding: 0 2.4rem;; font-weight: 600;; }
 
 /* ════════════════════════════════════════════
    SECTION SHARED
@@ -625,21 +507,7 @@ html {
 .section { padding: 5rem 3rem;
  padding: clamp(5rem,10vw,8rem) clamp(3rem,7vw,6rem); }
 .section-inner { max-width: 1060px; margin: 0 auto; }
-.section-h {
-  /* Matches the nav's toolbar-button font (.nav-links a) rather than the
-     old italic-serif "playbill" voice, for one consistent typeface across
-     nav chrome and section headlines. */
-  font-family: var(--sans);
-  font-style: normal;
-  font-size: 1.9rem;
-  font-size: clamp(1.9rem,4.5vw,3.2rem); color: var(--ink);
-  font-weight: 700; line-height: 1.1;
-  margin-bottom: 2rem;
-  margin-bottom: clamp(2rem,4vw,3rem);
-  letter-spacing: -.01em;
-  text-wrap: balance;
-  position: relative; display: inline-block;
-}
+.section-h { font-family: var(--sans);; font-style: normal;; font-size: 1.9rem;; font-size: clamp(1.9rem,4.5vw,3.2rem);; line-height: 1.1;; margin-bottom: 2rem;; margin-bottom: clamp(2rem,4vw,3rem);; text-wrap: balance;; position: relative;; display: inline-block;; }
 .section-h--tight { margin-bottom: 0; }
 .btn--start { align-self: flex-start; }
 .featured-art-rounded { border-radius: var(--radius); box-shadow: 0 10px 36px rgba(8,76,97,.22), 0 0 60px rgba(247,197,73,.3); box-shadow: 0 10px 36px rgba(8,76,97,.22), 0 0 60px rgb(from var(--gold) r g b / .3); transition: box-shadow .4s var(--ease), transform .4s var(--ease); }
@@ -670,19 +538,8 @@ html {
   width: 100%; height: 100%;
   object-fit: cover; display: block;
 }
-.featured-badge {
-  display: inline-flex; align-items: center; gap: .4rem;
-  font-size: .58rem; letter-spacing: .22em; text-transform: uppercase;
-  font-weight: 700;
-  color: var(--text-1); background: var(--red);
-  border: 1px solid var(--red);
-  padding: .4rem 1.1rem;
-  border-radius: 20px;
-  margin-bottom: -.75rem;
-  box-shadow: 0 2px 12px rgba(223,43,44,.4);
-  box-shadow: 0 2px 12px rgb(from var(--red) r g b / .4);
-}
-.featured-badge { animation: flashBadge 2s ease-in-out 5; }
+.featured-badge { display: inline-flex;; align-items: center;; gap: .4rem;; text-transform: uppercase;; color: var(--text-1);; background: var(--red);; border: 1px solid var(--red);; padding: .4rem 1.1rem;; border-radius: 20px;; margin-bottom: -.75rem;; box-shadow: 0 2px 12px rgba(223,43,44,.4);; box-shadow: 0 2px 12px rgb(from var(--red) r g b / .4);; }
+
 /* Distributing Soon state: gold announcement voice (same as the card
    labels), instead of the red "Latest Release" pop. */
 .featured-badge.soon {
@@ -691,7 +548,7 @@ html {
   box-shadow: 0 2px 12px rgba(247,197,73,.4);
   box-shadow: 0 2px 12px rgb(from var(--gold) r g b / .4);
 }
-@media (prefers-reduced-motion: reduce) { .featured-badge { animation: none; } }
+@media (prefers-reduced-motion: reduce) {  }
 /* Overline labels get the gritty display face instead of tracked-out sans -
    a small, cheap signal of "handmade object" every time the eye passes over
    one, without spending a script font (which needs room to breathe) on a
@@ -766,7 +623,6 @@ html {
    buttons but inert: pointer-events off so no hover state can fire.
    Gold fill so it reads as an announcement, not a dead button. */
 
-
 /* Card-row "Distributing Soon" reads as the card's one announcement, not
    a button among buttons: bigger type, and the row's padding pulls in so
    the gold pill runs nearly edge-to-edge. */
@@ -792,27 +648,14 @@ html {
    column on the right), so each card's width comes from --cols instead,
    the same column count each breakpoint used before, and leftover space
    is split evenly on both sides. */
-.releases-grid {
-  --cols: 3;
-  --gap: 1rem;
-  --gap: clamp(1rem,2.5vw,1.75rem);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: var(--gap);
-  contain: layout style;
-}
+.releases-grid { --cols: 3;; display: flex;; flex-wrap: wrap;; justify-content: center;; align-items: flex-start;; gap: var(--gap);; contain: layout style;; }
 /* Card width is set by the lyrics: the widest lyric line in the catalog
    is about 31.9em at the tracklist lyrics size (.72rem), i.e. ~23rem, plus
    the panel's 3.15rem horizontal padding, so 27rem fits every line on one
    line with a little slack. In rem so it still fits at larger text sizes.
    Narrower than 27rem available (phones): the card fills the width and
    only the longest lines wrap. Re-check if longer lyrics are added. */
-.releases-grid > * {
-  flex: 0 0 min(100%, 27rem);
-  min-width: 0;
-}
+.releases-grid > * { min-width: 0;; }
 /* Room for three 27rem cards side by side on wide screens. */
 .releases-section .section-inner { max-width: min(86rem, 100%); }
 .rel-card {
@@ -826,14 +669,7 @@ html {
   transition: background .35s var(--ease), border-color .35s var(--ease), transform .4s var(--ease-spring), box-shadow .35s var(--ease); cursor: default;
   box-shadow: 0 1px 4px rgba(8,76,97,.08);
 }
-.rel-card:hover {
-  background: var(--cream);
-  border-color: rgba(247,197,73,.6);
-  border-color: rgb(from var(--gold) r g b / .6);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgba(247,197,73,.2);
-  box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgb(from var(--gold) r g b / .2);
-}
+.rel-card:hover { background: var(--cream);; border-color: rgba(247,197,73,.6);; border-color: rgb(from var(--gold) r g b / .6);; box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgba(247,197,73,.2);; box-shadow: 0 12px 32px rgba(8,76,97,.14), 0 0 30px rgb(from var(--gold) r g b / .2);; }
 .rel-card.now-playing {
   position: relative;
   border-color: var(--sage);
@@ -857,13 +693,8 @@ html {
      AA during the animation. */
   50%     { opacity: .85; }
 }
-.rel-art {
-  position: absolute; top:0;right:0;bottom:0;left:0; width: 100%; height: 100%;
-  object-fit: cover; display: block;
-  filter: grayscale(12%) contrast(1.08);
-  transition: filter .5s var(--ease), transform .6s var(--ease);
-}
-.rel-card:hover .rel-art { transform: scale(1.04); }
+.rel-art { position: absolute;; top:0;; right:0;; bottom:0;; left:0;; width: 100%;; height: 100%;; object-fit: cover;; display: block;; filter: grayscale(12%) contrast(1.08);; }
+
 .rel-overlay {
   position: absolute; top:0;right:0;bottom:0;left:0; z-index: 2;
   display: flex; align-items: flex-end;
@@ -873,8 +704,7 @@ html {
 }
 
 .rel-cat { font-family: var(--sans); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; color: rgb(255,227,93); color: rgb(255 227 93); margin-bottom: .3rem; font-weight: 600; }
-.rel-name { font-family: var(--grit); font-style: normal; font-size: 1.55rem;
- font-size: min(6.3cqi, 1.55rem); color: var(--text-1); font-weight: 600; line-height: 1.3; white-space: nowrap; letter-spacing: -.01em; }
+.rel-name { font-family: var(--grit);; font-style: normal;; font-size: 1.55rem;; font-size: min(6.3cqi, 1.55rem);; color: var(--text-1);; font-weight: 600;; letter-spacing: -.01em;; }
 .rel-btns {
   display: flex; gap: .5rem;
   padding: .75rem .85rem;
@@ -937,39 +767,12 @@ html {
    no hover override here (relies on inherited lift + ink-bleed glow
    instead of animating background/box-shadow directly). */
 
-
-.disc-quote {
-  margin-top: 2.5rem;
-  margin-top: clamp(2.5rem,5vw,4rem);
-  /* No hairline rule here - a bare horizontal line on the ruled page
-     reads as one more (misaligned) notebook line. */
-  padding: 1.5rem 0 0;
-  font-family: var(--body);
-  /* Sized off the container's inline width (not the viewport) so it fills
-     whatever room the section actually has, and pinned to nowrap so each
-     hand-set line break is a real line break, never a reflow point. */
-  font-size: .57rem;
-  font-size: clamp(.57rem, 3.28cqi, 4.15rem);
-  font-style: italic; color: rgba(8,76,97,.78);
-  font-style: italic; color: rgb(from var(--ink) r g b / .78);
-  line-height: 1.85;
-  white-space: nowrap;
-  text-align: center;
-  margin-left: auto; margin-right: auto;
-}
+.disc-quote { margin-top: 2.5rem;; margin-top: clamp(2.5rem,5vw,4rem);; padding: 1.5rem 0 0;; font-size: .57rem;; font-size: clamp(.57rem, 3.28cqi, 4.15rem);; color: rgba(8,76,97,.78);; color: rgb(from var(--ink) r g b / .78);; line-height: 1.85;; white-space: nowrap;; text-align: center;; margin-left: auto;; margin-right: auto;; }
 /* Below any real device width, even the font-size floor above can't
    guarantee each hand-set line fits - let those lines soft-wrap instead
    of overflowing (the <br>s still force their intended breaks). */
 @media (max-width: 300px) { .disc-quote { white-space: normal; } }
-.disc-quote cite {
-  display: block; margin-top: .75rem;
-  font-family: var(--sans);
-  font-style: normal; font-size: .65rem;
- font-size: clamp(.65rem, 1.2vw, .76rem);
-  color: rgba(8,76,97,.78); letter-spacing: .12em;
-  color: rgb(from var(--ink) r g b / .78); letter-spacing: .12em;
-  text-transform: uppercase;
-}
+.disc-quote cite { display: block;; margin-top: .75rem;; font-size: .65rem;; font-size: clamp(.65rem, 1.2vw, .76rem);; color: rgba(8,76,97,.78);; color: rgb(from var(--ink) r g b / .78);; text-transform: uppercase;; }
 
 /* ════════════════════════════════════════════
    VIDEOS - glass cards
@@ -978,14 +781,7 @@ html {
   /* One continuous ruled page. */
   background: transparent;
 }
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
-  grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));
-  gap: 1rem;
-  gap: clamp(1rem,2.5vw,1.75rem);
-  contain: layout style;
-}
+.video-grid { display: grid;; grid-template-columns: repeat(auto-fill, minmax(300px,1fr));; grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));; contain: layout style;; }
 /* The card's visible shape/chrome lives on the outer wrap now, not on
    the button itself - .vid-card (role=button) only wraps the
    thumbnail; .vid-yt (a real link) sits beside it as a sibling so no
@@ -1024,32 +820,11 @@ html {
   transition: transform .6s var(--ease);
 }
 
-
-
 .vid-card-wrap:hover .vid-thumb img, .vid-card-wrap:hover .vid-thumb video { transform: scale(1.05); }
 
-
-
-
-.vid-info {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: .75rem; padding: .75rem 1rem;
-  border-top: 1px solid var(--hairline);
-}
-.vid-title { font-family: var(--grit); font-style: normal; font-size: 1.15rem; font-weight: 600; color: var(--ink); flex: 1; min-width: 0; overflow-wrap: anywhere; letter-spacing: -.01em; }   /* wraps instead of truncating: no text lost with larger spacing (WCAG 1.4.12) */
-.vid-yt {
-  position: relative; overflow: hidden;
-  display: inline-flex; align-items: center; gap: .3rem;
-  font-family: var(--sans); font-size: .44rem; letter-spacing: .12em; text-transform: uppercase;
-  text-decoration: none; color: rgba(8,76,97,.65);
-  text-decoration: none; color: rgb(from var(--ink) r g b / .65);
-  border: 1px solid rgba(8,76,97,.08); padding: .25rem .65rem;
-  border: 1px solid rgb(from var(--ink) r g b / .08); padding: .25rem .65rem;
-  border-radius: 8px;
-  background: rgba(8,76,97,.02);
-  background: rgb(from var(--ink) r g b / .02);
-  transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease); flex-shrink: 0;
-}
+.vid-info { display: flex;; align-items: center;; justify-content: space-between;; border-top: 1px solid var(--hairline);; }
+.vid-title { font-family: var(--grit);; font-style: normal;; font-weight: 600;; color: var(--ink);; flex: 1;; min-width: 0;; overflow-wrap: anywhere;; letter-spacing: -.01em;; }   /* wraps instead of truncating: no text lost with larger spacing (WCAG 1.4.12) */
+.vid-yt { position: relative;; overflow: hidden;; display: inline-flex;; align-items: center;; gap: .3rem;; font-family: var(--sans);; text-transform: uppercase;; text-decoration: none;; color: rgba(8,76,97,.65);; text-decoration: none;; color: rgb(from var(--ink) r g b / .65);; border: 1px solid rgba(8,76,97,.08);; border: 1px solid rgb(from var(--ink) r g b / .08);; border-radius: 8px;; background: rgba(8,76,97,.02);; background: rgb(from var(--ink) r g b / .02);; transition: color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease);; flex-shrink: 0;; }
 /* Same ink-bleed hover as .f-btn/.rel-btn, for one consistent "button"
    highlight language across every platform/link chip on the site. */
 .vid-yt::before {
@@ -1080,20 +855,7 @@ html {
 .vid-yt:hover { color: var(--ink); transform: translateY(-1px); }
 
 /* Lightbox - glass overlay */
-.vid-lightbox {
-  position: fixed; top:0;right:0;bottom:0;left:0; z-index: 80;
-  background: rgba(0,0,0,.92);
-  display: flex; flex-direction: column; align-items: center;
-  padding: clamp(1rem,4vw,3rem);
-  /* 'safe' - a 16:9 video sized off width can be taller than a short
-     viewport; unsafe centering would clip the top bar (incl. close
-     button) off-screen instead of scrolling to it. */
-  justify-content: safe center;
-  overflow-y: auto;
-  padding: 1rem;
-  opacity: 0; pointer-events: none;
-  transition: opacity .35s var(--ease);
-}
+.vid-lightbox { position: fixed;; top:0;; right:0;; bottom:0;; left:0;; background: rgba(0,0,0,.92);; display: flex;; flex-direction: column;; align-items: center;; padding: clamp(1rem,4vw,3rem);; justify-content: safe center;; overflow-y: auto;; padding: 1rem;; opacity: 0;; pointer-events: none;; transition: opacity .35s var(--ease);; }
 .vid-lightbox.open { opacity: 1; pointer-events: auto; }
 .lb-inner { width: 100%; max-width: 880px; display: flex; flex-direction: column; gap: .75rem; }
 .lb-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
@@ -1155,31 +917,11 @@ html {
 /* Note-card treatment: the plain block left a huge empty right half and read
    as an afterthought. A cream card matches the release/video cards, so the
    contact moment feels like part of the same set of printed objects. */
-.contact-inner {
-  max-width: 560px;
-  /* Fully opaque - translucent cream let the page's ruled lines ghost
-     through the card surface. */
-  background: var(--cream);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  padding: clamp(1.5rem, 3vw, 2.25rem);
-  box-shadow: 0 1px 4px rgba(8,76,97,.08);
-}
-.contact-intro { font-size: .84rem; color: var(--ink); line-height: 1.75; margin-bottom: 1.25rem; max-width: 52ch; }
+.contact-inner { max-width: 560px;; background: var(--cream);; border: 1px solid var(--hairline);; border-radius: var(--radius);; box-shadow: 0 1px 4px rgba(8,76,97,.08);; }
+.contact-intro { color: var(--ink);; line-height: 1.75;; margin-bottom: 1.25rem;; max-width: 52ch;; }
 /* Idle: same dark glass as the release cards' play circle; hover: gold -
    the site-wide "this is the action" flip. */
-.contact-email-link {
-  display: inline-flex; align-items: center; gap: .6rem;
-  font-size: .72rem; letter-spacing: .08em; font-weight: 600;
-  color: var(--text-1); text-decoration: none;
-  padding: .7rem 1.2rem;
-  border-radius: 10px;
-  background: rgba(0,0,0,.65);
-  border: 1.5px solid rgba(255,255,255,.6);
-  box-shadow: 0 2px 12px rgba(0,0,0,.2);
-  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
-}
+.contact-email-link { display: inline-flex;; align-items: center;; gap: .6rem;; font-weight: 600;; color: var(--text-1);; text-decoration: none;; padding: .7rem 1.2rem;; border-radius: 10px;; border: 1.5px solid rgba(255,255,255,.6);; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);; }
 .contact-email-link:hover, .contact-email-link:focus-visible {
   background: var(--gold); border-color: var(--gold); color: var(--ink);
   box-shadow: 0 4px 20px rgba(247,197,73,.45);
@@ -1187,24 +929,9 @@ html {
   transform: translateY(-1px);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 #form-ok { font-size: .72rem; color: var(--sage); display: none; margin-top: .25rem; font-weight: 500; animation: fadeSlideIn .4s var(--ease); }
 #form-err { font-size: .72rem; color: var(--rust); display: none; margin-top: .25rem; font-weight: 500; animation: fadeSlideIn .4s var(--ease); }
 @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-
-
 
 /* ════════════════════════════════════════════
    BIO
@@ -1217,7 +944,6 @@ html {
   background: radial-gradient(ellipse 70% 55% at 50% 42%, rgba(247,197,73,.14), transparent 70%);
   background: radial-gradient(ellipse 70% 55% at 50% 42%, rgb(from var(--gold) r g b / .14), transparent 70%);
 }
-
 
 .bio-body {
   position: relative; z-index: 1;
@@ -1316,32 +1042,11 @@ html {
   max-width: 52ch;
   text-wrap: pretty;
 }
-.bio-desc {
-  /* Same voice as .epk-text (press-kit body copy), scaled up to a real
-     reading size - at .88rem the paragraph disappeared into its column. */
-  font-family: var(--sans);
-  font-size: .95rem;
-  font-size: clamp(.95rem, 1.15vw, 1.05rem);
-  line-height: 1.85;
-  color: #000;
-  max-width: 46ch;
-}
+.bio-desc { font-family: var(--sans);; font-size: .95rem;; font-size: clamp(.95rem, 1.15vw, 1.05rem);; line-height: 1.85;; max-width: 46ch;; }
 /* The "figment" line is an aside, not more bio copy - set it as an
    epigraph (gold rule, italic serif)
    instead of letting it run on as a second plain paragraph. */
-.bio-tagline {
-  margin-top: 1.75rem;
-  /* handwriting face, so the aside literally reads as a hand's note -
-     the slight tilt sells it as something jotted in the margin, not set */
-  font-family: 'Figment', var(--display), cursive; font-style: normal;
-  font-size: 1.2rem;
-  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
-  color: rgba(8,76,97,.72);
-  color: rgb(from var(--ink) r g b / .72);
-  line-height: 1.4;
-  transform: rotate(-1.4deg);
-  transform-origin: 0 50%;
-}
+.bio-tagline { margin-top: 1.75rem;; font-style: normal;; font-size: 1.2rem;; font-size: clamp(1.2rem, 1.6vw, 1.45rem);; color: rgba(8,76,97,.72);; color: rgb(from var(--ink) r g b / .72);; line-height: 1.4;; transform-origin: 0 50%;; }
 
 /* ════════════════════════════════════════════
    FOOTER - minimal
@@ -1361,37 +1066,12 @@ footer {
   box-shadow: 0 4px 16px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
   transition: background .4s var(--ease), color .4s var(--ease), border-color .4s var(--ease), transform .4s var(--ease), opacity .4s var(--ease), box-shadow .4s var(--ease);
 }
-.footer-logo:hover img { opacity: .9; box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 40px rgba(247,197,73,.1); box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 40px rgb(from var(--gold) r g b / .1); }
+.footer-logo:hover img { opacity: .9;; }
 
 /* ════════════════════════════════════════════
    AUDIO PLAYER BAR
    ════════════════════════════════════════════ */
-#player-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  z-index: 300;
-  background: rgba(247,197,73,.97);
-  background: rgb(from var(--player) r g b / .97);
-  /* Opaque gold - solid fill, no frosted glass. The old translucent
-     blur let whatever scrolled beneath bleed through as noise. */
-  box-shadow: 0 -1px 0 rgba(8,76,97,.08), 0 -4px 20px rgba(8,76,97,.18);
-  display: grid; grid-template-columns: minmax(0,1fr) auto auto auto auto auto auto minmax(0,1fr);
-  grid-template-areas: "left shuf prev play next repeat vol close";
-  align-items: center; gap: .5rem;
-  padding: 0 .75rem;
-  height: 64px;
-  user-select: none; -webkit-user-select: none;
-  /* Vertical gestures (swipe-up to maximize) are handled in JS instead of
-     scrolling the page; horizontal pan is left alone. Buttons/track keep
-     their own tighter touch-action rules. */
-  touch-action: pan-x;
-  transform: translateY(calc(100% + 16px));
-  visibility: hidden;
-  transition: transform .4s var(--ease-spring), visibility 0s linear .4s;
-  font-family: var(--sans);
-  /* Whole bar expands to the fullscreen player on click (controls and
-     seek/volume still win - their handlers stop the expand in JS). */
-  cursor: pointer;
-}
+#player-bar { position: fixed;; bottom: 0;; left: 0;; right: 0;; z-index: 300;; display: grid;; grid-template-columns: minmax(0,1fr) auto auto auto auto auto auto minmax(0,1fr);; grid-template-areas: "left shuf prev play next repeat vol close";; align-items: center;; gap: .5rem;; padding: 0 .75rem;; height: 64px;; user-select: none;; -webkit-user-select: none;; touch-action: pan-x;; transform: translateY(calc(100% + 16px));; visibility: hidden;; transition: transform .4s var(--ease-spring), visibility 0s linear .4s;; font-family: var(--sans);; cursor: pointer;; }
 #player-bar.show {
   transform: translateY(0);
   visibility: visible;
@@ -1413,12 +1093,7 @@ body.player-active { padding-bottom: 68px; }
    stays visible wherever the player is showing. */
 #player-bar :focus-visible, .fs-player :focus-visible { outline-color: var(--player-ink); }
 @media (max-width: 767px) {
-  #player-bar {
-    bottom: 8px; left: 8px; right: 8px;
-    border-radius: 14px; height: 72px;
-    padding: .5rem .75rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(8,76,97,.3);
-  }
+  #player-bar { bottom: 8px;; left: 8px;; right: 8px;; border-radius: 14px;; height: 72px;; padding: .5rem .75rem;; }
   body.player-active { padding-bottom: 88px; }
 }
 #np-bar-progress {
@@ -1428,7 +1103,7 @@ body.player-active { padding-bottom: 68px; }
 /* Hidden by default (desktop's thin overlay bar has no room for text) -
    shown and given real space on mobile below, where the strip becomes
    a proper row instead of an absolute-positioned overlay. */
-.np-time { display: none; font-size: .58rem; color: rgba(8,76,97,.85); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.np-time { display: none;; font-size: .58rem;; font-variant-numeric: tabular-nums;; flex-shrink: 0;; }
 .np-bar-track {
   flex: 1; height: 100%; background: rgba(8,76,97,.24);
   position: relative; cursor: pointer; touch-action: none;
@@ -1487,11 +1162,7 @@ body.player-active { padding-bottom: 68px; }
   will-change: transform;
 }
 @media (prefers-reduced-motion: reduce) { #np-track.marquee > span { animation: none; } }
-#np-album {
-  font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
-  color: rgb(from var(--player-ink) r g b / .85); margin-top: 1px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+#np-album { letter-spacing: .14em;; text-transform: uppercase;; margin-top: 1px;; white-space: nowrap;; overflow: hidden;; text-overflow: ellipsis;; }
 .np-right { display: contents; }
 /* Same look as the fullscreen player's .fs-play, scaled down */
 #np-play {
@@ -1587,12 +1258,10 @@ body.player-active { padding-bottom: 68px; }
   .fs-vol .vol-slider::-moz-range-thumb { width: 24px; height: 24px; }
   .fs-vol .fs-ctrl { width: 36px; height: 36px; }
   .fs-vol::after { display: none; }
-  .fs-bar { height: 6px; border-radius: 6px; }
-  .fs-fill { border-radius: 6px; }
+
   .fs-bar .seek-thumb::before { width: 20px; height: 20px; }
-  .fs-play { width: 56px; height: 56px; }
-  .fs-controls { gap: 1.2rem; }
-  .fs-track { font-size: 1.25rem; font-weight: 700; }
+
+  
 }
 .fs-platforms {
   display: flex; justify-content: center; gap: .6rem;
@@ -1605,13 +1274,12 @@ body.player-active { padding-bottom: 68px; }
    width) pills came out visibly different sizes. Sized to comfortably
    fit the longer label, with the shorter one centered inside via
    justify-content instead of stretching to fill the whole row. */
-.fs-platforms .f-btn { flex: none; width: 148px; justify-content: center; padding: 0 .65rem; font-weight: 600; letter-spacing: .02em; }
+.fs-platforms .f-btn { justify-content: center;; padding: 0 .65rem;; font-weight: 600;; letter-spacing: .02em;; }
 /* Fold-cover / tiny screens (Galaxy Z Flip cover is ~280px wide): two fixed
    148px pills plus their gap don't fit one row and bleed past the screen
    edge. Stack them full-width instead of clipping. */
 @media (max-width: 400px) {
-  .fs-platforms { flex-wrap: wrap; }
-  .fs-platforms .f-btn { flex: 1 1 100%; width: 100%; max-width: none; }
+
 }
 /* Same fix as .hero-split-right .f-btn: on a dark photo backdrop, the
    button's own translucent-teal fill goes muddy - a light cream chip
@@ -1666,13 +1334,7 @@ body.player-active { padding-bottom: 68px; }
      ends up. Negative margins bleed it through the bar's own padding
      out to the left/right/bottom edges; overflow:hidden above clips
      it back to the bar's rounded corners. */
-  #player-bar::before {
-    content: '';
-    grid-row: 4; grid-column: 1 / -1;
-    margin: 0 -.75rem -.65rem;
-    background: rgba(226,165,44,.97);
-    background: rgb(from var(--player-hi) r g b / .97);
-  }
+  #player-bar::before { content: "";; grid-row: 4;; grid-column: 1 / -1;; margin: 0 -.75rem -.65rem;; }
   .np-left { grid-area: left; }
   /* align-self:start (not center) puts it near the top edge instead of
      mid-height of the whole title row - combined with the grid area's
@@ -1720,19 +1382,7 @@ body.player-active { padding-bottom: 68px; }
     content: ''; position: absolute; top:-7px;right:-7px;bottom:-7px;left:-7px;
   }
 }
-.np-close {
-  background: rgba(250,252,252,.72);
-  background: rgb(from var(--cream) r g b / .72);
-  border: 1px solid rgba(8,76,97,.25);
-  border: 1px solid rgb(from var(--player-ink) r g b / .25);
-  color: rgba(8,76,97,.85); cursor: pointer;
-  font-size: .9rem; line-height: 1;
-  min-width: 40px; min-height: 40px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
-}
+.np-close { background: rgba(250,252,252,.72);; background: rgb(from var(--cream) r g b / .72);; border: 1px solid rgba(8,76,97,.25);; border: 1px solid rgb(from var(--player-ink) r g b / .25);; cursor: pointer;; font-size: .9rem;; line-height: 1;; min-width: 40px;; min-height: 40px;; border-radius: 50%;; display: flex;; align-items: center;; justify-content: center;; -webkit-tap-highlight-color: transparent;; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);; }
 .np-close:hover { color: var(--player-ink); background: #CDE6EB; border-color: rgba(8,76,97,.4); border-color: rgb(from var(--player-ink) r g b / .4); transform: scale(1.08); }
 .np-close:active { color: var(--gold); background: var(--player-ink); border-color: var(--player-ink); }
 
@@ -1772,31 +1422,17 @@ body.player-active { padding-bottom: 68px; }
 .rel-card.tracks-open .rel-tracklist {
   border-top: 1px solid var(--hairline);
 }
-.rel-track {
-  display: flex; align-items: center; gap: .5rem;
-  padding: .55rem .75rem;
-  font-size: .76rem; color: rgba(8,76,97,.82);
-  font-size: .76rem; color: rgb(from var(--ink) r g b / .82);
-  cursor: pointer; transition: background .2s var(--ease), color .2s var(--ease);
-  border-bottom: 1px solid var(--hairline);
-}
+.rel-track { display: flex;; align-items: center;; gap: .5rem;; padding: .55rem .75rem;; color: rgba(8,76,97,.82);; color: rgb(from var(--ink) r g b / .82);; cursor: pointer;; transition: background .2s var(--ease), color .2s var(--ease);; border-bottom: 1px solid var(--hairline);; }
 .rel-track:last-child { border-bottom: none; }
 .rel-track:hover { background: rgba(8,76,97,.04); background: rgb(from var(--ink) r g b / .04); color: var(--ink); }
 .rel-track.active { color: var(--ink); font-weight: 600; background: rgba(8,76,97,.06); background: rgb(from var(--ink) r g b / .06); border-left: 2px solid var(--sage); }
-.rel-track-num {
-  font-size: .62rem; color: rgba(8,76,97,.5); min-width: 1.4rem;
-  font-size: .62rem; color: rgb(from var(--ink) r g b / .5); min-width: 1.4rem;
-  text-align: right; font-variant-numeric: tabular-nums;
-}
+.rel-track-num { color: rgba(8,76,97,.5);; min-width: 1.4rem;; color: rgb(from var(--ink) r g b / .5);; min-width: 1.4rem;; text-align: right;; }
 .rel-track.active .rel-track-num { display: none; }
 /* Not released yet (upcoming.txt): greyed out, can't be played. */
 .rel-track--upcoming, .rel-track--upcoming:hover { cursor: default; background: none; color: rgb(8 76 97 / .38); color: rgb(from var(--ink) r g b / .38); }
 .rel-track--upcoming .rel-track-num { opacity: .6; }
 .rel-track--upcoming .rel-track-title { font-style: italic; }
-.rel-track-soon {
-  flex: none; font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
-  padding: .1rem .4rem; border: 1px solid currentColor; border-radius: 99px; opacity: .8;
-}
+.rel-track-soon { flex: none;; font-size: .5rem;; letter-spacing: .14em;; text-transform: uppercase;; padding: .1rem .4rem;; border: 1px solid currentColor;; border-radius: 99px;; }
 .rel-track-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
 .rel-track-title.marquee { text-overflow: clip; }
 .rel-track-title.marquee > span {
@@ -1821,8 +1457,8 @@ body.player-active { padding-bottom: 68px; }
   border-radius: 6px; cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), opacity .25s var(--ease), box-shadow .25s var(--ease);
   font-size: .6rem;
 }
-.rel-lyrics-toggle:hover { color: var(--ink); background: rgba(8,76,97,.05); background: rgb(from var(--ink) r g b / .05); }
-.rel-lyrics-toggle.open { color: var(--ink); transform: rotate(180deg); }
+
+.rel-lyrics-toggle.open { color: var(--ink);; }
 .rel-lyrics {
   max-height: 0; overflow: hidden;
 }
@@ -1916,10 +1552,7 @@ body.player-active { padding-bottom: 68px; }
   padding: clamp(4rem,8vw,6rem) clamp(3rem,7vw,6rem);
 }
 .epk-body .section-h { color: var(--ink); }
-.epk-text {
-  font-size: .88rem; color: var(--ink);
-  line-height: 1.75; max-width: 46ch;
-}
+.epk-text { line-height: 1.75;; max-width: 46ch;; }
 .epk-photos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1971,7 +1604,7 @@ body.player-active { padding-bottom: 68px; }
   .section-inner { max-width: 1200px; }
   .epk-section { max-width: 2200px; margin: 0 auto; } /* hero stays full-bleed, unlike this */
   .hero-name { font-size: 9rem; }
-  .section-h { font-size: 1.65rem; }
+  
   .releases-grid { --cols: 4; }
   .video-grid { grid-template-columns: repeat(3, 1fr); }
   .epk-body { padding: 3rem 3rem;
@@ -2039,7 +1672,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-right { border-left: none; padding: 1.5rem 1.25rem 80px; gap: .75rem; }
   .featured-title { font-size: 1.7rem;
  font-size: min(7cqi, 1.7rem); }
-  .featured-badge { font-size: .54rem; padding: .3rem .85rem; margin-bottom: 0; }
+  .featured-badge { padding: .3rem .85rem;; margin-bottom: 0;; }
   .featured-kicker { font-size: .88rem; }
   .featured-btns { flex-direction: row; flex-wrap: wrap; gap: .5rem; width: 100%; justify-content: center; }
   .f-btn { flex: 1 1 auto; justify-content: center; height: 44px; font-size: .52rem; border-radius: 10px; }
@@ -2047,13 +1680,10 @@ body.player-active { padding-bottom: 68px; }
   .section { padding: 3rem 1.25rem; }
   .section-h { font-size: 1.6rem; margin-bottom: 1.75rem; }
   .contact-inner { max-width: 100%; }
-  .contact-intro { font-size: .82rem; max-width: 100%; }
-  
-  
+  .contact-intro { max-width: 100%;; }
+
   
   .btn { width: 100%; justify-content: center; height: 52px; font-size: .58rem; border-radius: 10px; }
-  
-  
 
   /* Stack the card: portrait on top, text panel below it. */
   .bio-body { padding: 1.5rem 1.25rem 2.5rem; }
@@ -2079,14 +1709,14 @@ body.player-active { padding-bottom: 68px; }
   .epk-body .btn-epk-dl svg { width: auto; height: 100%; max-height: 2.5rem; flex-shrink: 0; }
   .epk-photos-bottom { grid-column: 1; grid-row: 3; }
   .epk-photos { grid-template-columns: repeat(2, 1fr); }
-  .epk-text { font-size: .82rem; max-width: 100%; }
+  .epk-text { max-width: 100%;; }
   .btn-epk-dl { width: auto; font-size: .8rem; }
   .btn--start { align-self: center; }
 
   footer { padding: 1rem 1.25rem; }
   .footer-logo img { height: 27px; }
 
-  .rel-track { padding: .65rem .75rem; font-size: .78rem; min-height: 44px; }
+  .rel-track { padding: .65rem .75rem;; min-height: 44px;; }
   .fab-music { bottom: 1.25rem; right: 1.25rem; width: 44px; height: 44px; }
 
   .np-ctrl { width: 32px; height: 32px; }
@@ -2110,17 +1740,16 @@ body.player-active { padding-bottom: 68px; }
   .rel-cat { font-size: .88rem; }
   .rel-name { font-size: 1.45rem; }
   .vid-card { border-radius: 10px; }
-  .vid-info { padding: .85rem 1rem; }
-  .vid-title { font-size: 1.25rem; }
-  .vid-yt { font-size: .46rem; padding: .3rem .7rem; min-height: 36px; display: flex; align-items: center; }
+
+  .vid-yt { min-height: 36px;; display: flex;; align-items: center;; }
 }
 
 /* ════════════════════════════════════════════
    SMALL TABLET (601–767px) - 2-col where it fits
    ════════════════════════════════════════════ */
 @media (min-width: 601px) and (max-width: 767px) {
-  .releases-grid { --cols: 2; --gap: 1rem; }
-  .video-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .releases-grid { --cols: 2;; }
+  .video-grid { grid-template-columns: repeat(2, 1fr);; }
   
 }
 
@@ -2128,8 +1757,8 @@ body.player-active { padding-bottom: 68px; }
    PHONE (≤600px) - single column
    ════════════════════════════════════════════ */
 @media (max-width: 600px) {
-  .releases-grid { --cols: 1; --gap: 1rem; }
-  .video-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .releases-grid { --cols: 1;; }
+  .video-grid { grid-template-columns: 1fr;; }
   .section-h::after { left: -1.1rem; }
 }
 
@@ -2156,21 +1785,20 @@ body.player-active { padding-bottom: 68px; }
   
   .section-h::after { left: -.7rem; }
   .hero-split-right { padding: .75rem .75rem 80px; gap: .4rem; }
-  .featured-badge { font-size: .4rem; padding: .2rem .5rem; }
+  .featured-badge { padding: .2rem .5rem;; }
   .f-btn { height: 40px; font-size: .48rem; }
   .section { padding: 2rem .75rem; }
   .section-h { font-size: 1.8rem; margin-bottom: 1.25rem; }
   .rel-overlay { padding: .75rem; }
   .rel-btn { font-size: .44rem; height: 38px; }
-  .rel-track { padding: .5rem .5rem; font-size: .72rem; }
+  .rel-track { padding: .5rem .5rem;; }
   /* Two-column press-kit row can't fit - stack it. */
   .epk-body { grid-template-columns: 1fr; }
   .epk-body .section-h { grid-column: 1; grid-row: auto; }
   .epk-body .epk-text { grid-column: 1; grid-row: auto; }
   .epk-body .btn-epk-dl { grid-column: 1; grid-row: auto; justify-content: center; padding: .9rem 1rem; }
   .epk-body { padding: 1.25rem .75rem; }
-  .epk-text { font-size: .76rem; }
-  .contact-intro { font-size: .76rem; }
+
   
   #np-track { font-size: .72rem; }
   .np-art { width: 36px; height: 36px; }
@@ -2206,8 +1834,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-split-right { padding: 1rem 1.25rem 132px; gap: .5rem; }
   .hero-name { font-size: 2.2rem;
  font-size: clamp(2.2rem,10cqi,3.4rem); }
-  
-  .featured-badge { font-size: .42rem; }
+
   .featured-btns { flex-direction: row; flex-wrap: wrap; }
   .f-btn { width: auto; height: 36px; font-size: .48rem; }
 
@@ -2221,14 +1848,13 @@ body.player-active { padding-bottom: 68px; }
   .section { padding: 2rem 1.25rem; }
   .section-h { font-size: 1.9rem; margin-bottom: 1.25rem; }
 
-  .releases-grid { --cols: 2; --gap: .75rem; }
+  .releases-grid { --cols: 2;; }
   .rel-overlay { padding: .75rem; }
 
-  .video-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+  .video-grid { grid-template-columns: repeat(2, 1fr);; }
 
   .epk-body { padding: 1.5rem 1.25rem; }
 
-  
   .btn { width: auto; height: 44px; }
 
   #np-play { width: 36px; height: 36px; }
@@ -2252,7 +1878,7 @@ body.player-active { padding-bottom: 68px; }
 @media (max-height: 360px) and (orientation: landscape) {
   .hero-split { padding-top: 36px; --nav-pad: 36px; }
   .hero-split-right { padding: .5rem 1rem 132px; gap: .35rem; }
-  .featured-badge { font-size: .36rem; padding: .2rem .6rem; margin-bottom: -.5rem; }
+  .featured-badge { padding: .2rem .6rem;; margin-bottom: -.5rem;; }
   .featured-kicker { font-size: .5rem; margin-top: 0; margin-bottom: -.3rem; }
   .f-btn { height: 32px; font-size: .44rem; }
   .section { padding: 1.5rem 1rem; }
@@ -2326,7 +1952,7 @@ body.player-active { padding-bottom: 68px; }
   .hero-name { font-size: clamp(2.4rem,14cqi,4.2rem); }
   .hero-split-right { padding: .75rem .75rem 80px; gap: .4rem; }
   .section { padding: 2rem .75rem; }
-  .rel-track { font-size: .7rem; padding: .45rem .5rem; }
+  .rel-track { padding: .45rem .5rem;; }
 }
 
 /* ════════════════════════════════════════════
@@ -2401,13 +2027,6 @@ body.player-active { padding-bottom: 68px; }
   100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
 }
 
-
-
-
-
-
-
-
 @media (prefers-reduced-motion: reduce) {
   
   .fs-player.open .fs-art-wrap,
@@ -2421,14 +2040,7 @@ body.player-active { padding-bottom: 68px; }
 /* ════════════════════════════════════════════
    FULLSCREEN PLAYER
    ════════════════════════════════════════════ */
-.fs-player {
-  position: fixed; top:0;right:0;bottom:0;left:0; z-index: 400;
-  background: var(--player);
-  transform: translateY(100%);
-  transition: transform .4s var(--ease);
-  overflow: hidden;
-  user-select: none; -webkit-user-select: none;
-}
+.fs-player { position: fixed;; top:0;; right:0;; bottom:0;; left:0;; z-index: 400;; transform: translateY(100%);; transition: transform .4s var(--ease);; overflow: hidden;; user-select: none;; -webkit-user-select: none;; }
 .fs-player.open { transform: translateY(0); }
 html.fs-locked, html.fs-locked body { overflow: hidden; }
 .fs-content {
@@ -2519,12 +2131,7 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .fs-track.marquee > span, .fs-album.marquee > span { animation: none; } }
 .fs-progress { width: 100%; margin-top: 1.25rem; padding: 0 .25rem; }
-.fs-bar {
-  width: 100%; height: 4px;
-  background: rgba(8,76,97,.15);
-  border-radius: 4px; cursor: pointer; position: relative;
-  touch-action: none;
-}
+.fs-bar { width: 100%;; height: 4px;; border-radius: 4px;; cursor: pointer;; position: relative;; touch-action: none;; }
 .fs-bar::before {
   content: ''; position: absolute; top: -14px; right: 0; bottom: -14px; left: 0;
 }
@@ -2624,9 +2231,9 @@ html.fs-locked, html.fs-locked body { overflow: hidden; }
 @media (hover: none) {
   .rel-play-overlay { opacity: 1; background: rgba(0,0,0,.18); }
   .featured-play-overlay { opacity: 1; background: rgba(0,0,0,.2); }
-  .rel-card:hover { transform: none; box-shadow: 0 1px 4px rgba(8,76,97,.06); box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
+  .rel-card:hover { box-shadow: 0 1px 4px rgba(8,76,97,.06);; box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06);; }
   .vid-card:hover { transform: none; box-shadow: 0 1px 4px rgba(8,76,97,.06); box-shadow: 0 1px 4px rgb(from var(--ink) r g b / .06); }
-  .rel-card:hover .rel-art { transform: none; }
+  
   .vid-card:hover .vid-thumb img { transform: none; }
   .rel-card:hover .rel-play-circle { transform: none; }
   
@@ -2737,8 +2344,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* Toolbar link chrome tightens between 768–900px so the full desktop
    nav fits before the phone hamburger takes over at ≤767px. */
 @media (min-width: 768px) and (max-width: 900px) {
-  .nav-links { gap: clamp(.9rem, 2vw, 1.4rem); }
-  .nav-links a { font-size: .68rem; letter-spacing: .1em; padding: .25rem .5rem; }
+
   .nav-platforms { gap: .5rem; }
   .nav-platform .pt { width: 22px; height: 22px; }
 }
@@ -2752,7 +2358,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
   .featured-kicker { font-size: .72rem; }
 }
 @media (max-height: 560px) {
-  .featured-badge { font-size: .4rem; padding: .25rem .7rem; margin-bottom: -.5rem; }
+  .featured-badge { padding: .25rem .7rem;; margin-bottom: -.5rem;; }
 }
 @media (max-height: 500px) {
   .featured-kicker { font-size: .58rem; margin-top: 0; margin-bottom: -.35rem; }
@@ -2777,7 +2383,6 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
     
   }
 }
-
 
 /* Browsers that support relative-color channel math (Chromium 119+)
    re-derive the derived tints here; the concrete fallbacks above stand
@@ -2826,29 +2431,19 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 .fs-lyrics { container-type: size; }
 /* Room under the last line (68% of the panel's height), so the final line can scroll up to the same spot as every other line. */
 .fs-lyrics-list { list-style: none; margin: 0; padding: .5rem 0 45%; padding-bottom: 68cqh; }
-.fs-lyric button {
-  position: relative; display: block; width: 100%; padding: .4rem .5rem .4rem 1rem;
-  border: 0; border-radius: 8px; background: none; text-align: left; cursor: pointer;
-  color: var(--player-ink); font: 600 1.12rem/1.32 var(--body);
-  opacity: .85; transform-origin: left center;
-  transition: transform .25s var(--ease), opacity .25s var(--ease);
-  user-select: text; -webkit-user-select: text;
-}
+.fs-lyric button { position: relative;; display: block;; width: 100%;; padding: .4rem .5rem .4rem 1rem;; border: 0;; border-radius: 8px;; background: none;; text-align: left;; cursor: pointer;; color: var(--player-ink);; font: 600 1.12rem/1.32 var(--body);; opacity: .85;; transform-origin: left center;; user-select: text;; -webkit-user-select: text;; }
 .fs-lyric button:hover { background: rgba(8,76,97,.08); }
 .fs-lyric.is-current button { opacity: 1; font-weight: 800; transform: scale(1.06); }
-.fs-lyric.is-current button::before {
-  content: ""; position: absolute; left: 0; top: .45rem; bottom: .45rem; width: 4px; border-radius: 2px;
-  background: var(--player-ink);
-}
+.fs-lyric.is-current button::before { content: "";; position: absolute;; left: 0;; top: .45rem;; bottom: .45rem;; width: 4px;; border-radius: 2px;; }
 @media (orientation: landscape) and (max-height: 520px) {
   .fs-lyrics { height: 7rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fs-lyric button { transition: none; }
+  
   .fs-lyric.is-current button { transform: none; }
 }
 @media (forced-colors: active) {
-  .fs-lyric.is-current button::before { background: Highlight; }
+  
 }
 
 /* ════════════════════════════════════════════
@@ -2869,7 +2464,7 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    gaps of 1.25rem), still centered when fewer fit. The lyrics panel's
    indent is trimmed so the widest lyric line still fits on one line at
    the 25rem card width (verified by script). */
-.releases-grid { --gap: 1.25rem; }
+
 .releases-grid > * { flex: 0 0 min(100%, 25rem); }
 .rel-lyrics-inner { padding-left: 1.4rem; padding-right: .6rem; }
 @media (min-width: 1024px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -2886,15 +2481,13 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* Press kit band (desktop): give the heading column room for "Press Kit"
    on one line; the four photos shrink to fit instead. */
 @media (min-width: 1024px) {
-  .epk-section { grid-template-columns: minmax(22rem, 1fr) minmax(0, auto) minmax(0, auto); }
+  
   .epk-body .section-h { white-space: nowrap; }
 }
-.epk-text { font-size: .95rem; }
 
 /* Labels: nothing under 10px. The old .44-.52rem chips were unreadable. */
-.f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .64rem; letter-spacing: .08em; }
-.vid-yt { font-size: .6rem; letter-spacing: .08em; padding: .35rem .7rem; }
-.btn-epk { font-size: .74rem; letter-spacing: .18em; }
+
+.vid-yt { padding: .35rem .7rem;; }
 
 /* Contact: readable intro, and the email button in the brand teal
    instead of a grey slab (gold on hover, as before). */
@@ -2913,7 +2506,6 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 }
 
 /* Footer: one quiet line beside the mark. */
-
 
 /* Phones: on the hero the header logo is hidden, which left the tool
    divider standing alone; show it only once the logo is. */
@@ -3020,27 +2612,20 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 }
 .featured-art-hero .featured-art { position: relative; z-index: 1; }
 
-
-
 /* The record behind the sleeve: peeks out on hover, slides out and spins
    while this album is playing. Grooves are repeating rings; the label is
    the cover art. */
-
-
-
 
 @keyframes partySpin { to { transform: rotate(1turn); } }
 
 #party.is-playing .featured-art-hero { translate: -9% 0; transition: translate .7s cubic-bezier(.34,1.56,.64,1); }
 .featured-art-hero { transition: translate .7s cubic-bezier(.34,1.56,.64,1); }
 
-
 @media (max-width: 767px) {   /* less room either side on phones */
   
   #party.is-playing .featured-art-hero { translate: -6% 0; }
   
 }
-
 
 /* Now-playing chip on the sleeve. */
 .party-eq {
@@ -3074,7 +2659,6 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 /* "Distributing Soon" pills: gold in both themes, so the text stays the
    dark teal in both (var(--ink) turns light in dark mode: 1.34:1). */
 
-
 /* ── Release cards: the party kit (see the decorate() script) ──────────
    Same pieces as the hero panel, fitted inside the card: the sleeve slides
    left inside the art frame to show the record tucked behind it. */
@@ -3086,8 +2670,6 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
 
 .rel-card:hover .rel-art { transform: translateX(-11%); }
 .rel-card.now-playing .rel-art { transform: translateX(-30%); }
-
-
 
 .rel-art-wrap .rel-eq { left: .7rem; right: auto; top: .7rem; bottom: auto; z-index: 4; }
 .rel-card.now-playing .rel-eq { opacity: 1; translate: 0 0; }
@@ -3107,21 +2689,15 @@ h3.vid-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
    (’ – — ·) fall back to a rounded system face. Clocks stay in a
    fixed-width face so the digits don't jitter while a song plays.
    ════════════════════════════════════════════ */
-:root {
-  --psy: 'Logo', ui-rounded, 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif;
-  --sans: var(--psy); --body: var(--psy); --display: var(--psy); --grit: var(--psy);
-}
+:root { --display: var(--psy);; --grit: var(--psy);; }
 body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote cite { font-family: var(--psy); }
 .disc-quote, .bio-tagline { font-style: normal; }
 .np-time, .fs-times, .fs-times * { font-family: ui-monospace, monospace; }
 
 /* Small caps-style labels: this face clogs when tiny and widely tracked. */
-.f-btn, .rel-btn, .rel-btn.rel-btn--label { font-size: .74rem; letter-spacing: .04em; }
-.vid-yt { font-size: .7rem; letter-spacing: .04em; }
+
 .featured-badge,.btn-epk,.rel-cat,.featured-kicker,.disc-quote cite,.party-eq { letter-spacing: .06em; }
 .featured-badge { font-size: .72rem; }
-.btn-epk { font-size: .82rem; }
-.nav-links a { letter-spacing: .08em; }
 
 /* Section headings: a groovy gradient with a retro offset shadow. Every
    stop clears 4.5:1 on the light page (and the bright set on dark), so
@@ -3169,23 +2745,23 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 @media (min-width: 1600px) { .section-h { font-size: 3.2rem; } }
 /* Boiled Pasta runs wider than the old italic serif: re-fit the hand-set
    lines to the column (desktop; phones reflow as one paragraph). */
-@media (min-width: 641px) { .disc-quote { font-size: clamp(.57rem, 2.7cqi, 3.4rem); } }
+@media (min-width: 641px) {  }
 
 /* ── Readable exceptions to the psychedelic type ─────────────────────────
    The Guthrie quote goes back to its italic serif, lyrics read in a plain
    sans, and the About section keeps its original faces. */
-:root { --plain-sans: system-ui, sans-serif; }
+
 .disc-quote { font-family: 'Body', Georgia, serif; font-style: italic; }
 .disc-quote cite { font-family: var(--plain-sans); font-style: normal; letter-spacing: .12em; }
 @media (min-width: 641px) { .disc-quote { font-size: clamp(.57rem, 3.28cqi, 4.15rem); } }
 .rel-lyrics-inner, .fs-lyric button, .fs-lyrics, .fs-lyrics-list { font-family: var(--plain-sans); }
-.bio-section .section-h { font-family: var(--plain-sans); font-weight: 700; letter-spacing: -.01em; }
+
 .bio-desc, .bio-text { font-family: var(--plain-sans); }
 .bio-tagline { font-family: 'Figment', 'Logo', cursive; transform: rotate(-1.4deg); }
 /* Toolbar labels: bigger (was .78rem). Tighter tracking keeps the row
    within the bar at the narrow end of the desktop layout. */
-.nav-links a { font-size: 1rem; letter-spacing: .07em; }
-@media (min-width: 768px) and (max-width: 900px) { .nav-links a { font-size: .86rem; letter-spacing: .05em; padding: .25rem .45rem; } }
+.nav-links a { letter-spacing: .07em;; }
+@media (min-width: 768px) and (max-width: 900px) {  }
 /* Link buttons (streaming, YouTube, email, press-kit download, status
    pills) and the music player (bar + full screen) in the plain sans:
    these are controls and readouts, so legibility wins. */
@@ -3206,7 +2782,7 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
 .rel-name, .featured-title, .rel-cat, .featured-kicker {
   font-family: var(--plain-sans);
 }
-.rel-name, .featured-title { font-weight: 700; letter-spacing: -.015em; }
+
 .rel-cat, .featured-kicker { font-weight: 700; letter-spacing: .14em; }
 
 /* Body copy in a standard sans ("Songs and photos for booking and press.",
@@ -3214,16 +2790,16 @@ body, button, input, select, textarea, .bio-tagline, .disc-quote, .disc-quote ci
    stays on the display pieces only: section headings, toolbar links, the
    Latest Release badge, video titles and the wordmark. */
 :root { --sans: var(--plain-sans); --body: var(--plain-sans); }
-body, button, input, select, textarea { font-family: var(--plain-sans); }
+
 .section-h, .nav-links a, .nav-drawer a, .featured-badge, .vid-title { font-family: var(--psy); }
 .epk-text, .contact-intro { font-size: 1rem; line-height: 1.7; }
 /* About heading matches the other section headings (the About body copy
    keeps its original faces). */
 .bio-section .section-h { font-family: var(--psy); font-weight: normal; letter-spacing: .01em; }
 /* Video titles match the release titles: plain bold sans. */
-h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; letter-spacing: -.01em; }
+
 /* Toolbar (and the phone menu) in the standard sans. */
-.nav-links a, .nav-drawer a { font-family: var(--plain-sans); font-weight: 600; letter-spacing: .1em; }
+
 @media (min-width: 768px) and (max-width: 900px) { .nav-links a { letter-spacing: .06em; } }
 
 /* Release and video titles: Righteous (OFL) - 60s poster curves that
@@ -3233,19 +2809,13 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
   src: url('Fonts/righteous/Righteous-Regular.ttf') format('truetype');
   font-display: swap;
 }
-.rel-name, .featured-title, h3.vid-title, .vid-title {
-  font-family: 'Release', var(--plain-sans);
-  font-weight: normal; letter-spacing: .01em;
-}
+
 /* Toolbar: Righteous (Google Fonts, sans) - a touch of 60s curve, still
    plainly readable; matches the release titles. */
-.nav-links a, .nav-drawer a { font-family: 'Release', var(--plain-sans); font-weight: normal; letter-spacing: .1em; }
+
 /* Release and video titles: Playfair Display bold - a newspaper-headline
    serif (already self-hosted as 'Display'). */
-.rel-name, .featured-title, h3.vid-title, .vid-title {
-  font-family: 'Display', Georgia, serif;
-  font-weight: 700; letter-spacing: -.005em;
-}
+
 .rel-name, .featured-title { line-height: 1.15; }
 .rel-name, .featured-title, h3.vid-title, .vid-title { font-variant-numeric: lining-nums; }   /* "Vol. 1" at full height */
 
@@ -3255,10 +2825,6 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
   font-family: 'Headline';
   src: url('Fonts/youngserif/YoungSerif-Regular.ttf') format('truetype');
   font-display: swap;
-}
-.rel-name, .featured-title, h3.vid-title, .vid-title {
-  font-family: 'Headline', Georgia, serif;
-  font-weight: normal; letter-spacing: 0;
 }
 
 /* ── FONT SUITE (Nov 2026) ───────────────────────────────────────────
@@ -3271,7 +2837,7 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 @font-face { font-family: 'Text'; src: url('Fonts/outfit/Outfit-VF.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Labels'; src: url('Fonts/archivonarrow/ArchivoNarrow-VF.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
 @font-face { font-family: 'Quote'; src: url('Fonts/crimsonpro/CrimsonPro-Italic-VF.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
-:root { --plain-sans: 'Text', system-ui, sans-serif; }
+
 .nav-links a, .nav-drawer a { font-family: var(--plain-sans); font-weight: 600; letter-spacing: .06em; }
 .featured-kicker, .rel-cat, .disc-quote cite, .party-eq, #np-album, .rel-btn--label {
   font-family: 'Labels', 'Arial Narrow', var(--plain-sans); font-weight: 600;
@@ -3387,13 +2953,9 @@ h3.vid-title, .vid-title { font-family: var(--plain-sans); font-weight: 700; let
 .rel-card:not(.tracks-open) .rel-tracklist { visibility: hidden; }
 /* Volume sliders: a 24px-tall hit area (WCAG 2.5.8) with the same thin
    bar drawn in the middle. */
-.vol-slider, .fs-vol .vol-slider, .np-vol .vol-slider {
-  box-sizing: border-box; height: 24px; padding-block: 7px; background-clip: content-box;
-}
+.vol-slider, .fs-vol .vol-slider, .np-vol .vol-slider { box-sizing: border-box;; height: 24px;; padding-block: 7px;; }
 /* "Next section" arrow: fully visible when focused, and out of the tab
    order (not just transparent) while it's faded away. */
-
-
 
 /* Volume sliders: the unfilled part of the bar gets a visible tint of the
    player's ink (it was a half-transparent white that vanished on the light

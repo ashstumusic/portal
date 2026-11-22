@@ -218,12 +218,6 @@ img.k-blurup { background-size: cover; background-position: center; }
 
 /* ── FORMS: floating labels, morphing checkbox, error shake ──────────── */
 
-
-
-
-
-
-
 .k-check { position: absolute; left: 0; top: 50%; width: 1.5rem; height: 1.5rem; translate: 0 -50%; pointer-events: none; }
 .k-check path { fill: none; stroke: var(--k-on-accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
   stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .35s var(--k-spring-settle) .05s; }
@@ -284,7 +278,7 @@ img.k-blurup { background-size: cover; background-position: center; }
 .k-palette-input:focus-visible { outline: none; }
 .k-palette-box:focus-within { outline: 2px solid var(--k-accent); outline-offset: -2px; }
 .k-palette-list { max-height: min(60vh, 26rem); overflow-y: auto; margin: 0; padding: .4rem; list-style: none; }
-.k-palette-group { padding: .6rem .8rem .25rem; font: 700 .72rem/1 system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+.k-palette-group { padding: .6rem .8rem .25rem;; font: 700 .72rem/1 system-ui, sans-serif;; letter-spacing: .1em;; text-transform: uppercase;; }
 .k-opt { display: flex; align-items: baseline; gap: .75rem; padding: .62rem .8rem; border-radius: 10px; cursor: pointer; }
 .k-opt-sub { margin-left: auto; font-size: .85rem; opacity: .72; white-space: nowrap; }
 .k-opt[aria-selected="true"] { background: color-mix(in srgb, var(--k-accent) 18%, transparent); box-shadow: inset 3px 0 0 var(--k-accent); }
@@ -330,7 +324,7 @@ img.k-blurup { background-size: cover; background-position: center; }
 }
 @media (forced-colors: active) {
   .k-spot::after { display: none; }
-  .k-opt[aria-selected="true"] { outline: 2px solid Highlight; }
+  
 }
 
 /* Touch-only devices (no keyboard detected): no key hints in the palette. */
