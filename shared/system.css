@@ -6423,3 +6423,32 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* Fact sheet: Download's word matches Close beside it (13px -> 15px); phone toolbar: Menu's word matches Home's (13px -> 15px) */
 :root.psy .kd-dl:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#), :root.psy .kd-dl .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 15px !important; font-weight: 600 !important; letter-spacing: 0 !important; }
 @media (max-width: 767px) { :root.psy #nav-toggle .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#), :root.psy #nav-toggle:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 15px !important; font-weight: 600 !important; } }
+
+/* ── HIG SWEEP, part 3: page refinements ── */
+/* Album art fills the card's whole picture column: on a card whose text runs taller than the square (Ash Stu, Vol. II
+   with its Listen-on bar) the art stopped 8px short, leaving a dark strip above the tracklist bar. */
+@media (min-width: 768px) {
+  :root.psy #releases-grid .rel-card > .rel-art-wrap:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { align-self: stretch !important; height: auto !important; padding-top: 0 !important; min-height: 304px !important; }
+  :root.psy #releases-grid .rel-card > .rel-art-wrap > .rel-art:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }
+}
+/* Contact sits on a card like every other section (it was the only one floating on the page, stars behind its words) */
+:root.psy #contact .contact-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: var(--hig-card) !important; border: 1px solid var(--hig-hair) !important; border-radius: var(--hig-r-card) !important;
+  box-shadow: var(--hig-elev-1) !important; padding: 32px !important; position: relative; z-index: 1;
+}
+@media (max-width: 767px) { :root.psy #contact .contact-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 24px 16px !important; } }
+/* The hero's Play is the same height as every other primary button (48px; was 50 / 52px) */
+:root.psy #featured-play:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { height: 48px !important; min-height: 48px !important; }
+/* Phones: even 16px gutters on both sides (the sections kept a fixed width, so at 360px the right gutter was 13px) */
+@media (max-width: 767px) { :root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { width: auto !important; max-width: none !important; box-sizing: border-box !important; } }
+/* Open lyrics read the same at every width: inline under the song, no box (desktop drew a bordered box inside the card,
+   phones none). Desktop: lines start under the song title. Phones: lines start under the track number. */
+:root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyrics:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: transparent !important; border: 0 !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; border-radius: 0 !important; }
+@media (min-width: 768px) {
+  :root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyrics-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 0 16px 16px 102px !important; }
+  :root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyric-line:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 2px 8px !important; }
+}
+@media (max-width: 767px) {
+  :root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyrics-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 0 0 16px !important; }
+  :root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyric-line:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 2px 8px !important; }
+}
