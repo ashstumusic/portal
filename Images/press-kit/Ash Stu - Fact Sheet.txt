@@ -42,13 +42,11 @@ Ash Stu - Fact Sheet.txt
   This file.
 
 Photos folder (PNG), with photo credits:
-  Ash Stu - Headshot-1.png                    Photo: Jacci Mace
+  Ash Stu - Headshot-1.png
   Ash Stu - Headshot-2.png                    Photo: Emma Evans
   Ash Stu - Live at the Keyboard (Wide).png   Photo: Emma Evans
-  Ash Stu - Headshot-3.png                    Photo: Jacci Mace
-  Ash Stu - Guitar in Alley (Wide).png        Photo: Jacci Mace
-
-Jacci Mace, photographer: https://www.facebook.com/jaccimacephotography/
+  Ash Stu - Headshot-3.png
+  Ash Stu - Guitar in Alley (Wide).png
 
 Emma Evans, photographer: https://www.facebook.com/profile.php?id=100018702414515
 

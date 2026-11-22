@@ -37,9 +37,7 @@
       "name": "Ash Stu - Official Artist Photo",
       "description": "Official press photo of Ash Stu, Outsider singer-songwriter from Guthrie, Oklahoma.",
       "caption": "Ash Stu, singer-songwriter from Guthrie, Oklahoma",
-      "representativeOfPage": true,
-      "creator": { "@type": "Person", "name": "Jacci Mace", "sameAs": "https://www.facebook.com/jaccimacephotography/" },
-      "creditText": "Photo: Jacci Mace"
+      "representativeOfPage": true
     },
     {
       "@type": ["MusicGroup", "Person"],
@@ -276,7 +274,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" data-credit="shown" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="935"/>
       <div class="hero-photo-frame" aria-hidden="true"></div>
     </div>
-    <a class="photo-credit hero-credit" href="https://www.facebook.com/jaccimacephotography/" target="_blank" rel="noopener noreferrer" aria-label="Photo by Jacci Mace (opens her photography page on Facebook)">Photo: Jacci Mace</a>
     <div class="hero-split-overlay">
       <div class="hero-brand" id="hero-brand">
         <h1 class="hero-name">Ash Stu<span class="sr-only"> - Outsider Singer-Songwriter</span></h1>
@@ -402,7 +399,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" data-credit="shown" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
-        <a class="photo-credit about-credit" href="https://www.facebook.com/jaccimacephotography/" target="_blank" rel="noopener noreferrer" aria-label="Photo by Jacci Mace (opens her photography page on Facebook)">Photo: Jacci Mace</a>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley" width="481" height="481"/></span>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu singing at the piano under a red light" width="481" height="481"/></span>
       </div>
@@ -4074,13 +4070,13 @@ if(!('IntersectionObserver' in window)){on();return;}var o=new IntersectionObser
 (function(){var slots=[].slice.call(document.querySelectorAll('.bio-card-media .bw-shot img'));if(slots.length<2)return;
 var P='Images/embedded/';
 var pool=[
- {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley',by:'Jacci Mace'},
+ {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley'},
  {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu singing at the piano under a red light',g:'stage'},
  {src:P+'epk-ash-stu-performing.webp',alt:'Ash Stu performing at the keyboard',g:'stage',by:'Emma Evans'},
  {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano on stage',g:'stage'},
  {src:P+'epk-ash-stu-studio-session.webp',alt:'Ash Stu in a studio session'},
  {src:'Images/Profile-4-720.webp',alt:'Ash Stu as a kid with his first guitar'},
- {src:'Images/Profile-6-720.webp',alt:'Ash Stu at the piano',by:'Jacci Mace'}
+ {src:'Images/Profile-6-720.webp',alt:'Ash Stu at the piano'}
 ];
 var shown=[],deck=[];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
@@ -4283,9 +4279,8 @@ setup();setTimeout(setup,1500);})();</script>
    itself a link (then the bubble is plain words: one link cannot sit inside another). Pictures too small to carry it (the
    player's little cover) are left alone. The hero photo and the About portrait have theirs written in the page. */
 (function(){
-var WHO={'Jacci Mace':'https://www.facebook.com/jaccimacephotography/','Emma Evans':'https://www.facebook.com/profile.php?id=100018702414515'};
-var BY=[[/hero-ash-stu-guitar|Profile-3|epk-ash-stu-stairs|Headshot-1|epk-ash-stu-guitar-door|Headshot-3|epk-ash-stu-alley|Guitar%20in%20Alley|Guitar in Alley|Profile-6/,'Jacci Mace'],
-        [/epk-ash-stu-performing|epk-ash-stu-singing|Headshot-2|Live%20at%20the%20Keyboard|Live at the Keyboard/,'Emma Evans']];
+var WHO={'Emma Evans':'https://www.facebook.com/profile.php?id=100018702414515'};
+var BY=[[/epk-ash-stu-performing|epk-ash-stu-singing|Headshot-2|Live%20at%20the%20Keyboard|Live at the Keyboard/,'Emma Evans']];
 function who(src){src=src||'';for(var i=0;i<BY.length;i++)if(BY[i][0].test(src))return BY[i][1];return '';}
 function mark(im){
   if(im.dataset.credit==='shown')return;

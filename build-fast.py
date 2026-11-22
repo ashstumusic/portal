@@ -327,10 +327,9 @@ KIT_FACTS = {
     "email": (re.search(r'mailto:([^"?]+)', open(os.path.join(ROOT, "index-src.html"), encoding="utf-8").read()) or [None, ""])[1],
     "site": "https://ashstu.art",
 }
-# Photo credits (owner: "taken by Jacci Mace"): shown under each of these photos on the page and listed in the Fact Sheet.
-PHOTOGRAPHERS = {"Jacci Mace": "https://www.facebook.com/jaccimacephotography/", "Emma Evans": "https://www.facebook.com/profile.php?id=100018702414515"}
-_KIT_CREDIT = {"Ash Stu - Headshot-1.png": "Jacci Mace", "Ash Stu - Headshot-3.png": "Jacci Mace", "Ash Stu - Guitar in Alley (Wide).png": "Jacci Mace",
-               "Ash Stu - Headshot-2.png": "Emma Evans", "Ash Stu - Live at the Keyboard (Wide).png": "Emma Evans"}
+# Photo credits: shown on each of these photos on the page and listed in the Fact Sheet.
+PHOTOGRAPHERS = {"Emma Evans": "https://www.facebook.com/profile.php?id=100018702414515"}
+_KIT_CREDIT = {"Ash Stu - Headshot-2.png": "Emma Evans", "Ash Stu - Live at the Keyboard (Wide).png": "Emma Evans"}
 _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=4",
               "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
               "Ash Stu - Live at the Keyboard (Wide).png": "epk-ash-stu-performing.webp"}
