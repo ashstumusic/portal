@@ -161,11 +161,10 @@ def render_video_card(v, v_idx):
         thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
-    # Laid out like an album card: the type and year and the title, then one row of two buttons - Play, and YouTube,
+    # Laid out like an album card: the title (and the album it is from), then one row of two buttons - Play, and YouTube,
     # the larger; the thumbnail on the right with nothing over it. Only Play plays (not the card or the thumbnail).
-    kicker = 'Video' + (f'<span class="rel-year"><span class="rel-sep"> · </span><time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
-            f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3>'
+            f'<div class="vid-info"><h3 class="vid-title">{esc(v["title"])}</h3>'   # (no "Video · year" line: the section says Videos and every year was the same)
             + (f'<p class="vid-from">{video_from(v["title"])}</p>' if video_from(v['title']) else '<p class="vid-from vid-from--none" aria-hidden="true">&nbsp;</p>')
             + '</div>'
             f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'
@@ -224,7 +223,7 @@ def render_kit_shell(page):
             '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a>'
             '<p class="epk-progress" role="status" aria-live="polite"></p></div>')
     return ('<article class="rel-card epk-card kit-collapsed kit-shell" data-release="-1" aria-label="Ash Stu press kit">'
-            '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main"><abbr title="Electronic Press Kit">EPK</abbr><span class="rel-sep"> · </span>Booking and press</span></p><h3 class="rel-name epk-name">Ash Stu</h3></div>'
+            '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Booking and press</span></p><h3 class="rel-name epk-name">Ash Stu</h3></div>'
             '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>'
             + art + btns + '</article>')
 
