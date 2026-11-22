@@ -223,7 +223,7 @@ def render_kit_shell(page):
             '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a>'
             '<p class="epk-progress" role="status" aria-live="polite"></p></div>')
     return ('<article class="rel-card epk-card kit-collapsed kit-shell" data-release="-1" aria-label="Ash Stu press kit">'
-            '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Booking and press</span></p><h3 class="rel-name epk-name">Ash Stu</h3></div>'
+            '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Booking and press</span></p></div>'
             '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>'
             + art + btns + '</article>')
 
