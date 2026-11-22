@@ -918,6 +918,7 @@ def main():
         with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html)
     _redirect('music-videos', '/videos/')
+    _redirect('watch', '/videos/')   # (the bare /watch/ too, which showed a file listing or a 404)
     for t, vs in vslugs.items():
         _redirect(os.path.join('watch', vs), f'/videos/{vs}/')
 

@@ -2571,7 +2571,7 @@ tracklist +
 function vidAlbumLine(title) {
   var has = function(list) { return function(r) { return (r[list] || []).some(function(t) { return String(t.title).toLowerCase() === String(title).toLowerCase(); }); }; };
   var rel = RELEASE_LIST.filter(has('tracks'))[0], soon = !rel && RELEASE_LIST.filter(has('upcoming'))[0];
-  if (!rel && !soon) return '';   /* (on no release: no line) */
+  if (!rel && !soon) return '<p class="vid-from vid-from--none" aria-hidden="true">&nbsp;</p>';   /* (on no release: an empty line keeps the card as tall as its neighbours; nothing claimed) */
   if (soon) rel = soon;   /* (not out yet: the album it will be on, no "unreleased" tag - owner's request) */
   var slug = String(rel.name).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return '<p class="vid-from">' + 'From' + ' <a href="/albums/' + slug + '/">' + escHtml(rel.name) + '</a></p>';

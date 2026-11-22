@@ -166,7 +166,7 @@ def render_video_card(v, v_idx):
     kicker = 'Video' + (f'<span class="rel-year"><span class="rel-sep"> · </span><time>{v["year"]}</time></span>' if v.get('year') else '')
     return (f'<div class="vid-card-wrap">'
             f'<div class="vid-info"><p class="rel-cat vid-cat">{kicker}</p><h3 class="vid-title">{esc(v["title"])}</h3>'
-            + (f'<p class="vid-from">{video_from(v["title"])}</p>' if video_from(v['title']) else '')
+            + (f'<p class="vid-from">{video_from(v["title"])}</p>' if video_from(v['title']) else '<p class="vid-from vid-from--none" aria-hidden="true">&nbsp;</p>')
             + '</div>'
             f'<button type="button" class="vid-card" tabindex="-1" aria-hidden="true" data-video-index="{v_idx}">'
             f'<span class="vid-thumb">{thumb_el}</span>'
