@@ -2,11 +2,8 @@
 """Photo credits written into the press kit's photo files themselves (owner's request: "hardcode credit onto emma's
 image files so she has credit on the download version too").
 
-For each credited photo, from its clean original:
-  - a small "Photo: <name>" label in the bottom right corner, drawn on the picture in the site's own lettering
-    (Bricolage Grotesque) on a soft dark pill, like the credit bubble on the page - so the credit survives being
-    saved, copied, converted to JPEG or WebP, or posted;
-  - the credit in the file's details too (PNG text: Author, Copyright, Description), for apps that read them.
+For each credited photo, from its clean original: the credit in the file's details only (PNG text: Author,
+Copyright, Description). Nothing is drawn on the picture (owner's request: no watermark).
 
 The clean originals are never touched: Live at the Keyboard (Wide) comes from Images/Piano Batch/2.png, and
 Headshot-2 is cut from that clean picture (the same square as before) before the label goes on, so the wide shot's
@@ -47,7 +44,7 @@ def label(im, who):
     return Image.alpha_composite(im.convert('RGBA'), layer).convert('RGB')
 
 for name, source, who in PHOTOS:
-    im = label(source(), who)
+    im = source()   # (the picture untouched: no label drawn on it)
     info = PngImagePlugin.PngInfo()
     info.add_text('Author', who)
     info.add_text('Copyright', 'Photo by ' + who + '. Used with permission by Ash Stu.')
