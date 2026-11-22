@@ -6256,16 +6256,16 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   --hig-spring: cubic-bezier(.32, .72, 0, 1); --hig-ease: cubic-bezier(.25, .1, .25, 1);
 }
 
-/* ── 1. One surface layer: the section panels go, the cards stay ──────
-   Every section was a bordered, shadowed panel holding bordered, shadowed cards (a card inside a card). The panels'
-   chrome is removed so the cards are the only surface, and the sections are separated by space instead of boxes. */
+/* ── 1. Section panels (owner's request: "give each section a solid background, like the epk has") ──
+   Each section keeps its own solid panel, one shade deeper than the cards inside it, drawn with the system's hairline,
+   ambient shadow and the largest radius (24px, the "sheet" size above the cards' 16px). Padding on the 8px grid. */
 :root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
-  background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important;
-  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
-  padding: 48px 0 !important; margin-block: 0 !important;
+  background: #0D0E14 !important; border: 1px solid var(--hig-hair) !important; border-radius: 24px !important;
+  box-shadow: var(--hig-elev-1) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  padding: 48px 32px !important; margin-block: 32px !important;
 }
 @media (max-width: 767px) {
-  :root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 32px 0 !important; margin-inline: 16px !important; }
+  :root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 24px 16px !important; margin-block: 16px !important; margin-inline: 16px !important; border-radius: 20px !important; }
 }
 
 /* ── 2. Cards line up with their heading (the music and video cards sat 23px in from the heading and press kit) ── */
@@ -6428,8 +6428,8 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* Album art fills the card's whole picture column: on a card whose text runs taller than the square (Ash Stu, Vol. II
    with its Listen-on bar) the art stopped 8px short, leaving a dark strip above the tracklist bar. */
 @media (min-width: 768px) {
-  :root.psy #releases-grid .rel-card > .rel-art-wrap:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { align-self: stretch !important; height: auto !important; padding-top: 0 !important; min-height: 304px !important; }
-  :root.psy #releases-grid .rel-card > .rel-art-wrap > .rel-art:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }
+  :root.psy :is(#releases-grid, #epk) .rel-card > .rel-art-wrap:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { align-self: stretch !important; height: auto !important; padding-top: 0 !important; min-height: 304px !important; }
+  :root.psy :is(#releases-grid, #epk) .rel-card > .rel-art-wrap > .rel-art:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }
 }
 /* Contact sits on a card like every other section (it was the only one floating on the page, stars behind its words) */
 :root.psy #contact .contact-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
