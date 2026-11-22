@@ -6229,3 +6229,139 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .disc-quote .dq-mark--close:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { margin-inline: -.42em -.6em !important; }
 :root.psy .disc-quote cite:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { margin-top: clamp(14px, 1.6vw, 20px) !important; font-size: clamp(14px, 1.3vw, 16px) !important; letter-spacing: .14em; }
 :root.psy .disc-quote cite:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#)::before { content: "\2014\00a0" / ""; }
+
+
+/* ════════════════════════════════════════════════════════════════════
+   HIG SWEEP (2026-11-22) - the owner's brief: "rigorous functional minimalism", glass where depth is real, an Apple-
+   style type scale, one 8px grid, soft borders, ambient shadows, one set of radii, smooth states. Backup of the site
+   before this layer: git tag BACKUP-2026-11-22-before-hig-sweep. Kept on purpose (owner's choices): the signature
+   faces (Ash Stu name, section headers, release titles, handwriting, quote), the full-colour toolbar logos, the
+   picture-and-word buttons, YouTube-first video buttons, the gold hover/focus. Priority 70: this layer is the last word.
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Labels: one primary, two quieter steps (all at least 6:1 on the card surface) */
+  --hig-label-1: #F5F5F7; --hig-label-2: rgb(235 235 245 / .72); --hig-label-3: rgb(235 235 245 / .56);
+  /* Materials: page, card, inset fill, dark glass (over photos and the haze), hairlines */
+  --hig-card: #14161E; --hig-fill: rgb(255 255 255 / .04);
+  --hig-glass: rgb(12 14 20 / .66); --hig-glass-blur: blur(24px) saturate(1.8);
+  --hig-hair: rgb(255 255 255 / .08); --hig-hair-2: rgb(255 255 255 / .16);
+  /* One accent */
+  --hig-accent: #F7C549;
+  /* Elevation: resting cards, floating things */
+  --hig-elev-1: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .24);
+  --hig-elev-2: 0 2px 4px rgb(0 0 0 / .3), 0 16px 40px rgb(0 0 0 / .36);
+  /* Radii: rows/chips 8, controls/media 12, cards 16, pills round */
+  --hig-r-row: 8px; --hig-r-ctl: 12px; --hig-r-card: 16px;
+  /* Motion: Apple's spring-like curve for movement, a quick ease for colour */
+  --hig-spring: cubic-bezier(.32, .72, 0, 1); --hig-ease: cubic-bezier(.25, .1, .25, 1);
+}
+
+/* ── 1. One surface layer: the section panels go, the cards stay ──────
+   Every section was a bordered, shadowed panel holding bordered, shadowed cards (a card inside a card). The panels'
+   chrome is removed so the cards are the only surface, and the sections are separated by space instead of boxes. */
+:root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  padding: 48px 0 !important; margin-block: 0 !important;
+}
+@media (max-width: 767px) {
+  :root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 32px 0 !important; margin-inline: 16px !important; }
+}
+
+/* ── 2. Cards line up with their heading (the music and video cards sat 23px in from the heading and press kit) ── */
+:root.psy :is(.releases-grid, .video-grid) > :is(.rel-card, .vid-card-wrap):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { max-width: none !important; width: 100% !important; margin-inline: 0 !important; }
+:root.psy :is(.releases-grid, .video-grid):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 24px !important; --gap: 24px !important; }
+@media (max-width: 767px) { :root.psy :is(.releases-grid, .video-grid):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 16px !important; --gap: 16px !important; } }
+
+/* ── 3. Cards: one material, one hairline, one ambient shadow, one radius ── */
+:root.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: var(--hig-card) !important; border: 1px solid var(--hig-hair) !important;
+  border-radius: var(--hig-r-card) !important; box-shadow: var(--hig-elev-1) !important;
+}
+:root.psy .featured-art:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { box-shadow: var(--hig-elev-2) !important; border-radius: var(--hig-r-ctl) !important; }
+
+/* ── 4. 8px grid inside the cards (was 28 / 14 / 10 / 9 / 6 / 5px) ── */
+@media (min-width: 768px) {
+  :root.psy .rel-card .rel-info:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 32px 32px 16px !important; }
+  :root.psy .rel-card .rel-avail:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding-inline: 32px !important; }
+  :root.psy .rel-card .rel-btns:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 16px 32px 32px !important; }
+  :root.psy .rel-card .rel-tl-toggle:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding-inline: 32px !important; }
+  :root.psy .vid-card-wrap .vid-info:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 32px 32px 16px !important; }
+  :root.psy .vid-card-wrap .vid-btns:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 0 32px 32px !important; }
+}
+@media (max-width: 767px) {
+  :root.psy .rel-card .rel-info:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 16px 16px 16px !important; }
+}
+:root.psy :is(.rel-btns, .vid-btns, .featured-btns):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 8px !important; }
+:root.psy :is(.f-play, .contact-email-link, .rel-btn, .rel-play-circle, .vid-yt, .contact-copy):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 8px !important; }
+:root.psy :is(.f-store, .rel-store):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 4px !important; }
+:root.psy :is(.vid-info, .rel-tl-toggle):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 8px !important; }
+:root.psy .rel-info:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 8px !important; }
+:root.psy .hero-brand:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 16px !important; }
+:root.psy .contact-addr-row:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 8px 16px !important; }
+:root.psy .contact-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 16px !important; }
+:root.psy .bio-card-media:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { gap: 24px !important; }
+:root.psy .disc-quote:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 32px 56px !important; }
+@media (max-width: 767px) { :root.psy .disc-quote:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 32px 16px !important; } }
+
+/* ── 5. Type scale (Apple steps: 11 12 13 15 17 20 22 28 34 48) ── */
+/* Release and video titles: one size (were 36px cards / 34px featured; 21.84px on phones) */
+:root.psy :is(.rel-name, h3.vid-title, .vid-title):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 34px !important; line-height: 1.12 !important; }
+@media (max-width: 767px) { :root.psy :is(.rel-name, h3.vid-title, .vid-title):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 22px !important; line-height: 1.18 !important; } }
+/* Eyebrows (ALBUM · 2026): footnote caps, tight leading (were 14px on a 23px line) */
+:root.psy :is(.rel-cat, .rel-cat *, .vid-cat):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 13px !important; line-height: 1.3 !important; letter-spacing: .08em !important; color: var(--hig-accent) !important; }
+:root.psy .epk-pitch:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 20px !important; line-height: 1.4 !important; letter-spacing: -.01em !important; }
+@media (max-width: 767px) { :root.psy .epk-pitch:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 17px !important; line-height: 1.47 !important; } }
+@media (max-width: 767px) { :root.psy .contact-address:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 17px !important; } }
+/* Toolbar words up to 11px (Apple's smallest caption; were 10px) from 1200px, where 11px leaves 8px clear beside the
+   longest word. Narrower toolbars keep 10px: at 11px "Apple Music" and "Press Kit" came within 3px of the edge. */
+@media (min-width: 1200px) {
+  :root.psy :is(.nav-home-txt, .nav-platform .btn-word, .nav-links a span, .k-settings-btn .btn-word):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 11px !important; line-height: 1 !important; }
+}
+
+/* ── 6. Labels: three steps instead of six near-whites ── */
+:root.psy :is(.contact-intro, .rel-tl-word, .vid-from, .epk-summary, .epk-doc-link, .rel-listen-label):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: var(--hig-label-2) !important; }
+:root.psy :is(.epk-updated, .epk-updated *):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: var(--hig-label-3) !important; }
+
+/* ── 7. Materials: glass only where something floats over a picture ── */
+/* "Latest release": dark glass with a gold dot instead of a solid red pill */
+:root.psy .featured-badge:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: var(--hig-glass) !important; color: var(--hig-label-1) !important;
+  -webkit-backdrop-filter: var(--hig-glass-blur) !important; backdrop-filter: var(--hig-glass-blur) !important;
+  box-shadow: inset 0 0 0 1px var(--hig-hair-2) !important;
+}
+:root.psy .featured-badge :is(.party-dot, .fb-dot, i, b):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: var(--hig-accent) !important; box-shadow: 0 0 0 4px rgb(247 197 73 / .18) !important; }
+/* Listen-on bars: the same glass over the haze; a quiet inset fill inside cards */
+:root.psy .f-stores:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: var(--hig-glass) !important; -webkit-backdrop-filter: var(--hig-glass-blur) !important; backdrop-filter: var(--hig-glass-blur) !important; box-shadow: inset 0 0 0 1px var(--hig-hair-2), var(--hig-elev-1) !important; }
+:root.psy .rel-stores:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: var(--hig-fill) !important; box-shadow: inset 0 0 0 1px var(--hig-hair) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+:root.psy .rel-tl-toggle:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: var(--hig-fill) !important; border-top: 1px solid var(--hig-hair) !important; }
+
+/* ── 8. Controls: one radius, one rim ── */
+/* The card Play button was 13px, the tracklist "more" 10px: back to the system */
+:root.psy :is(.rel-play-circle, .rel-play-overlay):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: var(--hig-r-ctl) !important; }
+:root.psy .rel-tl-more:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: var(--hig-r-row) !important; }
+/* Copy had a harsh 55% white outline; now the same rim as every other dark button */
+:root.psy .contact-copy:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .3), 0 1px 2px rgb(0 0 0 / .3) !important;
+}
+:root.psy .contact-copy:is(:hover, :focus-visible):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { box-shadow: none !important; }
+
+/* ── 9. Motion: movement on a spring-like curve, colour on a quick ease ── */
+:root.psy :is(a, button, [role="button"]):is(.f-btn, .f-play, .rel-btn, .rel-play-circle, .vid-yt, .contact-email-link, .contact-copy, .k-tool, .nav-platform, .f-store, .rel-store):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  transition: transform .4s var(--hig-spring), background-color .2s var(--hig-ease), color .2s var(--hig-ease),
+              box-shadow .2s var(--hig-ease), border-color .2s var(--hig-ease), opacity .2s var(--hig-ease) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root.psy :is(a, button, [role="button"]):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { transition-duration: .01s !important; }
+}
+/* Reduced transparency: glass becomes solid */
+@media (prefers-reduced-transparency: reduce) {
+  :root.psy :is(.featured-badge, .f-stores):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: #10121A !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+}
+
+/* ── 10. About: spacing on the grid (was 86.4px / 20px) ── */
+:root.psy .bio-section:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding-top: 88px !important; }
+@media (max-width: 767px) { :root.psy .bio-section:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding-top: 48px !important; } }
+/* "Listen on" over the haze stays full white with the title's soft shadow (a grey label there fell below 3:1) */
+:root.psy .f-listen-label:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: var(--hig-label-1) !important; text-shadow: 0 1px 2px rgb(0 0 0 / .45), 0 0 12px rgb(0 0 0 / .25) !important; }
