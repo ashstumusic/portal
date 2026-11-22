@@ -406,7 +406,20 @@ def _press_kit():
     F = KIT_FACTS
     fs = ["ASH STU - FACT SHEET", "", F["pitch"], "",
           "Artist:              Ash Stu", "Formerly known as:   " + F["aka"], "From:                " + F["from"], "",
-          "Booking and press:   " + F["email"], "Website:             " + F["site"], "", "", "RELEASES", "-" * 40]
+          "Booking and press:   " + F["email"], "Website:             " + F["site"], ""]
+    # the artist's own pages (what a booker or writer looks up first), read from the site's "sameAs" list in
+    # index-src.html so the two never drift apart; one line per service (the first link wins)
+    _sa = re.search(r'"sameAs"\s*:\s*\[(.*?)\]', open(os.path.join(ROOT, "index-src.html"), encoding="utf-8").read(), re.S)
+    _pages = {}
+    for _u in re.findall(r'"(https?://[^"]+)"', _sa[1] if _sa else ""):
+        _lb = next((lb for dom, lb in (("music.apple.com", "Apple Music"), ("open.spotify.com", "Spotify"), ("music.youtube.com", "YouTube Music"),
+                                        ("youtube.com", "YouTube"), ("deezer.com", "Deezer"), ("substack.com", "Substack"), ("patreon.com", "Patreon"),
+                                        ("instagram.com", "Instagram"), ("tiktok.com", "TikTok"), ("bandcamp.com", "Bandcamp"), ("facebook.com", "Facebook"))
+                    if dom in _u), None)
+        if _lb and _lb not in _pages: _pages[_lb] = _u
+    if _pages:
+        fs += ["", "ARTIST PAGES", "-" * 40, ""] + [f"{lb + ':':<21}{u}" for lb, u in _pages.items()] + [""]
+    fs += ["", "RELEASES", "-" * 40]
     for r in rels:
         n_out, n_soon = len(r.get("tracks") or []), len(r.get("upcoming") or [])
         line = r["name"] + "  -  " + (r.get("type") or "Album").lower() + ", " + (date_of(r) or "date to come")
