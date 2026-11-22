@@ -165,7 +165,7 @@
 /* No records and no hover movement (Nov 2026): the sleeve no longer slides
    to show a record, nothing leans toward the pointer, and cards, art,
    thumbnails and buttons stay put on hover (colour changes remain). */
-.party-vinyl, .rel-vinyl, .party-glare { display: none !important; }
+
 .featured-art-hero, #party.is-playing .featured-art-hero,
 .rel-card, .rel-card:hover,
 .rel-card:hover .rel-art, .rel-card.now-playing .rel-art,
@@ -200,15 +200,15 @@
 }
 /* In the top bar the name is small: a lighter offset shadow. */
 .nav-logo .hero-name { filter: drop-shadow(1.5px 1.5px 0 rgb(223 43 44 / .5)); }
-.nav-logo .hero-icon { filter: drop-shadow(1px 1px 0 rgb(223 43 44 / .5)) !important; }
+
 
 /* Header and toolbar: the name is plain white (no gradient, no offset
    shadow); the toolbar's star logo is white too. The header has no logo. */
 .hero-name, .nav-logo .hero-name {
-  background: none; -webkit-text-fill-color: #fff; color: #fff;
+  background: none; -webkit-text-fill-color: #fff; color: var(--text-1);
   filter: none; text-shadow: none;
 }
-.nav-logo .hero-icon { filter: brightness(0) invert(1) !important; }
+
 /* A bit fainter (Nov 2026). */
 .psy-field, :root[data-theme="dark"] .psy-field { opacity: .11; }
 

@@ -217,27 +217,17 @@ video { aspect-ratio: 16 / 9; object-fit: contain; }
 img.k-blurup { background-size: cover; background-position: center; }
 
 /* ── FORMS: floating labels, morphing checkbox, error shake ──────────── */
-.contact-form .field:not(.field-check) { position: relative; }
-.contact-form .field:not(.field-check) > label {
-  position: absolute; left: .7rem; top: 1.45rem; z-index: 1; padding: 0 .35rem; pointer-events: none;
-  background: var(--k-page); border-radius: 4px; transform-origin: left center;
-  transition: transform .4s var(--k-spring-settle), color .2s ease;
-}
-.contact-form .field:not(.field-check) > :is(input, textarea) { padding-top: 1.05rem; }
-.contact-form .field:has(:focus, :not(:placeholder-shown)):not(.field-check) > label {
-  transform: translateY(-1.55rem) scale(.82); color: var(--k-accent);
-}
-.contact-form .field-check { position: relative; }
-.contact-form .field-check input {
-  -webkit-appearance: none; appearance: none; width: 1.5rem; height: 1.5rem; margin: 0;
-  border: 2px solid var(--ink-2, var(--ink-soft, currentColor)); border-radius: 6px; background: transparent; cursor: pointer;
-  transition: background-color .25s ease, border-color .25s ease;
-}
-.contact-form .field-check input:checked { background: var(--k-accent); border-color: var(--k-accent); }
+
+
+
+
+
+
+
 .k-check { position: absolute; left: 0; top: 50%; width: 1.5rem; height: 1.5rem; translate: 0 -50%; pointer-events: none; }
 .k-check path { fill: none; stroke: var(--k-on-accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
   stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .35s var(--k-spring-settle) .05s; }
-.field-check input:checked ~ .k-check path { stroke-dashoffset: 0; }
+
 .k-shake { animation: k-shake .42s cubic-bezier(.36, .07, .19, .97); }
 @keyframes k-shake {
   10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(3px, 0, 0); }
@@ -257,7 +247,7 @@ img.k-blurup { background-size: cover; background-position: center; }
 .js .k-tools { display: inline-flex; }
 /* Homepage nav: draw the buttons in the same near-white as its links (the
    nav's own text colour is the gold-surface teal, invisible on the teal bar). */
-.nav .k-tools { color: rgb(240 245 246 / .92); color: rgb(from var(--paper) r g b / .92); }
+.nav .k-tools { color: var(--text-1); color: rgb(from var(--paper) r g b / .92); }
 .k-tool {
   display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0;
   border: 2px solid currentColor; border-radius: 50%;
@@ -271,7 +261,7 @@ img.k-blurup { background-size: cover; background-position: center; }
      keep the buttons up on the first row, right-aligned beside the brand. */
   .masthead > .k-tools { order: 2; margin-left: auto; padding-left: 0; }
   .masthead > .k-tools::before { display: none; }
-  .masthead > .tuner { order: 3; }
+  
 }
 
 /* ── COMMAND PALETTE (⌘K / Ctrl+K) ───────────────────────────────────── */

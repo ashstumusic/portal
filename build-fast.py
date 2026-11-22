@@ -110,6 +110,13 @@ css += "\n" + open("shared/system.css").read()   # design system: type, spacing,
 # same priority, the same meaning (it matches every element), a third of the size, and much less for a phone to parse.
 import re as _reNot
 css = _reNot.sub(r"(?::not\(#\\#\)){2,}", lambda m: ":not(" + "#\\#" * (len(m.group(0)) // 9) + ")", css)
+# Those runs only need to keep their ORDER: run lengths are renumbered smaller, keeping every gap of up to 3 exactly
+# (a selector adds at most 2 real IDs of its own, so a gap of 3 or more already decides the winner whatever it is) -
+# which rule wins is unchanged, and the shipped stylesheet loses about a third of the runs' weight.
+_runs = [len(m) // 3 for m in _reNot.findall(r"(?<=:not\()(?:#\\#)+(?=\))", css)]
+_vals = sorted(set(_runs) | {0}); _map = {0: 0}
+for _a, _b in zip(_vals, _vals[1:]): _map[_b] = _map[_a] + min(_b - _a, 3)
+css = _reNot.sub(r":not\(((?:#\\#)+)\)", lambda m: ":not(" + "#\\#" * _map[len(m.group(1)) // 3] + ")", css)
 # Hover styles only while a mouse/trackpad is in use. A touch screen keeps
 # :hover on the last thing tapped, so a tapped toggle (shuffle, repeat...)
 # kept its hover look and seemed stuck "on" until you tapped elsewhere.
