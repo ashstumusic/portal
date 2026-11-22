@@ -3149,24 +3149,20 @@ var sec = document.getElementById('epk');
 [].slice.call(sec ? sec.querySelectorAll('.epk-photos') : []).forEach(function(p) { if (p.parentNode) p.parentNode.removeChild(p); });
 var lead = photos.filter(function(f) { return /headshot-1/i.test(f.name); })[0] || photos.filter(function(f) { return !/logo/i.test(f.name); })[0];
 var slug = function(x) { return String(x).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); };
-var inKit = [nSongs + (nSongs === 1 ? ' song' : ' songs')];
-if (hasLyr) inKit.push('their lyrics');
-if (hasSheet) inKit.push('a fact sheet');
-if (nPics) inKit.push(nPics + (nPics === 1 ? ' photo' : ' photos'));
+// One line says what is in the kit (owner's request: no repeated labels), the fact sheet a link inside it, then when it
+// was last updated. The kit's own heading ("Press Kit") and the site's name make a card title unnecessary.
+var sheet = KIT.files.filter(function(f) { return f.type === 'text' && /fact sheet/i.test(f.name); })[0];
+var inKit = [nSongs + (nSongs === 1 ? ' song' : ' songs') + (hasLyr ? ' with lyrics' : '')];
 var nVids = KIT.files.filter(function(f) { return f.type === 'video'; }).length;
 if (nVids) inKit.push(nVids + (nVids === 1 ? ' live video' : ' live videos'));
-if (nLogo) inKit.push('the logo');
-var inKitText = inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0];
-var facts = '';
-facts += '<div class="epk-fact"><dt>In the kit</dt><dd>' + escHtml(inKitText) + '</dd></div>';
-// (the two text files: the list below is only the songs now, so they are opened from here)
-var docs = KIT.files.filter(function(f) { return f.type === 'text' && !/lyrics/i.test(f.name); })   /* (not the lyrics: the sampler's tracks have Lyrics buttons; owner's request) */.map(function(f) { return '<a href="' + escHtml(kitUrl(f.src)) + '" class="epk-doc-link" data-doc="' + escHtml(f.src) + '" data-name="' + escHtml(f.name) + '" aria-haspopup="dialog">' + escHtml(f.name.replace(/^Ash Stu - /, '').replace(/\.txt$/, '')) + '</a>'; });   /* (opens in a pop-up document: kitDoc) */
-if (docs.length) facts += '<div class="epk-fact"><dt>Read</dt><dd>' + docs.join(' · ') + '</dd></div>';
-if (KIT.updated) facts += '<div class="epk-fact"><dt>Updated</dt><dd><time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></dd></div>';
+if (nPics) inKit.push(nPics + (nPics === 1 ? ' photo' : ' photos'));
+if (sheet) inKit.push('<a href="' + escHtml(kitUrl(sheet.src)) + '" class="epk-doc-link" data-doc="' + escHtml(sheet.src) + '" data-name="' + escHtml(sheet.name) + '" aria-haspopup="dialog">a fact sheet</a>');
+var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0]).replace(/^(\d+ songs?)/, function(m) { return escHtml(m); });
+var facts = '<p class="epk-summary">' + inKitHtml + '.</p>' + (KIT.updated ? '<p class="epk-updated">Updated <time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></p>' : '');
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Ash Stu press kit">' +
-  '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main"><abbr title="Electronic Press Kit">EPK</abbr><span class="rel-sep"> · </span>Booking and press</span></p><h3 class="rel-name">Ash Stu</h3></div>' +
-  '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<dl class="epk-facts">' + facts + '</dl></div>' +   /* (no streaming links here: owner's request; they are in the toolbar) */
+  '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main"><abbr title="Electronic Press Kit">EPK</abbr><span class="rel-sep"> · </span>Booking and press</span></p></div>' +
+  '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<div class="epk-facts">' + facts + '</div></div>' +   /* (no streaming links here: owner's request; they are in the toolbar) */
   (lead && lead.thumb ? '<div class="rel-art-wrap"><img src="' + escHtml(encodeURI(lead.thumb)) + '" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>' : '') +
   '<div class="rel-btns"><a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" data-kit-zip class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
   '<p class="epk-progress" role="status" aria-live="polite"></p></div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
@@ -3210,7 +3206,7 @@ var setMore = function(open) {
   if (open) { openList(); queueMarquees(); }   /* (opening the card opens its tracklist too: owner's request) */
 };
 setMore(false);
-card.querySelector('.rel-btns').appendChild(more);
+var _rb = card.querySelector('.rel-btns'); _rb.insertBefore(more, _rb.firstChild);   /* (Show first, then Download: owner's request; same order for the keyboard) */
 more.addEventListener('click', function(e) { e.stopPropagation(); setMore(card.classList.contains('kit-collapsed')); });
 function playKit(i) {
   if (!songs.length) return;
