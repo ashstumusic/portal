@@ -94,20 +94,10 @@
   });
 
   // ── SPOTLIGHT CARDS ───────────────────────────────────────────────
-  // (the whole video card, not just its thumbnail, so every release card lights up the same way: owner's request)
-  const CARD_SEL = '.rel-card, .vid-card-wrap, .record, .book-card, .new-record, .video-link';
+  // (Removed, owner's request 2026-11-22: "remove the light on the cursor". The soft light that followed the pointer
+  // across release and video cards is gone; litCard stays null so the per-frame code below never draws it.)
   let litCard = null, litRect = null, stale = true, measuredT = 0;
   addEventListener('scroll', () => { stale = true; }, { passive: true }); addEventListener('resize', () => { stale = true; }, { passive: true });
-  if (finePointer) {
-    for (const c of $$(CARD_SEL)) c.classList.add('k-spot');
-    doc.addEventListener('pointerover', (e) => {
-      const c = e.target.closest?.('.k-spot');
-      if (c === litCard) return;
-      litCard?.classList.remove('k-lit');
-      litCard = c; litRect = null;
-      c?.classList.add('k-lit');
-    }, { passive: true });
-  }
 
   // (A cursor-following "Play / Watch" lens used to live here. Removed: a
   // circle chasing the pointer over the content was disorienting, and the

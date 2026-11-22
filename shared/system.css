@@ -4876,10 +4876,8 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy .rel-card .rel-listen > a.rel-btn .pt:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { width: 22px !important; height: 22px !important; }
 @media (max-width: 420px) { :root.psy .rel-card .rel-listen > a.rel-btn:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 10.5px !important; padding-inline: 1px !important; } }
 
-/* The pointer's soft spotlight on a card is drawn under the card's contents, not over them: as a layer on top it
-   tinted the buttons (and the cover, which nothing may cover). */
+/* A card's contents sit on their own layer above the card's background. */
 :root.psy :is(.rel-card, .vid-card-wrap) > :not(.rel-tracklist):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { position: relative; z-index: 2; }
-:root.psy :is(.rel-card, .vid-card-wrap).k-spot:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#)::after { z-index: 1 !important; }
 
 /* ── "Now playing" on an album card: a pill at the right of its top line (owner's request: not in the Tracks bar, no
    song name) ── "ALBUM · 2026 ........ ▮▮▮ NOW PLAYING": a small gold-edged pill pushed to the right-hand end of the

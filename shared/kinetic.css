@@ -15,9 +15,9 @@
 
 @property --k-recess { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --k-weight { syntax: "<number>"; inherits: false; initial-value: 400; }
-/* The pointer-follow values (the light on a card, the pull on a magnetic button). Declared as NOT inherited: a plain
+/* The pointer-follow values (the pull on a magnetic button). Declared as NOT inherited: a plain
    custom property is handed down to every element inside, so each pointer move restyled a whole card's contents
-   (tracklist and all) just to move one glow. The card's ::after asks for them by name instead (see .k-spot::after). */
+   (tracklist and all) just to move one glow. */
 @property --mx { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
 @property --my { syntax: "<length-percentage>"; inherits: false; initial-value: 50%; }
 @property --k-mx { syntax: "<length>"; inherits: false; initial-value: 0px; }
@@ -96,17 +96,6 @@ svg [stroke] { vector-effect: non-scaling-stroke; }
     transform: translateY(-3px);
   }
 }
-/* Pointer spotlight: a soft light follows the cursor across the card
-   (kinetic.js writes --mx/--my on the hovered card only). */
-.k-spot { position: relative; isolation: isolate; }
-.k-spot::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
-  --mx: inherit; --my: inherit;   /* taken from the card by name (they are not handed down on their own) */
-  background: radial-gradient(28rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--k-glow) 18%, transparent), transparent 55%);
-  opacity: 0; transition: opacity .3s ease;
-}
-.k-spot.k-lit::after { opacity: 1; }
-
 /* ── BUTTON PHYSICS ─────────────────────────────────────────────────── */
 .btn, .f-btn, .icon-btn, .fs-ctrl, .fs-play, .fx-toggle, .k-tool, .fs-lyrics-toggle, .nav-platform {
   transition: transform .45s var(--k-spring-press), background-color .2s ease, color .2s ease, border-color .2s ease;
@@ -323,7 +312,6 @@ img.k-blurup { background-size: cover; background-position: center; }
   ::view-transition-new(root) { animation: none !important; }
 }
 @media (forced-colors: active) {
-  .k-spot::after { display: none; }
   
 }
 
