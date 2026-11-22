@@ -141,8 +141,11 @@ LETTERS = {
     'H': [[(0, 0), (0, 1)], [(1, 0), (1, 1)], [(0, .5), (1, .5)]],
 }
 # where they float (the middle of the line - the part on screen), which letter, size and lean
-SOUP = [(452, 'A', 23, -6), (496, 'S', 20, 8), (540, 'H', 22, -5),      # ASH ... STU (owner's request: only these letters; bigger, owner's request),
-        (660, 'S', 20, 9), (704, 'T', 22, -8), (748, 'U', 22, 6)]           # with a gap between the words just wide enough for
+# Placed so the duck never overlaps a letter at the two moments it changes sides of them (owner's request: no bad
+# moments): crossing the middle (the gap between the words is wider than the duck) and turning at each end (the ends of
+# its swim are beyond the outer letters). Checked below, frame by frame, when the swim is printed.
+SOUP = [(475, 'A', 23, -6), (509, 'S', 20, 8), (543, 'H', 22, -5),      # ASH ... STU (owner's request: only these letters; bigger, owner's request),
+        (657, 'S', 20, 9), (691, 'T', 22, -8), (725, 'U', 22, 6)]           # with a gap between the words just wide enough for
                                                                            # the duck, which rests there when motion is off;
                                                                            # all within the part of the line a phone shows
 groups, lgroups = [], []
@@ -299,11 +302,14 @@ open(os.path.join(IMG, 'duck-notes.svg'), 'w').write(
 # coming round through three-quarter and front or back views at the ends), mirrored when it's heading left; the
 # far side of the loop is a little smaller and higher, the near side bigger and lower. Rows of the sheet:
 # 0 side, 1 three-quarter towards, 2 front, 3 three-quarter away, 4 back.
-N, AX, DEPTH = 96, 40, .5
+N, AX, DEPTH = 96, 172, .5   # AX: half the swim's width, in drawing units (the water's 60-unit height = the line's height):
+                             # the swim is measured in the same units as the letters, so the two keep the same relation at
+                             # every screen size (it used to be a share of the line's width, which varies 207-345 units)
+DUCK_HALF, LETTER_HALF = 33, 12   # the duck's body and a letter, half-widths in units (with the pencil line)
 out = ['@keyframes duck-eight {']
 for i in range(N):
     th = 2 * math.pi * i / N
-    x = 50 + AX * math.sin(th)
+    x = AX * math.sin(th)   # units from the middle
     z = math.sin(2 * th) / 2                                    # + is the far side of the loop
     h = math.degrees(math.atan2(DEPTH * math.cos(2 * th), math.cos(th)))   # 0 = heading right, 180 = left, + = away
     off = abs(h) if abs(h) <= 90 else 180 - abs(h)               # how far it has turned from side on
@@ -312,15 +318,25 @@ for i in range(N):
     elif off < 78: row = 3 if away else 1
     else: row = 4 if away else 2
     left = abs(h) > 90 or (abs(h) == 90 and False)
-    sc, dy = 1 - .28 * z, -7 * z
+    sc, dy = 1 - .28 * z, -6.5 * z
     sx = -sc if left else sc
-    out.append(f'  {100 * i / N:.4g}% {{ left: {x:.2f}%; transform: translate(-50%, {dy:.1f}px) scale({sx:.3f}, {sc:.3f}); background-position-y: {row * 25}%; }}')
+    U = 100 / 60   # one drawing unit in cqh (the line is a size container: 1cqh = 1% of its height)
+    out.append(f'  {100 * i / N:.4g}% {{ left: calc(50% + {x * U:.2f}cqh); transform: translate(-50%, {dy * U:.2f}cqh) scale({sx:.3f}, {sc:.3f}); background-position-y: {row * 25}%; }}')
 out.append('}')
 # which side of the letters the duck is on, step by step with the swim: on the far half of a loop (z > 0) the letters
 # are drawn over it (z-index 3), on the near half under it (1); the duck itself is at 2
 out.append('@keyframes duck-depth {')
+prev = None
 for i in range(N):
     th = 2 * math.pi * i / N
-    out.append(f'  {100 * i / N:.4g}% {{ z-index: {3 if math.sin(2 * th) > 0 else 1}; }}')
+    side = 3 if math.sin(2 * th) > 0 else 1
+    out.append(f'  {100 * i / N:.4g}% {{ z-index: {side}; }}')
+    # the check: whenever the duck changes sides, it must be clear of every letter in this step and the one before
+    if prev is not None and side != prev:
+        for j in (i - 1, i):
+            xd = AX * math.sin(2 * math.pi * j / N)
+            for lx, ch, size, lean in SOUP:
+                assert abs((lx - 600) - xd) > DUCK_HALF + LETTER_HALF, f'duck over {ch} as it changes sides (step {j})'
+    prev = side
 out.append('}')
 print('\n'.join(out))
