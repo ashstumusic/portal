@@ -4192,7 +4192,7 @@ if(!side&&media&&media.offsetWidth){
   // Stacked under the photos (owner's request: balanced): the lettering is set in proportion to the photo column above
   // it - "Ash Stu" about 78% of its width, the tagline 88% of the name's width (a gentle taper: name, duck line,
   // tagline), and the description no wider than the name, so the words read as one centred column under the photos.
-  var col=Math.min(text.clientWidth||media.offsetWidth,media.offsetWidth);   // (the photo column - not the name's own box, which shrinks to fit the name)
+  var mainPic=media.querySelector('.bio-media-main'),col=Math.min(text.clientWidth||media.offsetWidth,media.offsetWidth,mainPic&&mainPic.offsetWidth?mainPic.offsetWidth*1.2:1e9);   // (the photo column - not the name's own box, which shrinks to fit the name; with the photos in a row, the portrait's width)
   f1=nn?Math.min(col*.78/nn,cap*1.4):0;f2=nn?Math.max(17,f1*nn*.88/nt):Math.max(17,Math.min(col*.82/nt,cap*.9));
   var rest0=text.querySelector('.bio-rest');if(rest0&&nn){rest0.style.setProperty('max-width',Math.round(Math.max(280,f1*nn))+'px');}
 }else{f1=nn?Math.min(inner*.98/nn,cap):0;f2=nn?Math.min(inner*.95/nt,Math.max(17,f1*nn*.97/nt)):Math.max(17,Math.min(inner*.95/nt,cap*.9));}
