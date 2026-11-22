@@ -406,7 +406,7 @@ def _press_kit():
         line = r["name"] + "  -  " + (r.get("type") or "Album").lower() + ", " + (date_of(r) or "date to come")
         line += f", {n_out} songs" if not n_soon else f", {n_out} of its {n_out + n_soon} songs released so far"
         fs += ["", line]
-        for key, label in (("apple", "Apple Music"), ("spotify", "Spotify"), ("ytmusic", "YouTube Music"), ("amazon", "Amazon Music"), ("deezer", "Deezer")):
+        for key, label in (("apple", "Apple Music"), ("spotify", "Spotify"), ("ytmusic", "YouTube Music"), ("deezer", "Deezer")):
             if r.get(key): fs.append(f"  {label + ':':<16}{r[key]}")
     _w = max([len(t["title"] + " - " + r["name"] + ".mp3") for _, _, r, t in songs] or [0]) + 3
     fs += ["", "", "IN THIS PRESS KIT", "-" * 40, "",

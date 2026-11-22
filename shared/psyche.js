@@ -318,7 +318,10 @@
       const top = hero ? hero.getBoundingClientRect().bottom + sy : 0;
       // under: is this square wholly behind one solid picture (so nothing of a star there can be seen)?
       const under = (x0, y0, x1, y1) => covers.some((c) => x0 >= c[0] && y0 >= c[1] && x1 <= c[2] && y1 <= c[3]);
-      return { W, H, top, free, pass, under, ceiling };
+      // The white zone (where the purple fades away, above About and down to the end) has no stars (owner's request).
+      const ab = $('#about'); let freeTop = null;
+      if (ab) { const fade = parseFloat(getComputedStyle(ab, '::after').height) || 180; freeTop = ab.getBoundingClientRect().top + sy - fade * 0.55; }
+      return { W, H, top, free, pass, under, ceiling, freeTop };
     }
 
     let rt = 0;   // pending repair timer
@@ -340,6 +343,7 @@
           const pad = R * 0.2 + 4;   // room to jitter and swell
           // When topping up, never add a star where you're looking (it would pop in).
           if (avoidView && cy + R > scrollY - 50 && cy - R < scrollY + innerHeight + 50) continue;
+          if (map.freeTop != null && cy + R > map.freeTop) continue;   // (no stars in the white zone)
           if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
           let near = 1e9;
           for (const p of placed) near = Math.min(near, Math.hypot(p.cx - x, p.cy - cy) - p.R);

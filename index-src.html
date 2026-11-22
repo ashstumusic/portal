@@ -64,7 +64,6 @@
         "https://www.youtube.com/@ash_stu",
         "https://music.youtube.com/@ash_stu",
         "https://www.deezer.com/artist/367203012",
-        "https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu",
         "https://www.youtube.com/channel/UCRHOlAh0BxAYgJGaYuXVrjQ",
         "https://substack.com/@ashstu",
         "https://www.patreon.com/c/AshStu"
@@ -89,7 +88,7 @@
       "image": "https://ashstu.art/Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp",
       "numTracks": 9,
       "url": "https://ashstu.art/albums/ash-stu-vol-ii/",
-      "sameAs": ["https://music.apple.com/us/album/only-a-baby-vol-2/6779983161", "https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P", "https://music.youtube.com/playlist?list=OLAK5uy_k4na-IL3J82IGDfGJKtT4O3FHt3xTZm5E", "https://www.amazon.com/gp/product/B0H5339HGH/", "https://www.deezer.com/us/album/1004758901"],
+      "sameAs": ["https://music.apple.com/us/album/only-a-baby-vol-2/6779983161", "https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P", "https://music.youtube.com/playlist?list=OLAK5uy_k4na-IL3J82IGDfGJKtT4O3FHt3xTZm5E", "https://www.deezer.com/us/album/1004758901"],
       "track": [
         {"@type":"MusicRecording","name":"Cool Cat Can't Comprehend","position":1,"byArtist":{"@id":"https://ashstu.art/#artist"}},
         {"@type":"MusicRecording","name":"Dirge for Ducklings","position":2,"byArtist":{"@id":"https://ashstu.art/#artist"}},
@@ -226,7 +225,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Apple Music" title="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Apple Music</span></a>
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Spotify" title="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Spotify</span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Watch on YouTube" title="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">YouTube</span></a>
-    <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Amazon Music" title="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Amazon Music</span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" class="nav-platform" aria-label="Listen on Deezer" title="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span><span class="btn-word" aria-hidden="true">Deezer</span></a>
   </div>
   </div>
@@ -255,7 +253,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <a href="https://music.apple.com/us/artist/ash-stu/1868592370" target="_blank" rel="noopener noreferrer" aria-label="Apple Music"><span class="pt pt--apple" aria-hidden="true"></span></a>
     <a href="https://open.spotify.com/artist/40zDWDI2vFYwdqn80M3odx" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><span class="pt pt--spotify" aria-hidden="true"></span></a>
     <a href="https://youtube.com/@ash_stu" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><span class="pt pt--youtube" aria-hidden="true"></span></a>
-    <a href="https://www.amazon.com/music/player/artists/B0GGHF5LLN/ash-stu" target="_blank" rel="noopener noreferrer" aria-label="Amazon Music"><span class="pt pt--amazon" aria-hidden="true"></span></a>
     <a href="https://www.deezer.com/artist/367203012" target="_blank" rel="noopener noreferrer" aria-label="Deezer"><span class="pt pt--deezer" aria-hidden="true"></span></a>
   </div>
   <a href="#contact">Contact</a>
@@ -1339,7 +1336,7 @@ if (ph) ph.style.display = '';
 }
 }
 // Every store the playing album is on, as the same "Listen on" dock as the Latest Release panel and the album cards.
-var STORE_LIST = [['apple', 'Apple Music'], ['spotify', 'Spotify'], ['ytmusic', 'YouTube Music'], ['amazon', 'Amazon Music'], ['deezer', 'Deezer']];
+var STORE_LIST = [['apple', 'Apple Music'], ['spotify', 'Spotify'], ['ytmusic', 'YouTube Music'], ['deezer', 'Deezer']];
 function fsUpdatePlatforms() {
 var rel = RELEASE_LIST[pState.releaseIdx], box = document.getElementById('fs-stores');
 var on = rel ? STORE_LIST.filter(function(m) { return rel[m[0]]; }) : [];
@@ -2540,7 +2537,6 @@ var listen = '';
 if (rel.apple) listen += '<a href="' + escHtml(rel.apple) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen on Apple Music: ' + escHtml(rel.name) + '" itemprop="url"><span class="pt pt--apple" aria-hidden="true"></span> Apple Music</a>';
 if (rel.spotify) listen += '<a href="' + escHtml(rel.spotify) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen on Spotify: ' + escHtml(rel.name) + '"><span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>';
 if (rel.ytmusic) listen += '<a href="' + escHtml(rel.ytmusic) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen on YouTube Music: ' + escHtml(rel.name) + '"><span class="pt pt--ytmusic" aria-hidden="true"></span> YouTube Music</a>';
-if (rel.amazon) listen += '<a href="' + escHtml(rel.amazon) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen on Amazon Music: ' + escHtml(rel.name) + '"><span class="pt pt--amazon" aria-hidden="true"></span> Amazon Music</a>';
 if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen on Deezer: ' + escHtml(rel.name) + '"><span class="pt pt--deezer" aria-hidden="true"></span> Deezer</a>';
 // A clock beside the words (a picture and a word, like every button-shaped thing on the site).
 // Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
@@ -2614,7 +2610,7 @@ if (btnsEl) {
 var h = '';
 // Every store the release is on, in one row of logo tiles under a single "Listen on" (owner's request), each tile a
 // logo over a short name; the spoken name is the full one ("Listen on YouTube Music: Ash Stu, Vol. II").
-var STORES = [['apple', 'Apple Music', 'Apple Music'], ['spotify', 'Spotify', 'Spotify'], ['ytmusic', 'YouTube Music', 'YouTube Music'], ['amazon', 'Amazon Music', 'Amazon Music'], ['deezer', 'Deezer', 'Deezer']].filter(function(m) { return rel[m[0]]; });
+var STORES = [['apple', 'Apple Music', 'Apple Music'], ['spotify', 'Spotify', 'Spotify'], ['ytmusic', 'YouTube Music', 'YouTube Music'], ['deezer', 'Deezer', 'Deezer']].filter(function(m) { return rel[m[0]]; });
 if (STORES.length) h = '<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + STORES.map(function(m) {
   return '<a href="' + escHtml(rel[m[0]]) + '" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on ' + m[1] + ': ' + escHtml(rel.name) + '"><span class="pt pt--' + m[0] + '" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">' + m[2] + '</span></a>';
 }).join('') + '</div>';
@@ -3497,7 +3493,8 @@ vid.src = encPath(v.file);
 vid.play().catch(function(err) { if (err.name !== 'NotAllowedError' && err.name !== 'NotSupportedError' && err.name !== 'AbortError') console.warn('[video]', err); });
 }
 // SING-ALONG CAPTIONS (owner's request: "map the timing of each word ... make a little ball ... bounce on the word right as
-// it is being sung"). Each word's start was measured from the video's isolated vocals (Demucs, then CTC forced alignment
+// it is being sung"; later: "every syllable ... however the old sing-alongs used to do it" - it now lands on every
+// syllable, see _kk.words). Each word's start was measured from the video's isolated vocals (Demucs, then CTC forced alignment
 // against the words; accurate to a few hundredths of a second). The ball lands on a word at the instant it starts, leaves at
 // once and arcs to land on the next word exactly as it starts; after the line's last word it bounces off to the right and
 // fades, and the next line's ball arrives from the left, landing on its first word on time. The clock is the video's own
@@ -3538,7 +3535,17 @@ function kkTick() {
   var lineEl = box.querySelector('.kk-line'), ball = box.querySelector('.kk-ball');
   if (idx !== _kk.line) {
     _kk.line = idx; lineEl.innerHTML = '';
-    _kk.words = idx < 0 ? [] : L[idx].w.map(function(w) { var sp = document.createElement('span'); sp.className = 'kk-w'; sp.textContent = w[0]; lineEl.appendChild(sp); lineEl.appendChild(document.createTextNode(' ')); return { el: sp, t: w[1] }; });
+    // Each word is shown as its syllables (owner's request: the ball bounces on every syllable, like the old
+    // follow-the-bouncing-ball sing-alongs). A syllable's start was found in the isolated vocals
+    // (scripts/caption_syllables.py: the dip at the consonant between two sung vowels, or the voice's fresh attack);
+    // a one-syllable word is one piece. The ball lands on each piece the instant it starts, and each piece lights as it is sung.
+    _kk.words = [];
+    if (idx >= 0) L[idx].w.forEach(function(w) {
+      var ws = document.createElement('span'); ws.className = 'kk-w';
+      (w[4] && w[4].length > 1 ? w[4] : [[w[0], w[1]]]).forEach(function(sy) { var sp = document.createElement('span'); sp.className = 'kk-s'; sp.textContent = sy[0]; ws.appendChild(sp); _kk.words.push({ el: sp, t: sy[1] }); });
+      lineEl.appendChild(ws); lineEl.appendChild(document.createTextNode(' '));
+    });
+    _kk.lands = _kk.words.map(function(w, q) { return { t: w.t, i: q }; });
     box.classList.toggle('kk-empty', idx < 0);
   }
   if (idx < 0) { ball.style.opacity = '0'; return; }
@@ -3552,15 +3559,20 @@ function kkTick() {
   } else if (t < first0.t) {   // arriving from the left
     var dur = Math.min(ENTER, first0.t - (t - 0)), start = { x: -24, y: first0.y - 10, t: first0.t - ENTER };
     var s = Math.max(0, Math.min(1, (t - start.t) / ENTER)), pnt = arc(start, first0, s, hOf(ENTER) * .8); x = pnt.x; y = pnt.y; op = Math.min(1, s * 3);
-  } else if (t >= lastP.t) {   // off to the right, fading
-    var s2 = Math.min(1, (t - lastP.t) / EXIT), endP = { x: br.width + 30, y: lastP.y + 6 }, p2 = arc(lastP, endP, s2, hOf(EXIT));
-    x = p2.x; y = p2.y; op = 1 - s2 * s2;
   } else {
-    for (var k = 0; k < pts.length - 1; k++) if (t >= pts[k].t && t < pts[k + 1].t) break;
-    var a = pts[k], b = pts[k + 1], s3 = (t - a.t) / Math.max(.001, b.t - a.t), p3 = arc(a, b, s3, hOf(b.t - a.t)); x = p3.x; y = p3.y;
+    var LD = _kk.lands.length ? _kk.lands : [{ t: first0.t, i: 0 }], lastL = LD[LD.length - 1], exitAt = Math.max(lastP.t, lastL.t);
+    var lp = function(l) { var p = pts[l.i]; return { x: p.x, y: p.y, t: l.t }; };
+    if (t >= exitAt) {   // off to the right, fading
+      var from2 = lp(lastL), s2 = Math.min(1, (t - exitAt) / EXIT), endP = { x: br.width + 30, y: from2.y + 6 }, p2 = arc(from2, endP, s2, hOf(EXIT));
+      x = p2.x; y = p2.y; op = 1 - s2 * s2;
+    } else {
+      for (var k = 0; k < LD.length - 1; k++) if (t >= LD[k].t && t < LD[k + 1].t) break;
+      if (k >= LD.length - 1) { var rest = lp(lastL); x = rest.x; y = rest.y; }   // (landed for the last time: waits there until the line's last word, then away)
+      else { var a = lp(LD[k]), b = lp(LD[k + 1]), s3 = (t - a.t) / Math.max(.001, b.t - a.t), p3 = arc(a, b, s3, hOf(b.t - a.t) * (a.x === b.x ? .55 : 1)); x = p3.x; y = p3.y; }
+    }
   }
-  // a quick squash just as it lands on a word
-  var since = Math.min.apply(null, pts.map(function(p) { return t >= p.t ? t - p.t : 9; }));
+  // a quick squash just as it lands (on the beat)
+  var since = Math.min.apply(null, (_kk.lands.length ? _kk.lands : pts).map(function(p) { return t >= p.t ? t - p.t : 9; }));
   if (!kkStill() && since < .09) squash = .72 + .28 * (since / .09);
   ball.style.opacity = String(op);
   ball.style.transform = 'translate(' + (x - R).toFixed(1) + 'px,' + (y - 2 * R - 3).toFixed(1) + 'px) scale(' + (1 / squash * .9 + .1).toFixed(3) + ',' + squash.toFixed(3) + ')';
@@ -4151,8 +4163,9 @@ setTimeout(step,3000+Math.random()*2000);})();</script>
 /* one visit in a hundred (owner's request; it replaces the old "Quack, Quack."): the tagline says "HI, HOW ARE YOU"
    instead, in the same handwriting, each letter boiling like a hand-drawn flipbook (a few drawn poses, flipped through
    a few times a second; still with reduced motion or Effects off). Screen readers hear the words once, plainly. */
-if(bot&&Math.random()<.01){var _tg=bot.querySelector('.bio-tagline');if(_tg){var _hi='HI, HOW ARE YOU';_tg.dataset.measure=_tg.textContent;_tg.classList.add('is-hi');
-  _tg.innerHTML='<span class="sr-only">'+_hi+'</span><span class="hi-ink" aria-hidden="true">'+_hi.split('').map(function(ch,i){return ch===' '?' ':'<span class="hi-l" style="--i:'+i+'">'+ch+'</span>';}).join('')+'</span>';}}
+function makeHi(){var _tg=bot&&bot.querySelector('.bio-tagline');if(!_tg||_tg.classList.contains('is-hi'))return false;var _hi='HI, HOW ARE YOU';_tg.dataset.measure=_tg.textContent;_tg.classList.add('is-hi');
+  _tg.innerHTML='<span class="sr-only">'+_hi+'</span><span class="hi-ink" aria-hidden="true">'+_hi.split('').map(function(ch,i){return ch===' '?' ':'<span class="hi-l" style="--i:'+i+'">'+ch+'</span>';}).join('')+'</span>';return true;}
+if(bot&&Math.random()<.01)makeHi();
 if(!card||!text||!bot)return;   /* (no name line any more: the tagline leads, owner's request) */
 if(!top){top=document.createElement('div');}var media=card.querySelector('.bio-card-media'),desc=text.querySelector('.bio-desc');
 function build(){
@@ -4189,7 +4202,7 @@ if(side&&media){var rest=text.querySelector('.bio-rest'),avail=media.offsetHeigh
 for(var k=0;k<4;k++){var gap=parseFloat(getComputedStyle(top).marginBottom)+parseFloat(getComputedStyle(bot).marginTop),used=top.offsetHeight+bot.offsetHeight+gap;
 if(used<=avail)break;var sc=Math.max(.5,(avail-gap)/(used-gap))*.99;f1*=sc;f2*=sc;setSize(top,f1);setSize(bot,f2);if(above)setSize(above,f2);}}
 // the wavy line under the name is as wide as the name (it spanned the whole panel), and a little thinner when shorter
-var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name||tag);var sw=rn.getBoundingClientRect().width;
+var st=text.querySelector('.bio-stroke');if(st){var rn=document.createRange();rn.selectNodeContents(name||tag);var sw=(!name&&tag.dataset.measure)?nt*f2:rn.getBoundingClientRect().width;   /* (with the swapped line, the drawing keeps the usual tagline's width: its letters are placed along it) */
 if(sw>0){st.style.setProperty('width',Math.round(sw)+'px','important');st.style.setProperty('height',Math.round(Math.max(40,Math.min(64,sw*.12)))+'px');}}
 // the line above the water sits exactly as far above the waterline (two thirds down the drawing) as the tagline sits
 // below it, measured on the letters themselves
@@ -4201,6 +4214,13 @@ requestAnimationFrame(function(){card.querySelectorAll('.bio-name,.bio-tagline')
 }
 var t=0;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,200);},{passive:true});
 if(document.readyState==='complete')build();else addEventListener('load',build);
+/* The Konami code (up up down down left right left right B A) turns it on whatever the odds (owner's request): the
+   tagline switches to "HI, HOW ARE YOU" there and then, and the page glides down to show it. Not while typing in a field. */
+(function(){var K=['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'],at=0;
+addEventListener('keydown',function(e){var el=e.target;if(el&&(el.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)))return;
+  var k=String(e.key||'').toLowerCase();at=k===K[at]?at+1:(k===K[0]?1:0);if(at<K.length)return;at=0;
+  if(makeHi())build();var tg=bot.querySelector('.bio-tagline');var calm=(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if(tg)tg.scrollIntoView({block:'center',behavior:calm?'auto':'smooth'});var sr=document.getElementById('sr-announce');if(sr)sr.textContent='Hi, how are you';});})();
 (document.fonts&&document.fonts.ready||Promise.resolve()).then(build);})();</script>
 <script>/* Press Kit files (owner's request): the four windows show the press kit as files on a desktop - every photo in
    the kit (IMG_0001.jpg ... IMG_0009.png) and every song in it ("Still Sad.mp3" ...) - each window changing on its
@@ -4366,8 +4386,8 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
 <script>
-/* Space dust (owner's request): purplish dust drifting down out of the night where the page's black fades into white
-   above About, thinning and fading away as it falls into the light. Decoration only: aria-hidden, never takes a
+/* Space dust (owner's request): purplish dust drifting down out of the night toward where the page's black fades into
+   white above About, thinning and fading away before it reaches the white (none in the white zone itself). Decoration only: aria-hidden, never takes a
    click, drawn only while on screen; with reduced motion or Effects off it rests as a still sprinkle. */
 (function() {
   var about = document.getElementById('about'); if (!about || !window.requestAnimationFrame) return;
@@ -4384,11 +4404,12 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
     p.vx = (Math.random() - .5) * 6; p.sway = Math.random() * 6.28; p.swayS = .4 + Math.random() * .8;
     p.tw = Math.random() * 6.28; p.c = c; return p;
   }
-  function place() {   /* from behind the Videos panel's lower part, through the black, down into the white */
+  function place() {   /* from behind the Videos panel's lower part, down through the black to where the white begins */
     var panel = document.getElementById('videos'), y = window.scrollY || 0;
     var pb = panel ? panel.getBoundingClientRect().bottom + y : about.getBoundingClientRect().top + y - 160;
     var at = about.getBoundingClientRect().top + y;
-    var top = Math.round(pb - (innerWidth < 768 ? 220 : 380)), bottom = Math.round(at + (innerWidth < 768 ? 160 : 230));
+    var fade = parseFloat(getComputedStyle(about, '::after').height) || 180;
+    var top = Math.round(pb - (innerWidth < 768 ? 220 : 380)), bottom = Math.round(at - fade * 0.45);   /* (it is all gone before the white: none in the white zone, owner's request) */
     cv.style.top = top + 'px'; cv.style.height = (bottom - top) + 'px';
   }
   function size() {

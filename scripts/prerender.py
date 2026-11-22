@@ -95,7 +95,7 @@ def render_release_card(rel, r_idx):
         listen += (f'<a href="{esc(rel["spotify"])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                   f'aria-label="Listen on Spotify: {esc(rel["name"])}">'
                    f'<span class="pt pt--spotify" aria-hidden="true"></span> Spotify</a>')
-    for key, store in (('ytmusic', 'YouTube Music'), ('amazon', 'Amazon Music'), ('deezer', 'Deezer')):
+    for key, store in (('ytmusic', 'YouTube Music'), ('deezer', 'Deezer')):
         if rel.get(key):
             listen += (f'<a href="{esc(rel[key])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                        f'aria-label="Listen on {store}: {esc(rel["name"])}"><span class="pt pt--{key}" aria-hidden="true"></span> {store}</a>')
@@ -218,7 +218,7 @@ def inject_featured(page, rel):
         page, count=1,
     )
     stores = [(k, n, w) for k, n, w in (('apple', 'Apple Music', 'Apple Music'), ('spotify', 'Spotify', 'Spotify'), ('ytmusic', 'YouTube Music', 'YouTube Music'),
-                                       ('amazon', 'Amazon Music', 'Amazon Music'), ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
+                                       ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
     btns = ('<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + ''.join(
         f'<a href="{esc(rel[k])}" target="_blank" rel="noopener noreferrer" class="f-store" aria-label="Listen on {n}: {esc(rel["name"])}">'
         f'<span class="pt pt--{k}" aria-hidden="true"></span><span class="f-store-word" aria-hidden="true">{w}</span></a>' for k, n, w in stores) + '</div>') if stores else ''
