@@ -221,6 +221,8 @@ _script_re = re.compile(r'(<script\b[^>]*>.*?</script>)', re.S)
 _parts = _script_re.split(html)
 for _i in range(0, len(_parts), 2):  # even indices = markup outside <script>
     _parts[_i] = re.sub(r'(src|href)="(Images/[^"?]+)"', _same_url_as_css, _parts[_i])
+    # (and inside srcset / imagesrcset lists: the browser picks from those, so an untagged entry there was a second download)
+    _parts[_i] = re.sub(r'((?:image)?srcset)="([^"]+)"', lambda m: m.group(1) + '="' + re.sub(r'(Images/[^\s,?]+)', lambda q: q.group(1) + ('?v=' + _CSS_IMG_V[q.group(1)] if q.group(1) in _CSS_IMG_V else ''), m.group(2)) + '"', _parts[_i])
 html = "".join(_parts)
 # The head script that waits for the pencil-shading image before showing the name's shading asks for it by the
 # stylesheet's exact URL too (it asked for the bare "/Images/pencil-hatch.webp", so the 216KB image was downloaded twice).
