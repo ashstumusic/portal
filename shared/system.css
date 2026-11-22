@@ -6176,3 +6176,6 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* (the smallest words on the page - the service names under the "Listen on" logos and the photo credit - at 12px, the
    site's floor for reading; four services now leave room for it) */
 :root.psy :is(.rel-card .rel-stores > a, .f-store-word, a.photo-credit):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 12px !important; }
+/* (phones: Contact's email and Copy buttons line up with the heading and sentence above them, as every other section's
+   buttons do, instead of sitting centred under left-aligned text) */
+@media (max-width: 767px) { :root.psy #contact .contact-inner:not(#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#) { justify-content: flex-start !important; } :root.psy #contact .contact-email-link:not(#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#) { margin-inline: 0 !important; } }
