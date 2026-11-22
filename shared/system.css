@@ -6365,3 +6365,61 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 @media (max-width: 767px) { :root.psy .bio-section:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding-top: 48px !important; } }
 /* "Listen on" over the haze stays full white with the title's soft shadow (a grey label there fell below 3:1) */
 :root.psy .f-listen-label:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: var(--hig-label-1) !important; text-shadow: 0 1px 2px rgb(0 0 0 / .45), 0 0 12px rgb(0 0 0 / .25) !important; }
+
+/* ── HIG SWEEP, part 2: consistency across every view (toolbar, menus, search, settings, players, video viewer,
+   tracklists, press kit, fact sheet). Measured in every state at 1440px and 390px; each line below fixes a control that
+   differed from its siblings. ── */
+
+/* Corners: controls 12px, rows 8px (row pills and the fact-sheet buttons were 10px, menu links and Close 16px, the
+   phone search field 16px, the press-kit video thumbnails 6px) */
+:root.psy :is(.rel-lyrics-toggle, .rel-track-soon, .k-palette-close, .k-menu-link, .k-si-input, .np-close):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: var(--hig-r-ctl) !important; }
+:root.psy :is(.rel-track, .epk-video-thumb, .fs-lyric):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: var(--hig-r-row) !important; }
+:root.psy .k-si-tag:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: 6px !important; }
+
+/* One label weight (600): the hero Play and "Send an email" were 700, YouTube's word 17px beside Play's 16px */
+:root.psy :is(.featured-play, #featured-play, .f-play, .contact-email-link):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-weight: 600 !important; }
+:root.psy :is(.featured-play, #featured-play, .f-play, .contact-email-link) .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-weight: 600 !important; }
+:root.psy .vid-yt.vid-ytbig .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 16px !important; }
+
+/* Compact buttons in bars and dialogs (YouTube / Captions / Close in the video viewer, Close in the player and
+   Settings, Download / Close on the fact sheet): one 15px/600 word (were 13, 15 and 11px) */
+:root.psy :is(#lb-yt, #lb-cc, #lb-close, #fs-collapse, .k-palette-close, .kd-close, .kd-head .epk-file) :is(.btn-word, span:not(.pt)):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#),
+:root.psy :is(#lb-yt, #lb-cc):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 15px !important; font-weight: 600 !important; }
+/* Row pills (Lyrics, Download, Play beside a track): one 13px/600 word in the UI face (the open Lyrics pill switched
+   to the narrow label face) */
+:root.psy :is(.rel-track-wrap, .epk-tracks, .epk-videos, .rel-tracklist) .rel-lyrics-toggle:not(.kd-close):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#),
+:root.psy :is(.rel-track-wrap, .epk-tracks, .epk-videos, .rel-tracklist) .rel-lyrics-toggle:not(.kd-close) .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 13px !important; font-weight: 600 !important; font-family: var(--font-ui) !important; letter-spacing: .02em !important; }
+/* Words under pictures: 12px in the players, 11px where room is tight (phone menu's streaming buttons, search tags; were 10.5px) */
+:root.psy .k-menu-plat .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 11px !important; }
+
+/* Dark buttons: one material (the row pills were a fainter 6% fill, Captions a different near-black) */
+:root.psy :is(.rel-lyrics-toggle:not(.open), #lb-cc:not([aria-pressed="true"])):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: rgb(255 255 255 / .1) !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .26), inset 0 1px 0 rgb(255 255 255 / .22) !important;
+}
+/* ON is solid white with a dark label everywhere (Captions-on was a gold ring; the docked player's Shuffle/Repeat
+   a 92% white with a grey icon) */
+:root.psy :is(#lb-cc[aria-pressed="true"], .np-ctrl[aria-pressed="true"], .fs-ctrl[aria-pressed="true"], .rel-lyrics-toggle.open):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: #fff !important; color: #111 !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .2), 0 1px 2px rgb(0 0 0 / .3) !important;
+}
+:root.psy :is(#lb-cc[aria-pressed="true"], .np-ctrl[aria-pressed="true"], .fs-ctrl[aria-pressed="true"], .rel-lyrics-toggle.open) :is(svg, .btn-word):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: #111 !important; }
+/* Hover and keyboard focus stay gold on top of ON */
+:root.psy :is(#lb-cc, .np-ctrl, .fs-ctrl, .rel-lyrics-toggle):is(:hover, :focus-visible):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: var(--hig-accent) !important; color: #111 !important; }
+
+/* Search tags: one neutral chip with its picture and word (they were gold, white, outlined, orange, pink and blue by type) */
+:root.psy .k-si-tagP, :root.psy .k-si-tag[data-tag]:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: rgb(255 255 255 / .1) !important; color: var(--hig-label-1) !important;
+  box-shadow: inset 0 0 0 1px var(--hig-hair-2) !important; font-size: 11px !important; font-weight: 600 !important;
+}
+:root.psy :is([aria-selected="true"], .k-si-opt:hover) .k-si-tag:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: rgb(0 0 0 / .12) !important; color: #111 !important; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .22) !important; }
+
+/* The docked player's Close matches its neighbours' width */
+@media (min-width: 768px) { :root.psy #np-close:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { min-width: 56px !important; } }
+@media (max-width: 767px) { :root.psy #np-close:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { min-width: 44px !important; } }
+
+/* Sing-along lines on the type scale (were 17.92px) */
+:root.psy .fs-lyric:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 17px !important; }
+/* Fact sheet: Download's word matches Close beside it (13px -> 15px); phone toolbar: Menu's word matches Home's (13px -> 15px) */
+:root.psy .kd-dl:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#), :root.psy .kd-dl .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 15px !important; font-weight: 600 !important; letter-spacing: 0 !important; }
+@media (max-width: 767px) { :root.psy #nav-toggle .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#), :root.psy #nav-toggle:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: 15px !important; font-weight: 600 !important; } }
