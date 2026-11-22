@@ -185,7 +185,7 @@
 <link rel="manifest" href="site.webmanifest"/>
 
 
-<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};h.src="/Images/pencil-hatch.webp"})(document.documentElement)</script>
+<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.fetchPriority="low";h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};h.src="/Images/pencil-hatch.webp"})(document.documentElement)</script>
 <link rel="stylesheet" href="styles.css?v=76">
 <link rel="preload" as="image" href="Images/embedded/featured-only-a-baby-vol-2.webp" fetchpriority="high">
 <script>/* Touch vs mouse: a finger press marks the page .touch (hover styles off, so
@@ -400,10 +400,16 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
          small thumbnails under the copy. -->
     <div class="bio-card">
       <div class="bio-card-text">
+        <!-- PINNED (owner, 2026-11-22: "remove the duck and stars for now, put a pin in them, the whole duck animation and
+             figment line"): the duck line and the "A figment of my own imagination." tagline (with its 1-in-100 "HI, HOW ARE
+             YOU" and the Konami code) are kept here unchanged inside a <template>, which the browser never shows or runs.
+             To bring them back, take the <div class="bio-head"> back out of the <template>. -->
+        <template id="pinned-bio-head">
         <div class="bio-head">
           <div class="bio-stroke" aria-hidden="true"><span class="duck-letters"></span><span class="duck-notes"></span></div>
           <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
         </div>
+        </template>
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" data-credit="shown" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
@@ -4172,6 +4178,7 @@ setTimeout(step,3000+Math.random()*2000);})();</script>
    (n below can repeat each line in extra decorative rows, hidden from
    screen readers; it is 1, so there are none.) */
 (function(){var card=document.querySelector('.bio-card'),text=card&&card.querySelector('.bio-card-text'),top=card&&card.querySelector('.bio-wall--top'),bot=card&&card.querySelector('.bio-wall--bottom');
+if(!bot)return;   /* (the duck line and tagline are pinned - see #pinned-bio-head - so there is nothing to lay out) */
 /* one visit in a hundred (owner's request; it replaces the old "Quack, Quack."): the tagline says "HI, HOW ARE YOU"
    instead, in the same handwriting, each letter boiling like a hand-drawn flipbook (a few drawn poses, flipped through
    a few times a second; still with reduced motion or Effects off). Screen readers hear the words once, plainly. */

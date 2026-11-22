@@ -207,7 +207,11 @@
   // you scroll they also turn in hard clicks and swell in steps; a fast
   // scroll knocks them about. Every star is there from the start (no
   // pop-in), and stars added later are only ever placed off screen. Still under reduced motion or with effects off.
-  const stars = (() => {
+  // PINNED (owner, 2026-11-22: "remove the duck and stars for now, put a pin in them"): the stars are switched off, not
+  // deleted - set STARS_PINNED to false to bring them back exactly as they were (their drawing sheet is not downloaded
+  // while pinned, since nothing asks for it).
+  const STARS_PINNED = true;
+  const stars = STARS_PINNED ? { redraw() {} } : (() => {
     const FRAMES = 3, DESIGNS = 6;   // six hand-drawn hollow stars
     // Each star is chalked in a faint version of one of these colours
     // (#FBB669 #F88FA8 #F37C78 #E7AD8B #E1D0C4 #A9CBC4 #6B2222, each 40% of the way to white).
@@ -628,7 +632,7 @@
 
   // Settings for the footer's settings panel (kinetic.js picks these up).
   window.kineticItems = () => [
-    { group: 'Settings', label: 'Effects', on: fxPref, title: fxPref ? 'Turn effects off' : 'Turn effects on', sub: 'Haze, stars, the swimming duck, photo shuffles, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Effects ${fxPref ? 'on' : 'off'}`); } },
+    { group: 'Settings', label: 'Effects', on: fxPref, title: fxPref ? 'Turn effects off' : 'Turn effects on', sub: 'Haze, photo shuffles, confetti and fireworks', run: () => { fxPref = !fxPref; store.set('psy-fx', fxPref ? 'on' : 'off'); syncFx(); announce(`Effects ${fxPref ? 'on' : 'off'}`); } },
   ];
 
   syncFx();
