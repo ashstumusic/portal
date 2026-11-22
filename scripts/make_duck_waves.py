@@ -168,6 +168,7 @@ for name, gs in (('pool-waves.svg', groups), ('soup-letters.svg', lgroups)):
 # that shows it.
 CW, CH, CX, CY, S = 120, 60, 60, 44, 1.25
 BILL_ORANGE, INK = '#C2560E', '#2A1A24'
+PEN = '#141218'   # the duck's outline: pen-ink black (owner's request; the letters, the tagline and the tune keep the gradient)
 def poly_close(*parts):
     pts = []
     for p in parts: pts += p
@@ -231,7 +232,7 @@ for pi, pose in enumerate(POSES):
         for ex, ey in place(pose['eyes']):
             eyes += f'<path d="{fill_shape(oval(ex, ey, 1.75, 1.95, rng.uniform(-.3, .3), 14), rng, .04)}" fill="{INK}"/>'
             eyes += f'<circle cx="{ex - .55:.2f}" cy="{ey - .7:.2f}" r=".5" fill="#fff"/>'
-        cells.append(f'<g transform="translate({f * CW} {pi * CH})">{fills}<path d="{" ".join(strokes)}" fill="url(#g)"/>{bill}{eyes}</g>')
+        cells.append(f'<g transform="translate({f * CW} {pi * CH})">{fills}<path d="{" ".join(strokes)}" fill="{PEN}"/>{bill}{eyes}</g>')   # (pen ink: owner's request)
 NP = len(POSES)
 open(os.path.join(IMG, 'rubber-duck.svg'), 'w').write(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CW * FRAMES} {CH * NP}" width="{CW * FRAMES}" height="{CH * NP}">'
