@@ -99,7 +99,9 @@ def render_release_card(rel, r_idx):
         if rel.get(key):
             listen += (f'<a href="{esc(rel[key])}" target="_blank" rel="noopener noreferrer" class="rel-btn" '
                        f'aria-label="Listen on {store}: {esc(rel["name"])}"><span class="pt pt--{key}" aria-hidden="true"></span> {store}</a>')
-    status = ('<p class="rel-status"><span>Coming soon to streaming</span></p>'
+    import datetime as _dt
+    _out = bool(rel.get('date')) and rel['date'] <= _dt.date.today().isoformat()   # (already out, not on the services yet)
+    status = (f'<p class="rel-status"><span>{"Not on streaming services yet" if _out else "Coming soon to streaming"}</span></p>'
               if not listen or rel.get('soon') else '')
     if listen:
         status += (f'<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-{r_idx}">Listen on</span>'
@@ -155,7 +157,7 @@ def render_video_card(v, v_idx):
                   f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
                   f'<span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word">YouTube</span></a>')
     if v.get('thumb'):
-        srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1024w" sizes="(max-width: 600px) 92vw, 400px"' if v.get('thumb2x') else '')
+        srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1280w" sizes="(max-width: 600px) 92vw, 400px"' if v.get('thumb2x') else '')
         thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'

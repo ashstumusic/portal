@@ -6,7 +6,7 @@
     "year": 2026,
     "captions": "Video Files/Captions/Brain Dead Corollary.vtt",
     "thumb": "Video Files/Thumbnails/Brain Dead Corollary.webp",
-    "thumb2x": "Video Files/Thumbnails/Brain Dead Corollary-1024.webp",
+    "thumb2x": "Video Files/Thumbnails/Brain Dead Corollary-1280.webp",
     "tint": "#39282b"
   },
   {
@@ -16,7 +16,7 @@
     "year": 2026,
     "captions": "Video Files/Captions/Theory of Hope.vtt",
     "thumb": "Video Files/Thumbnails/Theory of Hope.webp",
-    "thumb2x": "Video Files/Thumbnails/Theory of Hope-1024.webp",
+    "thumb2x": "Video Files/Thumbnails/Theory of Hope-1280.webp",
     "tint": "#2e2626"
   },
   {
@@ -26,6 +26,7 @@
     "year": 2026,
     "captions": "Video Files/Captions/VCR.vtt",
     "thumb": "Video Files/Thumbnails/VCR.webp",
+    "thumb2x": "Video Files/Thumbnails/VCR-1280.webp",
     "tint": "#736a59"
   },
   {
@@ -35,7 +36,7 @@
     "year": 2026,
     "captions": "Video Files/Captions/Why Have Eyes.vtt",
     "thumb": "Video Files/Thumbnails/Why Have Eyes.webp",
-    "thumb2x": "Video Files/Thumbnails/Why Have Eyes-1024.webp",
+    "thumb2x": "Video Files/Thumbnails/Why Have Eyes-1280.webp",
     "tint": "#837b73"
   },
   {
@@ -45,7 +46,7 @@
     "year": 2026,
     "captions": "Video Files/Captions/The Cloud for the Desert.vtt",
     "thumb": "Video Files/Thumbnails/The Cloud for the Desert.webp",
-    "thumb2x": "Video Files/Thumbnails/The Cloud for the Desert-1024.webp",
+    "thumb2x": "Video Files/Thumbnails/The Cloud for the Desert-1280.webp",
     "tint": "#80816d"
   },
   {
@@ -55,6 +56,7 @@
     "year": 2026,
     "captions": "Video Files/Captions/The Helpful Raven.vtt",
     "thumb": "Video Files/Thumbnails/The Helpful Raven.webp",
+    "thumb2x": "Video Files/Thumbnails/The Helpful Raven-1280.webp",
     "tint": "#9ca6ab"
   }
 ]

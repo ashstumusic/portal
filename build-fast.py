@@ -180,7 +180,7 @@ _PRELOAD_FONTS = {"Fonts/battambang/Battambang-Bold.ttf", "Fonts/xperimental/Boi
 preloads = "\n".join(
     f'<link rel="preload" href="{rel}" as="font" type="font/woff2" crossorigin>'
     for src, rel in FONT_RELPATHS.items() if src in _PRELOAD_FONTS
-) + '\n<link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">'
+) + '\n<link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" imagesrcset="Images/embedded/hero-ash-stu-guitar.webp 1400w, Images/embedded/hero-ash-stu-guitar-2000.webp 2000w" imagesizes="(max-width: 767px) 100vw, 80vw" fetchpriority="high">'
 html = html.replace("</head>", f'{preloads}\n<link rel="stylesheet" href="{css_out}"/>\n</head>')
 
 # icons: cache-bust them when the artwork changes (favicon.ico for old browsers and the bare /favicon.ico request,

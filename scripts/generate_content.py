@@ -279,8 +279,8 @@ def gen_videos():
             'captions': cap.replace(os.sep, '/') if os.path.isfile(cap) else None,
             'thumb': find_thumb(base),
             # A sharper copy of the thumbnail for high-resolution screens, if one has been made
-            # (Video Files/Thumbnails/<name>-1024.webp); listed only when the file exists.
-            **({'thumb2x': f'Video Files/Thumbnails/{base}-1024.webp'} if os.path.isfile(os.path.join('Video Files', 'Thumbnails', base + '-1024.webp')) else {}),
+            # (Video Files/Thumbnails/<name>-1280.webp, the video's own frame at full size); listed only when the file exists.
+            **({'thumb2x': f'Video Files/Thumbnails/{base}-1280.webp'} if os.path.isfile(os.path.join('Video Files', 'Thumbnails', base + '-1280.webp')) else {}),
             # (the thumbnail's average colour, shown while it loads, like the album covers)
             **({'tint': cover_tint(find_thumb(base))} if find_thumb(base) and cover_tint(find_thumb(base)) else {}),
             '_sort': git_first_added_epoch(path),

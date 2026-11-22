@@ -8,3 +8,19 @@ Books/
 .claude/
 .aider*
 .zips/
+
+# Kept on this computer, never published (GitHub Pages serves every tracked file):
+# personal and working files, the optional back end and its admin page, old drafts and audits
+/~/
+/AUDIT.md
+/a11y-audit.log
+/admin.html
+/server.js
+/db.js
+/data.json
+/Track List.txt
+/Journal/Essays/*.txt
+/redesign/
+/redesign-2/
+/redesign-3/
+/concept-gatefold.html

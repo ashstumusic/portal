@@ -188,7 +188,6 @@
 
 <script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};h.src="/Images/pencil-hatch.webp"})(document.documentElement)</script>
 <link rel="stylesheet" href="styles.css?v=76">
-<link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp" fetchpriority="high">
 <link rel="preload" as="image" href="Images/embedded/featured-only-a-baby-vol-2.webp" fetchpriority="high">
 <script>/* Touch vs mouse: a finger press marks the page .touch (hover styles off, so
    a tapped button never keeps a stuck hover look); moving a mouse clears it. */
@@ -271,7 +270,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <section class="hero-split" id="latest" aria-label="Ash Stu">
   <div class="hero-split-left">
     <div class="hero-photo-track" id="hero-photo-track">
-      <img src="Images/embedded/hero-ash-stu-guitar.webp" alt="Ash Stu with guitar" data-credit="shown" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="935"/>
+      <img src="Images/embedded/hero-ash-stu-guitar.webp" srcset="Images/embedded/hero-ash-stu-guitar.webp 1400w, Images/embedded/hero-ash-stu-guitar-2000.webp 2000w" sizes="(max-width: 767px) 100vw, 80vw" alt="Ash Stu with guitar" data-credit="shown" class="hero-split-photo" loading="eager" fetchpriority="high" width="1400" height="935"/>
       <div class="hero-photo-frame" aria-hidden="true"></div>
     </div>
     <div class="hero-split-overlay">
@@ -312,9 +311,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
   <div class="epk-body">
     <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg>Press Kit</h2>
     <p class="epk-text">Songs and photos <br/>for booking and press.</p>
-    <a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="btn btn-epk-dl btn-epk btn--start" title="Download Press Kit (ZIP file, __KIT_MB__ MB)" aria-label="Download Press Kit (ZIP file, __KIT_MB__ MB)">
+    <a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="btn btn-epk-dl btn-epk btn--start" title="Open the press kit's fact sheet" aria-label="Open the press kit's fact sheet">   <!-- (shown only without JavaScript, where the kit's ZIP cannot be made: it says what it really opens) -->
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span>Download <br/>Press Kit</span>
+      <span>Fact <br/>Sheet</span>
     </a>
   </div>
   <div class="epk-photos epk-photos-top">
@@ -2545,7 +2544,9 @@ if (rel.amazon) listen += '<a href="' + escHtml(rel.amazon) + '" target="_blank"
 if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank" rel="noopener noreferrer" class="rel-btn" aria-label="Listen on Deezer: ' + escHtml(rel.name) + '"><span class="pt pt--deezer" aria-hidden="true"></span> Deezer</a>';
 // A clock beside the words (a picture and a word, like every button-shaped thing on the site).
 // Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
-var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>Coming soon to streaming</span></p>' : '';
+// (an album already out but not on the services yet says so plainly: "coming soon" beside a date that has passed read as a mistake)
+var outAlready = rel.date && rel.date <= new Date().toISOString().slice(0, 10);
+var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>' + (outAlready ? 'Not on streaming services yet' : 'Coming soon to streaming') + '</span></p>' : '';
 if (listen) status += '<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-' + rIdx + '">Listen on</span><span class="rel-stores" role="group" aria-labelledby="rel-listen-' + rIdx + '">' + listen + '</span></div>';
 // Download: the album's ZIP is made in the browser when pressed (albumZip; the files are rel.zip, see scripts/album_zip.py live_plan).
 // Its link is the album's own page, for anyone without JavaScript.
@@ -2582,7 +2583,7 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt vid-ytbig" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word">YouTube</span></a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1024w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
+? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1280w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
 : '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/
