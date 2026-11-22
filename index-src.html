@@ -2947,14 +2947,56 @@ function kitPdf(txt) {
 }
 var _webpOk = null;
 function kitCanWebp() { if (_webpOk === null) { try { var c = document.createElement('canvas'); c.width = c.height = 1; _webpOk = c.toDataURL('image/webp').indexOf('data:image/webp') === 0; } catch (e) { _webpOk = false; } } return _webpOk; }
-function kitImage(u8, to) {   // a PNG as JPEG (on white) or WebP (keeps see-through parts), full size
+// A photo's credit carried into JPEG and WebP copies too (owner's request): the PNG's details (Author, Copyright) are
+// written into the converted file as EXIF - Artist, Copyright and ImageDescription - which Windows, macOS, phones,
+// Lightroom and the web all read. JPEG: an APP1 segment after the start marker. WebP: an EXIF chunk, with the file
+// switched to the extended layout (VP8X) that announces it.
+function kitExif(credit) {
+  var enc = new TextEncoder(), tags = [[0x010E, 'Ash Stu. Photo: ' + credit + '.'], [0x013B, credit], [0x8298, 'Photo by ' + credit + '. Used with permission by Ash Stu.']];
+  var vals = tags.map(function(t) { return enc.encode(t[1] + '\0'); }), n = tags.length, ifd = 8, dataAt = ifd + 2 + n * 12 + 4, size = dataAt + vals.reduce(function(a, v) { return a + v.length + (v.length & 1); }, 0);
+  var b = new Uint8Array(size), d = new DataView(b.buffer);
+  b.set([73, 73, 42, 0]); d.setUint32(4, ifd, true); d.setUint16(ifd, n, true);
+  var at = dataAt;
+  tags.forEach(function(t, k) {
+    var e = ifd + 2 + k * 12, v = vals[k];
+    d.setUint16(e, t[0], true); d.setUint16(e + 2, 2, true); d.setUint32(e + 4, v.length, true);
+    if (v.length <= 4) b.set(v, e + 8); else { d.setUint32(e + 8, at, true); b.set(v, at); at += v.length + (v.length & 1); }
+  });
+  return b;   // (TIFF data: little-endian, one directory)
+}
+function kitTagJpeg(u8, credit) {
+  if (!credit || u8[0] !== 0xFF || u8[1] !== 0xD8) return u8;
+  var t = kitExif(credit), seg = new Uint8Array(4 + 6 + t.length), d = new DataView(seg.buffer);
+  seg[0] = 0xFF; seg[1] = 0xE1; d.setUint16(2, 2 + 6 + t.length); seg.set([69, 120, 105, 102, 0, 0], 4); seg.set(t, 10);
+  var out = new Uint8Array(u8.length + seg.length); out.set(u8.subarray(0, 2), 0); out.set(seg, 2); out.set(u8.subarray(2), 2 + seg.length); return out;
+}
+function kitTagWebp(u8, credit, w, h) {
+  var str = function(o) { return String.fromCharCode(u8[o], u8[o + 1], u8[o + 2], u8[o + 3]); };
+  if (!credit || str(0) !== 'RIFF' || str(8) !== 'WEBP') return u8;
+  var chunks = [], o = 12, dv = new DataView(u8.buffer, u8.byteOffset);
+  while (o + 8 <= u8.length) { var id = str(o), len = dv.getUint32(o + 4, true); chunks.push([id, u8.subarray(o + 8, o + 8 + len)]); o += 8 + len + (len & 1); }
+  var x = chunks.filter(function(c) { return c[0] === 'VP8X'; })[0];
+  if (!x) {   // (simple file: give it the extended header, with the picture's size)
+    var vx = new Uint8Array(10), alpha = chunks.some(function(c) { return c[0] === 'VP8L'; }) ? 0x10 : 0;
+    vx[0] = alpha; var W = w - 1, H = h - 1; vx[4] = W & 255; vx[5] = (W >> 8) & 255; vx[6] = (W >> 16) & 255; vx[7] = H & 255; vx[8] = (H >> 8) & 255; vx[9] = (H >> 16) & 255;
+    x = ['VP8X', vx]; chunks.unshift(x);
+  }
+  x[1] = new Uint8Array(x[1]); x[1][0] |= 0x08;   // (EXIF present)
+  chunks = chunks.filter(function(c) { return c[0] !== 'EXIF'; }); chunks.push(['EXIF', kitExif(credit)]);
+  var total = 4 + chunks.reduce(function(a, c) { return a + 8 + c[1].length + (c[1].length & 1); }, 0), out = new Uint8Array(8 + total), od = new DataView(out.buffer), p = 0;
+  out.set([82, 73, 70, 70]); od.setUint32(4, total, true); out.set([87, 69, 66, 80], 8); p = 12;
+  chunks.forEach(function(c) { for (var k = 0; k < 4; k++) out[p + k] = c[0].charCodeAt(k); od.setUint32(p + 4, c[1].length, true); out.set(c[1], p + 8); p += 8 + c[1].length + (c[1].length & 1); });
+  return out;
+}
+function kitCreditFor(path) { var f = KIT && KIT.files.filter(function(x) { return x.src === path || x.name === String(path).split('/').pop(); })[0]; return f && f.credit || ''; }
+function kitImage(u8, to, credit) {   // a PNG as JPEG (on white) or WebP (keeps see-through parts), full size, with its credit
   return new Promise(function(ok, no) {
     var url = URL.createObjectURL(new Blob([u8], { type: 'image/png' })), im = new Image();
     im.onload = function() {
       var cv = document.createElement('canvas'); cv.width = im.naturalWidth; cv.height = im.naturalHeight; var g = cv.getContext('2d');
       if (to === 'jpg') { g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height); }
       g.drawImage(im, 0, 0); URL.revokeObjectURL(url);
-      cv.toBlob(function(b) { if (!b) return no(); b.arrayBuffer().then(function(x) { ok(new Uint8Array(x)); }, no); }, to === 'jpg' ? 'image/jpeg' : 'image/webp', .95);
+      cv.toBlob(function(b) { if (!b) return no(); b.arrayBuffer().then(function(x) { var u = new Uint8Array(x); ok(to === 'jpg' ? kitTagJpeg(u, credit) : kitTagWebp(u, credit, cv.width, cv.height)); }, no); }, to === 'jpg' ? 'image/jpeg' : 'image/webp', .95);
     };
     im.onerror = function() { URL.revokeObjectURL(url); no(); };
     im.src = url;
@@ -3005,7 +3047,7 @@ function kitZipBytes(entries) {   // a small ZIP (stored) from [name, text] pair
 function kitConvert(f, data, fmt, coverBytes) {
   var isMp3 = /\.mp3$/i.test(f.src), isImg = /\.png$/i.test(f.src), isVid = /\.mp4$/i.test(f.src), isTxt = /\.txt$/i.test(f.src);
   if (isMp3 && fmt.audio && fmt.audio !== 'mp3') return kitAudio(data, fmt.audio, f.tag).then(function(d) { return [d, f.path.replace(/\.mp3$/i, '.' + fmt.audio)]; });
-  if (isImg && fmt.image && fmt.image !== 'png') return kitImage(data, fmt.image).then(function(d) { return [d, f.path.replace(/\.png$/i, '.' + fmt.image)]; });
+  if (isImg && fmt.image && fmt.image !== 'png') return kitImage(data, fmt.image, f.credit || kitCreditFor(f.src)).then(function(d) { return [d, f.path.replace(/\.png$/i, '.' + fmt.image)]; });
   if (isVid && (fmt.video === 'mov' || fmt.video === 'm4v')) return Promise.resolve([kitVideoBrand(data, fmt.video), f.path.replace(/\.mp4$/i, '.' + fmt.video)]);
   if (isVid && fmt.video && fmt.video !== 'mp4') { var title = f.path.split('/').pop().replace(/\.mp4$/i, ''); return kitVideoSound(data, fmt.video, { title: title, album: 'Ash Stu - Live', track: '1/1' }).then(function(d) { return [d, f.path.replace(/\.mp4$/i, '.' + fmt.video)]; }); }
   if (isTxt && fmt.text === 'docx') return Promise.resolve([kitDocx(new TextDecoder().decode(data)), f.path.replace(/\.txt$/i, '.docx')]);
