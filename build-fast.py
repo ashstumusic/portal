@@ -105,10 +105,6 @@ css = open("styles.css").read()
 css += "\n" + open("shared/kinetic.css").read()
 css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
 css += "\n" + open("shared/system.css").read()   # design system: type, spacing, radii, states (last word)
-# The Figment Zine (owner-approved redesign, 2026-11-22): the look - paper, ink, stamps - laid over everything above, so
-# every behaviour underneath is unchanged. Its rules carry the marker ":Z", which becomes a priority chain longer than
-# any above (the renumbering below keeps it on top), so the zine layer always has the last word.
-css += "\n" + open("shared/zine.css").read().replace(":Z", ":not(" + "#\\#" * 99 + ")")
 # The stylesheets raise a rule's priority with a run of ":not(#\\#)" (each one counts as an ID) - up to 60 in a row,
 # about 330KB of the 790KB stylesheet. A run of N is written here as ONE ":not(#\\##\\#...)" with N IDs in it: the
 # same priority, the same meaning (it matches every element), a third of the size, and much less for a phone to parse.
