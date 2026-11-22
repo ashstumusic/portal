@@ -304,18 +304,21 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       ashstumusic@gmail.com
     </a>
     <!-- Copy (for visitors whose computer has no mail app set up: the email link then does nothing; copying works for everyone) -->
-    <button type="button" class="contact-copy" data-copy="ashstumusic@gmail.com" aria-label="Copy the email address" hidden><svg class="cc-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span class="btn-word">Copy</span></button>
+    <button type="button" class="contact-copy" data-copy="ashstumusic@gmail.com" aria-label="Copy the email address"><svg class="cc-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span class="btn-word">Copy</span></button>
   </div>
 </section>
-<section class="epk-section" id="epk" aria-labelledby="epk-h">
+<section class="epk-section" id="epk" aria-labelledby="epk-h"><script>document.currentScript.parentNode.classList.add('epk-merged')</script>   <!-- (the card layout from the first paint, only with JavaScript: the pre-built card needs it, see render_kit_shell) -->
   <div class="epk-body">
     <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg>Press Kit</h2>
+    <noscript>   <!-- (only without JavaScript: with it, the press kit card below says and does all this from the first paint) -->
     <p class="epk-text">Songs and photos <br/>for booking and press.</p>
     <a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="btn btn-epk-dl btn-epk btn--start" title="Open the press kit's fact sheet" aria-label="Open the press kit's fact sheet">   <!-- (shown only without JavaScript, where the kit's ZIP cannot be made: it says what it really opens) -->
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span>Fact <br/>Sheet</span>
     </a>
+    </noscript>
   </div>
+  <noscript>
   <div class="epk-photos epk-photos-top">
     <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-stairs.webp" alt="Ash Stu smiling on an outdoor staircase"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot-1.png</span></span>
     <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-singing.webp?v=4" alt="Ash Stu singing into a microphone on stage"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot-2.png</span></span>
@@ -324,6 +327,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-guitar-door.webp" alt="Ash Stu playing guitar by a wooden door"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot-3.png</span></span>
     <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Guitar in Alley (Wide).png</span></span>
   </div>
+  </noscript>
   <!-- What is inside the Press Kit ZIP (owner's request): a card built just like an album's, so it looks and works the same:
        cover, Play (the kit's songs, in the site's player), Download (the ZIP), and a "<n> files" bar opening one row per file.
        Songs play and have Lyrics; photos open full size or download. The file list (kit-data) is written by build-fast.py
@@ -4390,12 +4394,13 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
    can't change it), so the slider is hidden there and only mute stays. */
 (function(){try{var a=document.createElement('audio');a.volume=.5;if(a.volume!==.5)document.documentElement.classList.add('no-vol');}catch(e){document.documentElement.classList.add('no-vol');}})();</script>
 <script>
-/* Contact's Copy button: copies the address, says "Copied" for two seconds (and tells screen readers). Shown only where
-   the browser can copy (it stays hidden otherwise, and without scripts). */
+/* Contact's Copy button: copies the address, says "Copied" for two seconds (and tells screen readers). There from the
+   first paint with JavaScript (it used to appear late and push the page down on phones); hidden without it, or where
+   the browser cannot copy. */
 (function() {
   var b = document.querySelector('.contact-copy'); if (!b) return;
-  var can = !!(navigator.clipboard && window.isSecureContext) || !!document.queryCommandSupported; if (!can) return;
-  b.hidden = false; var w = b.querySelector('.btn-word'), t = 0;
+  var can = !!(navigator.clipboard && window.isSecureContext) || !!document.queryCommandSupported; if (!can) { b.hidden = true; return; }
+  var w = b.querySelector('.btn-word'), t = 0;
   b.addEventListener('click', function() {
     var text = b.getAttribute('data-copy');
     var done = function() { w.textContent = 'Copied'; b.classList.add('is-copied'); var sr = document.getElementById('sr-announce'); if (sr) { sr.textContent = ''; setTimeout(function() { sr.textContent = 'Email address copied'; }, 30); }
