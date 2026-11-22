@@ -2774,16 +2774,15 @@ html { overscroll-behavior-y: none; }
 @media (min-width: 768px) and (max-width: 859px) {
   :root.psy .nav .k-si--bar:not(#\##\##\##\##\##\##\##\##\##\#) { --si-w: 40px; flex: 0 0 40px !important; width: 40px !important; min-width: 40px !important; }
   :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\##\##\##\##\##\##\##\##\##\#) { padding-right: 0 !important;; cursor: pointer;; }
-  :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\##\##\##\##\##\##\##\##\##\#)::placeholder { color: transparent !important; }
   :root.psy .nav .k-si--bar .k-si-ico:not(#\##\##\##\##\##\##\##\##\##\#) { left: 11px !important; }
   :root.psy .nav .k-si--bar:focus-within:not(#\##\##\##\##\##\##\##\##\##\#) { flex-basis: 320px !important; width: 320px !important; margin-left: -280px !important; }
   :root.psy .nav .k-si--bar:focus-within:not(#\##\##\##\##\##\##\##\##\##\##\##\#), :root.psy .nav .k-si--bar:focus-within .k-si-input:not(#\##\##\##\##\##\##\##\##\##\##\##\#) { background: #15181f !important; backdrop-filter: none !important; z-index: 5; }
   :root.psy .nav .k-si--bar:focus-within .k-si-ico:not(#\##\##\##\##\##\##\##\##\##\##\##\#) { z-index: 6 !important; }   /* (opened over its neighbours: solid, so they don't show through) */
-  /* (resting, it is a picture and a word like the other toolbar buttons: the magnifier with "Search" under it) */
+  /* (resting, it is a picture and a word like the other toolbar buttons: the magnifier with "Search" under it - the
+     word is the field's own placeholder, set in the 768-1099px toolbar rules further down) */
   :root.psy .nav .k-si--bar:not(:focus-within):not(#\##\##\##\##\##\##\##\##\##\##\##\#) { flex-basis: 52px !important; width: 52px !important; min-width: 52px !important; height: 44px !important; }
   :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\##\##\##\##\##\##\##\##\##\##\##\#) { height: 44px !important; padding-left: 52px !important; }
   :root.psy .nav .k-si--bar:not(:focus-within) .k-si-ico:not(#\##\##\##\##\##\##\##\##\##\##\##\#) { left: 17px !important; top: 8px !important; transform: none !important; margin: 0 !important; translate: none !important; }
-  :root.psy .nav .k-si--bar:not(:focus-within):not(#\##\##\##\##\##\##\##\##\##\##\##\#)::after { content: "Search"; position: absolute; left: 0; right: 0; bottom: 5px; text-align: center; font: 700 10.5px/1 var(--font-ui, 'UI', system-ui, sans-serif); letter-spacing: .01em; color: var(--btn-d-fg, #fff); pointer-events: none; }
 }
 
 /* ── Phone menu: everything in view at once. The four sections sit two by two instead of in a tall stack, and the sheet may use the full
@@ -6041,7 +6040,7 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 /* (768-1099px: the search field rests as a button like its neighbours - magnifier on top, "Search" under it - and widens
    to type while in use; Home keeps a gap from the first streaming button) */
 @media (min-width: 768px) and (max-width: 1099px) {
-  :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 17px 2px 0 !important; text-align: center !important; font-size: 9px !important; font-weight: 700 !important; line-height: 1 !important; }
+  :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 10px 2px 0 !important; text-align: center !important; font-size: 9px !important; font-weight: 700 !important; line-height: 1 !important; }
   :root.psy .nav .k-si--bar:not(:focus-within) .k-si-input:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#)::placeholder { color: var(--text-1) !important; opacity: 1 !important; font-weight: 700 !important; }
   :root.psy .nav .k-si--bar:not(:focus-within) .k-si-ico:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { left: 50% !important; top: 5px !important; transform: none !important; translate: -50% 0 !important; width: 16px !important; height: 16px !important; }
   :root.psy .nav .k-si--bar:focus-within:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { margin-left: calc(var(--si-w) - 300px) !important; flex-basis: 300px !important; width: 300px !important; z-index: 5 !important; }
