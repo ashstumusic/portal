@@ -213,7 +213,10 @@ def render_kit_shell(page):
         url = urllib.parse.quote(sheet['src'], safe="/:,'()")
         in_kit.append(f'<a href="{esc(url)}" class="epk-doc-link" data-doc="{esc(sheet["src"])}" data-name="{esc(sheet["name"])}" aria-haspopup="dialog">a fact sheet</a>')
     in_kit_html = (', '.join(in_kit[:-1]) + ' and ' + in_kit[-1]) if len(in_kit) > 1 else in_kit[0]
-    facts_html = f'<p class="epk-summary">{in_kit_html}.</p>' + (f'<p class="epk-updated">Updated <time datetime="{esc(kit["updated"])}">{full_date(kit["updated"])}</time></p>' if kit.get('updated') else '')
+    facts_html = f'<p class="epk-summary">{in_kit_html}.</p>'
+    # the card's heading, as an album card's: the update date in the gold line, the name as the title
+    upd = f'<span class="rel-year"> <time datetime="{esc(kit["updated"])}">{full_date(kit["updated"])}</time></span>' if kit.get('updated') else ''
+    info = f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated{upd}</span></p><h3 class="rel-name">Ash Stu</h3></div>'
     art = ''
     if lead and lead.get('thumb'):
         art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>'
@@ -223,7 +226,7 @@ def render_kit_shell(page):
             '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a>'
             '<p class="epk-progress" role="status" aria-live="polite"></p></div>')
     return ('<article class="rel-card epk-card kit-collapsed kit-shell" data-release="-1" aria-label="Ash Stu press kit">'
-            '<div class="rel-info"></div>'
+            + info +
             '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>'
             + art + btns + '</article>')
 
