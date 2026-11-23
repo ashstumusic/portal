@@ -346,9 +346,11 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
     <blockquote class="disc-quote">
-      <!-- (two sets of line breaks: the plain <br/>s are its four set lines on a wide screen; the class="dq-ph" ones split it
-           into its phrases on a narrow one, where the set lines would make the words too small: owner, 2026-11-23) -->
-      <p class="dq-text"><span class="dq-nb"><span class="dq-mark dq-mark--open" aria-hidden="true"></span>Anybody</span> caught singin’ these songs<br class="dq-ph"/> without our permission,<br class="dq-ph"/> will be <br/>mighty good friends of ourn,<br class="dq-ph"/> cause we don’t give a dern. <br/><br class="dq-ph"/>Publish it. Write it. Sing it.<br class="dq-ph"/> Swing to it. Yodel it. <br/><br class="dq-ph"/>We wrote it,<br class="dq-ph"/> that’s all we <span class="dq-nb">wanted to do.<span class="dq-mark dq-mark--close" aria-hidden="true"></span></span></p>
+      <!-- (two sets of line breaks, both an upside-down triangle, each line shorter than the one above: the plain <br/>s are
+           its four set lines on a wide screen; the class="dq-ph" ones are nine lines for a narrow one, where four would make
+           the words too small (owner, 2026-11-23: "preserve the triangle shape"). Breaks chosen by measuring the words in
+           the quote's own font: no phrase like "Sing it." is split.) -->
+      <p class="dq-text"><span class="dq-nb"><span class="dq-mark dq-mark--open" aria-hidden="true"></span>Anybody</span> caught singin’ these songs<br class="dq-ph"/> without our permission, will be <br/><br class="dq-ph"/>mighty good friends of ourn,<br class="dq-ph"/> cause we don’t give a dern. <br/><br class="dq-ph"/>Publish it. Write it. Sing it.<br class="dq-ph"/> Swing to it. Yodel it. <br/><br class="dq-ph"/>We wrote it, that’s<br class="dq-ph"/> all we <span class="dq-nb">wanted<br class="dq-ph"/> to do.<span class="dq-mark dq-mark--close" aria-hidden="true"></span></span></p>
       <cite>Woody Guthrie</cite>
     </blockquote>
     <script>
