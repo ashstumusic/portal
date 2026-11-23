@@ -105,6 +105,9 @@ css = open("styles.css").read()
 css += "\n" + open("shared/kinetic.css").read()
 css += "\n" + open("shared/psyche.css").read()   # homepage-only psychedelic layer
 css += "\n" + open("shared/system.css").read()   # design system: type, spacing, radii, states (last word)
+# the phone toolbar on tablets, touch screens and narrow windows (copies of the phone toolbar rules; see the script)
+sys.path.insert(0, "scripts"); from compact_toolbar import compact_toolbar
+css = compact_toolbar(css)
 # The stylesheets raise a rule's priority with a run of ":not(#\\#)" (each one counts as an ID) - up to 60 in a row,
 # about 330KB of the 790KB stylesheet. A run of N is written here as ONE ":not(#\\##\\#...)" with N IDs in it: the
 # same priority, the same meaning (it matches every element), a third of the size, and much less for a phone to parse.

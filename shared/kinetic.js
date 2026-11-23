@@ -438,11 +438,15 @@
   const menuBox = $('.k-menu', dlg);
   const GEAR = '<svg class="k-gear" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   const escHtml = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  // Where the toolbar is the phone one (Home, name, Menu): phones, and also tablets, touch screens and windows under
+  // 1280px wide (the owner's request: "make an ipad have the mobile menu"). Keep in step with COMPACT_BAR in
+  // scripts/compact_toolbar.py, which gives those screens the phone toolbar's CSS.
+  const PHONE_BAR = '(max-width: 1279px), (hover: none) and (pointer: coarse)';
   let setsOpen = false;   // the phone menu's Settings fold (shut each time the menu opens)
   // Turning a phone on its side (or resizing a window) across the phone / wide boundary while the menu is open: the
   // menu is drawn again for the new layout. It used to keep the phone version's folded Settings header inside the
   // wide box, with the Close button on top of it and no settings to be seen.
-  { const mqMenu = matchMedia('(max-width: 767px)'), redo = () => { if (dlg.open && dlg.dataset.mode === 'menu') { setsOpen = false; renderMenu(); } }; mqMenu.addEventListener ? mqMenu.addEventListener('change', redo) : mqMenu.addListener(redo); }
+  { const mqMenu = matchMedia(PHONE_BAR), redo = () => { if (dlg.open && dlg.dataset.mode === 'menu') { setsOpen = false; renderMenu(); } }; mqMenu.addEventListener ? mqMenu.addEventListener('change', redo) : mqMenu.addListener(redo); }
   // Pictures for the search suggestion tags (each tag shows its picture and its word)
   const TAG_PIC = {
     Song: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
@@ -476,7 +480,7 @@
     // users (state is never shown by colour alone) and hidden from screen readers, who get it from aria-checked.
     // PATTERN (Settings fold, phones): a <button aria-expanded aria-controls>; Enter or Space opens and closes it;
     // the group it opens is hidden with the `hidden` attribute, so it is out of the tab order while shut.
-    const fold = links.length && matchMedia('(max-width: 767px)').matches;
+    const fold = links.length && matchMedia(PHONE_BAR).matches;
     if (sets.length) h += (fold
       ? '<button type="button" class="settings-title settings-fold" id="k-menu-settings" aria-expanded="' + (setsOpen ? 'true' : 'false') + '" aria-controls="k-menu-settings-group">' + GEAR + '<span>Settings</span><svg class="settings-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>'
       : '<p class="settings-title" id="k-menu-settings">' + GEAR + 'Settings</p>')

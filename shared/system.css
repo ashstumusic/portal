@@ -6544,3 +6544,11 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 80px), transparent 100%) !important;
           mask-image: linear-gradient(to bottom, #000 calc(100% - 80px), transparent 100%) !important;
 }
+
+/* ── Phone toolbar on tablets (owner's request, 2026-11-23: "make an ipad have the mobile menu") ──
+   Tablets, touch screens and windows under 1280px get the phone toolbar and menu (scripts/compact_toolbar.py
+   extends the phone rules to them). The menu there keeps a phone menu's width, under the Menu button,
+   instead of stretching its buttons across a wide screen. */
+@media (min-width: 768px) and (max-width: 1279px), (min-width: 768px) and (hover: none) and (pointer: coarse) {
+  .k-palette[data-mode="menu"] .k-palette-box { width: min(480px, calc(100% - 32px)); margin-left: auto; margin-right: 16px; }
+}

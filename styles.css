@@ -1,6 +1,6 @@
 /* Text colours: three tokens for every light text on the dark page (audit: about 20 near-white values had drifted in).
    --text-1 main text and headings, --text-2 secondary lines, --text-3 muted (lyrics previews, dates, notes). */
-:root { --text-1: #F5F5F7; --text-2: rgb(238 242 245 / .84); --text-3: rgb(236 239 245 / .68); --text-meta: #8F999F; }   /* (--text-meta: track numbers, dates and small notes) */
+:root { --text-1: #F5F5F7; --text-2: rgb(238 242 245 / .84); --text-3: rgb(236 239 245 / .68); --text-meta: #A1AAB0; }   /* (--text-meta: track numbers, dates and small notes) */
 
 /* New local-file fonts - Playfair Display + two on-brand display faces that
    were already sitting unused in /Fonts (see design notes). Loaded as plain
