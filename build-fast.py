@@ -333,7 +333,7 @@ KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", 
 KIT_PHOTO_ORDER = ["Ash Stu - Headshot-1.png", "Ash Stu - Headshot-2.png", "Ash Stu - Live at the Keyboard (Wide).png",
                    "Ash Stu - Headshot-3.png", "Ash Stu - Guitar in Alley (Wide).png"]   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
 KIT_VIDEOS = ["The Cloud for the Desert", "Theory of Hope"]   # (owner's choice: live solo acoustic performances, the first leads)
-KIT_VIDEO_NOTE = "Live, solo acoustic"
+KIT_VIDEO_NOTE = ""   # (owner's request, 2026-11-23: "remove the live, and solo acoustic")
 KIT_SONG_COVER = "Images/embedded/kit-song-cover.jpg"   # (Headshot-1 as a JPEG: the picture music apps show for the kit's songs)
 # The artist's facts, as the site states them (About section, contact line). One place to change them: the Fact Sheet
 # and the press kit card are both written from here.
