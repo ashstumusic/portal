@@ -289,6 +289,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="featured-kicker">Album</span>
     <p class="featured-title">Ash Stu, Vol. II</p>
     <button type="button" class="f-play" id="featured-play" aria-label="Play Ash Stu, Vol. II" title="Play Ash Stu, Vol. II"><svg class="f-play-ico" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6,3 20,12 6,21"/></svg><span class="btn-word f-play-word" aria-hidden="true">Play</span></button>   <!-- (the featured album's one Play / Pause button: the cover itself plays nothing) -->
+    <a href="albums/ash-stu-vol-ii/" class="rel-btn rel-dl f-dl" id="featured-dl" data-live-zip data-rel="1" aria-label="Download Ash Stu, Vol. II as a ZIP file (9 songs, about 69 MB)" title="Download Ash Stu, Vol. II as a ZIP file (9 songs, about 69 MB)"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a>   <!-- (the featured album's ZIP, under Play: owner's request; scripts/prerender.py writes in the current album) -->
     <div class="featured-btns">
     <a href="https://music.apple.com/us/album/only-a-baby-vol-2/6779983161" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Apple Music: Ash Stu, Vol. II"><span class="pt pt--apple" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Apple Music</span></span></a>
     <a href="https://open.spotify.com/album/1vqwbxLiM0kSSeD0GNlG7P" target="_blank" rel="noopener noreferrer" class="f-btn f-btn--badge" aria-label="Listen on Spotify: Ash Stu, Vol. II"><span class="pt pt--spotify" aria-hidden="true"></span><span class="fb-txt"><span class="fb-sm">Listen on</span><span class="fb-lg">Spotify</span></span></a>
@@ -2567,8 +2568,8 @@ if (listen) status += '<div class="rel-listen"><span class="rel-listen-label" id
 // Its link is the album's own page, for anyone without JavaScript.
 // It sits beside Play, in the card's action row under "Listen on" (owner's request).
 var dl = '';
-if (rel.zip && rel.zip.files && rel.tracks && rel.tracks.length) { var nSongs = rel.tracks.length, dlName = 'Download ' + rel.name + ' as a ZIP file (' + nSongs + (nSongs === 1 ? ' song, ' : ' songs, ') + 'about ' + Math.round(rel.zip.bytes / 1048576) + ' MB)';
-dl = '<a href="albums/' + String(rel.name).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '/" class="rel-btn rel-dl" data-live-zip data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
+if (zipOK(rel)) { var dlName = zipName(rel);
+dl = '<a href="' + albumHref(rel) + '" class="rel-btn rel-dl" data-live-zip data-rel="' + rIdx + '" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>'; }
 var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
@@ -2610,6 +2611,11 @@ return '<div class="vid-card-wrap">' +
 '<div class="vid-btns">' + ytBtn + '<button type="button" class="vid-yt vid-play" data-video-index="' + vIdx + '" aria-label="Play &quot;' + escHtml(v.title) + '&quot;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg><span class="btn-word">Play</span></button></div>' +
 '</div>';
 }
+// An album's ZIP download (the album cards' Download and the first screen's): whether it has one, its spoken name, and
+// its link for anyone without JavaScript (the album's own page). Keep in step with inject_featured in scripts/prerender.py.
+function zipOK(rel) { return !!(rel && rel.zip && rel.zip.files && rel.tracks && rel.tracks.length); }
+function zipName(rel) { var n = rel.tracks.length; return 'Download ' + rel.name + ' as a ZIP file (' + n + (n === 1 ? ' song, ' : ' songs, ') + 'about ' + Math.round(rel.zip.bytes / 1048576) + ' MB)'; }
+function albumHref(rel) { return 'albums/' + String(rel.name).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '/'; }
 function renderFeatured(rel) {
 if (!rel) return;
 var img = document.querySelector('.featured-art-hero .featured-art');
@@ -2620,6 +2626,9 @@ if (img) {
 }
 var play = document.getElementById('featured-play');
 if (play) { play.setAttribute('aria-label', 'Play ' + rel.name); play.setAttribute('title', 'Play ' + rel.name); }
+// Download, under Play (owner's request): the same ZIP as the album card's Download button
+var fdl = document.getElementById('featured-dl');
+if (fdl) { fdl.hidden = !zipOK(rel); if (zipOK(rel)) { fdl.href = albumHref(rel); fdl.dataset.rel = String(RELEASE_LIST.indexOf(rel)); fdl.setAttribute('aria-label', zipName(rel)); fdl.title = zipName(rel); } }
 var kicker = document.querySelector('.featured-kicker');
 if (kicker) kicker.textContent = rel.type;
 var title = document.querySelector('.featured-title');

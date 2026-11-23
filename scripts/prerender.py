@@ -228,7 +228,7 @@ def render_kit_shell(page):
             + art + btns + '</article>')
 
 
-def inject_featured(page, rel):
+def inject_featured(page, rel, rel_idx=0):
     if not rel:
         return page
     page = re.sub(
@@ -259,6 +259,16 @@ def inject_featured(page, rel):
         lambda m: m.group(1) + esc(rel['name']) + m.group(2),
         page, count=1,
     )
+    # Download under Play: the featured album's ZIP (as zipOK/zipName/albumHref in index-src.html)
+    if rel.get('zip', {}).get('files') and rel.get('tracks'):
+        n = len(rel['tracks'])
+        dl_name = f"Download {rel['name']} as a ZIP file ({n} song{'' if n == 1 else 's'}, about {round(rel['zip']['bytes'] / 1048576)} MB)"
+        slug = re.sub(r'^-|-$', '', re.sub(r'[^a-z0-9]+', '-', rel['name'].lower().replace('&', 'and')))
+        page = re.sub(r'(<a href=")[^"]*(" class="rel-btn rel-dl f-dl" id="featured-dl" data-live-zip data-rel=")[^"]*(" aria-label=")[^"]*(" title=")[^"]*(")',
+                      lambda m: m.group(1) + f'albums/{slug}/' + m.group(2) + str(rel_idx) + m.group(3) + esc(dl_name) + m.group(4) + esc(dl_name) + m.group(5),
+                      page, count=1)
+    else:
+        page = page.replace('id="featured-dl" data-live-zip', 'id="featured-dl" hidden data-live-zip', 1)
     stores = [(k, n, w) for k, n, w in (('apple', 'Apple Music', 'Apple Music'), ('spotify', 'Spotify', 'Spotify'), ('ytmusic', 'YouTube Music', 'YouTube Music'),
                                        ('deezer', 'Deezer', 'Deezer')) if rel.get(k)]
     btns = ('<p class="f-listen-label" id="f-listen-label">Listen on</p><div class="f-stores" role="group" aria-labelledby="f-listen-label">' + ''.join(
@@ -351,7 +361,8 @@ def main():
         # (at the end of the page, not in the head: 48KB there held back the stylesheet and the first paint)
         page = page.replace('</body>', f'<script type="application/ld+json" id="lyrics-ld">{ld}</script>\n</body>', 1)
     page = inject_container(page, 'video-grid', 'video-grid', videos_html)
-    page = inject_featured(page, next((r for r in releases if r.get('featured')), releases[0] if releases else None))
+    featured = next((r for r in releases if r.get('featured')), releases[0] if releases else None)
+    page = inject_featured(page, featured, releases.index(featured) if featured else 0)
 
     # Embed the content JSON directly in the page so the runtime JS can
     # render instantly with zero fetches on first paint. The JS still
