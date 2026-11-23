@@ -211,6 +211,8 @@ def render_kit_shell(page):
     if photos: in_kit.append(f"{len(photos)} {'photo' if len(photos) == 1 else 'photos'}")
     if sheet:
         in_kit.append('a\u00a0fact sheet')   # (plain words: the fact sheet has its own row in the open kit)
+    if has_lyr:
+        in_kit.append('a\u00a0lyrics sheet')   # (it has its own row beside the fact sheet)
     in_kit_html = (', '.join(in_kit[:-1]) + ' and ' + in_kit[-1]) if len(in_kit) > 1 else in_kit[0]
     facts_html = f'<p class="epk-summary">{in_kit_html}.</p>'
     # the card's heading, as an album card's: the update date in the gold line, the name as the title

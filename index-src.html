@@ -3229,7 +3229,7 @@ var inKit = [nSongs + (nSongs === 1 ? '\u00a0song' : '\u00a0songs') + (hasLyr ? 
 var nVids = KIT.files.filter(function(f) { return f.type === 'video'; }).length;
 if (nVids) inKit.push(nVids + (nVids === 1 ? '\u00a0live video' : '\u00a0live videos'));
 if (nPics) inKit.push(nPics + (nPics === 1 ? '\u00a0photo' : '\u00a0photos'));
-if (sheet) inKit.push('a\u00a0fact sheet');   /* (plain words: the fact sheet has its own row when the kit is open, owner's request) */
+if (sheet) inKit.push('a\u00a0fact sheet'); if (lyricSheet) inKit.push('a\u00a0lyrics sheet');   /* (plain words: the fact sheet has its own row when the kit is open, owner's request) */
 var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0]).replace(/^(\d+\u00a0songs?)/, function(m) { return escHtml(m); });
 var facts = '<p class="epk-summary">' + inKitHtml + '.</p>';
 // The card's heading, as an album card's: the date it was last updated in the gold line, the name as its title
