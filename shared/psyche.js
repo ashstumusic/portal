@@ -347,8 +347,9 @@
         for (let tries = 0; tries < 260; tries++) {
           const x = R + 8 + rnd() * (map.W - 2 * R - 16), cy = map.top + R + 8 + rnd() * (map.H - map.top - 2 * R - 16);
           const pad = R * 0.2 + 4;   // room to jitter and swell
-          // When topping up, never add a star where you're looking (it would pop in).
-          if (avoidView && cy + R > scrollY - 50 && cy - R < scrollY + innerHeight + 50) continue;
+          // When topping up, never add a star where you're looking (it would pop in) - unless the page has just grown
+          // there ('fade': a press kit or tracklist opened), when the new space gets stars that fade in softly.
+          if (avoidView === true && cy + R > scrollY - 50 && cy - R < scrollY + innerHeight + 50) continue;
           if (map.freeTop != null && cy + R > map.freeTop) continue;   // (no stars in the white zone)
           if (!map.free(x - R - pad, cy - R - pad, x + R + pad, cy + R + pad)) continue;
           let near = 1e9;
@@ -365,6 +366,7 @@
         el.className = 'chalk-star';
         // Always there from the start (no pop-in): a star never appears late.
         el.style.cssText = `left:${(best.x - R).toFixed(1)}px;top:${(best.cy - R).toFixed(1)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;transform:rotate(${o0base}deg);background-color:${COLORS[Math.floor(rnd() * COLORS.length)]}`;
+        if (avoidView === 'fade' && best.cy + R > scrollY && best.cy - R < scrollY + innerHeight) el.classList.add('chalk-star--in');   // (owner, 2026-11-23: "the space that is opened when the press kit expands is bare of stars")
         layer.append(el);
         const o = { el, d, cls, sec: sec.el, off: best.cy - sec.top, cx: best.x, cy: best.cy, R, base: o0base, spin: (rnd() < 0.5 ? -1 : 1) * (0.04 + rnd() * 0.08), ph: rnd() * 6, f: Math.floor(rnd() * FRAMES) };
         setFrame(o); placed.push(o);
@@ -397,15 +399,16 @@
       layer.style.height = doc.documentElement.scrollHeight + 'px';   // the page's real height, without the layer
     }
     // When things settle: drop any star now sitting on content, top up gaps.
+    let grew = false;   // the page got taller since the last repair (something opened)
     function repair() {
-      rt = 0;
+      rt = 0; const fade = grew; grew = false;
       const map = measure(), keep = [];
       for (const o of placed) {
         const pad = o.R * 0.2 + 4;
         if (map.free(o.cx - o.R - pad, o.cy - o.R - pad, o.cx + o.R + pad, o.cy + o.R + pad)) keep.push(o); else o.el.remove();
       }
       placed = keep;
-      fill(map, true); partner(map);
+      fill(map, fade ? 'fade' : true); partner(map);
     }
 
     // The latest map of the page (what is content, what is clear), kept for the turning sky below.
@@ -624,6 +627,7 @@
       layer.style.height = keep; measureView();
       if (w !== lastW) { lastW = w; lastH = h; clearTimeout(rt); rt = 0; layout(); kick(); return; }
       if (Math.abs(h - lastH) < 2) return;
+      if (h > lastH) grew = true;
       lastH = h; follow(); scheduleRepair();
     }, 120); };
     if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(doc.body);   // (older Safari has none: the resize listener below still covers window changes)

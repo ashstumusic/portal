@@ -74,6 +74,10 @@
           mask: url('Images/chalk-stars.webp?v=2') 0 0 / 300% 600% no-repeat;
   opacity: .9; transition: opacity .45s linear;   /* a star fades where it would cross content as the sky turns */
 }
+/* A star added to space that has just opened where you are looking (the press kit or a tracklist opened) fades in
+   instead of popping in. No end value: once in, the script's own opacity (hidden as the sky turns) takes over again. */
+.chalk-star--in { animation: chalk-star-in .9s ease-out; }
+@keyframes chalk-star-in { from { opacity: 0; } }
 @media print {  }
 /* Every section laid out up front, so the page's height (and the sky
    measured from it) doesn't shift as sections come into view. */
