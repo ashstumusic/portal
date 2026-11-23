@@ -185,7 +185,7 @@
 <link rel="manifest" href="site.webmanifest"/>
 
 
-<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.fetchPriority="low";h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};h.src="/Images/pencil-hatch.webp"})(document.documentElement)</script>
+<script data-k-init>(function(r){try{localStorage.removeItem("k-theme")}catch(e){}r.setAttribute("data-theme","dark");r.setAttribute("data-theme-lock","dark");r.classList.add("js","psy","k-inline-search","no-hatch");var h=new Image();h.fetchPriority="low";h.crossOrigin="anonymous";h.onload=function(){r.classList.remove("no-hatch")};addEventListener("load",function(){if(document.querySelector("#about .bio-name, #about .bio-tagline"))h.src="/Images/pencil-hatch.webp"})})(document.documentElement)</script><!-- (the pencil texture only shades About's name and tagline, which are pinned for now: it is fetched only when they are on the page, and only after the page has loaded, so it never competes with the stylesheet the first paint waits for) -->
 <link rel="stylesheet" href="styles.css?v=76">
 <link rel="preload" as="image" href="Images/embedded/featured-only-a-baby-vol-2.webp" fetchpriority="high">
 <script>/* Touch vs mouse: a finger press marks the page .touch (hover styles off, so
@@ -2576,7 +2576,7 @@ return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + esc
 '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span></p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
-'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 600px) 92vw, 400px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
+'<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 767px) 160px, 304px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
 '</div>' +
 '<div class="rel-btns">' + btns + dl + '</div>' +
 (tracklist ? tlToggle(rel, rIdx) : '') +
@@ -2598,7 +2598,7 @@ var ytBtn = v.youtube
 ? '<a class="vid-yt vid-ytbig" href="' + escHtml(v.youtube) + '" target="_blank" rel="noopener noreferrer" aria-label="Watch &quot;' + escHtml(v.title) + '&quot; on YouTube"><span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word">YouTube</span></a>'
 : '';
 var thumbEl = v.thumb
-? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1280w" sizes="(max-width: 600px) 92vw, 400px"' : '') + ' alt="Video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
+? '<img src="' + escHtml(v.thumb) + '"' + (v.thumb2x ? ' srcset="' + escHtml(encodeURI(v.thumb)) + ' 576w, ' + escHtml(encodeURI(v.thumb2x)) + ' 1280w" sizes="(max-width: 767px) 160px, 400px"' : '') + ' alt="Video: ' + escHtml(v.title) + ' by Ash Stu" width="576" height="324" loading="lazy" decoding="async"' + (v.tint && /^#[0-9a-f]{6}$/i.test(v.tint) ? ' style="background-color:' + v.tint + '"' : '') + '/>'
 : '<video src="' + encPath(v.file) + '" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>';
 // The YouTube link can't live inside the role=button region (a real
 // interactive control nested inside another confuses screen readers/

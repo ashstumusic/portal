@@ -43,6 +43,7 @@ acc *= np.clip(.96 + .24 * n, 0, 1)
 OW, OH = W * 3 // 2, H * 3 // 2   # kept at 810 x 405 (was 540 x 270): fine strokes stay crisp on large lettering and 3x screens
 a = cv2.resize(acc, (OW, OH), interpolation=cv2.INTER_AREA)
 al = (np.clip(a * 1.12, 0, 1) * 255).astype(np.uint8)
+al = np.clip((al.astype(int) // 8) * 8 + 4, 1, 255).astype(np.uint8)   # 32 levels: invisible in pencil grain, the file 216KB -> 127KB
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'pencil-hatch.webp')
-Image.merge('RGBA', [Image.new('L', (OW, OH), 255)] * 3 + [Image.fromarray(al)]).save(out, 'WEBP', quality=90, alpha_quality=92, method=6, exact=True)   # (was quality 38: blocky)
+Image.merge('RGBA', [Image.new('L', (OW, OH), 255)] * 3 + [Image.fromarray(al)]).save(out, 'WEBP', lossless=True, quality=100, method=6, exact=True)   # (lossless: the 32 levels compress; was lossy quality 90, earlier 38: blocky)
 print('wrote', out, os.path.getsize(out), 'bytes; coverage %.0f%%' % (al.mean() / 2.55))

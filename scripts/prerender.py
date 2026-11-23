@@ -130,7 +130,7 @@ def render_release_card(rel, r_idx):
             + (f'<div class="rel-avail">{status}</div>' if status else '') +
             f'<div class="rel-art-wrap">'
             f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '
-            + (f'srcset="{esc(rel["art"].replace(" ", "%20"))} 504w, {esc(rel["art2x"].replace(" ", "%20"))} 800w" sizes="(max-width: 600px) 92vw, 400px" ' if rel.get("art2x") else '') +
+            + (f'srcset="{esc(rel["art"].replace(" ", "%20"))} 504w, {esc(rel["art2x"].replace(" ", "%20"))} 800w" sizes="(max-width: 767px) 160px, 304px" ' if rel.get("art2x") else '') +
             f'class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"/>'
             f'</div>'
             f'<div class="rel-btns">{btns}</div>'
@@ -157,7 +157,7 @@ def render_video_card(v, v_idx):
                   f'aria-label="Watch &quot;{esc(v["title"])}&quot; on YouTube">'
                   f'<span class="pt pt--youtube" aria-hidden="true"></span><span class="btn-word">YouTube</span></a>')
     if v.get('thumb'):
-        srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1280w" sizes="(max-width: 600px) 92vw, 400px"' if v.get('thumb2x') else '')
+        srcset = (f' srcset="{esc(v["thumb"].replace(" ", "%20"))} 576w, {esc(v["thumb2x"].replace(" ", "%20"))} 1280w" sizes="(max-width: 767px) 160px, 400px"' if v.get('thumb2x') else '')
         thumb_el = f'<img src="{esc(v["thumb"])}"{srcset} alt="Video: {esc(v["title"])} by Ash Stu" width="576" height="324" loading="lazy" decoding="async"/>'
     else:
         thumb_el = f'<video src="{enc_path(v["file"])}" preload="metadata" muted playsinline aria-label="Video thumbnail" alt="Video thumbnail"></video>'
