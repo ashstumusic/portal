@@ -6739,3 +6739,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    2026-11-23: "the top line of the outline of the mouseover on the buttons in the epk"). The kit's list is always
    open, so it has nothing to hide: its edges no longer clip, and the ring shows whole. */
 :root.psy #epk .epk-card:not(.kit-collapsed) .rel-tracklist:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { overflow: visible !important; }
+
+/* The Woody Guthrie quote on narrow screens (owner, 2026-11-23, a screenshot at about 520px: "fix"): below 768px the
+   four set lines would make the words too small, so it used to wrap freely - a ragged block that split "Yodel / it.".
+   Now it is set one phrase to a line, centred (the phrase breaks are written into the quote as class="dq-ph"), a
+   little larger, and a phrase too long for a phone wraps in balanced halves. On wider screens the phrase breaks are
+   not there and the four set lines are. */
+:root.psy .disc-quote .dq-text br.dq-ph:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { display: none !important; }
+@media (max-width: 767px) {
+  :root.psy .disc-quote .dq-text br:not(.dq-ph):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { display: none !important; }
+  :root.psy .disc-quote .dq-text br.dq-ph:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { display: inline !important; }
+  :root.psy .disc-quote .dq-text:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { font-size: clamp(15px, 3.6vw + 2px, 19px) !important; line-height: 1.5 !important; text-wrap: balance; }
+}
