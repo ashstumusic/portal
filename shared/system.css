@@ -6452,3 +6452,18 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   :root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyrics-inner:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 0 0 16px !important; }
   :root.psy :is(#releases-grid, #epk) .rel-track-wrap .rel-lyric-line:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { padding: 2px 8px !important; }
 }
+
+/* ── Depth you can see without focusing (owner: "make it clear to the unfocused eye where the cards are and where the
+   sections are") ── Three clear steps, as in Apple's dark mode: the black sky, a lighter section panel (#191B23, was
+   #0D0E14, which melted into the sky), and a lighter card again (#2B2E39, was #14161E, barely apart from its panel).
+   Each step has its own rim: panels a 10% white hairline, cards a 12% hairline with a faint top highlight, so the
+   edges read even when blurred. Quiet text is raised a step so it keeps 4.5:1 on the lighter card. */
+:root { --hig-panel: #191B23; --hig-card: #2B2E39; --hig-label-3: rgb(235 235 245 / .64); }
+:root.psy :is(section.section, section.epk-section):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: var(--hig-panel) !important; border: 1px solid rgb(255 255 255 / .1) !important;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .4), 0 12px 32px rgb(0 0 0 / .45) !important;
+}
+:root.psy :is(.rel-card, .rel-card:hover, .vid-card-wrap, .vid-card-wrap:hover, #contact .contact-inner):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: var(--hig-card) !important; border: 1px solid rgb(255 255 255 / .12) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), 0 1px 2px rgb(0 0 0 / .35), 0 8px 24px rgb(0 0 0 / .3) !important;
+}
