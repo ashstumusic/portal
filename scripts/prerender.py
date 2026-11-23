@@ -219,7 +219,7 @@ def render_kit_shell(page):
     art = ''
     if lead and lead.get('thumb'):
         art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>'
-    btns = ('<div class="rel-btns"><button type="button" class="rel-btn rel-dl epk-show" aria-expanded="false" aria-label="Show the music tracks, live videos, photos and fact sheet">'
+    btns = ('<div class="rel-btns"><button type="button" class="rel-btn rel-dl epk-show" aria-expanded="false" aria-label="Show the music tracks, live videos, photos, fact sheet and lyrics sheet">'
             '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="btn-word" aria-hidden="true">Show</span></button>'
             '<a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="rel-btn rel-dl epk-zip" aria-label="Download the Press Kit" title="Download the Press Kit">'
             '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a>'

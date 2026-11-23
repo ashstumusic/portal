@@ -3219,6 +3219,12 @@ var slug = function(x) { return String(x).toLowerCase().replace(/&/g, 'and').rep
 // One line says what is in the kit (owner's request: no repeated labels), the fact sheet a link inside it, then when it
 // was last updated. The kit's own heading ("Press Kit") and the site's name make a card title unnecessary.
 var sheet = KIT.files.filter(function(f) { return f.type === 'text' && /fact sheet/i.test(f.name); })[0];
+// The kit's two documents, shown in their own rows when the kit is open: the fact sheet and the lyrics sheet
+var lyricSheet = KIT.files.filter(function(f) { return f.type === 'text' && /lyrics/i.test(f.name); })[0];
+var nKitSongs = KIT.files.filter(function(f) { return f.type === 'song'; }).length, nKitVids = (KIT.videos || []).length;
+var kitDocs = [];
+if (sheet) kitDocs.push({ f: sheet, label: 'fact sheet', heading: 'Fact sheet', about: 'Facts, artist pages and releases' });
+if (lyricSheet) kitDocs.push({ f: lyricSheet, label: 'lyrics sheet', heading: 'Lyrics sheet', about: 'The words to the ' + nKitSongs + (nKitSongs === 1 ? ' music track' : ' music tracks') + (nKitVids ? ' and ' + nKitVids + (nKitVids === 1 ? ' live video' : ' live videos') : '') });
 var inKit = [nSongs + (nSongs === 1 ? '\u00a0song' : '\u00a0songs') + (hasLyr ? ' with lyrics' : '')];
 var nVids = KIT.files.filter(function(f) { return f.type === 'video'; }).length;
 if (nVids) inKit.push(nVids + (nVids === 1 ? '\u00a0live video' : '\u00a0live videos'));
@@ -3255,10 +3261,12 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       '<div class="epk-video-btns">' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<button type="button" class="rel-lyrics-toggle epk-vlyr" aria-expanded="false" aria-controls="epk-vlyr-' + i + '" aria-label="Show lyrics for ' + escHtml(v.title) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg><svg class="lyr-chev" aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>' : '') +
       (v.file ? '<a class="rel-lyrics-toggle epk-file-dl" href="' + escHtml(kitUrl(v.file)) + '" download="' + escHtml(v.title) + ' - Ash Stu (Live).mp4" aria-label="Download the video of ' + escHtml(v.title) + '" title="Download the video of ' + escHtml(v.title) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' : '') + '</div>' + (v.lyricsKey && LYRICS[v.lyricsKey] ? '<div class="epk-vlyr-panel" id="epk-vlyr-' + i + '" role="region" tabindex="0" aria-label="Lyrics for ' + escHtml(v.title) + '" hidden><p class="epk-vlyr-from">' + (v.from ? 'From ' + escHtml(v.from) : '') + '</p>' + ((LYRICS[v.lyricsKey].lines || []).map(function(l) { return String(l[1] || '').trim(); }).filter(Boolean).map(function(l) { return '<span class="rel-lyric-line">' + escHtml(l) + '</span>'; }).join('')) + '</div>' : '') + '</div>';   /* (owner's request: a Download for the video file in place of the YouTube link) */
   }).join('') + '</div></div>' : '') +
-  (sheet ? '<p class="epk-group epk-sheet-h" id="epk-sheet-h">Fact sheet</p><div class="epk-sheet-row" role="group" aria-labelledby="epk-sheet-h">' +   /* (the fact sheet in its own row, as the songs and videos have theirs: owner's request) */
-    '<a class="rel-lyrics-toggle epk-doc-link epk-sheet-read" href="' + escHtml(kitUrl(sheet.src)) + '" data-doc="' + escHtml(sheet.src) + '" data-name="' + escHtml(sheet.name) + '" aria-haspopup="dialog" aria-label="Read the fact sheet"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span class="btn-word" aria-hidden="true">Read</span></a>' +
-    '<p class="epk-shot-name">' + escHtml(sheet.name.replace(/\.[a-z0-9]+$/i, '')) + '</p><p class="epk-shot-meta">Facts, artist pages and releases</p>' +
-    '<div class="epk-video-btns"><a class="rel-lyrics-toggle epk-file-dl epk-sheet-dl" href="' + escHtml(kitUrl(sheet.src)) + '" download="' + escHtml(sheet.name) + '" aria-label="Download the fact sheet" title="Download the fact sheet"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a></div></div>' : '') +
+  (kitDocs.length ? '<p class="epk-group epk-sheet-h" id="epk-sheet-h">' + (kitDocs.length > 1 ? 'Fact and lyrics sheets' : kitDocs[0].heading) + '</p>' + kitDocs.map(function(d, k) {   /* (the fact sheet and the lyrics sheet, each in its own row as the songs and videos have theirs: owner's requests) */
+    return '<div class="epk-sheet-row" id="epk-sheet-' + k + '" role="group" aria-label="' + escHtml(d.label) + '">' +
+    '<a class="rel-lyrics-toggle epk-doc-link epk-sheet-read" href="' + escHtml(kitUrl(d.f.src)) + '" data-doc="' + escHtml(d.f.src) + '" data-name="' + escHtml(d.f.name) + '" aria-haspopup="dialog" aria-label="Read the ' + escHtml(d.label) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span class="btn-word" aria-hidden="true">Read</span></a>' +
+    '<p class="epk-shot-name">' + escHtml(d.f.name.replace(/\.[a-z0-9]+$/i, '')) + '</p><p class="epk-shot-meta">' + escHtml(d.about) + '</p>' +
+    '<div class="epk-video-btns"><a class="rel-lyrics-toggle epk-file-dl epk-sheet-dl" href="' + escHtml(kitUrl(d.f.src)) + '" download="' + escHtml(d.f.name) + '" aria-label="Download the ' + escHtml(d.label) + '" title="Download the ' + escHtml(d.label) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a></div></div>';
+  }).join('') : '') +
   '<p class="epk-group epk-sampler-h" id="epk-sampler-h">Music Tracks</p>' +   /* (renamed from "Sampler": owner's request) */   /* (owner's request: the tracklist is always open, like the photos and videos: a heading, not a Show/Hide bar) */
   '<div class="rel-tracklist" id="tracklist-kit" role="region" aria-labelledby="epk-sampler-h"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
@@ -3273,13 +3281,12 @@ more.type = 'button'; more.className = 'rel-btn rel-dl epk-show';
 more.setAttribute('aria-expanded', 'false');
 var gal = card.querySelector('.epk-gallery'), vids = card.querySelector('.epk-videos');
 if (gal) gal.id = 'epk-photos'; if (vids) vids.id = 'epk-live-videos';
-var sheetRow = card.querySelector('.epk-sheet-row'); if (sheetRow) sheetRow.id = 'epk-fact-sheet';
-more.setAttribute('aria-controls', ['tracklist-kit', 'epk-live-videos', 'epk-photos', 'epk-fact-sheet'].filter(function(id) { return card.querySelector('#' + id); }).join(' '));
+more.setAttribute('aria-controls', ['tracklist-kit', 'epk-live-videos', 'epk-photos', 'epk-sheet-0', 'epk-sheet-1'].filter(function(id) { return card.querySelector('#' + id); }).join(' '));
 more.innerHTML = '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
 var setMore = function(open) {
   card.classList.toggle('kit-collapsed', !open);
   more.setAttribute('aria-expanded', String(open));
-  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the music tracks, live videos, photos and fact sheet');
+  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the music tracks, live videos, photos, fact sheet and lyrics sheet');
   if (open) { openList(); queueMarquees(); }   /* (opening the card opens its tracklist too: owner's request) */
 };
 setMore(false);
