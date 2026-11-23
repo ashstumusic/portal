@@ -54,7 +54,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <link rel="preload" href="Fonts/subsetted/Battambang-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="Fonts/subsetted/VastShadow-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="Images/embedded/hero-ash-stu-guitar.webp?v=19350ea2" imagesrcset="Images/embedded/hero-ash-stu-guitar.webp?v=19350ea2 1400w, Images/embedded/hero-ash-stu-guitar-2000.webp 2000w" imagesizes="(max-width: 767px) 100vw, 80vw" fetchpriority="high">
-<link rel="stylesheet" href="styles.783fe311.min.css"/>
+<link rel="stylesheet" href="styles.ac6d8f87.min.css"/>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="hb1" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter><filter id="hb2" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter><filter id="hb3" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter><filter id="hb4" x="-8%" y="-90%" width="116%" height="280%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".022 .03" numOctaves="1" seed="37" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation=".45"/></filter></defs></svg>
@@ -240,11 +240,18 @@ var cs=getComputedStyle(q), room=q.clientWidth-parseFloat(cs.paddingLeft)-parseF
 if(!(room>0)) return;
 var key=room+'|'+(document.fonts&&document.fonts.check?document.fonts.check("700 100px Category")+'|'+document.fonts.check("100px QuoteName"):'');
 if(key===lastKey) return; lastKey=key;
-var c=q.cloneNode(true); c.removeAttribute('id'); c.setAttribute('aria-hidden','true');
+/* Its width at 100px, set as the four lines (narrow: false) or as the nine (narrow: true) */
+function width(narrow){
+var c=q.cloneNode(true); c.removeAttribute('id'); c.setAttribute('aria-hidden','true'); c.classList.toggle('dq-narrow',narrow);
 c.style.cssText='position:absolute!important;visibility:hidden!important;left:-99999px!important;top:0!important;width:max-content!important;max-width:none!important;padding:0!important;margin:0!important;border:0!important;font-size:100px!important;white-space:nowrap!important;';
-q.parentNode.appendChild(c); var w=c.getBoundingClientRect().width; c.remove();
-if(!(w>0)) return;
-var n=Math.floor(room/w*100*100*.998)/100;
+q.parentNode.appendChild(c); var w=c.getBoundingClientRect().width; c.remove(); return w;
+}
+/* The four set lines wherever they can be read (owner, 2026-11-23: "preserve the triangle shape", pointing at the four
+lines); only where they would come out under 11.5px (a phone) is it set as the nine-line triangle instead. */
+var w=width(false); if(!(w>0)) return;
+var n=Math.floor(room/w*100*100*.998)/100, narrow=n<11.5;
+if(narrow){ w=width(true); if(!(w>0)) return; n=Math.floor(room/w*100*100*.998)/100; }
+if(narrow!==q.classList.contains('dq-narrow')){ q.classList.toggle('dq-narrow',narrow); last=''; lastKey=''; }
 /* The side padding is in em, so a new size nudges the room, which asked for a new size again: it flipped between
 two sizes 0.01px apart several times a second for ever, and every flip changed the page's height, which made the
 stars re-scatter and the photos below shake. A change under a tenth of a pixel is not worth making. */
