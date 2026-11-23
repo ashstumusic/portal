@@ -310,8 +310,6 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>
       <span class="btn-word">Send an email</span><span class="sr-only"> to ashstumusic@gmail.com (opens your email app)</span>
     </a>
-    <!-- (a live photo on the card's right, as the album and press kit cards have their pictures: tablets and wider) -->
-    <div class="contact-art"><img src="Images/embedded/epk-ash-stu-piano.webp" alt="Ash Stu singing at the keyboard on stage" width="481" height="481" loading="lazy" decoding="async"/></div>
   </div>
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h"><script>document.currentScript.parentNode.classList.add('epk-merged')</script>   <!-- (the card layout from the first paint, only with JavaScript: the pre-built card needs it, see render_kit_shell) -->
@@ -4376,7 +4374,7 @@ setup();setTimeout(setup,1500);})();</script>
    player's little cover) are left alone. The hero photo and the About portrait have theirs written in the page. */
 (function(){
 var WHO={'Emma Evans':'https://www.facebook.com/profile.php?id=100018702414515'};
-var BY=[[/epk-ash-stu-performing|epk-ash-stu-singing|epk-ash-stu-piano|Headshot-2|Live%20at%20the%20Keyboard|Live at the Keyboard/,'Emma Evans']];   /* (epk-ash-stu-piano: Piano Batch 1.png, the same stage shoot as Piano Batch 2, the Contact card's photo) */
+var BY=[[/epk-ash-stu-performing|epk-ash-stu-singing|Headshot-2|Live%20at%20the%20Keyboard|Live at the Keyboard/,'Emma Evans']];
 function who(src){src=src||'';for(var i=0;i<BY.length;i++)if(BY[i][0].test(src))return BY[i][1];return '';}
 function mark(im){
   if(im.dataset.credit==='shown')return;
