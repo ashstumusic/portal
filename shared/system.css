@@ -6534,3 +6534,13 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    stuck 30-70px out of the card) */
 :root.psy #contact .contact-addr-row:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { flex-wrap: wrap !important; min-width: 0 !important; max-width: 100% !important; }
 :root.psy #contact .contact-address:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { min-width: 0 !important; overflow-wrap: anywhere; }
+
+/* ── No stars in the white zone (owner: "disable the stars in the white zone from being possible") ── The star layer
+   stops where the sky starts to turn (half the sky band above About's top) and fades out over the 80px before that, so
+   no star can show in the grey band or on the white, even one carried down by a tracklist opening above it, and none
+   is cut off at a hard edge. psyche.js also never places a star below that fade. */
+:root.psy .cut-stars:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  max-height: calc(var(--about-top, 100000px) - var(--sky-band, 340px) / 2) !important;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 80px), transparent 100%) !important;
+          mask-image: linear-gradient(to bottom, #000 calc(100% - 80px), transparent 100%) !important;
+}

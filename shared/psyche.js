@@ -324,7 +324,9 @@
       const under = (x0, y0, x1, y1) => covers.some((c) => x0 >= c[0] && y0 >= c[1] && x1 <= c[2] && y1 <= c[3]);
       // The white zone (where the purple fades away, above About and down to the end) has no stars (owner's request).
       const ab = $('#about'); let freeTop = null;
-      if (ab) { const fade = parseFloat(getComputedStyle(ab, '::after').height) || 180; freeTop = ab.getBoundingClientRect().top + sy - fade * 0.55; }
+      // (Stars end 80px above where the sky starts to turn: the sky band is centred on About's top, and the layer itself
+      // fades out over those 80px and stops there - see "No stars in the white zone" in system.css.)
+      if (ab) { const band = parseFloat(getComputedStyle(doc.documentElement).getPropertyValue('--sky-band')) || 340; freeTop = ab.getBoundingClientRect().top + sy - band / 2 - 80; }
       return { W, H, top, free, pass, under, ceiling, freeTop };
     }
 
