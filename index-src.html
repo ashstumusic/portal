@@ -3273,12 +3273,13 @@ more.type = 'button'; more.className = 'rel-btn rel-dl epk-show';
 more.setAttribute('aria-expanded', 'false');
 var gal = card.querySelector('.epk-gallery'), vids = card.querySelector('.epk-videos');
 if (gal) gal.id = 'epk-photos'; if (vids) vids.id = 'epk-live-videos';
-more.setAttribute('aria-controls', ['epk-photos', 'epk-live-videos', 'tracklist-kit'].filter(function(id) { return card.querySelector('#' + id); }).join(' '));
+var sheetRow = card.querySelector('.epk-sheet-row'); if (sheetRow) sheetRow.id = 'epk-fact-sheet';
+more.setAttribute('aria-controls', ['tracklist-kit', 'epk-live-videos', 'epk-photos', 'epk-fact-sheet'].filter(function(id) { return card.querySelector('#' + id); }).join(' '));
 more.innerHTML = '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
 var setMore = function(open) {
   card.classList.toggle('kit-collapsed', !open);
   more.setAttribute('aria-expanded', String(open));
-  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the photos, live videos and tracks');
+  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the music tracks, live videos, photos and fact sheet');
   if (open) { openList(); queueMarquees(); }   /* (opening the card opens its tracklist too: owner's request) */
 };
 setMore(false);
