@@ -6558,3 +6558,12 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
 :root.psy #party .f-listen-label:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { justify-self: center; align-self: center; width: fit-content; margin: 6px auto 4px !important; padding: 3px 10px !important; border-radius: 999px; background: rgb(12 14 20 / .66); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .16); -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8); text-shadow: none !important; }
 @media (prefers-reduced-transparency: reduce) { :root.psy #party .f-listen-label:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: #14161c; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 @media (forced-colors: active) { :root.psy #party .f-listen-label:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border: 1px solid CanvasText; } }
+
+/* Menu: Deezer's logo turns to the same black silhouette as Apple Music, Spotify and YouTube on hover and keyboard
+   focus, as it does in the desktop toolbar (owner: "the deezer button mouse over effect doesnt match the desktop
+   toolbar one" - the menu kept it purple) */
+:root.psy .k-menu-plat:is(:hover, :focus-visible) .pt--deezer:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background-image: url('Icons/Deezer-mono.svg') !important; filter: none !important; }
+/* ...and keyboard focus gives them the same gold as the pointer does, as in the desktop toolbar (their words and logos
+   turned black on focus while the box stayed dark grey, so the focused button could hardly be read) */
+:root.psy .k-menu-plats > .k-menu-plat:focus-visible:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: var(--gold, #F7C549) !important; color: #111 !important; }
+:root.psy .k-menu-plats > .k-menu-plat:focus-visible > .btn-word:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: #111 !important; }
