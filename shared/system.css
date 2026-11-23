@@ -6467,3 +6467,45 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
   background: var(--hig-card) !important; border: 1px solid rgb(255 255 255 / .12) !important;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), 0 1px 2px rgb(0 0 0 / .35), 0 8px 24px rgb(0 0 0 / .3) !important;
 }
+
+/* ── One material per kind of surface ── The floating surfaces used six different dark tints: the toolbar and player
+   bar two near-blacks, the video viewer and full-screen player two more at different strengths, Settings a teal glass
+   only 58% opaque, the search list a 97% glass and the fact sheet a solid panel, with corners of 14, 18 and 20px. Now:
+     bars        (toolbar, player bar)              --hig-bar     dark glass, blurred
+     sheets      (Settings / phone menu, search list, fact sheet)  --hig-sheet   a step lighter than the cards, blurred,
+                 with the cards' rim, so a sheet reads as lifted above everything
+     backdrops   (video viewer, full-screen player)  --hig-scrim   one deep glass over the page
+   Sheets take the section panels' corners (24px; 20px on phones); the search list, which hangs off its field, the
+   cards' 16px. */
+:root {
+  --hig-bar: rgb(20 22 29 / .84); --hig-sheet: rgb(40 43 54 / .94); --hig-scrim: rgb(12 13 18 / .88);
+  --hig-blur: blur(24px) saturate(1.8);
+}
+:root.psy :is(nav.pf-left, header nav, #player-bar):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background-color: var(--hig-bar) !important; -webkit-backdrop-filter: var(--hig-blur) !important; backdrop-filter: var(--hig-blur) !important;
+}
+:root.psy :is(.k-palette-box, .kit-doc, [id^="k-si-list"][role="listbox"]):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background: var(--hig-sheet) !important; -webkit-backdrop-filter: var(--hig-blur) !important; backdrop-filter: var(--hig-blur) !important;
+  border: 1px solid rgb(255 255 255 / .12) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), 0 2px 6px rgb(0 0 0 / .35), 0 24px 56px rgb(0 0 0 / .5) !important;
+}
+:root.psy :is(.k-palette-box, .kit-doc):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: 24px !important; }
+@media (max-width: 767px) { :root.psy :is(.k-palette-box, .kit-doc):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: 20px !important; } }
+:root.psy [id^="k-si-list"][role="listbox"]:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: 16px !important; }
+:root.psy :is(#vid-lightbox, .vid-lightbox, #fs-player):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) {
+  background-color: var(--hig-scrim) !important; -webkit-backdrop-filter: blur(28px) saturate(1.6) !important; backdrop-filter: blur(28px) saturate(1.6) !important;
+}
+/* The phone's floating player bar: the cards' 16px corners (was 14px) */
+@media (max-width: 767px) { :root.psy #player-bar:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: 16px !important; } }
+/* Rows inside cards and sheets: 8px corners (tracklist rows were 12px, fact-sheet rows 10px) */
+:root.psy :is(.rel-track-wrap, .kit-doc dl > div, .kit-doc .kd-row):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: var(--hig-r-row) !important; }
+@media (prefers-reduced-transparency: reduce) {
+  :root.psy :is(nav.pf-left, header nav, #player-bar, .k-palette-box, .kit-doc, [id^="k-si-list"][role="listbox"], #vid-lightbox, #fs-player):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  :root.psy :is(nav.pf-left, header nav, #player-bar):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background-color: #14161D !important; }
+  :root.psy :is(.k-palette-box, .kit-doc, [id^="k-si-list"][role="listbox"]):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background: #282B36 !important; }
+  :root.psy :is(#vid-lightbox, #fs-player):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { background-color: #0C0D12 !important; }
+}
+/* Fact sheet: its rows take the 8px row corners (were 10px) and its two private greys become the site's label tones */
+:root.psy .kit-doc .kd-list > li:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { border-radius: var(--hig-r-row) !important; }
+:root.psy .kit-doc dt:not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: var(--hig-label-3) !important; }
+:root.psy .kit-doc :is(.kd-meta, .kd-meta *, dd a[href^="http"], li a[href^="http"]):not(#\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\##\#) { color: var(--hig-label-2) !important; }
