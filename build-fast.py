@@ -331,7 +331,8 @@ KIT_DIR = os.path.join(ROOT, "Images", "press-kit")
 KIT_TOP = "Ash Stu - Press Kit/"
 KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", "Worship Song", "You Are What You Love"]
 KIT_PHOTO_ORDER = ["Ash Stu - Headshot-1.png", "Ash Stu - Headshot-2.png", "Ash Stu - Live at the Keyboard (Wide).png",
-                   "Ash Stu - Headshot-3.png", "Ash Stu - Guitar in Alley (Wide).png"]   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
+                   "Ash Stu - Headshot-3.png", "Ash Stu - Guitar in Alley (Wide).png",
+                   "Ash Stu - Alley at Sunset (Wide).png", "Ash Stu - Alley Portrait.png"]   # (the last two new, 2026-11-24: owner's photos; see scripts/kit_photos.py)   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
 KIT_VIDEOS = ["The Cloud for the Desert", "Theory of Hope"]   # (owner's choice: live solo acoustic performances, the first leads)
 KIT_VIDEO_NOTE = ""   # (owner's request, 2026-11-23: "remove the live, and solo acoustic")
 KIT_SONG_COVER = "Images/embedded/kit-song-cover.jpg"   # (Headshot-1 as a JPEG: the picture music apps show for the kit's songs)
@@ -348,7 +349,8 @@ KIT_FACTS = {
 PHOTOGRAPHERS = {"Emma Evans": "https://www.facebook.com/profile.php?id=100018702414515"}
 _KIT_CREDIT = {"Ash Stu - Headshot-2.png": "Emma Evans", "Ash Stu - Live at the Keyboard (Wide).png": "Emma Evans"}
 _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=5",
-              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
+              "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp?v=2", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp?v=2",
+              "Ash Stu - Alley at Sunset (Wide).png": "epk-ash-stu-sunset.webp", "Ash Stu - Alley Portrait.png": "epk-ash-stu-alley-portrait.webp",
               "Ash Stu - Live at the Keyboard (Wide).png": "epk-ash-stu-performing.webp?v=5"}
 def _press_kit():
     import json as _json

@@ -332,8 +332,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-singing.webp?v=5" alt="Ash Stu singing into a microphone on stage"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot-2.png</span></span>
   </div>
   <div class="epk-photos epk-photos-bottom">
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-guitar-door.webp" alt="Ash Stu playing guitar by a wooden door"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot-3.png</span></span>
-    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Guitar in Alley (Wide).png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-guitar-door.webp?v=2" alt="Ash Stu playing guitar by a wooden door"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Headshot-3.png</span></span>
+    <span class="epk-file"><span class="epk-slot"><img width="481" height="481" loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp?v=2" alt="Ash Stu with his guitar in an alley"/></span><span class="epk-name" aria-hidden="true">Ash Stu - Guitar in Alley (Wide).png</span></span>
   </div>
   </noscript>
   <!-- What is inside the Press Kit ZIP (owner's request): a card built just like an album's, so it looks and works the same:
@@ -428,7 +428,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
       </div>
       <div class="bio-card-media">
         <img class="bio-media-main" data-credit="shown" loading="lazy" decoding="async" src="Images/Profile-3.webp" alt="Ash Stu - Outsider singer-songwriter from Guthrie, Oklahoma" width="520" height="520"/>
-        <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp" alt="Ash Stu with his guitar in an alley" width="481" height="481"/></span>
+        <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-alley.webp?v=2" alt="Ash Stu with his guitar in an alley" width="481" height="481"/></span>
         <span class="bw-shot"><img loading="lazy" decoding="async" src="Images/embedded/epk-ash-stu-portrait.webp" alt="Ash Stu singing at the piano under a red light" width="481" height="481"/></span>
       </div>
     </div>
@@ -2604,7 +2604,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
+'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + (rel.upcoming && rel.upcoming.length && rel.tracks.length ? '<p class="rel-progress">' + rel.tracks.length + ' of ' + (rel.tracks.length + rel.upcoming.length) + ' songs out now<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' : '') + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 767px) 160px, 304px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
@@ -4227,7 +4227,9 @@ if(!('IntersectionObserver' in window)){on();return;}var o=new IntersectionObser
 (function(){var slots=[].slice.call(document.querySelectorAll('.bio-card-media .bw-shot img'));if(slots.length<2)return;
 var P='Images/embedded/';
 var pool=[
- {src:P+'epk-ash-stu-alley.webp',alt:'Ash Stu with his guitar in an alley'},
+ {src:P+'epk-ash-stu-alley.webp?v=2',alt:'Ash Stu with his guitar in an alley',g:'alley'},
+ {src:P+'epk-ash-stu-sunset.webp',alt:'Ash Stu playing guitar against a brick wall in an alley at sunset',g:'alley'},
+ {src:P+'epk-ash-stu-alley-portrait.webp',alt:'Ash Stu leaning on a brick wall in an alley with his guitar',g:'alley'},
  {src:P+'epk-ash-stu-portrait.webp',alt:'Ash Stu singing at the piano under a red light',g:'stage'},
  {src:P+'epk-ash-stu-performing.webp?v=5',alt:'Ash Stu performing at the keyboard',g:'stage',by:'Emma Evans'},
  {src:P+'epk-ash-stu-piano.webp',alt:'Ash Stu at the piano on stage',g:'stage'},
@@ -4237,7 +4239,7 @@ var pool=[
 ];
 var shown=[],deck=[];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
-/* (the three stage-show shots look alike side by side, so at most one of them is ever up at a time) */
+/* (the three stage-show shots look alike side by side, and so do the three alley shots: at most one of each group is ever up at a time) */
 function twin(i){var g=pool[i].g;return !!g&&shown.some(function(j){return j!=null&&pool[j].g===g;});}
 function deal(){for(var t=0;t<2;t++){if(!deck.length)deck=shuffle(pool.map(function(_,i){return i;}));for(var k=0;k<deck.length;k++)if(shown.indexOf(deck[k])<0&&!twin(deck[k]))return deck.splice(k,1)[0];deck=[];}return -1;}
 function put(w,i){shown[w]=i;var im=slots[w];im.removeAttribute('srcset');im.removeAttribute('sizes');im.src=pool[i].src;im.alt=pool[i].alt;if(pool[i].by)im.title='Photo: '+pool[i].by;else im.removeAttribute('title');}   /* (the photographer's credit, where known, on hover) */
@@ -4345,7 +4347,7 @@ var P='Images/embedded/';
 // written from the ZIP by build-fast.py). Photos show the site's small copy; songs show their album's cover.
 var COVER={'Ash Stu, Vol. II':'Images/Releases/Ash%20Stu%2C%20Vol.%20II.webp','My Anima':'Images/Releases/My%20Anima.webp'};
 var ALBUM={'Dirge for Ducklings':'Ash Stu, Vol. II','Summertime Even on the Moon':'Ash Stu, Vol. II','Still Sad':'My Anima','Worship Song':'My Anima','You Are What You Love':'My Anima'};
-var ALT={'Ash Stu - Headshot-1.png':'Ash Stu smiling on an outdoor staircase','Ash Stu - Headshot-2.png':'Ash Stu singing into a microphone on stage','Ash Stu - Headshot-3.png':'Ash Stu playing guitar by a wooden door','Ash Stu - Guitar in Alley (Wide).png':'Ash Stu with his guitar in an alley'};
+var ALT={'Ash Stu - Headshot-1.png':'Ash Stu smiling on an outdoor staircase','Ash Stu - Headshot-2.png':'Ash Stu singing into a microphone on stage','Ash Stu - Headshot-3.png':'Ash Stu playing guitar by a wooden door','Ash Stu - Guitar in Alley (Wide).png':'Ash Stu with his guitar in an alley','Ash Stu - Alley at Sunset (Wide).png':'Ash Stu playing guitar against a brick wall in an alley at sunset','Ash Stu - Alley Portrait.png':'Ash Stu leaning on a brick wall in an alley with his guitar, looking at the camera'};
 var _kd=null;try{_kd=JSON.parse(document.getElementById('kit-data').textContent);}catch(e){}
 var items=[];
 ((_kd&&_kd.files)||[]).forEach(function(f){
