@@ -3892,11 +3892,15 @@ grid.querySelectorAll('.rel-card').forEach(function(card) {
 // "Now playing" is a small pill at the right-hand end of the card's top line ("ALBUM · 2026 ........ ▮▮▮ NOW PLAYING"),
 // never on the cover. It shows whenever one of the album's songs is in the player (playing or paused: the bars hold
 // still while paused). Decoration only (aria-hidden): the Play/Pause button and the player say what is playing.
-var cat = card.querySelector('.rel-info .rel-cat');
-if (!cat || card.querySelector('.rel-eq')) return;
+// (2026-11-23: back in the Tracks bar - the spot the owner chose as "the best spot" - with the song's name: up in the
+// top line it stacked a third label over the title and made the card jump when a song started; the bar is always
+// there at one height. A release without a Tracks bar, a single, still carries it in its top line.)
+var cat = card.querySelector('.rel-info .rel-cat'), bar = card.querySelector('.rel-tl-toggle');
+if ((!cat && !bar) || card.querySelector('.rel-eq')) return;
 var e = document.createElement('span'); e.className = 'party-eq rel-eq'; e.setAttribute('aria-hidden', 'true');
-e.innerHTML = '<i></i><i></i><i></i><i></i><span class="rel-eq-word">Now playing</span>';
-cat.appendChild(e);
+e.innerHTML = '<i></i><i></i><i></i><i></i><span class="rel-eq-word">Now playing</span>' + (bar ? '<span class="rel-eq-song"></span>' : '');
+if (bar) { var lab = bar.querySelector('.rel-tl-label'); if (lab && lab.nextSibling) bar.insertBefore(e, lab.nextSibling); else bar.appendChild(e); }
+else cat.appendChild(e);
 });
 }
 decorate(); if (typeof syncCued === 'function') syncCued();
