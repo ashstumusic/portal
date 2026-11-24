@@ -347,9 +347,9 @@ KIT_FACTS = {
 # Photo credits: shown on each of these photos on the page and listed in the Fact Sheet.
 PHOTOGRAPHERS = {"Emma Evans": "https://www.facebook.com/profile.php?id=100018702414515"}
 _KIT_CREDIT = {"Ash Stu - Headshot-2.png": "Emma Evans", "Ash Stu - Live at the Keyboard (Wide).png": "Emma Evans"}
-_KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=4",
+_KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=5",
               "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp",
-              "Ash Stu - Live at the Keyboard (Wide).png": "epk-ash-stu-performing.webp"}
+              "Ash Stu - Live at the Keyboard (Wide).png": "epk-ash-stu-performing.webp?v=5"}
 def _press_kit():
     import json as _json
     rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
