@@ -2259,6 +2259,19 @@ lyrBtn = makeLyricsBtn(t.title);
 row.addEventListener('click', function() { playTrack(rIdx, tIdx); });
 wrap.appendChild(row);
 if (lyrBtn) wrap.appendChild(lyrBtn);
+// Each song's own Download, as the press kit's songs have (owner, 2026-11-23: "make each track inside an albums
+// tracklist be downloadable like the other tracks with a download button"): the visitor picks the format, and the file
+// is labelled as in the album's ZIP (its album, number and cover). Unreleased songs have no file, so no Download.
+var zf = rel.zip && rel.zip.files && rel.zip.files.filter(function(z) { return z.src === t.file; })[0];
+if (zf) (function(t, zf) {
+  var plain = String(t.title).replace(/<[^>]*>/g, ''), fname = plain + ' - ' + rel.name + '.' + String(t.file).split('.').pop();
+  var sdl = document.createElement('a'); sdl.className = 'rel-lyrics-toggle rel-song-dl';
+  sdl.href = kitUrl(t.file); sdl.setAttribute('download', fname);
+  sdl.setAttribute('aria-label', 'Download ' + plain); sdl.title = 'Download ' + plain;
+  sdl.innerHTML = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>';
+  sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); kitSaveOne(t.file, fname, { audio: 1 }, sdl, zf.tag); });
+  wrap.appendChild(sdl);
+})(t, zf);
 if (hasLyrics) {
 var lDiv = document.createElement('div');
 lDiv.className = 'rel-lyrics';
