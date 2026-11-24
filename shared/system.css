@@ -4390,11 +4390,15 @@ html.fs-locked .cut-stars { visibility: hidden !important; }   /* (the stars are
    itself now holds still and clean. The heading keeps its plum offset shadow and still slides up into place as it
    arrives where the browser can do that. Stops with Effects off and reduced motion, as before. */
 :root.psy .section-h:not(#\##\##\#) { font-family: var(--font-ui) !important; font-weight: 700 !important; letter-spacing: -.01em !important; font-synthesis: none; }
+/* (the four poses jiggle evenly both ways - left, right, left, right, and up, down - about .6px each side of rest.
+   Each wobble filter nudges the drawing a little on its own (measured: about +.2, +.1, -.2 and 0px across, +.3, -.15,
+   +.35 and 0px down), so each pose's shift is set to land it on its mark; before, three poses of four sat right of
+   rest and it seemed only to jiggle right - owner, 2026-11-23) */
 @keyframes ico-boil {
-  0% { filter: url(#hb1); translate: 0 0; rotate: 0deg; }
-  25% { filter: url(#hb2); translate: .6px -.4px; rotate: -3deg; }
-  50% { filter: url(#hb3); translate: -.5px .5px; rotate: 2.5deg; }
-  75% { filter: url(#hb4); translate: .3px .6px; rotate: -1.5deg; }
+  0% { filter: url(#hb1); translate: -.8px -.6px; rotate: 1.5deg; }
+  25% { filter: url(#hb2); translate: .5px .45px; rotate: -3deg; }
+  50% { filter: url(#hb3); translate: -.4px -.65px; rotate: 2.5deg; }
+  75% { filter: url(#hb4); translate: .6px .3px; rotate: -1.5deg; }
 }
 @media (prefers-reduced-motion: no-preference) {
   :root.psy:not(.psy-calm) .section-h:not(#\##\##\##\##\#) { animation: none; }
