@@ -104,7 +104,7 @@ def render_release_card(rel, r_idx):
     # (owner, 2026-11-23: "the coming soon tag should be near the top by the release year": a tag in the date line)
     _clock = ('<svg class="soon-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
               'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>')
-    rel_tag = (f'<span class="rel-tag">{_clock}<span>{"Not on streaming services yet" if _out else "Coming soon to streaming"}</span></span>'
+    rel_tag = (f'<span class="rel-tag{" rel-tag--out" if _out else ""}">{_clock}<span>{"Not on streaming services yet" if _out else "Coming soon to streaming"}</span></span>'
                if not listen or rel.get('soon') else '')
     status = ''
     if listen:
@@ -225,9 +225,10 @@ def render_kit_shell(page):
     art = ''
     if lead and lead.get('thumb'):
         # (the kinds of thing in the kit, as tags on the photo - Songs, Videos, Photos, Text: owner's request)
+        _icons = {'song': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>', 'video': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/></svg>', 'photo': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8.5 8.5"/></svg>', 'text': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>'}
         _names = {'song': 'Songs', 'video': 'Videos', 'photo': 'Photos', 'text': 'Text'}
         _seen = [k for k in ['song', 'video', 'photo', 'text'] if any(('text' if f.get('type') == 'lyrics' else f.get('type')) == k for f in files)]
-        kit_types = ('<p class="kit-types"><span class="sr-only">In the kit: </span>' + ''.join(f'<span class="kit-type">{_names[k]}</span>' for k in _seen) + '</p>') if _seen else ''
+        kit_types = ('<p class="kit-types"><span class="sr-only">In the kit: </span>' + ''.join(f'<span class="kit-type kit-type--{k}">{_icons[k]}<span class="kit-type-word">{_names[k]}</span></span>' for k in _seen) + '</p>') if _seen else ''
         art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/>{kit_types}</div>'
     btns = ('<div class="rel-btns"><button type="button" class="rel-btn rel-dl epk-show" aria-expanded="false" aria-label="Show the music tracks, live videos, photos, fact sheet and lyrics sheet">'
             '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="btn-word" aria-hidden="true">Show</span></button>'
