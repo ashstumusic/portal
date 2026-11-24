@@ -224,7 +224,11 @@ def render_kit_shell(page):
     info = f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated{upd}</span></p></div>'   # (no "Ash Stu" title: owner's request, 2026-11-23)
     art = ''
     if lead and lead.get('thumb'):
-        art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>'
+        # (the kinds of thing in the kit, as tags on the photo - Songs, Videos, Photos, Text: owner's request)
+        _names = {'song': 'Songs', 'video': 'Videos', 'photo': 'Photos', 'text': 'Text'}
+        _seen = [k for k in ['song', 'video', 'photo', 'text'] if any(('text' if f.get('type') == 'lyrics' else f.get('type')) == k for f in files)]
+        kit_types = ('<p class="kit-types"><span class="sr-only">In the kit: </span>' + ''.join(f'<span class="kit-type">{_names[k]}</span>' for k in _seen) + '</p>') if _seen else ''
+        art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/>{kit_types}</div>'
     btns = ('<div class="rel-btns"><button type="button" class="rel-btn rel-dl epk-show" aria-expanded="false" aria-label="Show the music tracks, live videos, photos, fact sheet and lyrics sheet">'
             '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="btn-word" aria-hidden="true">Show</span></button>'
             '<a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="rel-btn rel-dl epk-zip" aria-label="Download the Press Kit" title="Download the Press Kit">'
