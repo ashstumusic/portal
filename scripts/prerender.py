@@ -101,8 +101,12 @@ def render_release_card(rel, r_idx):
                        f'aria-label="Listen on {store}: {esc(rel["name"])}"><span class="pt pt--{key}" aria-hidden="true"></span> {store}</a>')
     import datetime as _dt
     _out = bool(rel.get('date')) and rel['date'] <= _dt.date.today().isoformat()   # (already out, not on the services yet)
-    status = (f'<p class="rel-status"><span>{"Not on streaming services yet" if _out else "Coming soon to streaming"}</span></p>'
-              if not listen or rel.get('soon') else '')
+    # (owner, 2026-11-23: "the coming soon tag should be near the top by the release year": a tag in the date line)
+    _clock = ('<svg class="soon-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+              'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>')
+    rel_tag = (f'<span class="rel-tag">{_clock}<span>{"Not on streaming services yet" if _out else "Coming soon to streaming"}</span></span>'
+               if not listen or rel.get('soon') else '')
+    status = ''
     if listen:
         status += (f'<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-{r_idx}">Listen on</span>'
                    f'<span class="rel-stores" role="group" aria-labelledby="rel-listen-{r_idx}">{listen}</span></div>')
@@ -126,7 +130,7 @@ def render_release_card(rel, r_idx):
             f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">{esc(rel["type"])}'
             + (f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="{rel["date"]}">{full_date(rel["date"])}</time></span>' if rel.get("date")
                else f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
-            f'</span></p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3></div>'
+            f'</span>{rel_tag}</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3></div>'
             + (f'<div class="rel-avail">{status}</div>' if status else '') +
             f'<div class="rel-art-wrap">'
             f'<img src="{esc(rel["art"])}" alt="{esc(kind_word + rel["name"])}" '

@@ -2573,7 +2573,9 @@ if (rel.deezer) listen += '<a href="' + escHtml(rel.deezer) + '" target="_blank"
 // Not on streaming yet: a quiet status line under the name, not a button-shaped box (it does nothing when pressed).
 // (an album already out but not on the services yet says so plainly: "coming soon" beside a date that has passed read as a mistake)
 var outAlready = rel.date && rel.date <= new Date().toISOString().slice(0, 10);
-var status = (!listen || rel.soon) ? '<p class="rel-status">' + SOON_ICON + '<span>' + (outAlready ? 'Not on streaming services yet' : 'Coming soon to streaming') + '</span></p>' : '';
+// (owner, 2026-11-23: "the coming soon tag should be near the top by the release year": a tag in the date line, not a line at the foot)
+var relTag = (!listen || rel.soon) ? '<span class="rel-tag">' + SOON_ICON + '<span>' + (outAlready ? 'Not on streaming services yet' : 'Coming soon to streaming') + '</span></span>' : '';
+var status = '';
 if (listen) status += '<div class="rel-listen"><span class="rel-listen-label" id="rel-listen-' + rIdx + '">Listen on</span><span class="rel-stores" role="group" aria-labelledby="rel-listen-' + rIdx + '">' + listen + '</span></div>';
 // Download: the album's ZIP is made in the browser when pressed (albumZip; the files are rel.zip, see scripts/album_zip.py live_plan).
 // Its link is the album's own page, for anyone without JavaScript.
@@ -2585,7 +2587,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span></p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
+'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3></div>' +
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 767px) 160px, 304px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
