@@ -314,7 +314,7 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 </section>
 <section class="epk-section" id="epk" aria-labelledby="epk-h"><script>document.currentScript.parentNode.classList.add('epk-merged')</script>   <!-- (the card layout from the first paint, only with JavaScript: the pre-built card needs it, see render_kit_shell) -->
   <div class="epk-body">
-    <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg>Press Kit</h2>
+    <h2 class="section-h section-h--tight" id="epk-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg>Press Kit <span class="section-h-tag">(EPK)</span></h2>
     <noscript>   <!-- (only without JavaScript: with it, the press kit card below says and does all this from the first paint) -->
     <p class="epk-text">Songs and photos <br/>for booking and press.</p>
     <a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="btn btn-epk-dl btn-epk btn--start" title="Open the press kit's fact sheet" aria-label="Open the press kit's fact sheet">   <!-- (shown only without JavaScript, where the kit's ZIP cannot be made: it says what it really opens) -->
@@ -3260,7 +3260,7 @@ var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + in
 var facts = '<p class="epk-summary">' + inKitHtml + '.</p>';
 // The card's heading, as an album card's: the date it was last updated in the gold line, the name as its title
 // (keep in step with render_kit_shell in scripts/prerender.py)
-var kitInfo = '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated' + (KIT.updated ? '<span class="rel-year"> <time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></span>' : '') + '</span></p><h3 class="rel-name">Ash Stu</h3></div>';
+var kitInfo = '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated' + (KIT.updated ? '<span class="rel-year"> <time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></span>' : '') + '</span></p></div>';   /* (no "Ash Stu" title on the card: owner, 2026-11-23, "remove Ash Stu from the press kit heading") */
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Ash Stu press kit">' +
   kitInfo +

@@ -221,7 +221,7 @@ def render_kit_shell(page):
     facts_html = f'<p class="epk-summary">{in_kit_html}.</p>'
     # the card's heading, as an album card's: the update date in the gold line, the name as the title
     upd = f'<span class="rel-year"> <time datetime="{esc(kit["updated"])}">{full_date(kit["updated"])}</time></span>' if kit.get('updated') else ''
-    info = f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated{upd}</span></p><h3 class="rel-name">Ash Stu</h3></div>'
+    info = f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated{upd}</span></p></div>'   # (no "Ash Stu" title: owner's request, 2026-11-23)
     art = ''
     if lead and lead.get('thumb'):
         art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/></div>'
