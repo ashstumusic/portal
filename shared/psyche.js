@@ -408,7 +408,10 @@
         if (map.free(o.cx - o.R - pad, o.cy - o.R - pad, o.cx + o.R + pad, o.cy + o.R + pad)) keep.push(o); else o.el.remove();
       }
       placed = keep;
-      fill(map, fade ? 'fade' : true); partner(map);
+      // (owner, 2026-11-24: "dont add stars when the epk expands" - space opened by a press kit or tracklist gets no new
+      // stars; the stars already there move with their sections. Before, it was filled with stars that faded in.)
+      if (!fade) fill(map, true);
+      partner(map);
     }
 
     // The latest map of the page (what is content, what is clear), kept for the turning sky below.
