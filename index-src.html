@@ -237,11 +237,11 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
     </button>
     <button type="button" class="k-tool k-settings-btn" aria-label="Settings" title="Settings" aria-haspopup="dialog" aria-expanded="false"><svg class="k-gear" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>
-  <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-haspopup="dialog" aria-label="Open menu" title="Menu and search">
+  <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-haspopup="dialog" aria-label="Open tools" title="Tools and search">
     <span class="nav-toggle-bar"></span>
     <span class="nav-toggle-bar"></span>
     <span class="nav-toggle-bar"></span>
-    <span class="btn-word" aria-hidden="true">Menu</span>
+    <span class="btn-word" aria-hidden="true">Tools</span>
   </button>
 </nav>
 <script>/* The toolbar's logos take their place beside the name before the first paint (the layout script further down then measures and confirms it), so they do not jump across the bar after loading. */
@@ -583,13 +583,13 @@ _navDebounce = now;
 var open = _navDrawer.classList.toggle('open');
 _navToggle.setAttribute('aria-expanded', open);
 _navDrawer.setAttribute('aria-hidden', !open);
-_navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+_navToggle.setAttribute('aria-label', open ? 'Close tools' : 'Open tools');
 }
 function closeNav() {
 _navDrawer.classList.remove('open');
 _navDrawer.setAttribute('aria-hidden', 'true');
 _navToggle.setAttribute('aria-expanded','false');
-_navToggle.setAttribute('aria-label', 'Open menu');
+_navToggle.setAttribute('aria-label', 'Open tools');
 }
 /* (the menu button no longer opens this drawer: it opens the combined menu-and-search box, see shared/kinetic.js) */
 var _desktopMq = window.matchMedia('(min-width: 901px)');

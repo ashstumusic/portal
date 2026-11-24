@@ -373,7 +373,7 @@
 
   const dlg = doc.createElement('dialog');
   dlg.className = 'k-palette';
-  dlg.setAttribute('aria-label', 'Menu and search');
+  dlg.setAttribute('aria-label', 'Tools and search');
   dlg.innerHTML = `<div class="k-palette-box">
       <input class="k-palette-input" type="text" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="k-palette-list"
              aria-label="Search songs, videos, sections and actions" placeholder="Search songs, videos, sections…" autocomplete="off" spellcheck="false">
@@ -461,7 +461,7 @@
     const links = $$('.nav-links a').filter((a) => a.getAttribute('href'));
     const plats = $$('.nav-platforms a');
     const sets = typeof settingsList === 'function' ? settingsList() : [];
-    let h = '<p class="k-menu-title">Menu</p>';
+    let h = '<p class="k-menu-title">Tools</p>';   // (owner, 2026-11-23: "rename the hamburger menu on mobile to tools. not menu")
     // Home first, full width with the house (the owner's request): the same as the toolbar's house, back to the top of the page.
     // It stands on its own above "Listen on" (the owner's order: Home, Listen on, the sections, then Search); the menu still
     // opens with focus on it, as the first button.
@@ -593,7 +593,7 @@
   for (const b of $$('.nav .k-tools .k-search-btn')) { let box = b.previousElementSibling; if (!box || !box.classList.contains('k-si--bar')) { box = doc.createElement('div'); box.className = 'k-si k-si--bar'; b.before(box); }   /* the page may already carry the field's outline, so it is in place from the first paint */
     barSearch = makeSearch(box, {}); root.classList.add('k-inline-search'); }
   const menuBtns = () => $$('.nav-toggle, .k-settings-btn');
-  function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(m)); if (b.matches('.nav-toggle')) b.setAttribute('aria-label', m ? 'Close menu' : 'Open menu'); } }
+  function syncMenuBtns(open) { const m = open && dlg.dataset.mode === 'menu'; for (const b of menuBtns()) { b.setAttribute('aria-expanded', String(m)); if (b.matches('.nav-toggle')) b.setAttribute('aria-label', m ? 'Close tools' : 'Open tools'); } }
   function openPalette(opts) {
     if (dlg.open) return;
     const menu = !!(opts && opts.menu);
@@ -605,7 +605,7 @@
     dlg.showModal();
     setMode(menu ? 'menu' : 'search');
     syncMenuBtns(true);
-    dlg.setAttribute('aria-label', menu ? 'Menu and settings' : 'Search');
+    dlg.setAttribute('aria-label', menu ? 'Tools and settings' : 'Search');
     // PATTERN (menu dialog): a native <dialog> opened with showModal(), so the page behind is inert and Tab stays inside.
     // Focus starts on the first SECTION button (phones) or the first setting (wide screens), never on a streaming
     // link: those open another site, and a second press of Enter after opening the menu would have left this one.
