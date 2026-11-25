@@ -2266,6 +2266,7 @@ row.innerHTML =
 '<svg class="rel-track-eq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10.5" y="4" width="3" height="16" rx="1"/><rect x="17" y="7" width="3" height="13" rx="1"/></svg>' +
 '<span class="rel-track-word" aria-hidden="true"><span class="rtw-play">Play</span><span class="rtw-on">Playing</span><span class="rtw-off">Paused</span></span>' +   /* (a word with the picture: owner's rule; it follows the song's state) */
 '<span class="rel-track-title">' + escHtml(t.title) + '</span>' +
+(t.secs ? '<span class="rel-track-len" aria-hidden="true">' + Math.floor(t.secs / 60) + ':' + ('0' + Math.round(t.secs % 60)).slice(-2) + '</span>' : '') +   /* (each song's length, as the press kit's list shows: owner, 2026-11-25, "polish tracklist") */
 '';
 // The lyrics toggle is a sibling of the row, not inside it: a button
 // nested in a role="button" row is a nested-interactive control that
