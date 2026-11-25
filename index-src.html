@@ -419,11 +419,13 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
              figment line"): the duck line and the "A figment of my own imagination." tagline (with its 1-in-100 "HI, HOW ARE
              YOU" and the Konami code) are kept here unchanged inside a <template>, which the browser never shows or runs.
              To bring them back, take the <div class="bio-head"> back out of the <template>. -->
-        <template id="pinned-bio-head">
+        <!-- (owner, 2026-11-25: "add "a figment of my own imagination" back to the bottom of the footer": the tagline is back,
+             with its 1-in-100 "HI, HOW ARE YOU"; the duck line stays pinned in the template below) -->
         <div class="bio-head">
-          <div class="bio-stroke" aria-hidden="true"><span class="duck-letters"></span><span class="duck-notes"></span></div>
           <div class="bio-wall bio-wall--bottom"><p class="bio-tagline">A figment of my own imagination.</p></div>
         </div>
+        <template id="pinned-bio-head">
+          <div class="bio-stroke" aria-hidden="true"><span class="duck-letters"></span><span class="duck-notes"></span></div>
         </template>
       </div>
       <div class="bio-card-media">
@@ -486,9 +488,12 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <div id="fs-player" class="fs-player" role="dialog" aria-modal="true" aria-label="Now playing" aria-hidden="true" inert>
   <div class="fs-content">
     <span class="fs-grabber" aria-hidden="true"></span>
+    <!-- The bar every viewer has (owner, 2026-11-25: "make the media player more standardized across the mediums"): what is
+         showing on the left, Close on the right with the same X as the video, photo and document viewers -->
+    <div class="fs-head"><p class="fs-head-title" aria-hidden="true">Now playing</p>
     <button type="button" class="fs-collapse" id="fs-collapse" aria-label="Close player" title="Close (Esc, or swipe down)">
-      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="btn-word" aria-hidden="true">Close</span>
-    </button>
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="btn-word" aria-hidden="true">Close</span>
+    </button></div>
     <div class="fs-art-wrap" id="fs-art-wrap">
       <div class="fs-art-placeholder" id="fs-art-placeholder">
         <svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="3" fill="none"/><path d="M11 6V14"/><path d="M11 6c3 0 5 1 5 4s-2 4-5 4"/><path d="M16 6c3 0 5 1 5 4s-2 4-5 4"/></svg>
@@ -556,6 +561,9 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
         </a>
         <!-- Captions on or off (owner's request: closed captions as an option): the words of the song, timed to the video. Pressed = on; remembered. -->
         <button type="button" class="vid-yt lb-cc" id="lb-cc" aria-pressed="true" title="Captions"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10.5 10.2a2.2 2.2 0 1 0 0 3.6M16.5 10.2a2.2 2.2 0 1 0 0 3.6"/></svg><span class="btn-word" aria-hidden="true">Captions</span></button>
+        <!-- Download (owner, 2026-11-25: "dont put a download button on the card. but allow the videos to be downloaded too, with
+             video, just audio, and transcription lyrics, as optional choices"): here in the player, not on the video cards -->
+        <button type="button" class="vid-yt lb-dl" id="lb-dl" aria-label="Download this video" title="Download"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></button>
         <button type="button" class="lb-close" id="lb-close" aria-label="Close" title="Close"><span class="btn-word" aria-hidden="true">Close</span></button>
       </div>
     </div>
@@ -2838,6 +2846,9 @@ function kitPhoto(shots, at, opener) {
       '<button type="button" class="rel-lyrics-toggle kd-close kp-close" aria-label="Close"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
       '<div class="kp-stage"><span class="kp-frame"><img class="kp-img" alt="" decoding="async"/></span></div>';   /* (the photographer's bubble lands on the photo's corner: the frame is the photo's size) */
     document.body.appendChild(_kpdlg);
+    // (Previous and Next sit on the photo's sides, as they sit on the video's in the video player: owner, 2026-11-25, "make
+    // the media player more standardized across the mediums")
+    ['.kp-prev', '.kp-next'].forEach(function(q) { var b = _kpdlg.querySelector(q); b.classList.add('kp-arrow'); _kpdlg.querySelector('.kp-frame').appendChild(b); });
     _kpdlg.querySelector('.kp-close').addEventListener('click', function() { _kpdlg.close(); });
     _kpdlg.querySelector('.kp-prev').addEventListener('click', function() { kitPhotoShow(_kpAt - 1); });
     _kpdlg.querySelector('.kp-next').addEventListener('click', function() { kitPhotoShow(_kpAt + 1); });
@@ -3004,22 +3015,22 @@ function kitPickFormats(what, kinds, opener) {
       var set = function(title, body) { return '<fieldset class="kf-set"><legend class="kd-h">' + title + '</legend>' + body + '</fieldset>'; };
       var webp = kitCanWebp();
       var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' || (saved.image === 'webp' && webp) ? saved.image : 'png';
-      var vd = /^(mp4|mov|m4v|mp3|wav)$/.test(saved.video) ? saved.video : 'mp4', tx = /^(pdf|docx)$/.test(saved.text) ? saved.text : 'txt';
+      var vd = (kinds.parts ? /^(mp4|mov|m4v)$/ : /^(mp4|mov|m4v|mp3|wav)$/).test(saved.video) ? saved.video : 'mp4', tx = /^(pdf|docx)$/.test(saved.text) ? saved.text : 'txt';
       // (each kind offers its three most-used formats: owner's request. One this browser cannot make is shown, switched off, saying why)
       var optOff = function(label, note) { return '<div class="kf-opt kf-off" aria-disabled="true"><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></div>'; };
       _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
         '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (n > 1 ? 'Pick the formats your devices can open.' : 'Pick the format your device can open.') + ' The content is the same in each: only the file type changes. Uncheck anything you don\'t want.</p>' +
         (kinds.parts ? '<fieldset class="kf-set kf-parts"><legend class="kd-h">What to download</legend>' + kinds.parts.map(function(p) { return '<label class="kf-opt kf-check"><input type="checkbox" name="part" value="' + p.key + '"' + (p.on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + p.label + '</span><span class="kf-note">' + p.note + '</span></span></label>'; }).join('') + '</fieldset>' : '') +
-        (kinds.audio ? set('Songs',
+        (kinds.audio ? set(kinds.audioTitle || 'Songs',
           opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
           opt('audio', 'wav', 'WAV', 'Plays on everything, even old CD players and editors. About four times larger.', a === 'wav') +
           (m4a ? opt('audio', 'm4a', 'M4A (AAC)', 'For Apple devices and apps that prefer it.', a === 'm4a') : optOff('M4A (AAC)', 'This browser cannot make M4A. Safari, or Chrome or Edge on Windows or Mac, can.'))) : '') +
         (kinds.video ? set('Videos',
           opt('video', 'mp4', 'MP4', 'The video and its sound. Plays on phones, computers and TVs.', vd === 'mp4') +
           opt('video', 'mov', 'MOV (QuickTime)', 'For QuickTime, iMovie and Final Cut.', vd === 'mov') +
-          opt('video', 'm4v', 'M4V', 'For the Apple TV app, iTunes and older iPods.', vd === 'm4v') +
+          opt('video', 'm4v', 'M4V', 'For the Apple TV app, iTunes and older iPods.', vd === 'm4v') + (kinds.parts ? '' :   /* (a video's own Download has "Just the audio" as its own bubble instead) */
           opt('video', 'mp3', 'Sound only, MP3', 'Just the performance, for a radio station or a playlist.', vd === 'mp3') +
-          opt('video', 'wav', 'Sound only, WAV', 'Just the performance, for editors and older players.', vd === 'wav')) : '') +
+          opt('video', 'wav', 'Sound only, WAV', 'Just the performance, for editors and older players.', vd === 'wav'))) : '') +
         (kinds.image ? set('Photos',
           opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg') +
           opt('image', 'png', 'PNG', 'As taken, with no loss.', im === 'png') +
@@ -3033,8 +3044,14 @@ function kitPickFormats(what, kinds, opener) {
       var form = _fdlg.querySelector('form');
       // (the files to include, each a bubble to check or uncheck: owner, 2026-11-24, "make every track able to download the
       // lyrics of the track. make it a bubble to check or uncheck". A kind's formats show only while its file is checked)
+      if (kinds.partKind && kinds.parts) {   /* (the formats in the same order as the bubbles above them: the video's first) */
+        var kOf = {}; Object.keys(kinds.partKind).forEach(function(k) { kOf[kinds.partKind[k]] = k; });
+        var btns = form.querySelector('.kf-btns');
+        kinds.parts.forEach(function(pt) { var inp = form.querySelector('.kf-set:not(.kf-parts) [name=' + kOf[pt.key] + ']'); if (inp) form.insertBefore(inp.closest('.kf-set'), btns); });
+      }
       var sets = form.querySelectorAll('.kf-set:not(.kf-parts)'), go = form.querySelector('.kf-go');
-      var partOf = function(fs) { return !kinds.parts ? '' : fs.querySelector('[name=audio]') ? 'song' : fs.querySelector('[name=text]') ? 'lyrics' : ''; };
+      var PK = kinds.partKind || { audio: 'song', text: 'lyrics' };   /* (which bubble each kind's formats belong to) */
+      var partOf = function(fs) { if (!kinds.parts) return ''; for (var k in PK) if (fs.querySelector('[name=' + k + ']')) return PK[k]; return ''; };
       var partBox = function(k) { return form.querySelector('[name=part][value=' + k + ']'); };
       var sync = function() {
         var any = false;
@@ -3070,7 +3087,7 @@ function kitPickFormats(what, kinds, opener) {
         var f = { audio: pick('audio', 'mp3'), image: pick('image', 'png'), video: pick('video', 'mp4'), text: pick('text', 'txt') };
         var keep = {}; Object.keys(f).forEach(function(k) { keep[k] = f[k] || saved[k] || undefined; });   /* (a kind left out this time keeps its last format for next time) */
         try { localStorage.setItem('ash_dl_fmt', JSON.stringify(keep)); } catch (e) {}
-        if (kinds.parts) { f.parts = {}; form.querySelectorAll('[name=part]').forEach(function(x) { f.parts[x.value] = x.checked; }); try { localStorage.setItem('ash_dl_parts', JSON.stringify(f.parts)); } catch (e) {} }
+        if (kinds.parts) { f.parts = {}; form.querySelectorAll('[name=part]').forEach(function(x) { f.parts[x.value] = x.checked; }); try { var allP = JSON.parse(localStorage.getItem('ash_dl_parts') || '{}'); Object.keys(f.parts).forEach(function(k) { allP[(kinds.partsKey || '') + k] = f.parts[k]; }); localStorage.setItem('ash_dl_parts', JSON.stringify(allP)); } catch (e) {} }
         done(f);
       };
       _fdlg.returnValue = '';
@@ -3104,7 +3121,7 @@ function kitMp3(ab, tag) {
     out.set(lab, 0); o = lab.length; parts.forEach(function(x) { out.set(x, o); o += x.length; }); return out;
   });
 }
-function kitVideoSound(u8, to, tag) { return kitDecodeAny(u8, 44100).then(function(ab) { return to === 'mp3' ? kitMp3(ab, tag) : kitWav(ab, tag); }); }
+function kitVideoSound(u8, to, tag) { return kitDecodeAny(u8, 44100).then(function(ab) { return to === 'mp3' ? kitMp3(ab, tag) : to === 'm4a' ? kitM4a(ab) : kitWav(ab, tag); }); }
 // A text file as a PDF (Text: "PDF"): US Letter pages, Helvetica, the file's own lines wrapped to the page; its first line
 // and the lines between the "=====" rules (song titles) in bold, the rules themselves left out. Written by hand: no library.
 function kitPdf(txt) {
@@ -3259,6 +3276,7 @@ function kitZipBytes(entries) {   // a small ZIP (stored) from [name, text] pair
 }
 // Convert one file as the visitor chose. -> Promise of [bytes, new name]. f: {src, path, tag?, kind?}
 function kitConvert(f, data, fmt, coverBytes) {
+  if (f.as) fmt = Object.assign({}, fmt, f.as);   /* (a video's "Just the audio": the video's file, saved as sound) */
   var isMp3 = /\.mp3$/i.test(f.src), isImg = /\.png$/i.test(f.src), isVid = /\.mp4$/i.test(f.src), isTxt = /\.txt$/i.test(f.src);
   if (isMp3 && fmt.audio && fmt.audio !== 'mp3') return kitAudio(data, fmt.audio, f.tag).then(function(d) { return [d, f.path.replace(/\.mp3$/i, '.' + fmt.audio)]; });
   if (isImg && fmt.image && fmt.image !== 'png') return kitImage(data, fmt.image, f.credit || kitCreditFor(f.src)).then(function(d) { return [d, f.path.replace(/\.png$/i, '.' + fmt.image)]; });
@@ -3321,6 +3339,48 @@ function songDownload(s, opener) {
       .then(function() { if (word) { word.textContent = 'Download'; word.dataset.auto = '1'; } if (opener) opener.removeAttribute('aria-busy'); });
   });
 }
+// A video's own Download (the player's Download, and each press kit live video's): the video, just its audio, and the
+// lyrics as sung, transcribed from its captions - each a bubble to check or uncheck (owner, 2026-11-25: "allow the videos
+// to be downloaded too, with video, just audio, and transcription lyrics, as optional choices to download"). The video is
+// checked to begin with; the others are the visitor's to add, and what they picked last time is remembered. More than one
+// comes as one ZIP named for the video. v: a video's entry (title, file, captions).
+function videoDownload(v, opener) {
+  if (!v || !v.file) return;
+  var title = String(v.title), base = title + ' - Ash Stu (Live)', vName = base + '.mp4', lyrName = title + ' - Lyrics.txt';
+  var words = function() {   /* (the captions' lines, without their timings, as a text file) */
+    return fetch(kitUrl(v.captions)).then(function(r) { if (!r.ok) throw 0; return r.text(); }).then(function(t) {
+      var lines = [], last = '';
+      t.replace(/\r/g, '').split(/\n\n+/).forEach(function(cue) {
+        var ls = cue.split('\n'), at = ls.findIndex(function(l) { return l.indexOf('-->') >= 0; });
+        if (at < 0) return;
+        ls.slice(at + 1).forEach(function(l) { l = l.replace(/<[^>]*>/g, '').trim(); if (l && l !== last) { lines.push(l); last = l; } });
+      });
+      var from = (RELEASE_LIST.filter(function(r) { return (r.tracks || []).some(function(t) { return String(t.title).toLowerCase() === title.toLowerCase(); }); })[0] || {}).name || '';   /* (the album the song is on, as the video card says) */
+      return new TextEncoder().encode('\ufeff' + [title.toUpperCase(), 'As sung in the live video' + (from ? ' (the song is from ' + from + ')' : ''), '', ''].concat(lines, ['', '', 'Ash Stu  -  https://ashstu.art', '']).join('\r\n'));
+    });
+  };
+  var was = {}; try { was = JSON.parse(localStorage.getItem('ash_dl_parts') || '{}'); } catch (e) {}
+  var parts = [
+    { key: 'video', label: 'The video', note: 'The performance, picture and sound.', on: was['v:video'] !== false },
+    { key: 'audio', label: 'Just the audio', note: 'The sound alone, for a playlist, a radio station or an editor.', on: was['v:audio'] === true }
+  ];
+  if (v.captions) parts.push({ key: 'lyrics', label: 'The lyrics', note: 'The words as sung, transcribed from the video\'s captions.', on: was['v:lyrics'] === true });
+  return kitPickFormats(title, { video: 1, audio: 1, text: v.captions ? 1 : 0, parts: parts, partsKey: 'v:', partKind: { video: 'video', audio: 'audio', text: 'lyrics' }, audioTitle: 'Just the audio' }, opener).then(function(fmt) {
+    if (!fmt) return;
+    var p = fmt.parts || {}, items = [];
+    if (p.video && fmt.video) items.push({ src: v.file, path: vName, kind: 'video' });
+    if (p.audio && fmt.audio) items.push({ src: v.file, path: vName, kind: 'audio', as: { video: fmt.audio } });
+    if (p.lyrics && fmt.text) items.push({ src: lyrName, path: lyrName, kind: 'text', data: words() });
+    if (!items.length) return;
+    if (items.length === 1) { var it = items[0]; return kitSaveGo(it.data ? words : it.src, it.path, it.as ? Object.assign({}, fmt, it.as) : fmt, opener); }
+    var word = opener && opener.querySelector('.btn-word');
+    if (word) { word.dataset.auto = '0'; word.textContent = 'Preparing'; }
+    if (opener) opener.setAttribute('aria-busy', 'true');
+    return liveZip(items, base + '.zip', null, fmt)
+      .catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(title + ' could not be downloaded. Check the connection and try again.'); })
+      .then(function() { if (word) { word.textContent = 'Download'; word.dataset.auto = '1'; } if (opener) opener.removeAttribute('aria-busy'); });
+  });
+}
 // A song's words as a text file (its title, where it is from, then the lines), for its lyrics' own Download
 function kitLyricsText(title, from, entry) {
   var lines = ((entry && entry.lines) || []).map(function(l) { return String(l[1] || '').trim(); }).filter(Boolean);
@@ -3328,7 +3388,7 @@ function kitLyricsText(title, from, entry) {
 }
 // One maker for every download (the press kit and each album): fetch the files, label the songs, put them in one ZIP,
 // save it under its name. -> a Promise of the saved size in bytes. onStep(percent) is told how far it has got.
-function kitKind(f) { var e = String(f.src).split('.').pop().toLowerCase(); return /^(mp3|wav|m4a)$/.test(e) ? 'audio' : /^(png|jpe?g|webp)$/.test(e) ? 'image' : e === 'mp4' ? 'video' : e === 'txt' ? 'text' : ''; }
+function kitKind(f) { if (f.kind) return f.kind; var e = String(f.src).split('.').pop().toLowerCase(); return /^(mp3|wav|m4a)$/.test(e) ? 'audio' : /^(png|jpe?g|webp)$/.test(e) ? 'image' : e === 'mp4' ? 'video' : e === 'txt' ? 'text' : ''; }
 function liveZip(files, filename, onStep, fmt) {
   fmt = fmt || {};
   files = files.filter(function(f) { var k = kitKind(f); return !k || fmt[k] !== false; });   /* (the kinds the visitor unchecked are left out) */
@@ -3617,6 +3677,15 @@ card.querySelectorAll('.epk-shot-view, .epk-shot-img').forEach(function(a) {
     kitPhoto(shots, shots.indexOf(a.closest('.epk-shot')), a);
   });
 });
+// (owner, 2026-11-25: "make any card clikcable to either exapnd or play": a click anywhere on a photo's tile opens it full
+// size, as its picture and View do; its own buttons still do their own thing)
+card.querySelectorAll('.epk-shot').forEach(function(t) {
+  t.addEventListener('click', function(e) {
+    if (e.target.closest('a, button')) return;
+    var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
+    var a = t.querySelector('.epk-shot-img'); if (a) a.click();
+  });
+});
 card.querySelectorAll('.epk-doc-link').forEach(function(a) {
   a.addEventListener('click', function(e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); e.stopPropagation(); kitDoc(a.dataset.doc, a.dataset.name, a); });
 });
@@ -3633,6 +3702,13 @@ card.querySelectorAll('.epk-video').forEach(function(el) {
   var open = function(e) { e.stopPropagation(); var v = VIDEO_LIST.filter(function(x) { return x.title === el.dataset.video; })[0]; if (v) openLightbox(v, true); };   /* (that video alone) */
   el.querySelector('.epk-video-thumb').addEventListener('click', open);
   el.querySelector('.epk-vplay').addEventListener('click', open);
+  // (and a click anywhere else on the video's row plays it too: owner, 2026-11-25, "make any card clikcable to either
+  // exapnd or play"; not its Lyrics, Download or open lyrics)
+  el.addEventListener('click', function(e) {
+    if (e.target.closest('a, button, .epk-vlyr-panel')) return;
+    var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
+    open(e);
+  });
 });
 // A single file's own Download (each photo, each live video) asks its format too (owner's request), then saves it
 // The fact sheet's Download: in the text format the visitor picks (plain text, PDF or Word)
@@ -3643,6 +3719,7 @@ card.querySelectorAll('.epk-shot-dl, .epk-video .epk-file-dl').forEach(function(
   d.addEventListener('click', function(e) {
     e.preventDefault(); e.stopPropagation();
     var src = decodeURIComponent(d.getAttribute('href')), name = d.getAttribute('download');
+    if (/\.mp4$/i.test(src)) { var vv = d.closest('.epk-video'), ve = vv && VIDEO_LIST.filter(function(x) { return x.title === vv.dataset.video; })[0]; if (ve) return videoDownload(ve, d); }   /* (a live video: the same three bubbles as the player's Download) */
     kitSaveOne(src, name, /\.mp4$/i.test(src) ? { video: 1 } : { image: 1 }, d);
   });
 });
@@ -3760,6 +3837,7 @@ const v = VIDEO_LIST[idx];
 const vid = document.getElementById('lb-video');
 vid.pause();
 document.getElementById('lb-title').textContent = v.title;
+if (!_lbSingle && VIDEO_LIST.length > 1) { const lc = document.createElement('span'); lc.className = 'kp-count'; lc.textContent = (VIDEO_LIST.indexOf(v) + 1) + ' of ' + VIDEO_LIST.length; const lt = document.getElementById('lb-title'); lt.appendChild(document.createTextNode(' ')); lt.appendChild(lc); }   // ("3 of 6" beside the name, as the photo viewer shows)
 const yt = document.getElementById('lb-yt');
 if (v.youtube) { yt.href = v.youtube; yt.style.display = 'inline-flex'; yt.setAttribute('aria-label', 'Watch "' + v.title + '" on YouTube (opens in a new tab)'); yt.dataset.newtab = '1'; }   // (named like the cards' YouTube buttons, for this video)
 else { yt.style.display = 'none'; }
@@ -3927,6 +4005,8 @@ var v = VIDEO_LIST.filter(function(x) { return x.title === a.dataset.songVideo; 
 if (v && v.file) { e.preventDefault(); openLightbox(v); }
 });
 document.getElementById('lb-close').addEventListener('click', closeLightbox);
+// (the player's Download: the video on screen, with its three bubbles - the video, just the audio, its lyrics)
+document.getElementById('lb-dl').addEventListener('click', function(e) { e.stopPropagation(); videoDownload(VIDEO_LIST[_lbIdx], this); });
 document.getElementById('lb-prev').addEventListener('click', function() { lbNav(-1); });
 document.getElementById('lb-next').addEventListener('click', function() { lbNav(1); });
 document.getElementById('vid-lightbox').addEventListener('click', function(e) {
@@ -4401,7 +4481,7 @@ shots[i].addEventListener('click', function() { this.classList.toggle('bio-revea
 </script>
 <script>/* Toolbar glider: one black squircle that springs under the current section's link. */
 (function(){var ul=document.querySelector('.nav-links');if(!ul)return;var g=document.createElement('li');g.className='nav-glider instant';g.setAttribute('aria-hidden','true');g.setAttribute('role','presentation');ul.prepend(g);
-function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth){g.classList.remove('on');return;}var fresh=!g.classList.contains('on');if(fresh)g.classList.add('instant');var r=a.getBoundingClientRect(),u=ul.getBoundingClientRect();g.style.setProperty('--gx',(r.left-u.left)+'px');g.style.setProperty('--gw',r.width+'px');if(fresh){g.offsetWidth;g.classList.remove('instant');}g.classList.add('on');}
+function place(){var a=ul.querySelector('a[aria-current]');if(!a||!a.offsetWidth){g.classList.remove('on');return;}var fresh=!g.classList.contains('on');if(fresh)g.classList.add('instant');var r=a.getBoundingClientRect(),u=ul.getBoundingClientRect();g.style.setProperty('--gx',(r.left-u.left)+'px');g.style.setProperty('--gw',r.width+'px');g.style.setProperty('--gh',r.height+'px');if(fresh){g.offsetWidth;g.classList.remove('instant');}g.classList.add('on');}
 new MutationObserver(place).observe(ul,{subtree:true,attributes:true,attributeFilter:['aria-current']});
 addEventListener('resize',function(){g.classList.add('instant');place();requestAnimationFrame(function(){g.classList.remove('instant');});});
 document.fonts&&document.fonts.ready.then(place);place();requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('instant');});});})();</script>

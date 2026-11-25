@@ -322,11 +322,10 @@
       const top = hero ? hero.getBoundingClientRect().bottom + sy : 0;
       // under: is this square wholly behind one solid picture (so nothing of a star there can be seen)?
       const under = (x0, y0, x1, y1) => covers.some((c) => x0 >= c[0] && y0 >= c[1] && x1 <= c[2] && y1 <= c[3]);
-      // The white zone (where the purple fades away, above About and down to the end) has no stars (owner's request).
-      const ab = $('#about'); let freeTop = null;
-      // (Stars end 80px above where the sky starts to turn: the sky band is centred on About's top, and the layer itself
-      // fades out over those 80px and stops there - see "No stars in the white zone" in system.css.)
-      if (ab) { const band = parseFloat(getComputedStyle(doc.documentElement).getPropertyValue('--sky-band')) || 340; freeTop = ab.getBoundingClientRect().top + sy - band / 2 - 80; }
+      // The white zone has stars again, placed and behaving like every other star (owner, 2026-11-25: "add the dark stars
+      // back to the white section. make them behave the same as any other star"); the layer's difference blend turns them
+      // dark on the white. (It had none: owner's earlier "disable the stars in the white zone from being possible".)
+      const freeTop = null;
       return { W, H, top, free, pass, under, ceiling, freeTop };
     }
 
