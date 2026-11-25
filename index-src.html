@@ -360,12 +360,16 @@ addEventListener('click',function(e){if(!lastTouch||Date.now()-lastTouch>1500||!
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
     <blockquote class="disc-quote">
+      <!-- a hand-drawn chalk flourish over the quote and another under it (owner, 2026-11-25: "put a little handdrawn simple
+           western flourish above and below the quote"); drawn by scripts/make_chalk_flourish.py; decorative -->
+      <span class="dq-flourish dq-flourish--top" aria-hidden="true"></span>
       <!-- (two sets of line breaks, both an upside-down triangle, each line shorter than the one above: the plain <br/>s are
            its four set lines, used wherever they can be read; the class="dq-ph" ones are nine lines, used only where four would
            make the words too small (a phone; the script beside the quote measures and picks) (owner, 2026-11-23: "preserve the triangle shape"). Breaks chosen by measuring the words in
            the quote's own font: no phrase like "Sing it." is split.) -->
       <p class="dq-text"><span class="dq-nb"><span class="dq-mark dq-mark--open" aria-hidden="true"></span>Anybody</span> caught singin’ these songs<br class="dq-ph"/> without our permission, will be <br/><br class="dq-ph"/>mighty good friends of ourn,<br class="dq-ph"/> cause we don’t give a dern. <br/><br class="dq-ph"/>Publish it. Write it. Sing it.<br class="dq-ph"/> Swing to it. Yodel it. <br/><br class="dq-ph"/>We wrote it, that’s<br class="dq-ph"/> all we <span class="dq-nb">wanted<br class="dq-ph"/> to do.<span class="dq-mark dq-mark--close" aria-hidden="true"></span></span></p>
       <cite>Woody Guthrie</cite>
+      <span class="dq-flourish dq-flourish--bottom" aria-hidden="true"></span>
     </blockquote>
     <script>
     /* The Woody Guthrie quote is always its four set lines (each shorter than the one above: an upside-down triangle),
