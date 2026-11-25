@@ -81,13 +81,6 @@ def full_date(iso):
     return f"{['January','February','March','April','May','June','July','August','September','October','November','December'][int(m) - 1]} {int(d)}, {y}"
 
 
-def progress_bar(rel):
-    """One mark per song in track order, lit where it can be heard (owner, 2026-11-24: "optimize more")."""
-    on = {t.get('num', i + 1) for i, t in enumerate(rel['tracks'])}
-    nums = sorted(list(on) + [u['num'] for u in rel.get('upcoming', [])])
-    return '<span class="rp-bar" aria-hidden="true">' + ''.join('<i class="on"></i>' if n in on else '<i></i>' for n in nums) + '</span>'
-
-
 def render_release_card(rel, r_idx):
     kind_word = ('Single cover: ' if rel['type'] == 'Single'
                  else 'EP cover: ' if rel['type'] == 'EP'
@@ -138,7 +131,7 @@ def render_release_card(rel, r_idx):
             + (f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="{rel["date"]}">{full_date(rel["date"])}</time></span>' if rel.get("date")
                else f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
             f'</span>{rel_tag}</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>'
-            + (f'<p class="rel-progress">{progress_bar(rel)}{len(rel["tracks"])} of {len(rel["tracks"]) + len(upcoming)} songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' if upcoming and rel["tracks"] else '')   # (owner, 2026-11-24: "the music cards still do not look as good as they can" - says why some rows are dim)
+            + (f'<p class="rel-progress">{len(rel["tracks"])} of {len(rel["tracks"]) + len(upcoming)} songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' if upcoming and rel["tracks"] else '')   # (owner, 2026-11-24: "the music cards still do not look as good as they can" - says why some rows are dim)
             + '</div>'
             + (f'<div class="rel-avail">{status}</div>' if status else '') +
             f'<div class="rel-art-wrap">'

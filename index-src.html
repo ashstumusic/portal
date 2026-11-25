@@ -2202,15 +2202,6 @@ if (!_lbOpen) openLightbox(v);
   var go = function() { setTimeout(land, 300); ((document.fonts && document.fonts.ready) || Promise.resolve()).then(function() { setTimeout(land, 1500); }); };
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 })();
-/* One mark per song in track order, lit where it can be heard (owner, 2026-11-24: "optimize more i still dont love
-   the design"): the dim rows of the list, drawn small under the album's name */
-function progressBar(rel) {
-var on = {}, all = [];
-rel.tracks.forEach(function(t, i) { var n = t.num || i + 1; on[n] = 1; all.push(n); });
-rel.upcoming.forEach(function(u) { all.push(u.num); });
-all.sort(function(a, b) { return a - b; });
-return '<span class="rp-bar" aria-hidden="true">' + all.map(function(n) { return '<i' + (on[n] ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
-}
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
@@ -2614,7 +2605,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + (rel.upcoming && rel.upcoming.length && rel.tracks.length ? '<p class="rel-progress">' + progressBar(rel) + rel.tracks.length + ' of ' + (rel.tracks.length + rel.upcoming.length) + ' songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' : '') + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
+'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + (rel.upcoming && rel.upcoming.length && rel.tracks.length ? '<p class="rel-progress">' + rel.tracks.length + ' of ' + (rel.tracks.length + rel.upcoming.length) + ' songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' : '') + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 767px) 160px, 304px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
