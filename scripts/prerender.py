@@ -245,7 +245,7 @@ def render_kit_shell(page):
     # the card's heading, as an album card's: the update date in the gold line, the name as the title
     upd = f'<span class="rel-year"> <time datetime="{esc(kit["updated"])}">{full_date(kit["updated"])}</time></span>' if kit.get('updated') else ''
     info = ''   # (no "Updated" date: owner, 2026-11-25, "remove the date updated on the epk"; no "Ash Stu" title: owner, 2026-11-23)
-    art = ''
+    art = ''; kit_types = ''
     if lead and lead.get('thumb'):
         # (the kinds of thing in the kit, as tags on the photo - Songs, Videos, Photos, Text: owner's request)
         _icons = {'song': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>', 'video': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/></svg>', 'photo': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8.5 8.5"/></svg>', 'text': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>'}
@@ -260,7 +260,8 @@ def render_kit_shell(page):
             '<p class="epk-progress" role="status" aria-live="polite"></p></div>')
     return ('<article class="rel-card epk-card kit-collapsed kit-shell" data-release="-1" aria-label="Ash Stu press kit">'
             + info +
-            '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>'
+            '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>' +
+            (f'<div class="kit-types-row" aria-hidden="true">{kit_types}</div>' if art and kit_types else '')   # (on phones the tags stand in a row under the words, off the photo: owner, 2026-11-25, "optimize epk on mobile")
             + art + btns + '</article>')
 
 

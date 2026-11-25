@@ -3532,7 +3532,8 @@ var kitInfo = '';   /* (no "Updated" date on the press kit card: owner, 2026-11-
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Ash Stu press kit">' +
   kitInfo +
-  '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<div class="epk-facts">' + facts + '</div></div>' +   /* (no streaming links here: owner's request; they are in the toolbar) */
+  '<div class="rel-avail epk-about">' + (F.pitch ? '<p class="epk-pitch">' + escHtml(F.pitch) + '</p>' : '') + '<div class="epk-facts">' + facts + '</div></div>' +
+  (lead && lead.thumb && kitTypes() ? '<div class="kit-types-row" aria-hidden="true">' + kitTypes() + '</div>' : '') +   /* (on phones the tags stand in a row under the words, off the photo, which is then a square like an album cover: owner, 2026-11-25, "optimize epk on mobile". Hidden from screen readers: the photo's tags say it once) */   /* (no streaming links here: owner's request; they are in the toolbar) */
   (lead && lead.thumb ? '<div class="rel-art-wrap"><img src="' + escHtml(encodeURI(lead.thumb)) + '" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/>' + kitTypes() + '</div>' : '') +
   '<div class="rel-btns"><a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" data-kit-zip class="rel-btn rel-dl epk-zip" aria-label="' + escHtml(dlName) + '" title="' + escHtml(dlName) + '"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
   '<p class="epk-progress" role="status" aria-live="polite"></p></div>' +   /* (no Email button here: the section's contact line, right above the card, is the email) */
@@ -4778,11 +4779,13 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
 (function() {
   var b = document.querySelector('.contact-copy'); if (!b) return;
   var can = !!(navigator.clipboard && window.isSecureContext) || !!document.queryCommandSupported; if (!can) { b.hidden = true; return; }
-  var w = b.querySelector('.btn-word'), t = 0;
+  var w = b.querySelector('.btn-word'), t = 0, ico = b.querySelector('.cc-ico'), icoWas = ico && ico.innerHTML;
+  // (while it says "Copied", its picture is a tick: owner, 2026-11-25, "keep polishing the contact card")
+  var tick = function(on) { if (ico) ico.innerHTML = on ? '<path d="M5 12.5l4.5 4.5L19 7.5"/>' : icoWas; };
   b.addEventListener('click', function() {
     var text = b.getAttribute('data-copy');
-    var done = function() { w.textContent = 'Copied to clipboard'; b.classList.add('is-copied'); var sr = document.getElementById('sr-announce'); if (sr) { sr.textContent = ''; setTimeout(function() { sr.textContent = 'Email address copied'; }, 30); }
-      clearTimeout(t); t = setTimeout(function() { w.textContent = 'Copy to clipboard'; b.classList.remove('is-copied'); }, 2000); };
+    var done = function() { w.textContent = 'Copied to clipboard'; b.classList.add('is-copied'); tick(true); var sr = document.getElementById('sr-announce'); if (sr) { sr.textContent = ''; setTimeout(function() { sr.textContent = 'Email address copied'; }, 30); }
+      clearTimeout(t); t = setTimeout(function() { w.textContent = 'Copy to clipboard'; b.classList.remove('is-copied'); tick(false); }, 2000); };
     var old = function() { var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); };
     if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, old); else old();
   });
