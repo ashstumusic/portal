@@ -162,6 +162,13 @@ def gen_releases():
             num = track_number(base)
             if num is not None:
                 track['num'] = num
+            # How long the song is, in whole seconds: the album card adds them up ("9 songs · 34 min"). Left out if
+            # mutagen cannot read the file.
+            try:
+                from mutagen import File as _MF
+                track['secs'] = int(round(_MF(os.path.join(folder, f)).info.length))
+            except Exception:
+                pass
             tracks.append(track)
         upcoming = parse_upcoming_txt(os.path.join(folder, 'upcoming.txt'))
         released_nums = {t.get('num') for t in tracks}

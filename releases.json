@@ -12,22 +12,26 @@
       {
         "title": "Still Sad",
         "file": "Audio/My Anima/04. Still Sad.mp3",
-        "num": 4
+        "num": 4,
+        "secs": 222
       },
       {
         "title": "Worship Song",
         "file": "Audio/My Anima/06. Worship Song.mp3",
-        "num": 6
+        "num": 6,
+        "secs": 145
       },
       {
         "title": "You Are What You Love",
         "file": "Audio/My Anima/08. You Are What You Love.mp3",
-        "num": 8
+        "num": 8,
+        "secs": 138
       },
       {
         "title": "Somewhere, Sometime",
         "file": "Audio/My Anima/10. Somewhere, Sometime.mp3",
-        "num": 10
+        "num": 10,
+        "secs": 332
       }
     ],
     "upcoming": [
@@ -150,47 +154,56 @@
       {
         "title": "Cool Cat Can't Comprehend",
         "file": "Audio/Ash Stu, Vol. II/01. Cool Cat Can't Comprehend.mp3",
-        "num": 1
+        "num": 1,
+        "secs": 177
       },
       {
         "title": "Dirge for Ducklings",
         "file": "Audio/Ash Stu, Vol. II/02. Dirge for Ducklings.mp3",
-        "num": 2
+        "num": 2,
+        "secs": 143
       },
       {
         "title": "Savior Complicated",
         "file": "Audio/Ash Stu, Vol. II/03. Savior Complicated.mp3",
-        "num": 3
+        "num": 3,
+        "secs": 160
       },
       {
         "title": "Annabel Lena",
         "file": "Audio/Ash Stu, Vol. II/04. Annabel Lena.mp3",
-        "num": 4
+        "num": 4,
+        "secs": 99
       },
       {
         "title": "Summertime Even on the Moon",
         "file": "Audio/Ash Stu, Vol. II/05. Summertime Even on the Moon.mp3",
-        "num": 5
+        "num": 5,
+        "secs": 245
       },
       {
         "title": "Performatives Anonymous",
         "file": "Audio/Ash Stu, Vol. II/06. Performatives Anonymous.mp3",
-        "num": 6
+        "num": 6,
+        "secs": 117
       },
       {
         "title": "Theory of Hope",
         "file": "Audio/Ash Stu, Vol. II/07. Theory of Hope.mp3",
-        "num": 7
+        "num": 7,
+        "secs": 382
       },
       {
         "title": "Peacekeepers",
         "file": "Audio/Ash Stu, Vol. II/08. Peacekeepers.mp3",
-        "num": 8
+        "num": 8,
+        "secs": 332
       },
       {
         "title": "The Wandering Jerk",
         "file": "Audio/Ash Stu, Vol. II/09. The Wandering Jerk.mp3",
-        "num": 9
+        "num": 9,
+        "secs": 122
       }
     ],
     "featured": true,
@@ -343,82 +356,98 @@
       {
         "title": "The Cosmos Is Alive",
         "file": "Audio/Ash Stu, Vol. I/01. The Cosmos Is Alive.mp3",
-        "num": 1
+        "num": 1,
+        "secs": 183
       },
       {
         "title": "There Used To Be a Brighter Boy",
         "file": "Audio/Ash Stu, Vol. I/02. There Used To Be a Brighter Boy.mp3",
-        "num": 2
+        "num": 2,
+        "secs": 68
       },
       {
         "title": "Drive Me Home",
         "file": "Audio/Ash Stu, Vol. I/03. Drive Me Home.mp3",
-        "num": 3
+        "num": 3,
+        "secs": 219
       },
       {
         "title": "Who Stuns the Birds",
         "file": "Audio/Ash Stu, Vol. I/04. Who Stuns the Birds.mp3",
-        "num": 4
+        "num": 4,
+        "secs": 230
       },
       {
         "title": "The Helpful Raven",
         "file": "Audio/Ash Stu, Vol. I/05. The Helpful Raven.mp3",
-        "num": 5
+        "num": 5,
+        "secs": 140
       },
       {
         "title": "VCR",
         "file": "Audio/Ash Stu, Vol. I/06. VCR.mp3",
-        "num": 6
+        "num": 6,
+        "secs": 378
       },
       {
         "title": "Waste My Time",
         "file": "Audio/Ash Stu, Vol. I/07. Waste My Time.mp3",
-        "num": 7
+        "num": 7,
+        "secs": 246
       },
       {
         "title": "Pretend",
         "file": "Audio/Ash Stu, Vol. I/08. Pretend.mp3",
-        "num": 8
+        "num": 8,
+        "secs": 220
       },
       {
         "title": "Relapse Sonnet",
         "file": "Audio/Ash Stu, Vol. I/09. Relapse Sonnet.mp3",
-        "num": 9
+        "num": 9,
+        "secs": 157
       },
       {
         "title": "Pick Up the Phone",
         "file": "Audio/Ash Stu, Vol. I/10. Pick Up the Phone.mp3",
-        "num": 10
+        "num": 10,
+        "secs": 31
       },
       {
         "title": "Why Have Eyes",
         "file": "Audio/Ash Stu, Vol. I/11. Why Have Eyes.mp3",
-        "num": 11
+        "num": 11,
+        "secs": 110
       },
       {
         "title": "Unanswerable Questions",
         "file": "Audio/Ash Stu, Vol. I/12. Unanswerable Questions.mp3",
-        "num": 12
+        "num": 12,
+        "secs": 60
       },
       {
         "title": "A Grief Preserved",
         "file": "Audio/Ash Stu, Vol. I/13. A Grief Preserved.mp3",
-        "num": 13
+        "num": 13,
+        "secs": 67
       },
       {
         "title": "Future Lives",
         "file": "Audio/Ash Stu, Vol. I/14. Future Lives.mp3",
-        "num": 14
+        "num": 14,
+        "secs": 40
       },
       {
         "title": "Don't Wish Your Life Away",
         "file": "Audio/Ash Stu, Vol. I/15. Don't Wish Your Life Away.mp3",
-        "num": 15
+        "num": 15,
+        "secs": 77
       },
       {
         "title": "Anybody Still Awake?",
         "file": "Audio/Ash Stu, Vol. I/16. Anybody Still Awake?.mp3",
-        "num": 16
+        "num": 16,
+        "secs": 111
       }
     ],
     "featured": false,

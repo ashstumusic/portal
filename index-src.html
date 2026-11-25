@@ -2610,7 +2610,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + (rel.upcoming && rel.upcoming.length && rel.tracks.length ? '<p class="rel-progress">' + rel.tracks.length + ' of ' + (rel.tracks.length + rel.upcoming.length) + ' songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' : '') + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
+'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + relSummary(rel) + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 767px) 160px, 304px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
@@ -2650,6 +2650,16 @@ return '<div class="vid-card-wrap">' +
 // An album's ZIP download (the album cards' Download and the first screen's): whether it has one, its spoken name, and
 // its link for anyone without JavaScript (the album's own page). Keep in step with inject_featured in scripts/prerender.py.
 function zipOK(rel) { return !!(rel && rel.zip && rel.zip.files && rel.tracks && rel.tracks.length); }
+// The line under an album's name: how many songs and how long ("9 songs · 30 min"); an album still coming out also says
+// how many are ready (owner, 2026-11-24: "keep polishing the release cards"). The same as rel_summary in scripts/prerender.py.
+function relSummary(rel) {
+  var tr = rel.tracks || [], up = (rel.upcoming || []).length;
+  if (!tr.length || (tr.length === 1 && !up)) return '';
+  var secs = tr.reduce(function(n, t) { return n + (t.secs || 0); }, 0), m = Math.round(secs / 60);
+  var t = secs ? '<span class="rp-len"><span class="rp-sep"> · </span>' + (m >= 60 ? Math.floor(m / 60) + ' hr ' + (m % 60) + ' min' : Math.max(m, 1) + ' min') + '</span>' : '';
+  if (up) return '<p class="rel-progress">' + tr.length + ' of ' + (tr.length + up) + ' songs out' + t + '<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>';
+  return '<p class="rel-progress">' + tr.length + ' songs' + t + '</p>';
+}
 function zipName(rel) { var n = rel.tracks.length; return 'Download ' + rel.name + ' as a ZIP file (' + n + (n === 1 ? ' song, ' : ' songs, ') + 'about ' + Math.round(rel.zip.bytes / 1048576) + ' MB)'; }
 function albumHref(rel) { return 'albums/' + String(rel.name).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '/'; }
 function renderFeatured(rel) {

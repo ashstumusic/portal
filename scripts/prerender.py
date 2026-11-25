@@ -81,6 +81,25 @@ def full_date(iso):
     return f"{['January','February','March','April','May','June','July','August','September','October','November','December'][int(m) - 1]} {int(d)}, {y}"
 
 
+
+def run_time(secs):
+    """A release's total length in words, as on its card: "34 min", "1 hr 5 min"."""
+    m = int(round(secs / 60))
+    return f'{m // 60} hr {m % 60} min' if m >= 60 else f'{max(m, 1)} min'
+
+def rel_summary(rel, upcoming):
+    """The line under an album's name (owner, 2026-11-24: "keep polishing the release cards"): how many songs and how
+    long, so every album card says the same things in the same place; an album still coming out also says how many are
+    ready ("4 of 10 songs out · 14 min · the rest coming soon", which says why some rows are dim). The matching
+    JavaScript is relSummary in index-src.html."""
+    tr = rel.get("tracks") or []
+    if not tr or (len(tr) == 1 and not upcoming): return ''
+    secs = sum(t.get("secs", 0) for t in tr)
+    t = f'<span class="rp-len"><span class="rp-sep"> · </span>{run_time(secs)}</span>' if secs else ''
+    if upcoming:
+        return f'<p class="rel-progress">{len(tr)} of {len(tr) + len(upcoming)} songs out{t}<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>'
+    return f'<p class="rel-progress">{len(tr)} songs{t}</p>'
+
 def render_release_card(rel, r_idx):
     kind_word = ('Single cover: ' if rel['type'] == 'Single'
                  else 'EP cover: ' if rel['type'] == 'EP'
@@ -131,7 +150,7 @@ def render_release_card(rel, r_idx):
             + (f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="{rel["date"]}">{full_date(rel["date"])}</time></span>' if rel.get("date")
                else f'<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">{rel["year"]}</time></span>' if rel.get("year") else '') +
             f'</span>{rel_tag}</p><h3 class="rel-name" itemprop="name">{esc(rel["name"])}</h3>'
-            + (f'<p class="rel-progress">{len(rel["tracks"])} of {len(rel["tracks"]) + len(upcoming)} songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' if upcoming and rel["tracks"] else '')   # (owner, 2026-11-24: "the music cards still do not look as good as they can" - says why some rows are dim)
+            + rel_summary(rel, upcoming)   # (owner, 2026-11-24: "the music cards still do not look as good as they can" - says why some rows are dim)
             + '</div>'
             + (f'<div class="rel-avail">{status}</div>' if status else '') +
             f'<div class="rel-art-wrap">'
