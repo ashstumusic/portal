@@ -227,6 +227,10 @@ def gen_releases():
             # Spotify. Left out when not set.
             **({'ytmusic': links['youtube music']} if links.get('youtube music') else {}),
             **({'deezer': links['deezer']} if links.get('deezer') else {}),
+            # links.txt "runtime: 30": about how many minutes the whole album runs, for an album still coming out (its
+            # released songs alone would undersell it). The card then says "about 30 min" (owner, 2026-11-24: "say approx
+            # 30 minutes is the runtime of My Anima"). Left out when not set; the card adds up the songs instead.
+            **({'runtime': int(links['runtime'])} if (links.get('runtime') or '').strip().isdigit() else {}),
             'tracks': tracks,
             **({'upcoming': upcoming} if upcoming else {}),
             '_sort': sort_val,

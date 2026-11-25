@@ -2,3 +2,4 @@ type: Album
 year: 2026
 featured: no
 order: 1
+runtime: 30

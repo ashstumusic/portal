@@ -2546,7 +2546,18 @@ function wireVideos() {
 const grid = document.getElementById('video-grid');
 if (!grid || !VIDEO_LIST.length) return;
 grid.querySelectorAll('.vid-play').forEach(btn => { const pv = VIDEO_LIST[parseInt(btn.dataset.videoIndex, 10)]; if (pv) btn.addEventListener('click', () => openLightbox(pv)); });   // (the Play button beside YouTube)
-// (owner's request, as on the album cards: only the Play button plays - not the card, not its thumbnail)
+// A click anywhere on a video card - its picture, its title, the space around - presses its Play and opens the video
+// player, as a click on an album card presses that album's Play (owner, 2026-11-24: "the video cards are not clickable
+// still, it should open the video player"; this replaces the earlier "only the Play button plays"). Its own links and
+// buttons (YouTube, the album link) still do their own thing; the keyboard has the real Play button.
+grid.querySelectorAll('.vid-card-wrap').forEach(function(wrap) {
+  wrap.addEventListener('click', function(e) {
+    var hit = e.target.closest('a, button, input, select, textarea');
+    if (hit && !hit.classList.contains('vid-card')) return;   /* (the picture is a button only so the pointer can press it) */
+    var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't open it)
+    var play = wrap.querySelector('.vid-play'); if (play) play.click();
+  });
+});
 grid.querySelectorAll('.vid-card').forEach(card => {
 const v = VIDEO_LIST[parseInt(card.dataset.videoIndex, 10)];
 if (!v) return;
@@ -2656,7 +2667,8 @@ function relSummary(rel) {
   var tr = rel.tracks || [], up = (rel.upcoming || []).length;
   if (!tr.length || (tr.length === 1 && !up)) return '';
   var secs = tr.reduce(function(n, t) { return n + (t.secs || 0); }, 0), m = Math.round(secs / 60);
-  var t = secs ? '<span class="rp-len"><span class="rp-sep"> · </span>' + (m >= 60 ? Math.floor(m / 60) + ' hr ' + (m % 60) + ' min' : Math.max(m, 1) + ' min') + '</span>' : '';
+  if (rel.runtime) { secs = rel.runtime * 60; m = rel.runtime; }   // (the whole album's length, as given in its links.txt: "about 30 min")
+  var t = secs ? '<span class="rp-len"><span class="rp-sep"> · </span>' + (rel.runtime ? 'about ' : '') + (m >= 60 ? Math.floor(m / 60) + ' hr ' + (m % 60) + ' min' : Math.max(m, 1) + ' min') + '</span>' : '';
   if (up) return '<p class="rel-progress">' + tr.length + ' of ' + (tr.length + up) + ' songs out' + t + '<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>';
   return '<p class="rel-progress">' + tr.length + ' songs' + t + '</p>';
 }
@@ -2830,7 +2842,8 @@ function kitPhotoShow(i) {
   var shot = _kpList[_kpAt], view = shot.querySelector('.epk-shot-view'), small = shot.querySelector('.epk-shot-img img'), dl = shot.querySelector('.epk-shot-dl');
   var name = (shot.querySelector('.epk-shot-name') || {}).textContent || '';
   var img = _kpdlg.querySelector('.kp-img'), full = view.getAttribute('href');
-  _kpdlg.querySelector('.kp-title').textContent = name + (n > 1 ? '  ·  ' + (_kpAt + 1) + ' of ' + n : '');
+  var kt = _kpdlg.querySelector('.kp-title'); kt.textContent = name;   // (the count beside the name, quieter: "3 of 6")
+  if (n > 1) { var kc = document.createElement('span'); kc.className = 'kp-count'; kc.textContent = (_kpAt + 1) + ' of ' + n; kt.appendChild(document.createTextNode(' ')); kt.appendChild(kc); }
   img.alt = (small && small.getAttribute('data-alt')) || 'Ash Stu - ' + name;
   img.src = small ? small.currentSrc || small.src : full;
   var big = new Image(); big.decoding = 'async';

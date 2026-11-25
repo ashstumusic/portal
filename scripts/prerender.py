@@ -96,6 +96,8 @@ def rel_summary(rel, upcoming):
     if not tr or (len(tr) == 1 and not upcoming): return ''
     secs = sum(t.get("secs", 0) for t in tr)
     t = f'<span class="rp-len"><span class="rp-sep"> · </span>{run_time(secs)}</span>' if secs else ''
+    if rel.get("runtime"):   # (the whole album's length, as the owner gives it in links.txt: "about 30 min")
+        t = f'<span class="rp-len"><span class="rp-sep"> · </span>about {run_time(rel["runtime"] * 60)}</span>'
     if upcoming:
         return f'<p class="rel-progress">{len(tr)} of {len(tr) + len(upcoming)} songs out{t}<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>'
     return f'<p class="rel-progress">{len(tr)} songs{t}</p>'
