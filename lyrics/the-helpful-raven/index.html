@@ -46,6 +46,16 @@ a tapped button never keeps a stuck hover look); moving a mouse clears it. */
 function off(e){if(e.pointerType==='mouse')r.classList.remove('touch');}
 addEventListener('pointerdown',on,true);addEventListener('pointermove',off,true);
 addEventListener('touchstart',function(){r.classList.add('touch');},{capture:true,passive:true});})(document.documentElement);</script>
+<script>/* After a finger or pen tap, the tapped button or link lets go of focus (owner, 2026-11-25: "sometimes on ipad i will have
+the home button selected without deselecting even when im in another section" ... "do the same for the other buttons").
+An iPad with a keyboard attached can draw the keyboard's focus ring round whatever was tapped, and it stayed there - even
+after the page had scrolled to another section - until something else was tapped. Keyboard presses keep focus as always,
+and anything that moves focus itself (a pop-up, a menu, a viewer) is left alone. */
+(function(){var lastTouch=0;
+addEventListener('pointerdown',function(e){lastTouch=(e.pointerType==='touch'||e.pointerType==='pen')?Date.now():0;},true);
+addEventListener('click',function(e){if(!lastTouch||Date.now()-lastTouch>1500||!e.detail)return;
+var el=e.target.closest&&e.target.closest('a[href], button, [role="button"], summary');if(!el||el.closest('dialog, [role="dialog"]'))return;
+setTimeout(function(){if(document.activeElement===el)el.blur();},60);},true);})();</script>
 <script data-goatcounter="https://ashstu.goatcounter.com/count" defer src="//gc.zgo.at/count.js"></script>
 <link rel="preload" href="Fonts/subsetted/j.d.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="Fonts/subsetted/Boiled-Pasta.woff2" as="font" type="font/woff2" crossorigin>
