@@ -1979,17 +1979,16 @@ overlay.className = 'rel-play-overlay';
 // aria-expanded). With a mouse or finger nothing changes: the disc plays, the rest of the cover opens the tracklist.
 overlay.setAttribute('aria-label', 'Play ' + relName); overlay.dataset.rel = relName;
 overlay.innerHTML = '<span class="rel-play-circle">' + PLAY_SVG + '</span>';
-// PATTERN (card plays and opens its tracks): a click anywhere on an album card that isn't one of its own buttons,
-// links or track list plays the album (or pauses it) and opens its track list (below). The Play button plays and
-// pauses only; the Tracks bar only opens and closes the list.
+// PATTERN (the card is its Play button): a click anywhere on an album card that isn't one of its own buttons, links or
+// track list presses its Play (below). The Tracks bar only opens and closes the list.
 var _rb = card.querySelector('.rel-btns'); if (_rb) _rb.insertBefore(overlay, _rb.firstChild); else wrap.appendChild(overlay);
 card.addEventListener('click', function(e) {
   if (e.target.closest('a, button, input, select, textarea, summary, details, .rel-tracklist, .rel-single-lyrics')) return;
   var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   // (selecting words to copy doesn't start the music)
-  // (owner's request: a click on the card plays the album - or pauses it, if it is the one playing - and opens its
-  // track list, so you see the songs as they play; it never closes the list: that is the Tracks bar's job)
-  toggleRelease(rIdx);
-  if (card.querySelector('.rel-tl-toggle') && !card.classList.contains('tracks-open')) setTracklist(rIdx, false);
+  // (owner, 2026-11-24: "make just clicking a release card press the play button of that release": a click anywhere
+  // else on the card is a press of its Play - plays the album, or pauses it if it is the one playing - and nothing more.
+  // It used to open the track list too; the Tracks bar alone does that now)
+  overlay.click();
 });
 _discCache[rIdx] = overlay.querySelector('svg');
 // (the disc is no longer inside the cover, so a press of the disc button itself - keyboard, screen reader, or a click
@@ -2202,7 +2201,7 @@ if (!_lbOpen) openLightbox(v);
   var go = function() { setTimeout(land, 300); ((document.fonts && document.fonts.ready) || Promise.resolve()).then(function() { setTimeout(land, 1500); }); };
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 })();
-function upcomingRow(u) {
+function upcomingRow(u, rel) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
 if (u.lyrics) wrap.dataset.lyricsKey = u.lyrics;
@@ -2223,6 +2222,12 @@ var lInner = document.createElement('div'); lInner.className = 'rel-lyrics-inner
 fillCardLyrics(lInner, entry, u.lyrics);
 lDiv.appendChild(lInner); wrap.appendChild(lDiv);
 wrap.classList.add('has-lyrics');
+// (its lyrics' own Download, as every song has: owner, 2026-11-24, "make every track able to download the lyrics")
+var udl = document.createElement('button'); udl.type = 'button'; udl.className = 'rel-lyrics-toggle rel-song-dl';
+udl.setAttribute('aria-label', 'Download the lyrics of ' + u.title); udl.title = 'Download the lyrics of ' + u.title;
+udl.innerHTML = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>';
+udl.addEventListener('click', function(e) { e.stopPropagation(); songDownload({ title: u.title, from: rel ? 'From ' + rel.name + ' (not out yet)' : '', entry: entry }, udl); });
+wrap.insertBefore(udl, lDiv);
 }
 return wrap;
 }
@@ -2233,7 +2238,7 @@ var container = document.getElementById('tracklist-' + rIdx);
 if (!container) return;
 var frag = document.createDocumentFragment();
 tracklistRows(rel).forEach(function(r) {
-if (r.tIdx < 0) { frag.appendChild(upcomingRow(r.t)); return; }
+if (r.tIdx < 0) { frag.appendChild(upcomingRow(r.t, rel)); return; }
 var t = r.t, tIdx = r.tIdx;
 // lyrics.json is keyed by the track's audio file (stable across reordering).
 var lyricsEntry = LYRICS[t.file];
@@ -2273,7 +2278,7 @@ if (zf) (function(t, zf) {
   sdl.href = kitUrl(t.file); sdl.setAttribute('download', fname);
   sdl.setAttribute('aria-label', 'Download ' + plain); sdl.title = 'Download ' + plain;
   sdl.innerHTML = '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>';
-  sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); kitSaveOne(t.file, fname, { audio: 1 }, sdl, zf.tag); });
+  sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); songDownload({ title: plain, from: 'From ' + rel.name, file: t.file, fname: fname, tag: zf.tag, entry: hasLyrics ? lyricsEntry : null }, sdl); });   /* (the song, its lyrics, or both) */
   wrap.appendChild(sdl);
 })(t, zf);
 if (hasLyrics) {
@@ -2943,6 +2948,7 @@ function kitPickFormats(what, kinds, opener) {
       var optOff = function(label, note) { return '<div class="kf-opt kf-off" aria-disabled="true"><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></div>'; };
       _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
         '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (n > 1 ? 'Pick the formats your devices can open.' : 'Pick the format your device can open.') + ' The content is the same in each: only the file type changes.</p>' +
+        (kinds.parts ? '<fieldset class="kf-set kf-parts"><legend class="kd-h">What to download</legend>' + kinds.parts.map(function(p) { return '<label class="kf-opt kf-check"><input type="checkbox" name="part" value="' + p.key + '"' + (p.on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + p.label + '</span><span class="kf-note">' + p.note + '</span></span></label>'; }).join('') + '</fieldset>' : '') +
         (kinds.audio ? set('Songs',
           opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
           opt('audio', 'wav', 'WAV', 'Plays on everything, even old CD players and editors. About four times larger.', a === 'wav') +
@@ -2964,6 +2970,17 @@ function kitPickFormats(what, kinds, opener) {
         '<div class="kf-btns"><button type="submit" value="go" class="rel-btn rel-dl kf-go" aria-label="Download"><svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></button>' +
         '<button type="submit" value="cancel" class="rel-lyrics-toggle kd-close" aria-label="Cancel"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></form>';
       var form = _fdlg.querySelector('form');
+      // (the files to include, each a bubble to check or uncheck: owner, 2026-11-24, "make every track able to download the
+      // lyrics of the track. make it a bubble to check or uncheck". A kind's formats show only while its file is checked)
+      if (kinds.parts) {
+        var sets = form.querySelectorAll('.kf-set:not(.kf-parts)'), go = form.querySelector('.kf-go');
+        var sync = function() {
+          var on = {}; form.querySelectorAll('[name=part]').forEach(function(x) { on[x.value] = x.checked; });
+          sets.forEach(function(fs) { var k = fs.querySelector('[name=audio]') ? 'song' : fs.querySelector('[name=text]') ? 'lyrics' : ''; fs.hidden = !!k && on[k] === false; });
+          go.disabled = !Object.keys(on).some(function(k) { return on[k]; });
+        };
+        form.addEventListener('change', sync); sync();
+      }
       var pick = function(k, d) { var x = form.querySelector('[name=' + k + ']:checked'); return x ? x.value : (saved[k] || d); };
       var finish = function() {
         _fdlg.removeEventListener('close', finish);
@@ -2971,6 +2988,7 @@ function kitPickFormats(what, kinds, opener) {
         if (_fdlg.returnValue !== 'go') return done(null);
         var f = { audio: pick('audio', 'mp3'), image: pick('image', 'png'), video: pick('video', 'mp4'), text: pick('text', 'txt') };
         try { localStorage.setItem('ash_dl_fmt', JSON.stringify(f)); } catch (e) {}
+        if (kinds.parts) { f.parts = {}; form.querySelectorAll('[name=part]').forEach(function(x) { f.parts[x.value] = x.checked; }); try { localStorage.setItem('ash_dl_parts', JSON.stringify(f.parts)); } catch (e) {} }
         done(f);
       };
       _fdlg.returnValue = '';
@@ -3173,8 +3191,10 @@ function kitConvert(f, data, fmt, coverBytes) {
 // One file, chosen and saved on its own (a song's, a photo's, a video's, a lyric sheet's own Download). src: a site path, or
 // a function giving the file's bytes (a song's words, written here). tag: a song's details for its label.
 function kitSaveOne(src, name, kinds, opener, tag) {
-  return kitPickFormats(name.replace(/\.[a-z0-9]+$/i, ''), kinds, opener).then(function(fmt) {
-    if (!fmt) return;
+  return kitPickFormats(name.replace(/\.[a-z0-9]+$/i, ''), kinds, opener).then(function(fmt) { if (fmt) return kitSaveGo(src, name, fmt, opener, tag); });
+}
+function kitSaveGo(src, name, fmt, opener, tag) {
+  return (function() {
     var word = opener && opener.querySelector('.btn-word'), was = word && word.textContent;
     if (word) { word.dataset.auto = '0'; word.textContent = 'Preparing'; }
     if (opener) opener.setAttribute('aria-busy', 'true');
@@ -3189,6 +3209,34 @@ function kitSaveOne(src, name, kinds, opener, tag) {
       setTimeout(function() { URL.revokeObjectURL(url); }, 120000);
     }).catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(name + ' could not be downloaded. Check the connection and try again.'); })
       .then(function() { if (word) { word.textContent = was || 'Download'; word.dataset.auto = '1'; } if (opener) opener.removeAttribute('aria-busy'); });
+  })();
+}
+// A song's own Download (each album song, each press kit song, and each song not out yet): the song, its lyrics, or both,
+// each a bubble in the chooser (owner, 2026-11-24). Both come as one ZIP named for the song, so the browser saves one file.
+// s: {title, from, file?, fname?, tag?, entry?}. A song not out yet has only its lyrics.
+function songDownload(s, opener) {
+  var hasSong = !!s.file, hasLyr = !!(s.entry && s.entry.lines && s.entry.lines.length), plain = String(s.title).replace(/<[^>]*>/g, '');
+  if (!hasSong && !hasLyr) return;
+  var lyrName = plain + ' - Lyrics.txt', words = function() { return kitLyricsText(plain, s.from, s.entry); };
+  if (!hasLyr) return kitSaveOne(s.file, s.fname, { audio: 1 }, opener, s.tag);
+  if (!hasSong) return kitSaveOne(words, lyrName, { text: 1 }, opener);
+  var was = {}; try { was = JSON.parse(localStorage.getItem('ash_dl_parts') || '{}'); } catch (e) {}
+  var parts = [
+    { key: 'song', label: 'The song', note: 'The recording, labelled with its album and cover.', on: was.song !== false },
+    { key: 'lyrics', label: 'The lyrics', note: 'The words, as a text file, PDF or Word document.', on: was.lyrics !== false }
+  ];
+  return kitPickFormats(plain, { audio: 1, text: 1, parts: parts }, opener).then(function(fmt) {
+    if (!fmt) return;
+    var p = fmt.parts || {};
+    if (p.song && !p.lyrics) return kitSaveGo(s.file, s.fname, fmt, opener, s.tag);
+    if (p.lyrics && !p.song) return kitSaveGo(words, lyrName, fmt, opener);
+    if (!p.song) return;
+    var word = opener && opener.querySelector('.btn-word');
+    if (word) { word.dataset.auto = '0'; word.textContent = 'Preparing'; }
+    if (opener) opener.setAttribute('aria-busy', 'true');
+    return liveZip([{ src: s.file, path: s.fname, tag: s.tag }, { src: lyrName, path: lyrName, data: words() }], s.fname.replace(/\.[a-z0-9]+$/i, '') + '.zip', null, fmt)
+      .catch(function() { if (window.kinetic && window.kinetic.announce) window.kinetic.announce(plain + ' could not be downloaded. Check the connection and try again.'); })
+      .then(function() { if (word) { word.textContent = 'Download'; word.dataset.auto = '1'; } if (opener) opener.removeAttribute('aria-busy'); });
   });
 }
 // A song's words as a text file (its title, where it is from, then the lines), for its lyrics' own Download
@@ -3209,7 +3257,7 @@ function liveZip(files, filename, onStep, fmt) {
   function worker() {
     if (i >= files.length) return Promise.resolve();
     var k = i++, f = files[k];
-    return Promise.all([get(f.src), f.tag ? cover(f.tag.cover) : null]).then(function(r) {
+    return Promise.all([f.data ? f.data : get(f.src), f.tag ? cover(f.tag.cover) : null]).then(function(r) {   /* (f.data: a file written here, as a song's lyrics) */
       return kitConvert(f, r[0], fmt, r[1]);   /* (the format the visitor picked for each kind of file) */
     }).then(function(r) {
       out[k] = r[0]; paths[k] = r[1]; got += f.bytes || 0; if (onStep) onStep(Math.min(99, Math.round(got / total * 100)));
@@ -3443,7 +3491,7 @@ KIT.files.forEach(function(f, k) {
     var sdl = document.createElement('a'); sdl.className = 'rel-lyrics-toggle epk-file-dl epk-song-dl'; sdl.href = kitUrl(f.src); sdl.setAttribute('download', f.name);
     sdl.setAttribute('aria-label', 'Download ' + shown); sdl.title = 'Download ' + shown;
     sdl.innerHTML = DL;
-    (function(f, sdl) { sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); kitSaveOne(f.src, f.name, { audio: 1 }, sdl, f.tag); }); })(f, sdl);
+    (function(f, sdl) { sdl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); songDownload({ title: t.title, from: 'From ' + RELEASE_LIST[f.ri].name, file: f.src, fname: f.name, tag: f.tag, entry: has ? entry : null }, sdl); }); })(f, sdl);   /* (the song, its lyrics, or both) */
     if (has) {
       wrap.classList.add('has-lyrics');
       wrap.appendChild(makeLyricsBtn(t.title));
