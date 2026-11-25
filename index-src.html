@@ -3582,11 +3582,9 @@ KIT.files.forEach(function(f, k) {
       var lDiv = document.createElement('div'); lDiv.className = 'rel-lyrics';
       var lInner = document.createElement('div'); lInner.className = 'rel-lyrics-inner';
       fillCardLyrics(lInner, entry, t.file); lDiv.appendChild(lInner);
-      // (the words' own Download, as TXT or PDF: owner's request)
-      var ldl = document.createElement('button'); ldl.type = 'button'; ldl.className = 'rel-lyrics-toggle epk-file-dl epk-lyr-dl';
-      ldl.setAttribute('aria-label', 'Download the lyrics of ' + t.title); ldl.innerHTML = DL + '<span class="btn-word">Download lyrics</span>';
-      (function(t, f, entry, ldl) { ldl.addEventListener('click', function(e) { e.stopPropagation(); kitSaveOne(function() { return kitLyricsText(t.title, 'From ' + RELEASE_LIST[f.ri].name, entry); }, t.title + ' - Lyrics.txt', { text: 1 }, ldl); }); })(t, f, entry, ldl);
-      lDiv.appendChild(ldl); wrap.appendChild(lDiv);
+      // (no separate "Download lyrics" under the words any more: the song's own Download has a Lyrics bubble - owner,
+      // 2026-11-25: "remove the download lyrcs buttons. the download button already allow you to select the lyrics")
+      wrap.appendChild(lDiv);
     }
     wrap.appendChild(sdl);
   } else {
