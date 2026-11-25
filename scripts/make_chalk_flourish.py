@@ -4,11 +4,11 @@
 animations, high resolution, flip book, well thought out, each stroke with intention, using elements of art, looking
 handdrawn. like the stars or the duck or the section logos".)
 
-The design, after a sign-painter's divider: a small diamond at the centre with a dot over and under it (the point the eye
-lands on), and from it one long S-sweep out to each side - it rises, dips, and rolls into a curl at its end - with a short
-leaf-flick under the first rise to balance the weight. Every stroke is a pen stroke: it starts light, swells where the hand
-presses through the curve and thins to nothing as it lifts, so the line has rhythm (thick and thin) rather than an even wire.
-The two halves are drawn separately, so they mirror each other the way a hand mirrors - nearly, never exactly.
+The design, after the owner's reference (the scrollwork over the Stables Cafe sign, 2026-11-25): wrought-iron scrollwork. From a
+ball at the centre one main bar runs out to each side, dips and rises into a big scroll; three smaller scrolls sprout from it,
+each winding inward and closing on a ball, as a blacksmith finishes a scroll; the one under the quote is the same figure turned
+over, with three drops hanging from its centre. The bars are nearly even in weight, thinning a little into each spiral. The two
+halves are drawn separately, so they mirror each other the way a hand mirrors - nearly, never exactly.
 
 Drawn in chalk the same way as the quote's marks and the homepage's stars (scripts/make_chalk_quotes.py, make_chalk_stars.py):
 the board's grain and streaks break the line up, solid down the middle and skipping toward its edges, and a little dust
@@ -35,47 +35,65 @@ def cubic(p0, p1, p2, p3, n):
     return (1 - t) ** 3 * p0 + 3 * (1 - t) ** 2 * t * p1 + 3 * (1 - t) * t * t * p2 + t ** 3 * p3
 
 
-def curl(end, prev, turn, r0, n):
-    """A curl rolling on from a stroke's end: it carries on in the stroke's direction and winds inward, `turn` = +1 / -1."""
-    d = np.array(end) - np.array(prev); d /= np.linalg.norm(d)
-    nrm = np.array([-d[1], d[0]]) * turn                     # toward the curl's centre
-    c = np.array(end) + nrm * r0
-    a0 = math.atan2(end[1] - c[1], end[0] - c[0])
-    th = np.linspace(0, 1.85 * math.pi, n)
-    r = r0 * (1 - .66 * th / th[-1])                        # winding in: each turn tighter
-    a = a0 - turn * th
+def spiral(c, r0, a0, d, turns, n):
+    """A scroll's spiral: from the point at angle a0 on a circle of radius r0 round c, winding inward (d=+1 clockwise on
+    screen, -1 anticlockwise) for `turns` of a full turn, each turn tighter."""
+    th = np.linspace(0, turns * 2 * math.pi, n)
+    r = r0 * (1 - .68 * th / th[-1])
+    a = a0 + d * th
     return np.stack([c[0] + r * np.cos(a), c[1] + r * np.sin(a)], 1)
 
 
+def into(start, tan, sp, k1, k2, n=90):
+    """A smooth lead from `start` (leaving along `tan`) into the spiral `sp` (arriving along its own direction)."""
+    t = sp[1] - sp[0]; t /= np.linalg.norm(t)
+    s0 = np.array(start, float); tan = np.array(tan, float); tan /= np.linalg.norm(tan)
+    return cubic(s0, s0 + tan * k1, sp[0] - t * k2, sp[0], n)
+
+
 def half(sign):
-    """The right half (sign=+1) or the left (-1): unit coordinates, x from the centre outward, y down; height about +-0.5."""
-    s = lambda pts: [(sign * x, y) for x, y in pts]
-    strokes = []
-    # the main sweep: leaves the diamond, rises, dips through the middle and rolls into the end curl
-    sweep = cubic((.12, 0), (.55, -.46), (1.0, .42), (1.5, -.04), 170)
-    tail = curl(sweep[-1], sweep[-6], -1, .19, 90)
-    pts = np.vstack([sweep, tail[1:]])
-    strokes.append((s(pts), 'swell', 1.0))
-    # the leaf-flick under the first rise: a short counter-stroke that balances the sweep's weight
-    flick = cubic((.3, .07), (.48, .3), (.76, .3), (.92, .12), 70)
-    strokes.append((s(flick), 'lift', .42))
-    return strokes
+    """The right half (sign=+1) or the left (-1): unit coordinates, x from the centre outward, y down.
+    After the scrollwork over the Stables Cafe sign (owner's reference, 2026-11-25): a main bar leaves the centre, arches up
+    and comes down into a big scroll at its outer end; two smaller scrolls peel off it - one under the arch, curling back
+    toward the centre, and one rising off the far side of the arch, curling outward - each closing on a ball. Every scroll
+    leaves its bar along the bar's own line, as forged iron does, never crossing it."""
+    out = []
+    # the main bar: up from the centre in an arch, down and out into the big end scroll
+    A = cubic((0, .07), (.16, -.2), (.42, -.27), (.62, -.12), 120)
+    end_sp = spiral((1.2, -.03), .165, math.pi / 2, -1, .92, 160)          # entered at its foot, travelling outward, winding up and back in
+    dA = A[-1] - A[-2]; dA /= np.linalg.norm(dA)
+    B = cubic(A[-1], A[-1] + dA * .2, end_sp[0] - np.array([.22, 0]), end_sp[0], 120)
+    main = np.vstack([A, B[1:], end_sp[1:]])
+    out += [(main, 'iron+ball', 1.0)]
+    # under the arch: peels off near the top and curls down and back toward the centre
+    k = 30; d = A[k + 1] - A[k - 1]
+    sp1 = spiral((.36, .08), .1, 0, 1, .9, 120)                           # entered at its right side going down, winding back in
+    out += [(np.vstack([into(A[k], d, sp1, .1, .12), sp1[1:]]), 'iron+ball', .82)]
+    # from the top of the arch: splits off the bar, running on outward as the bar turns down, and rolls up into a scroll
+    # that curls back toward the centre
+    k = int(np.argmin(A[:, 1])); d = A[k + 1] - A[k - 1]
+    sp2 = spiral((.9, -.32), .1, math.pi / 2, -1, .92, 120)                 # entered at its foot going outward, winding up and back in
+    out += [(np.vstack([into(A[k + 6], d, sp2, .16, .16), sp2[1:]]), 'iron+ball', .82)]
+    return [([(sign * x, y) for x, y in np.asarray(pts)], kind, w) for pts, kind, w in out]
 
 
-def centre():
-    # the diamond (two strokes, each side of it) and a dot above and below
-    left = cubic((0, -.2), (-.08, -.08), (-.08, .08), (0, .2), 40)
-    right = cubic((0, -.2), (.08, -.08), (.08, .08), (0, .2), 40)
-    return [(list(map(tuple, left)), 'swell', .7), (list(map(tuple, right)), 'swell', .7),
-            ([(0, -.34)] * 6, 'dot', .75), ([(0, .34)] * 6, 'dot', .75)]
+def centre(drops):
+    """The centre, inside the V where the two bars meet: a ball over the quote; under it, three drops hanging there instead,
+    the middle one longest, as on the reference."""
+    if not drops:
+        return [([(0, -.1)] * 4, 'ball', 1.1)]
+    out = [(cubic((0, .04), (0, -.06), (0, -.18), (0, -.3), 40), 'drop', 1.05)]
+    for sg in (1, -1):
+        out.append((cubic((sg * .022, -.02), (sg * .035, -.07), (sg * .055, -.13), (sg * .085, -.19), 40), 'drop', .72))   # (inside the V, clear of its arms)
+    return out
 
 
-def draw(flip, rng):
+def draw(flip, rng):   # flip: the one under the quote (turned over, with the drops)
     ink = np.zeros((H, W), np.float32); dust = np.zeros((H, W), np.float32)
-    scale = W * .47 / 1.72; cx, cy = W / 2, H / 2   # (the figure spans about 94% of its cell)
+    scale = min(W * .47 / 1.4, H * .47 / .47); cx, cy = W / 2, H / 2   # (as large as the cell allows)
     yy, xx = np.mgrid[0:H, 0:W]
     g_rot = rng.uniform(-.012, .012); g_dy = rng.uniform(-.015, .015)   # the whole figure sits a hair differently each redraw
-    strokes = half(1) + half(-1) + centre()
+    strokes = half(1) + half(-1) + centre(flip)
     for pts, kind, weight in strokes:
         pts = np.array(pts, float)
         if flip: pts[:, 1] *= -1
@@ -88,16 +106,17 @@ def draw(flip, rng):
         n = len(pts); k_w = n / n0
         # hand wobble: a small smooth drift, different on every stroke and every redraw (the same wavelength whatever the sampling)
         walk = ndi.gaussian_filter1d(np.cumsum(rng.normal(0, .0028 / math.sqrt(k_w), (n, 2)), 0), 6 * k_w, axis=0) + ndi.gaussian_filter1d(rng.normal(0, .0022, (n, 2)), 1.5 * k_w, axis=0)
-        width = H * .021 * weight * rng.uniform(.92, 1.08)
+        width = scale * .017 * weight * rng.uniform(.95, 1.05)
         for i in range(n):
             x, y = pts[i] + walk[i]; y += g_dy
             x, y = x * math.cos(g_rot) - y * math.sin(g_rot), x * math.sin(g_rot) + y * math.cos(g_rot)
             px, py = cx + x * scale, cy + y * scale
             t = i / max(1, n - 1)
-            if kind == 'swell':  p = .12 + .88 * math.sin(math.pi * min(1, t * 1.08)) ** .7      # light in, full through the curve, thin out
-            elif kind == 'lift': p = (.35 + .65 * math.sin(math.pi * t * .5 + .3)) * (1 - .75 * t ** 1.6)   # pressed at the start, lifting away
-            else:                p = 1.35                                                          # a dot: one press of the chalk
+            if kind.startswith('iron'): p = min(1, .45 + t * 9) * (.82 + .22 * math.sin(math.pi * min(1, t / .55))) * (1 - .32 * max(0, (t - .55) / .45))   # forged bar: full along, thinning a little into the spiral
+            elif kind == 'drop': p = .15 + 1.75 * t ** 1.5                                        # a drop: from a point to its full belly
+            else:                p = 1.5                                                           # a ball: one round press of the chalk
             r = max(.8, width * p * (1 + rng.uniform(-.05, .05)))
+            if kind == 'iron+ball' and i == n - 1: r = width * 1.55   # the ball the scroll closes on
             x0, x1, y0, y1 = int(px - r - 2), int(px + r + 3), int(py - r - 2), int(py + r + 3)
             if x0 < 0 or y0 < 0 or x1 > W or y1 > H: continue
             sub = ((xx[y0:y1, x0:x1] - px) ** 2 + (yy[y0:y1, x0:x1] - py) ** 2 <= r * r) * rng.uniform(.82, 1)

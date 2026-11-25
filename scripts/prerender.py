@@ -240,8 +240,9 @@ def render_kit_shell(page):
         in_kit.append('a\u00a0fact sheet')   # (plain words: the fact sheet has its own row in the open kit)
     if has_lyr:
         in_kit.append('a\u00a0lyrics sheet')   # (it has its own row beside the fact sheet)
+    if facts.get('pitch'): in_kit.insert(0, 'a\u00a0bio')   # (the bio is in the open kit: owner, 2026-11-25)
     in_kit_html = (', '.join(in_kit[:-1]) + ' and ' + in_kit[-1]) if len(in_kit) > 1 else in_kit[0]
-    facts_html = f'<p class="epk-summary">{in_kit_html}.</p>'
+    facts_html = f'<p class="epk-summary">{in_kit_html[:1].upper() + in_kit_html[1:]}.</p>'
     # the card's heading, as an album card's: the update date in the gold line, the name as the title
     upd = f'<span class="rel-year"> <time datetime="{esc(kit["updated"])}">{full_date(kit["updated"])}</time></span>' if kit.get('updated') else ''
     info = ''   # (no "Updated" date: owner, 2026-11-25, "remove the date updated on the epk"; no "Ash Stu" title: owner, 2026-11-23)
@@ -253,14 +254,14 @@ def render_kit_shell(page):
         _seen = [k for k in ['song', 'video', 'photo', 'text'] if any(('text' if f.get('type') == 'lyrics' else f.get('type')) == k for f in files)]
         kit_types = ('<p class="kit-types"><span class="sr-only">In the kit: </span>' + ''.join(f'<span class="kit-type kit-type--{k}">{_icons[k]}<span class="kit-type-word">{_names[k]}</span></span>' for k in _seen) + '</p>') if _seen else ''
         art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/>{kit_types}</div>'
-    btns = ('<div class="rel-btns"><button type="button" class="rel-btn rel-dl epk-show" aria-expanded="false" aria-label="Show the music tracks, live videos, photos, fact sheet and lyrics sheet">'
+    btns = ('<div class="rel-btns"><button type="button" class="rel-btn rel-dl epk-show" aria-expanded="false" aria-label="Show the bio, music tracks, live videos, photos, fact sheet and lyrics sheet">'
             '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg><span class="btn-word" aria-hidden="true">Show</span></button>'
             '<a href="Images/press-kit/Ash%20Stu%20-%20Fact%20Sheet.txt" class="rel-btn rel-dl epk-zip" aria-label="Download the Press Kit" title="Download the Press Kit">'
             '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a>'
             '<p class="epk-progress" role="status" aria-live="polite"></p></div>')
     return ('<article class="rel-card epk-card kit-collapsed kit-shell" data-release="-1" aria-label="Ash Stu press kit">'
             + info +
-            '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>'
+            '<div class="rel-avail epk-about">' + f'<div class="epk-facts">{facts_html}</div></div>'
             + art + btns + '</article>')
 
 
