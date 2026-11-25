@@ -139,6 +139,8 @@ def _bust(m):
     _CSS_IMG_V[path] = _hl.sha256(open(path, 'rb').read()).hexdigest()[:8]
     return f"url({m.group(1)}{path}?v={_CSS_IMG_V[path]}{m.group(1)})"
 css = _re.sub(r"""url\((['"]?)(Images/[^'")]+)\1\)""", _bust, css)
+for _p in ("Images/embedded/hero-ash-stu-guitar.webp", "Images/embedded/hero-ash-stu-guitar-2000.webp"):   # (the home photo's sizes, stamped
+    _CSS_IMG_V[_p] = _hl.sha256(open(_p, 'rb').read()).hexdigest()[:8]                                     #  too: it was replaced, 2026-11-24)
 for src_path, rel_path in FONT_RELPATHS.items():
     css = css.replace(f"url('{src_path}') format('truetype')", f"url('{rel_path}') format('woff2')")
     css = css.replace(f"url('{src_path}') format('opentype')", f"url('{rel_path}') format('woff2')")
@@ -332,7 +334,7 @@ KIT_TOP = "Ash Stu - Press Kit/"
 KIT_SONGS = ["Dirge for Ducklings", "Still Sad", "Summertime Even on the Moon", "Worship Song", "You Are What You Love"]
 KIT_PHOTO_ORDER = ["Ash Stu - Headshot-1.png", "Ash Stu - Headshot-2.png", "Ash Stu - Live at the Keyboard (Wide).png",
                    "Ash Stu - Headshot-3.png", "Ash Stu - Guitar in Alley (Wide).png",
-                   "Ash Stu - Alley at Sunset (Wide).png", "Ash Stu - Alley Portrait.png"]   # (the last two new, 2026-11-24: owner's photos; see scripts/kit_photos.py)   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
+                   "Ash Stu - Alley Portrait.png"]   # (the last new, 2026-11-24: owner's photo; see scripts/kit_photos.py. The alley at sunset is the home photo only, not in the kit: owner, 2026-11-24)   # (the photos' order on the page, the ZIP's list and the Fact Sheet)
 KIT_VIDEOS = ["The Cloud for the Desert", "Theory of Hope"]   # (owner's choice: live solo acoustic performances, the first leads)
 KIT_VIDEO_NOTE = ""   # (owner's request, 2026-11-23: "remove the live, and solo acoustic")
 KIT_SONG_COVER = "Images/embedded/kit-song-cover.jpg"   # (Headshot-1 as a JPEG: the picture music apps show for the kit's songs)
@@ -350,7 +352,7 @@ PHOTOGRAPHERS = {"Emma Evans": "https://www.facebook.com/profile.php?id=10001870
 _KIT_CREDIT = {"Ash Stu - Headshot-2.png": "Emma Evans", "Ash Stu - Live at the Keyboard (Wide).png": "Emma Evans"}
 _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - Headshot-2.png": "epk-ash-stu-singing.webp?v=5",
               "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp?v=2", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp?v=2",
-              "Ash Stu - Alley at Sunset (Wide).png": "epk-ash-stu-sunset.webp", "Ash Stu - Alley Portrait.png": "epk-ash-stu-alley-portrait.webp",
+              "Ash Stu - Alley Portrait.png": "epk-ash-stu-alley-portrait.webp",
               "Ash Stu - Live at the Keyboard (Wide).png": "epk-ash-stu-performing.webp?v=5"}
 def _press_kit():
     import json as _json
