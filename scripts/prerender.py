@@ -249,7 +249,7 @@ def render_kit_shell(page):
     if lead and lead.get('thumb'):
         # (the kinds of thing in the kit, as tags on the photo - Songs, Videos, Photos, Text: owner's request)
         _icons = {'song': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>', 'video': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/></svg>', 'photo': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8.5 8.5"/></svg>', 'text': '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>'}
-        _names = {'song': 'Songs', 'video': 'Videos', 'photo': 'Photos', 'text': 'Text'}
+        _names = {'song': 'Songs', 'video': 'Videos', 'photo': 'Photos', 'text': 'Documents'}   # (as the open kit's section is called: owner, 2026-11-25)
         _seen = [k for k in ['song', 'video', 'photo', 'text'] if any(('text' if f.get('type') == 'lyrics' else f.get('type')) == k for f in files)]
         kit_types = ('<p class="kit-types"><span class="sr-only">In the kit: </span>' + ''.join(f'<span class="kit-type kit-type--{k}">{_icons[k]}<span class="kit-type-word">{_names[k]}</span></span>' for k in _seen) + '</p>') if _seen else ''
         art = f'<div class="rel-art-wrap"><img src="{esc(urllib.parse.quote(lead["thumb"], safe="/:,"))}" alt="Ash Stu, lead press photo" class="rel-art" width="481" height="481" loading="lazy" decoding="async"/>{kit_types}</div>'
@@ -260,8 +260,7 @@ def render_kit_shell(page):
             '<p class="epk-progress" role="status" aria-live="polite"></p></div>')
     return ('<article class="rel-card epk-card kit-collapsed kit-shell" data-release="-1" aria-label="Ash Stu press kit">'
             + info +
-            '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>' +
-            (f'<div class="kit-types-row" aria-hidden="true">{kit_types}</div>' if art and kit_types else '')   # (on phones the tags stand in a row under the words, off the photo: owner, 2026-11-25, "optimize epk on mobile")
+            '<div class="rel-avail epk-about">' + (f'<p class="epk-pitch">{esc(facts["pitch"])}</p>' if facts.get('pitch') else '') + f'<div class="epk-facts">{facts_html}</div></div>'
             + art + btns + '</article>')
 
 
