@@ -2438,6 +2438,36 @@ cardLyricsKick();
    card: the type starts at the larger size and, if the song's longest line
    would not fit, comes down just enough to fit (never below 11px; only a
    line that still cannot fit at 11px is allowed to wrap). */
+/* NOTHING JUMPS WHEN SOMETHING CLOSES (owner, 2026-11-25: "the page jumps up after closing some expanded parts of the
+   page. fix this"). Pressing a button or a card can close something higher up the page - Play on an album closes another
+   album's open track list, opening a song's lyrics closes another song's - and everything below it then slid up, the
+   thing just pressed with it, often off the screen (which also made a Lyrics button look as if it did nothing). Now
+   whatever was pressed stays exactly where it was on screen while the page settles (watched for 0.8 s, so a change made
+   a moment later is caught too). Links are left alone (a link to a section is meant to scroll), and so is anything in a
+   pop-up or the toolbar; the moment the visitor scrolls themselves, it lets go. */
+(function() {
+  var pin = null, raf = 0, until = 0;
+  var stop = function() { pin = null; cancelAnimationFrame(raf); raf = 0; };
+  var hold = function() {
+    raf = 0;
+    if (!pin || performance.now() > until || !pin.el.isConnected) return stop();
+    var r = pin.el.getBoundingClientRect();
+    if (r.height || r.width) {
+      var shift = r.top - pin.top;
+      if (Math.abs(shift) > 1) { var sb = document.documentElement.style.scrollBehavior; document.documentElement.style.scrollBehavior = 'auto'; window.scrollBy(0, shift); document.documentElement.style.scrollBehavior = sb; }
+    }
+    raf = requestAnimationFrame(hold);
+  };
+  document.addEventListener('click', function(e) {
+    var el = e.target && e.target.closest ? e.target : null;
+    if (!el || !el.closest('main') || el.closest('a[href], dialog, .vid-lightbox, nav, .nav, #player-bar')) return;
+    el = el.closest('button, [role="button"], .rel-card, .vid-card-wrap, .rel-track-wrap') || el;
+    var r = el.getBoundingClientRect(); if (!r.height && !r.width) return;
+    stop(); pin = { el: el, top: r.top }; until = performance.now() + 800; raf = requestAnimationFrame(hold);
+  }, true);
+  ['wheel', 'touchmove'].forEach(function(ev) { addEventListener(ev, stop, { passive: true }); });
+  addEventListener('keydown', function(e) { if (/^(Arrow(Up|Down)|Page(Up|Down)|Home|End| )$/.test(e.key) && !(e.target && e.target.closest && e.target.closest('button, input, textarea, select'))) stop(); });
+})();
 function _keepInPlace(el, change) {
 var before = el && el.isConnected ? el.getBoundingClientRect().top : null;
 change();
