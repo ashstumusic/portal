@@ -2949,7 +2949,10 @@ function kitPickFormats(what, kinds, opener) {
   return kitCanM4a().then(function(m4a) {
     return new Promise(function(done) {
       if (!_fdlg) { _fdlg = document.createElement('dialog'); _fdlg.className = 'kit-doc kit-fmt'; _fdlg.setAttribute('aria-labelledby', 'kf-title'); document.body.appendChild(_fdlg); }
-      var opt = function(name, value, label, note, on) { return '<label class="kf-opt"><input type="radio" name="' + name + '" value="' + value + '"' + (on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></label>'; };
+      // (every bubble checks and unchecks, the formats too: owner, 2026-11-24, "make every bubble uncheckable for the
+      // downloads. just if you are going to press download you have to download atleast one thing". Each kind still takes
+      // one format at most; with none checked that kind is left out of the download)
+      var opt = function(name, value, label, note, on) { return '<label class="kf-opt kf-check"><input type="checkbox" name="' + name + '" value="' + value + '"' + (on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></label>'; };
       var set = function(title, body) { return '<fieldset class="kf-set"><legend class="kd-h">' + title + '</legend>' + body + '</fieldset>'; };
       var webp = kitCanWebp();
       var a = saved.audio === 'wav' || (saved.audio === 'm4a' && m4a) ? saved.audio : 'mp3', im = saved.image === 'jpg' || (saved.image === 'webp' && webp) ? saved.image : 'png';
@@ -2957,7 +2960,7 @@ function kitPickFormats(what, kinds, opener) {
       // (each kind offers its three most-used formats: owner's request. One this browser cannot make is shown, switched off, saying why)
       var optOff = function(label, note) { return '<div class="kf-opt kf-off" aria-disabled="true"><span class="kf-box"><span class="kf-label">' + label + '</span><span class="kf-note">' + note + '</span></span></div>'; };
       _fdlg.innerHTML = '<form method="dialog" class="kd-page kf-page">' +
-        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (n > 1 ? 'Pick the formats your devices can open.' : 'Pick the format your device can open.') + ' The content is the same in each: only the file type changes.</p>' +
+        '<h2 class="kd-title" id="kf-title">Download ' + escHtml(what) + '</h2><p class="kf-lead">' + (n > 1 ? 'Pick the formats your devices can open.' : 'Pick the format your device can open.') + ' The content is the same in each: only the file type changes. Uncheck anything you don\'t want.</p>' +
         (kinds.parts ? '<fieldset class="kf-set kf-parts"><legend class="kd-h">What to download</legend>' + kinds.parts.map(function(p) { return '<label class="kf-opt kf-check"><input type="checkbox" name="part" value="' + p.key + '"' + (p.on ? ' checked' : '') + '><span class="kf-box"><span class="kf-label">' + p.label + '</span><span class="kf-note">' + p.note + '</span></span></label>'; }).join('') + '</fieldset>' : '') +
         (kinds.audio ? set('Songs',
           opt('audio', 'mp3', 'MP3', 'Smallest. Plays on almost everything.', a === 'mp3') +
@@ -2982,22 +2985,43 @@ function kitPickFormats(what, kinds, opener) {
       var form = _fdlg.querySelector('form');
       // (the files to include, each a bubble to check or uncheck: owner, 2026-11-24, "make every track able to download the
       // lyrics of the track. make it a bubble to check or uncheck". A kind's formats show only while its file is checked)
-      if (kinds.parts) {
-        var sets = form.querySelectorAll('.kf-set:not(.kf-parts)'), go = form.querySelector('.kf-go');
-        var sync = function() {
-          var on = {}; form.querySelectorAll('[name=part]').forEach(function(x) { on[x.value] = x.checked; });
-          sets.forEach(function(fs) { var k = fs.querySelector('[name=audio]') ? 'song' : fs.querySelector('[name=text]') ? 'lyrics' : ''; fs.hidden = !!k && on[k] === false; });
-          go.disabled = !Object.keys(on).some(function(k) { return on[k]; });
-        };
-        form.addEventListener('change', sync); sync();
-      }
-      var pick = function(k, d) { var x = form.querySelector('[name=' + k + ']:checked'); return x ? x.value : (saved[k] || d); };
+      var sets = form.querySelectorAll('.kf-set:not(.kf-parts)'), go = form.querySelector('.kf-go');
+      var partOf = function(fs) { return !kinds.parts ? '' : fs.querySelector('[name=audio]') ? 'song' : fs.querySelector('[name=text]') ? 'lyrics' : ''; };
+      var partBox = function(k) { return form.querySelector('[name=part][value=' + k + ']'); };
+      var sync = function() {
+        var any = false;
+        sets.forEach(function(fs) {
+          var pb = partOf(fs) && partBox(partOf(fs));
+          fs.hidden = !!pb && !pb.checked;
+          if (!fs.hidden && fs.querySelector('input:checked')) any = true;
+        });
+        go.disabled = !any;   /* (at least one thing to download) */
+      };
+      form.addEventListener('change', function(e) {
+        var x = e.target;
+        if (x.name === 'part') {
+          // (a file checked again comes back with a format ready: the one checked before, or the first)
+          var fs = [].filter.call(sets, function(f) { return partOf(f) === x.value; })[0];
+          if (x.checked && fs && !fs.querySelector('input:checked')) { var f0 = fs.querySelector('input[value="' + (saved[fs.querySelector('input').name] || '') + '"]') || fs.querySelector('input'); f0.checked = true; }
+        } else if (x.checked) {
+          form.querySelectorAll('[name=' + x.name + ']').forEach(function(y) { if (y !== x) y.checked = false; });   /* (one format per kind) */
+        } else {
+          // (the last format of a song's file or its lyrics unchecked: that file is unchecked too)
+          var own = x.closest('.kf-set'), pk = partOf(own);
+          if (pk && !own.querySelector('input:checked')) partBox(pk).checked = false;
+        }
+        sync();
+      });
+      sync();
+      // (a kind in this download with nothing checked, or whose file is unchecked, is false: left out)
+      var pick = function(k, d) { var fs = form.querySelector('[name=' + k + ']'); if (!fs) return saved[k] || d; fs = fs.closest('.kf-set'); var x = !fs.hidden && fs.querySelector('[name=' + k + ']:checked'); return x ? x.value : false; };
       var finish = function() {
         _fdlg.removeEventListener('close', finish);
         if (opener && opener.focus) opener.focus();
         if (_fdlg.returnValue !== 'go') return done(null);
         var f = { audio: pick('audio', 'mp3'), image: pick('image', 'png'), video: pick('video', 'mp4'), text: pick('text', 'txt') };
-        try { localStorage.setItem('ash_dl_fmt', JSON.stringify(f)); } catch (e) {}
+        var keep = {}; Object.keys(f).forEach(function(k) { keep[k] = f[k] || saved[k] || undefined; });   /* (a kind left out this time keeps its last format for next time) */
+        try { localStorage.setItem('ash_dl_fmt', JSON.stringify(keep)); } catch (e) {}
         if (kinds.parts) { f.parts = {}; form.querySelectorAll('[name=part]').forEach(function(x) { f.parts[x.value] = x.checked; }); try { localStorage.setItem('ash_dl_parts', JSON.stringify(f.parts)); } catch (e) {} }
         done(f);
       };
@@ -3256,8 +3280,10 @@ function kitLyricsText(title, from, entry) {
 }
 // One maker for every download (the press kit and each album): fetch the files, label the songs, put them in one ZIP,
 // save it under its name. -> a Promise of the saved size in bytes. onStep(percent) is told how far it has got.
+function kitKind(f) { var e = String(f.src).split('.').pop().toLowerCase(); return /^(mp3|wav|m4a)$/.test(e) ? 'audio' : /^(png|jpe?g|webp)$/.test(e) ? 'image' : e === 'mp4' ? 'video' : e === 'txt' ? 'text' : ''; }
 function liveZip(files, filename, onStep, fmt) {
   fmt = fmt || {};
+  files = files.filter(function(f) { var k = kitKind(f); return !k || fmt[k] !== false; });   /* (the kinds the visitor unchecked are left out) */
   var total = files.reduce(function(n, f) { return n + (f.bytes || 0); }, 0) || 1, got = 0, covers = {}, out = new Array(files.length), paths = new Array(files.length);
   var get = function(url) { return fetch(kitUrl(url))   /* (each part encoded in full: a "?" in a song's name, as in "Anybody Still Awake?", must not start a query) */
     .then(function(r) { if (!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b) { return new Uint8Array(b); }); };
