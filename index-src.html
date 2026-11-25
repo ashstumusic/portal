@@ -4792,5 +4792,13 @@ var ar=a.getBoundingClientRect(),rr=r.getBoundingClientRect();if(ar.left<rr.left
   });
 })();
 </script>
+<script>/* The Home button's gold lights only under a real mouse or trackpad pointer (owner, 2026-11-25: "sometimes on ipad i will
+   have the home button selected without deselecting even when im in another section"): an iPad keeps a tapped thing
+   "pointed at" until something else is tapped, so Home stayed gold after a tap took you up the page and you scrolled on.
+   A finger never sets this mark; keyboard focus still lights it. */
+(function(){var l=document.querySelector('.nav .nav-logo');if(!l)return;
+l.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse'||e.pointerType==='pen')l.classList.add('mouse-hover');});
+l.addEventListener('pointerleave',function(){l.classList.remove('mouse-hover');});
+l.addEventListener('pointerdown',function(e){if(e.pointerType==='touch')l.classList.remove('mouse-hover');});})();</script>
 </body>
 </html>
