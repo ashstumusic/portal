@@ -41,16 +41,14 @@ jobs:
         with:
           python-version: "3.12"   # (pinned: a brand-new Python can lack ready-made Pillow builds, which failed this job)
 
-      # (Pillow reads each cover's average colour, shown while the cover loads)
-      - name: Install Pillow
-        run: python3 -m pip install --quiet pillow==10.4.0
+      # (Pillow reads each cover's average colour, shown while the cover loads; mutagen reads each song's running time,
+      # for the lyric pages and for each album card's "9 songs · 30 min" - it must be in place BEFORE releases.json is
+      # written, or the songs' lengths are left out and the cards lose their running time)
+      - name: Install Pillow and mutagen
+        run: python3 -m pip install --quiet pillow==10.4.0 mutagen==1.46.0
 
       - name: Generate releases.json / videos.json
         run: python3 scripts/generate_content.py
-
-      # The lyric pages state each song's running time (read from the mp3 with mutagen).
-      - name: Install mutagen
-        run: python3 -m pip install --quiet mutagen==1.46.0
 
       - name: Build static lyric, album, video and section pages, sitemap entries and robots.txt
         run: python3 scripts/build_lyrics_pages.py
