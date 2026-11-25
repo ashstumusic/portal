@@ -3047,7 +3047,8 @@ function kitPickFormats(what, kinds, opener) {
           opt('image', 'jpg', 'JPEG', 'Opens anywhere: email, Word, older phones.', im === 'jpg') +
           opt('image', 'png', 'PNG', 'As taken, with no loss.', im === 'png') +
           (webp ? opt('image', 'webp', 'WebP', 'Smallest, for websites and social media.', im === 'webp') : optOff('WebP', 'This browser cannot make WebP. Chrome, Edge and Firefox can.'))) : '') +
-        (kinds.text ? set('Text',
+        (kinds.text ? set('Documents',   /* ("Documents", as the press kit's section and tag are called: owner, 2026-11-25) */
+         
           opt('text', 'txt', 'Plain text (TXT)', 'Opens in any app; easy to copy from.', tx === 'txt') +
           opt('text', 'pdf', 'PDF', 'Laid out on the page, ready to print or attach.', tx === 'pdf') +
           opt('text', 'docx', 'Word (DOCX)', 'To edit or quote from in Word, Pages or Google Docs.', tx === 'docx')) : '') +
