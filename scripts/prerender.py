@@ -244,7 +244,7 @@ def render_kit_shell(page):
     facts_html = f'<p class="epk-summary">{in_kit_html}.</p>'
     # the card's heading, as an album card's: the update date in the gold line, the name as the title
     upd = f'<span class="rel-year"> <time datetime="{esc(kit["updated"])}">{full_date(kit["updated"])}</time></span>' if kit.get('updated') else ''
-    info = f'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated{upd}</span></p></div>'   # (no "Ash Stu" title: owner's request, 2026-11-23)
+    info = ''   # (no "Updated" date: owner, 2026-11-25, "remove the date updated on the epk"; no "Ash Stu" title: owner, 2026-11-23)
     art = ''
     if lead and lead.get('thumb'):
         # (the kinds of thing in the kit, as tags on the photo - Songs, Videos, Photos, Text: owner's request)

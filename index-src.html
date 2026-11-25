@@ -302,7 +302,8 @@ addEventListener('touchstart',function(){r.classList.add('touch');},{capture:tru
 <section class="section contact-section" id="contact" aria-labelledby="contact-h">   <!-- (its own section again, with its own panel: owner's request) -->
   <h2 class="section-h" id="contact-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>Contact</h2>
   <div class="contact-inner">
-    <p class="contact-intro">For shows, press, or anything – message directly.</p>   <!-- (the card's gold line, as an album card's) -->
+    <!-- (no gold line over the address: owner, 2026-11-25, "remove the yellow line entirely from the contact card"; it read
+         "For shows, press, or anything – message directly.") -->
     <div class="contact-addr-row">   <!-- (owner's request: Copy right beside the address; Send an email on its own line under them) -->
       <p class="contact-address"><span class="sr-only">Email address: </span>ashstumusic@gmail.com</p>
       <!-- Copy (for visitors whose computer has no mail app set up: the email button then does nothing; copying works for everyone) -->
@@ -3527,7 +3528,7 @@ function kitTypes() {
   seen.sort(function(a, b) { return ORDER.indexOf(a) - ORDER.indexOf(b); });
   return seen.length ? '<p class="kit-types"><span class="sr-only">In the kit: </span>' + seen.map(function(k) { return '<span class="kit-type kit-type--' + k + '">' + ICONS[k] + '<span class="kit-type-word">' + NAMES[k] + '</span></span>'; }).join('') + '</p>' : '';
 }
-var kitInfo = '<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">Updated' + (KIT.updated ? '<span class="rel-year"> <time datetime="' + escHtml(KIT.updated) + '">' + fullDate(KIT.updated) + '</time></span>' : '') + '</span></p></div>';   /* (no "Ash Stu" title on the card: owner, 2026-11-23, "remove Ash Stu from the press kit heading") */
+var kitInfo = '';   /* (no "Updated" date on the press kit card: owner, 2026-11-25, "remove the date updated on the epk". Before that it read "Updated <date>", and there was no "Ash Stu" title: owner, 2026-11-23) */
 var MAIL = '<svg class="rel-dl-ico" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg>';
 slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-label="Ash Stu press kit">' +
   kitInfo +
