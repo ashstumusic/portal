@@ -2202,6 +2202,15 @@ if (!_lbOpen) openLightbox(v);
   var go = function() { setTimeout(land, 300); ((document.fonts && document.fonts.ready) || Promise.resolve()).then(function() { setTimeout(land, 1500); }); };
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 })();
+/* One mark per song in track order, lit where it can be heard (owner, 2026-11-24: "optimize more i still dont love
+   the design"): the dim rows of the list, drawn small under the album's name */
+function progressBar(rel) {
+var on = {}, all = [];
+rel.tracks.forEach(function(t, i) { var n = t.num || i + 1; on[n] = 1; all.push(n); });
+rel.upcoming.forEach(function(u) { all.push(u.num); });
+all.sort(function(a, b) { return a - b; });
+return '<span class="rp-bar" aria-hidden="true">' + all.map(function(n) { return '<i' + (on[n] ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
+}
 function upcomingRow(u) {
 var wrap = document.createElement('div');
 wrap.className = 'rel-track-wrap';
@@ -2213,6 +2222,7 @@ var hasLyr = !!(entry && entry.lines && entry.lines.length);
    title so the scrolling-title effect never copies it into view.) */
 wrap.innerHTML = '<div class="rel-track rel-track--upcoming" aria-disabled="true" title="Not released yet">' +
 '<span class="rel-track-num">' + u.num + '</span>' +
+'<span class="rel-track-later" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Soon</span>' +
 '<span class="rel-track-title">' + escHtml(u.title) + '</span><span class="sr-only"> (not released yet)</span>' +
 (hasLyr ? '' : '<span class="rel-track-soon" aria-hidden="true">Soon</span>') + '</div>';
 if (hasLyr) {
@@ -2604,7 +2614,7 @@ var tracklist = rel.tracks.length + (rel.upcoming ? rel.upcoming.length : 0) > 1
 ? '<div class="rel-tracklist" id="tracklist-' + rIdx + '"><ol aria-label="Tracklist for ' + escHtml(rel.name) + '"></ol></div>'
 : '';
 return '<article class="rel-card" aria-label="' + escHtml(rel.name) + ', ' + escHtml(rel.type).toLowerCase() + ' by Ash Stu" itemscope itemtype="https://schema.org/MusicAlbum">' +
-'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + (rel.upcoming && rel.upcoming.length && rel.tracks.length ? '<p class="rel-progress">' + rel.tracks.length + ' of ' + (rel.tracks.length + rel.upcoming.length) + ' songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' : '') + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
+'<div class="rel-info"><p class="rel-cat"><span class="rel-cat-main">' + escHtml(rel.type) + (rel.date ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished" datetime="' + escHtml(rel.date) + '">' + fullDate(rel.date) + '</time></span>' : rel.year ? '<span class="rel-year"><span class="rel-sep"> · </span><time itemprop="datePublished">' + escHtml(String(rel.year)) + '</time></span>' : '') + '</span>' + relTag + '</p><h3 class="rel-name" itemprop="name">' + escHtml(rel.name) + '</h3>' + (rel.upcoming && rel.upcoming.length && rel.tracks.length ? '<p class="rel-progress">' + progressBar(rel) + rel.tracks.length + ' of ' + (rel.tracks.length + rel.upcoming.length) + ' songs ready to hear<span class="rp-sep"> · </span><span class="rp-rest">the rest coming soon</span></p>' : '') + '</div>' +   /* (says why some rows are dim: owner, 2026-11-24) */
 (status ? '<div class="rel-avail">' + status + '</div>' : '') +
 '<div class="rel-art-wrap">' +
 '<img src="' + escHtml(rel.art) + '" alt="' + escHtml(kindWord + rel.name) + '"' + artSrcset(rel, '(max-width: 767px) 160px, 304px') + ' class="rel-art" width="504" height="504" loading="lazy" decoding="async" itemprop="image"' + (rel.tint && /^#[0-9a-f]{6}$/i.test(rel.tint) ? ' style="background-color:' + rel.tint + '"' : '') + '/>' +
@@ -2759,6 +2769,64 @@ function kitDoc(src, name, opener) {
   fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.text(); }).then(function(t) {
     page.innerHTML = kitDocHtml(t, name.replace(/\.txt$/i, '')); page.scrollTop = 0; page.focus({ preventScroll: true });
   }).catch(function() { page.innerHTML = '<p class="kd-loading">' + escHtml(name) + ' could not be opened. <a href="' + escHtml(kitUrl(src)) + '" target="_blank" rel="noopener">Open the file</a> instead.</p>'; });
+}
+/* A press kit photo, full size, over the page (owner, 2026-11-24: "When the view button is pressed just overlay the
+   image dont open up the image in another browser tab"). The photo's own View and the photo itself open it; Previous
+   and Next (and the arrow keys) step through the kit's photos; Download asks the format as the photo's own Download
+   does; the photographer's credit bubble sits on its corner as everywhere; Close, Esc or a click outside shut it and give focus back. The small copy shows at once, the full one
+   replaces it when loaded. Ctrl/Cmd-click still opens the file in a tab. */
+var _kpdlg = null, _kpList = [], _kpAt = 0;
+function kitPhoto(shots, at, opener) {
+  if (!_kpdlg) {
+    var arrow = function(d) { return '<svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '"/></svg>'; };
+    _kpdlg = document.createElement('dialog'); _kpdlg.className = 'kit-photo'; _kpdlg.setAttribute('aria-labelledby', 'kp-title');
+    _kpdlg.innerHTML = '<div class="kp-bar"><p class="kp-title" id="kp-title"></p>' +
+      '<button type="button" class="rel-lyrics-toggle kp-prev" aria-label="Previous photo">' + arrow('M15 5l-7 7 7 7') + '</button>' +
+      '<button type="button" class="rel-lyrics-toggle kp-next" aria-label="Next photo">' + arrow('M9 5l7 7-7 7') + '</button>' +
+      '<a class="rel-lyrics-toggle epk-file-dl kp-dl" download><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
+      '<button type="button" class="rel-lyrics-toggle kd-close kp-close" aria-label="Close"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
+      '<div class="kp-stage"><span class="kp-frame"><img class="kp-img" alt="" decoding="async"/></span></div>';   /* (the photographer's bubble lands on the photo's corner: the frame is the photo's size) */
+    document.body.appendChild(_kpdlg);
+    _kpdlg.querySelector('.kp-close').addEventListener('click', function() { _kpdlg.close(); });
+    _kpdlg.querySelector('.kp-prev').addEventListener('click', function() { kitPhotoShow(_kpAt - 1); });
+    _kpdlg.querySelector('.kp-next').addEventListener('click', function() { kitPhotoShow(_kpAt + 1); });
+    _kpdlg.querySelector('.kp-dl').addEventListener('click', function(e) { e.preventDefault(); var d = this; kitSaveOne(decodeURIComponent(d.getAttribute('href')), d.getAttribute('download'), { image: 1 }, d); });
+    _kpdlg.addEventListener('click', function(e) { if (e.target === _kpdlg || e.target.classList.contains('kp-stage')) _kpdlg.close(); });
+    _kpdlg.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); kitPhotoShow(_kpAt - 1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); kitPhotoShow(_kpAt + 1); }
+    });
+    _kpdlg.querySelector('.kp-img').addEventListener('load', kitPhotoFit);
+    addEventListener('resize', function() { if (_kpdlg.open) kitPhotoFit(); }, { passive: true });
+    _kpdlg.addEventListener('close', function() { document.documentElement.classList.remove('kd-open'); if (_kpdlg._opener && _kpdlg._opener.focus) _kpdlg._opener.focus({ preventScroll: true }); });
+  }
+  _kpList = shots; _kpdlg._opener = opener;
+  _kpdlg.classList.toggle('kp-one', shots.length < 2);
+  kitPhotoShow(at);
+  if (!_kpdlg.open) { _kpdlg.showModal(); document.documentElement.classList.add('kd-open'); _kpdlg.querySelector('.kp-close').focus(); }
+  kitPhotoFit();
+}
+function kitPhotoFit() {   // as large as the window allows, whole (the small copy is enlarged until the full one arrives)
+  var img = _kpdlg.querySelector('.kp-img'), st = _kpdlg.querySelector('.kp-stage'), cs = getComputedStyle(st);
+  var w = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  var shot = _kpList[_kpAt], dims = shot && shot.querySelector('.epk-shot-meta'), m = dims && /(\d+) × (\d+)/.exec(dims.textContent);
+  var nw = m ? +m[1] : img.naturalWidth, nh = m ? +m[2] : img.naturalHeight; if (!nw || !nh || w <= 0 || h <= 0) return;
+  var k = Math.min(w / nw, h / nh); img.style.width = Math.floor(nw * k) + 'px'; img.style.height = Math.floor(nh * k) + 'px';
+}
+function kitPhotoShow(i) {
+  var n = _kpList.length; if (!n) return;
+  _kpAt = (i + n) % n;
+  var shot = _kpList[_kpAt], view = shot.querySelector('.epk-shot-view'), small = shot.querySelector('.epk-shot-img img'), dl = shot.querySelector('.epk-shot-dl');
+  var name = (shot.querySelector('.epk-shot-name') || {}).textContent || '';
+  var img = _kpdlg.querySelector('.kp-img'), full = view.getAttribute('href');
+  _kpdlg.querySelector('.kp-title').textContent = name + (n > 1 ? '  ·  ' + (_kpAt + 1) + ' of ' + n : '');
+  img.alt = (small && small.getAttribute('data-alt')) || 'Ash Stu - ' + name;
+  img.src = small ? small.currentSrc || small.src : full;
+  var big = new Image(); big.decoding = 'async';
+  big.onload = function() { if (_kpList[_kpAt] === shot) img.src = full; };
+  big.src = full;
+  var kd = _kpdlg.querySelector('.kp-dl');
+  kd.href = dl.getAttribute('href'); kd.setAttribute('download', dl.getAttribute('download')); kd.setAttribute('aria-label', dl.getAttribute('aria-label')); kd.title = dl.getAttribute('aria-label');
 }
 var _crcT = null;
 function kitCrc(u8, c) {
@@ -3287,12 +3355,12 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
   '<p class="epk-group epk-photos-h" id="epk-photos-h">Photos</p><div class="epk-gallery" role="list" aria-labelledby="epk-photos-h">' + KIT.files.filter(function(f) { return f.type === 'photo' && f.thumb; }).map(function(f) {
     var meta = f.dims ? f.dims[0] + ' × ' + f.dims[1] + ' pixels' : '';
     return '<div class="epk-shot" role="listitem">' +
-      '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="Open ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size">' +
+      '<a class="epk-shot-img" href="' + escHtml(kitUrl(f.src)) + '" aria-haspopup="dialog" aria-label="Open ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size">' +
         '<img src="' + escHtml(encodeURI(f.thumb)) + '" alt="" width="481" height="481" loading="lazy" decoding="async"/></a>' +
       '<p class="epk-shot-name">' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '').replace(/^Ash Stu - /, '')) + '</p>' + (meta ? '<p class="epk-shot-meta">' + escHtml(meta) + '</p>' : '') +
       /* (the photographer's credit is the bubble on the photo's corner: the photo-credits script) */
       /* View beside Download (owner, 2026-11-23: "add a view button to the photos in the press kit, like the docs have"): it opens the photo full size, as the photo itself does */
-      '<div class="epk-shot-btns"><a class="rel-lyrics-toggle epk-shot-view" href="' + escHtml(kitUrl(f.src)) + '" target="_blank" rel="noopener" aria-label="View ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size (opens in a new tab)"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="btn-word" aria-hidden="true">View</span></a>' +
+      '<div class="epk-shot-btns"><a class="rel-lyrics-toggle epk-shot-view" href="' + escHtml(kitUrl(f.src)) + '" aria-haspopup="dialog" aria-label="View ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="btn-word" aria-hidden="true">View</span></a>' +
       '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '" title="Download ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div></div>';
   }).join('') + '</div>' +
   (KIT.videos && KIT.videos.length ? '<div class="epk-videos"><p class="epk-group">Live videos</p><div class="epk-video-row">' + KIT.videos.map(function(v, i) {
@@ -3418,6 +3486,14 @@ card.querySelectorAll('.epk-sheet-row').forEach(function(row) {
     if (e.target.closest('a, button')) return;
     var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;   /* (selecting the words is not a click) */
     var r = row.querySelector('.epk-sheet-read'); if (r) r.click();
+  });
+});
+card.querySelectorAll('.epk-shot-view, .epk-shot-img').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault(); e.stopPropagation();
+    var shots = Array.prototype.slice.call(card.querySelectorAll('.epk-shot')).filter(function(x) { return x.querySelector('.epk-shot-view'); });
+    kitPhoto(shots, shots.indexOf(a.closest('.epk-shot')), a);
   });
 });
 card.querySelectorAll('.epk-doc-link').forEach(function(a) {
