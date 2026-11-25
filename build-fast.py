@@ -354,6 +354,25 @@ _KIT_THUMB = {"Ash Stu - Headshot-1.png": "epk-ash-stu-stairs.webp", "Ash Stu - 
               "Ash Stu - Headshot-3.png": "epk-ash-stu-guitar-door.webp?v=2", "Ash Stu - Guitar in Alley (Wide).png": "epk-ash-stu-alley.webp?v=2",
               "Ash Stu - Alley Portrait.png": "epk-ash-stu-alley-portrait.webp",
               "Ash Stu - Live at the Keyboard (Wide).png": "epk-ash-stu-performing.webp?v=5"}
+def _kit_view_copy(f):
+    """The copy the photo viewer shows: the whole photo at its full size, as a WebP (about a tenth of the PNG).
+    (owner, 2026-11-25: "the pixel dimensions of the two new photos do not pop up on mobile": the viewer showed the
+    page's small copy until the full PNG arrived, and the two new ones are 2.7 and 4.5 MB, so on a phone the sharp
+    picture took half a minute or never came.) Download still gives the PNG itself. Made again only when the PNG changes."""
+    import hashlib
+    src = os.path.join(KIT_DIR, f)
+    tag = hashlib.sha1(open(src, "rb").read()).hexdigest()[:8]
+    rel = "Images/embedded/view/" + re.sub(r"[^a-z0-9]+", "-", f.rsplit(".", 1)[0].lower()).strip("-") + ".webp"
+    dst = os.path.join(ROOT, rel)
+    if not os.path.exists(dst) or os.path.getmtime(dst) < os.path.getmtime(src):
+        try:
+            from PIL import Image
+        except ImportError:
+            return ""   # (no Pillow here: the viewer falls back to the PNG)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        Image.open(src).convert("RGB").save(dst, "WEBP", quality=90, method=6)
+        print("Press kit: viewer copy " + rel)
+    return rel + "?v=" + tag
 def _press_kit():
     import json as _json
     rels = _json.load(open(os.path.join(ROOT, "releases.json"), encoding="utf-8"))
@@ -480,7 +499,7 @@ def _press_kit():
         dims = None
         with open(os.path.join(KIT_DIR, f), "rb") as fh: hd = fh.read(24)
         if hd[:8] == b"\x89PNG\r\n\x1a\n": dims = [int.from_bytes(hd[16:20], "big"), int.from_bytes(hd[20:24], "big")]
-        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": ("Images/embedded/" + _KIT_THUMB[f]) if f in _KIT_THUMB else "", "dims": dims,
+        files.append({"path": KIT_TOP + "Photos/" + f, "src": "Images/press-kit/" + f, "type": "photo", "thumb": ("Images/embedded/" + _KIT_THUMB[f]) if f in _KIT_THUMB else "", "dims": dims, "view": _kit_view_copy(f),
                       **({"credit": _KIT_CREDIT[f], "creditUrl": PHOTOGRAPHERS.get(_KIT_CREDIT[f], "")} if f in _KIT_CREDIT else {})})
     for f in files:
         f["name"] = f["path"].rsplit("/", 1)[1]; f["ext"] = f["name"].rsplit(".", 1)[1].upper()

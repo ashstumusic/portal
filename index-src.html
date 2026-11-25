@@ -2871,7 +2871,7 @@ function kitPhotoShow(i) {
   _kpAt = (i + n) % n;
   var shot = _kpList[_kpAt], view = shot.querySelector('.epk-shot-view'), small = shot.querySelector('.epk-shot-img img'), dl = shot.querySelector('.epk-shot-dl');
   var name = (shot.querySelector('.epk-shot-name') || {}).textContent || '';
-  var img = _kpdlg.querySelector('.kp-img'), full = view.getAttribute('href');
+  var img = _kpdlg.querySelector('.kp-img'), full = view.getAttribute('data-view') || view.getAttribute('href');   // (the light full-size WebP, so the sharp photo arrives quickly on a phone: owner, 2026-11-25; Download still gives the PNG)
   var kt = _kpdlg.querySelector('.kp-title'); kt.textContent = name;   // (the count beside the name, quieter: "3 of 6")
   if (n > 1) { var kc = document.createElement('span'); kc.className = 'kp-count'; kc.textContent = (_kpAt + 1) + ' of ' + n; kt.appendChild(document.createTextNode(' ')); kt.appendChild(kc); }
   img.alt = (small && small.getAttribute('data-alt')) || 'Ash Stu - ' + name;
@@ -3483,7 +3483,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
       '<p class="epk-shot-name">' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '').replace(/^Ash Stu - /, '')) + '</p>' + (meta ? '<p class="epk-shot-meta">' + escHtml(meta) + '</p>' : '') +
       /* (the photographer's credit is the bubble on the photo's corner: the photo-credits script) */
       /* View beside Download (owner, 2026-11-23: "add a view button to the photos in the press kit, like the docs have"): it opens the photo full size, as the photo itself does */
-      '<div class="epk-shot-btns"><a class="rel-lyrics-toggle epk-shot-view" href="' + escHtml(kitUrl(f.src)) + '" aria-haspopup="dialog" aria-label="View ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="btn-word" aria-hidden="true">View</span></a>' +
+      '<div class="epk-shot-btns"><a class="rel-lyrics-toggle epk-shot-view" href="' + escHtml(kitUrl(f.src)) + '"' + (f.view ? ' data-view="' + escHtml(encodeURI(f.view)) + '"' : '') + ' aria-haspopup="dialog" aria-label="View ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + ' full size"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="btn-word" aria-hidden="true">View</span></a>' +
       '<a class="rel-lyrics-toggle epk-file-dl epk-shot-dl" href="' + escHtml(kitUrl(f.src)) + '" download="' + escHtml(f.name) + '" aria-label="Download ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '" title="Download ' + escHtml(f.name.replace(/\.[a-z0-9]+$/i, '')) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a></div></div>';
   }).join('') + '</div>' +
   (KIT.videos && KIT.videos.length ? '<div class="epk-videos"><p class="epk-group">Live videos</p><div class="epk-video-row">' + KIT.videos.map(function(v, i) {
