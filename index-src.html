@@ -236,7 +236,7 @@ addEventListener('click',function(e){if(!lastTouch||Date.now()-lastTouch>1500||!
   <ul class="nav-links" role="list">
     <li><a href="#contact"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.6 6.4 8.4 6.6 8.4-6.6"/></svg><span>Contact</span></a></li>
     <li><a href="#epk"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13.5" rx="2.5"/><path d="M9 7V5.2A1.7 1.7 0 0 1 10.7 3.5h2.6A1.7 1.7 0 0 1 15 5.2V7"/></svg><span>Press Kit</span></a></li>
-    <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Music</span></a></li>
+    <li><a href="#music"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Audio Tracks</span></a></li>
     <li><a href="#videos"><svg class="nav-ico" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="M15.5 10.4 21.5 7v10l-6-3.4"/></svg><span>Videos</span></a></li>
   </ul>
   </div>
@@ -269,7 +269,7 @@ addEventListener('click',function(e){if(!lastTouch||Date.now()-lastTouch>1500||!
   </div>
   <a href="#contact">Contact</a>
   <a href="#epk">Press Kit</a>
-  <a href="#music">Music</a>
+  <a href="#music">Audio Tracks</a>
   <a href="#videos">Videos</a>
   <button type="button" class="drawer-search k-search-btn" aria-label="Search songs, videos, sections and actions" aria-haspopup="dialog"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
 </nav>
@@ -355,7 +355,7 @@ addEventListener('click',function(e){if(!lastTouch||Date.now()-lastTouch>1500||!
   <script type="application/json" id="kit-data">__KIT_JSON__</script>
 </section>
 <section class="section releases-section" id="music" aria-labelledby="music-h">
-  <h2 class="section-h" id="music-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Music</h2>
+  <h2 class="section-h" id="music-h"><svg class="section-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Audio Tracks</h2>   <!-- ("Audio Tracks": (owner, 2026-11-25: "in the epk refer to the music as Audio Tracks. also call the music section Audio Tracks") -->
   <div class="section-inner">
     <div id="releases-grid" class="releases-grid" aria-label="Discography">
     </div>
@@ -3454,7 +3454,7 @@ function liveZip(files, filename, onStep, fmt) {
 var _kitBusy = false;
 function kitZip(status, btn) {
   if (_kitBusy || !KIT) return;
-  kitPickFormats('the press kit', { audio: 1, image: 1, video: 1, text: 1 }, btn).then(function(fmt) { if (fmt) kitZipGo(status, btn, fmt); });
+  kitPickFormats('the press kit', { audio: 1, image: 1, video: 1, text: 1, audioTitle: 'Audio Tracks' }, btn).then(function(fmt) { if (fmt) kitZipGo(status, btn, fmt); });
 }
 function kitZipGo(status, btn, fmt) {
   if (_kitBusy) return; _kitBusy = true;
@@ -3522,14 +3522,14 @@ var lyricSheet = KIT.files.filter(function(f) { return f.type === 'text' && /lyr
 var nKitSongs = KIT.files.filter(function(f) { return f.type === 'song'; }).length, nKitVids = (KIT.videos || []).length;
 var kitDocs = [];
 if (sheet) kitDocs.push({ f: sheet, label: 'fact sheet', heading: 'Fact sheet', about: 'Facts, artist pages and releases' });
-if (lyricSheet) kitDocs.push({ f: lyricSheet, label: 'lyrics sheet', heading: 'Lyrics sheet', about: 'The words to the ' + nKitSongs + (nKitSongs === 1 ? ' music track' : ' music tracks') + (nKitVids ? ' and ' + nKitVids + (nKitVids === 1 ? ' live video' : ' live videos') : '') });
-var inKit = [nSongs + (nSongs === 1 ? '\u00a0song' : '\u00a0songs') + (hasLyr ? ' with lyrics' : '')];
+if (lyricSheet) kitDocs.push({ f: lyricSheet, label: 'lyrics sheet', heading: 'Lyrics sheet', about: 'The words to the ' + nKitSongs + (nKitSongs === 1 ? ' audio track' : ' audio tracks') + (nKitVids ? ' and ' + nKitVids + (nKitVids === 1 ? ' live video' : ' live videos') : '') });
+var inKit = [nSongs + (nSongs === 1 ? '\u00a0audio track' : '\u00a0audio tracks') + (hasLyr ? ' with lyrics' : '')];
 var nVids = KIT.files.filter(function(f) { return f.type === 'video'; }).length;
 if (nVids) inKit.push(nVids + (nVids === 1 ? '\u00a0live video' : '\u00a0live videos'));
 if (nPics) inKit.push(nPics + (nPics === 1 ? '\u00a0photo' : '\u00a0photos'));
 if (sheet) inKit.push('a\u00a0fact sheet'); if (lyricSheet) inKit.push('a\u00a0lyrics sheet');   /* (plain words: the fact sheet has its own row when the kit is open, owner's request) */
 if (F.pitch) inKit.unshift('a\u00a0bio');   /* (the bio is in the open kit now, so the line names it first: owner, 2026-11-25, "put the bio on the content line") */
-var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0]).replace(/^(\d+\u00a0songs?)/, function(m) { return escHtml(m); });
+var inKitHtml = (inKit.length > 1 ? inKit.slice(0, -1).join(', ') + ' and ' + inKit[inKit.length - 1] : inKit[0]).replace(/^(\d+\u00a0audio tracks?)/, function(m) { return escHtml(m); });
 var facts = '<p class="epk-summary">' + inKitHtml.charAt(0).toUpperCase() + inKitHtml.slice(1) + '.</p>';
 // The card's heading, as an album card's: the date it was last updated in the gold line, the name as its title
 // (keep in step with render_kit_shell in scripts/prerender.py)
@@ -3540,7 +3540,7 @@ function kitTypes() {
   /* (kinds of thing, in plain words - Songs, Videos, Photos, Text - not file formats: owner, 2026-11-23, "its not
      necessarily file types but file categories") */
   var ICONS = {song: '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>', video: '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/></svg>', photo: '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8.5 8.5"/></svg>', text: '<svg class="kit-type-ico" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>'};   /* (a picture with each word, as the site's section icons: owner's request) */
-  var NAMES = { song: 'Songs', video: 'Videos', photo: 'Photos', text: 'Documents' },   /* ("Documents", as the section in the open kit is called: owner, 2026-11-25, "the documents section does not correlate to the 'Text' icon") */
+  var NAMES = { song: 'Audio Tracks', video: 'Videos', photo: 'Photos', text: 'Documents' },   /* ("Documents", as the section in the open kit is called: owner, 2026-11-25, "the documents section does not correlate to the 'Text' icon") */
   ORDER = ['song', 'video', 'photo', 'text'], seen = [];
   KIT.files.forEach(function(f) { var k = f.type === 'lyrics' ? 'text' : f.type; if (NAMES[k] && seen.indexOf(k) < 0) seen.push(k); });
   seen.sort(function(a, b) { return ORDER.indexOf(a) - ORDER.indexOf(b); });
@@ -3582,7 +3582,7 @@ slot.innerHTML = '<article class="rel-card epk-card" data-release="-1" aria-labe
     '<div class="epk-video-btns"><a class="rel-lyrics-toggle epk-file-dl epk-sheet-dl" href="' + escHtml(kitUrl(d.f.src)) + '" download="' + escHtml(d.f.name) + '" aria-label="Download the ' + escHtml(d.label) + '" title="Download the ' + escHtml(d.label) + '"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg><span class="btn-word" aria-hidden="true">Download</span></a></div></div>';
   }).join('') : '') +
   (F.pitch ? '<p class="epk-group epk-bio-h" id="epk-bio-h">Bio</p><div class="epk-bio" id="epk-bio" role="region" aria-labelledby="epk-bio-h"><p class="epk-pitch">' + escHtml(F.pitch) + '</p></div>' : '') +   /* (the bio, first of what Show opens: owner, 2026-11-25, "put the bio under the show dropdown") */
-  '<p class="epk-group epk-sampler-h" id="epk-sampler-h">Music Tracks</p>' +   /* (renamed from "Sampler": owner's request) */   /* (owner's request: the tracklist is always open, like the photos and videos: a heading, not a Show/Hide bar) */
+  '<p class="epk-group epk-sampler-h" id="epk-sampler-h">Audio Tracks</p>' +   /* ("Audio Tracks": (owner, 2026-11-25: 'in the epk refer to the music as Audio Tracks. also call the music section Audio Tracks')) */   /* (renamed from "Sampler": owner's request) */   /* (owner's request: the tracklist is always open, like the photos and videos: a heading, not a Show/Hide bar) */
   '<div class="rel-tracklist" id="tracklist-kit" role="region" aria-labelledby="epk-sampler-h"></div></article>';
 var card = slot.firstChild, tl = card.querySelector('.rel-tracklist');
 if (sec) sec.classList.add('epk-merged');
@@ -3601,7 +3601,7 @@ more.innerHTML = '<svg class="rel-dl-ico epk-show-chev" aria-hidden="true" width
 var setMore = function(open) {
   card.classList.toggle('kit-collapsed', !open);
   more.setAttribute('aria-expanded', String(open));
-  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the bio, music tracks, live videos, photos, fact sheet and lyrics sheet');
+  more.setAttribute('aria-label', (open ? 'Hide' : 'Show') + ' the bio, audio tracks, live videos, photos, fact sheet and lyrics sheet');
   if (open) { openList(); queueMarquees(); }   /* (opening the card opens its tracklist too: owner's request) */
 };
 setMore(false);
