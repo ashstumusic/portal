@@ -2756,8 +2756,10 @@ function kitDocHtml(txt, title) {
 var _kdlg = null;
 function kitDoc(src, name, opener) {
   if (!_kdlg) {
-    _kdlg = document.createElement('dialog'); _kdlg.className = 'kit-doc'; _kdlg.setAttribute('aria-labelledby', 'kd-title');
-    _kdlg.innerHTML = '<div class="kd-bar"><a class="rel-lyrics-toggle epk-file-dl kd-dl" download><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
+    _kdlg = document.createElement('dialog'); _kdlg.className = 'kit-doc'; _kdlg.setAttribute('aria-labelledby', 'kd-bar-title');
+    // (the title in the bar, as the video and photo viewers have it: owner, 2026-11-24, "make the image viewer be the same
+    // as the video viewer and document viewer. just a general pagewide media viewer")
+    _kdlg.innerHTML = '<div class="kd-bar"><p class="kp-title kd-bar-title" id="kd-bar-title"></p><a class="rel-lyrics-toggle epk-file-dl kd-dl" download><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg></a>' +
       '<button type="button" class="rel-lyrics-toggle kd-close" aria-label="Close"><svg class="lyr-ico" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
       '<article class="kd-page" tabindex="-1"></article>';
     document.body.appendChild(_kdlg);
@@ -2770,6 +2772,7 @@ function kitDoc(src, name, opener) {
   _kdlg._opener = opener;
   dl.href = kitUrl(src); dl.setAttribute('download', name); dl.setAttribute('aria-label', 'Download ' + name); dl.title = 'Download ' + name;
   page.classList.toggle('kd-lyrics', /lyrics/i.test(name));
+  _kdlg.querySelector('.kd-bar-title').textContent = name.replace(/\.[a-z0-9]+$/i, '');
   page.innerHTML = '<p class="kd-loading">Opening ' + escHtml(name) + '…</p>';
   if (!_kdlg.open) { _kdlg.showModal(); document.documentElement.classList.add('kd-open'); }
   fetch(kitUrl(src)).then(function(r) { if (!r.ok) throw 0; return r.text(); }).then(function(t) {
@@ -2813,11 +2816,13 @@ function kitPhoto(shots, at, opener) {
   kitPhotoFit();
 }
 function kitPhotoFit() {   // as large as the window allows, whole (the small copy is enlarged until the full one arrives)
-  var img = _kpdlg.querySelector('.kp-img'), st = _kpdlg.querySelector('.kp-stage'), cs = getComputedStyle(st);
-  var w = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), h = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  var img = _kpdlg.querySelector('.kp-img'), st = _kpdlg.querySelector('.kp-stage'), bar = _kpdlg.querySelector('.kp-bar'), dc = getComputedStyle(_kpdlg);
+  // (the room left under the bar: the photo and its bar sit together in the middle of the page, as the video and its bar do)
+  var w = st.clientWidth, h = _kpdlg.clientHeight - parseFloat(dc.paddingTop) - parseFloat(dc.paddingBottom) - bar.offsetHeight - (parseFloat(dc.rowGap) || 0);
   var shot = _kpList[_kpAt], dims = shot && shot.querySelector('.epk-shot-meta'), m = dims && /(\d+) × (\d+)/.exec(dims.textContent);
   var nw = m ? +m[1] : img.naturalWidth, nh = m ? +m[2] : img.naturalHeight; if (!nw || !nh || w <= 0 || h <= 0) return;
   var k = Math.min(w / nw, h / nh); img.style.width = Math.floor(nw * k) + 'px'; img.style.height = Math.floor(nh * k) + 'px';
+  bar.style.setProperty('--kp-bar-w', Math.max(Math.floor(nw * k), Math.min(560, w)) + 'px');   /* (the bar as wide as the photo, as the video's is as wide as the video; never too narrow for its buttons) */
 }
 function kitPhotoShow(i) {
   var n = _kpList.length; if (!n) return;
