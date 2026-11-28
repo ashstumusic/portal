@@ -610,8 +610,17 @@
     // Focus starts on the first SECTION button (phones) or the first setting (wide screens), never on a streaming
     // link: those open another site, and a second press of Enter after opening the menu would have left this one.
     // Escape or Close shuts it and focus goes back to the button that opened it.
-    if (menu) { const vis = (e) => e && e.getClientRects().length; ([...menuBox.querySelectorAll('.k-menu-link, .settings-row, .settings-fold')].find(vis) || $('.k-palette-close', dlg)).focus({ preventScroll: true }); } else input.focus();
+    // (owner, 2026-11-27, iPad screenshot: "fix home button stuck highlighted anywhere on page" - opened by a tap or a
+    // click, focus landed on the first button, Home, and its focus look is the gold one, so Home seemed to be the
+    // current section wherever you were. Opened by touch or mouse, focus now goes to the menu itself, which shows
+    // nothing; opened from the keyboard it still starts on the first button, as above.)
+    if (menu && byPointer) { menuBox.setAttribute('tabindex', '-1'); menuBox.focus({ preventScroll: true }); }
+    else if (menu) { const vis = (e) => e && e.getClientRects().length; ([...menuBox.querySelectorAll('.k-menu-link, .settings-row, .settings-fold')].find(vis) || $('.k-palette-close', dlg)).focus({ preventScroll: true }); } else input.focus();
   }
+  // how the last thing was pressed: a pointer (touch, mouse, pen) or a key
+  let byPointer = false;
+  doc.addEventListener('pointerdown', () => { byPointer = true; }, true);
+  doc.addEventListener('keydown', (e) => { if (!e.repeat) byPointer = false; }, true);
   function closePalette(restore = true) {
     if (!dlg.open) return;
     dlg.close();
