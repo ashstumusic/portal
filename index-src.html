@@ -3623,6 +3623,20 @@ card.addEventListener('click', function(e) {
   var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
   setMore(card.classList.contains('kit-collapsed'));
 });
+// (owner, 2026-11-27: "clicking on the press kit card should expand it": the box round the card - the "Press Kit" heading
+// and the margins - looks like one card with it, so a click there opens it too; when open, only a click above the
+// kit's contents (by the heading) closes it, so a click beside the tracklist never shuts it)
+var kitSec = document.getElementById('epk');
+if (kitSec) {
+  kitSec.classList.add('kit-clickable');
+  kitSec.addEventListener('click', function(e) {
+    if (card.contains(e.target) || e.target.closest('a, button, input, textarea, select')) return;
+    var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
+    if (card.classList.contains('kit-collapsed')) { setMore(true); return; }
+    var first = card.querySelector('.epk-group');
+    if (first && e.clientY < first.getBoundingClientRect().top) setMore(false);
+  });
+}
 // the rows: songs play (with Lyrics), photos open full size (with Download)
 var PIC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>';
 var DOC = '<svg class="rel-track-play epk-pic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 17h5"/></svg>';
