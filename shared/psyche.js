@@ -385,12 +385,25 @@
       const map = measure(); fill(map); partner(map);
       draw();
     }
-    // Cheap: move every star with its section (no measuring).
-    function follow() {
-      const tops = new Map(regions().map((el) => [el, el.getBoundingClientRect().top + scrollY]));
+    // Move every star with its section - except, when `stay` (the page grew or shrank: a press kit or tracklist opened or
+    // closed), a star whose spot is still open space keeps it, and from then on belongs to whatever section it now
+    // sits beside. (owner, 2026-11-27: "when i expand the epk the stars hide again. i dont want any new stars to be
+    // added. but i dont want them to dissapear": the stars beside and under the press kit were carried off down the
+    // page with the sections below it, leaving the screen bare as it opened.)
+    function follow(stay) {
+      const secs = regions().map((el) => { const r = el.getBoundingClientRect(); return { el, top: r.top + scrollY, bottom: r.bottom + scrollY }; });
+      const tops = new Map(secs.map((q) => [q.el, q.top]));
+      const map = stay ? measure() : null;
       for (const o of placed) {
         const t = tops.get(o.sec); if (t == null) continue;
         const cy = t + o.off; if (Math.abs(cy - o.cy) < 0.5) continue;
+        if (map) {
+          const pad = o.R * 0.2 + 4;
+          if (map.free(o.cx - o.R - pad, o.cy - o.R - pad, o.cx + o.R + pad, o.cy + o.R + pad)) {
+            const sec = secs.find((q) => o.cy >= q.top && o.cy < q.bottom) || secs[secs.length - 1];
+            o.sec = sec.el; o.off = o.cy - sec.top; continue;
+          }
+        }
         o.cy = cy; o.el.style.top = (cy - o.R).toFixed(1) + 'px';
       }
       unpartner();
@@ -630,7 +643,7 @@
       if (w !== lastW) { lastW = w; lastH = h; clearTimeout(rt); rt = 0; layout(); kick(); return; }
       if (Math.abs(h - lastH) < 2) return;
       if (h > lastH) grew = true;
-      lastH = h; follow(); scheduleRepair();
+      lastH = h; follow(true); scheduleRepair();
     }, 120); };
     if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(doc.body);   // (older Safari has none: the resize listener below still covers window changes)
     addEventListener('resize', relayout, { passive: true });

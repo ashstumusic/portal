@@ -88,13 +88,23 @@ def centre(drops):
     return out
 
 
+def smooth(rng, n, sd, sigma):
+    """Smooth noise along a stroke: n points, about `sd` units from the line, wandering over about `sigma` points."""
+    v = ndi.gaussian_filter1d(rng.normal(0, 1, (n, 2)), sigma, axis=0)
+    return v / max(1e-9, v.std()) * sd
+
+
 def draw(flip, rng):   # flip: the one under the quote (turned over, with the drops)
     ink = np.zeros((H, W), np.float32); dust = np.zeros((H, W), np.float32)
     scale = min(W * .47 / 1.4, H * .47 / .47); cx, cy = W / 2, H / 2   # (as large as the cell allows)
     yy, xx = np.mgrid[0:H, 0:W]
-    g_rot = rng.uniform(-.012, .012); g_dy = rng.uniform(-.015, .015)   # the whole figure sits a hair differently each redraw
+    # (owner, 2026-11-27: "the jittering on the top and bottom flourish is jacked". Each frame used to draw its own
+    # random-walk wobble, so the long bars drifted 5-8px between frames and the whole figure tilted and jumped. Now the
+    # hand's wobble is the same in all three frames (seeded by the stroke, not the frame); a frame only adds a shiver of
+    # under a pixel on screen, and fresh chalk grain - the way the stars boil.)
+    g_rot = rng.uniform(-.0015, .0015); g_dy = rng.uniform(-.0015, .0015)
     strokes = half(1) + half(-1) + centre(flip)
-    for pts, kind, weight in strokes:
+    for si, (pts, kind, weight) in enumerate(strokes):
         pts = np.array(pts, float)
         if flip: pts[:, 1] *= -1
         n0 = len(pts)
@@ -105,8 +115,9 @@ def draw(flip, rng):   # flip: the one under the quote (turned over, with the dr
             pts = np.stack([np.interp(u, seg, pts[:, 0]), np.interp(u, seg, pts[:, 1])], 1)
         n = len(pts); k_w = n / n0
         # hand wobble: a small smooth drift, different on every stroke and every redraw (the same wavelength whatever the sampling)
-        walk = ndi.gaussian_filter1d(np.cumsum(rng.normal(0, .0028 / math.sqrt(k_w), (n, 2)), 0), 6 * k_w, axis=0) + ndi.gaussian_filter1d(rng.normal(0, .0022, (n, 2)), 1.5 * k_w, axis=0)
-        width = scale * .017 * weight * rng.uniform(.95, 1.05)
+        hand = np.random.default_rng(7700 + 50 * flip + si)   # the same in every frame
+        walk = smooth(hand, n, .006, 60 * k_w) + smooth(hand, n, .0018, 8 * k_w) + smooth(rng, n, .0025, 25 * k_w)
+        width = scale * .017 * weight * hand.uniform(.95, 1.05) * rng.uniform(.985, 1.015)
         for i in range(n):
             x, y = pts[i] + walk[i]; y += g_dy
             x, y = x * math.cos(g_rot) - y * math.sin(g_rot), x * math.sin(g_rot) + y * math.cos(g_rot)
