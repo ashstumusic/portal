@@ -24,7 +24,7 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 
-CW, CH, FRAMES, SS = 1500, 400, 3, 2   # each cell 1500 x 400 (3.75:1), drawn at twice that: sharp at its largest size on 3x screens
+CW, CH, FRAMES, SS = 1800, 480, 3, 3   # each cell 1800 x 480 (3.75:1), drawn at three times that: the flourish is at most 520px wide, so even on 3x screens (1560px) every frame is shown smaller than it was drawn (owner, 2026-11-27: "ensure each frame of each animation is in the highest clarity and resolution"; it was 1500 x 400, a touch short of that)
 W, H = CW * SS, CH * SS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Images', 'chalk-flourish.webp')
 
@@ -153,5 +153,5 @@ for row, flip in enumerate((False, True)):
         cell = sheet[row * CH:(row + 1) * CH, f * CW:(f + 1) * CW]
         cell[..., 0], cell[..., 1], cell[..., 2] = 246, 243, 234
         cell[..., 3] = a
-Image.fromarray(sheet, 'RGBA').save(OUT, 'WEBP', quality=92, alpha_quality=95, method=6)
+Image.fromarray(sheet, 'RGBA').save(OUT, 'WEBP', quality=92, alpha_quality=100, method=6)   # (the picture is all in the alpha - the stencil - and alpha_quality 100 keeps it lossless)
 print('wrote', OUT, os.path.getsize(OUT), 'bytes', sheet.shape[1], 'x', sheet.shape[0])
